@@ -269,7 +269,7 @@ const AppContent: React.FC = () => {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="dark" storageKey="almahbub-client-theme">
+      <ThemeProvider defaultTheme="light" storageKey="almahbub-client-theme">
         <AuthProvider>
           <SocketProvider>
             <NotificationProvider>

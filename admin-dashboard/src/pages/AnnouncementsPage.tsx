@@ -531,7 +531,7 @@ const AnnouncementsPage: React.FC = () => {
                         </span>
                       </div>
                       
-                      {announcement.tags.length > 0 && (
+                      {announcement.tags && (
                         <div className="flex flex-wrap gap-1 mt-2">
                           {announcement.tags.slice(0, 4).map((tag, index) => (
                             <Badge key={index} variant="outline" className="text-xs">
