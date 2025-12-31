@@ -48,10 +48,10 @@ const AboutPage: React.FC = () => {
   ];
 
   const stats = [
-    { number: '15+', label: 'Years of Experience' },
-    { number: '500+', label: 'Satisfied Clients' },
-    { number: '50+', label: 'Countries Served' },
-    { number: '10,000+', label: 'Products Available' }
+     { value: '8+', label: 'Years Experience' },
+    { value: '500+', label: 'Global Suppliers' },
+    { value: '10,000+', label: 'Products Sourced' },
+    { value: '5,000+', label: 'Happy Clients' },
   ];
 
   const values = [

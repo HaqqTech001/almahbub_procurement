@@ -48,7 +48,7 @@ const Navbar: React.FC = () => {
     ...(isAuthenticated ? [
       { name: 'Dashboard', href: '/dashboard', icon: Home },
       { name: 'My Requests', href: '/my-requests', icon: ShoppingCart },
-      { name: 'Chat', href: '/client-chat', icon: MessageCircle },
+      // { name: 'Chat', href: '/client-chat', icon: MessageCircle },
       { name: 'Profile', href: '/profile', icon: User },
     ] : []),
   ];

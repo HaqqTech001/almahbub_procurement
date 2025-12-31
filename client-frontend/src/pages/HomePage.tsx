@@ -162,7 +162,7 @@ const HomePage: React.FC = () => {
   ];
 
   const stats = [
-    { value: '10+', label: 'Years Experience' },
+    { value: '8+', label: 'Years Experience' },
     { value: '500+', label: 'Global Suppliers' },
     { value: '10,000+', label: 'Products Sourced' },
     { value: '5,000+', label: 'Happy Clients' },
