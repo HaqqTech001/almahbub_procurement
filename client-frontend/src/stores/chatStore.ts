@@ -103,7 +103,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
           unreadCount: conv.unread_count || 0,
           lastMessage: conv.last_message,
         }));
-        // Calculate total unread count from all conversations (same as admin dashboard)
+        // Calculate total unread count from all conversations
+        // This correctly sums only the unread_count from each conversation
         const totalUnread = conversations.reduce((sum, conv) => sum + (conv.unreadCount || 0), 0);
         set({
           conversations: conversations,
@@ -114,6 +115,21 @@ export const useChatStore = create<ChatState>((set, get) => ({
     } catch (error) {
       console.error('Failed to fetch conversations:', error);
       set({ isLoading: false });
+    }
+  },
+
+  // Dedicated method to fetch only unread count (faster, more accurate)
+  fetchUnreadCount: async () => {
+    try {
+      const response = await apiClient.getUnreadCount();
+
+      if (response.success) {
+        // Use the count directly from the API
+        // This returns the sum of all unread messages from all conversations
+        set({ unreadCount: response.data.count || 0 });
+      }
+    } catch (error) {
+      console.error('Failed to fetch unread count:', error);
     }
   },
 
@@ -180,28 +196,32 @@ export const useChatStore = create<ChatState>((set, get) => ({
     try {
       await apiClient.markAsRead(userId.toString());
       
-      // Update unread count locally
-      set((state) => ({
-        unreadCount: Math.max(0, state.unreadCount - 1),
-        conversations: state.conversations.map(conv =>
+      // Update conversations and recalculate unread count from conversations
+      set((state) => {
+        const updatedConversations = state.conversations.map(conv =>
           conv.id === userId ? { ...conv, unreadCount: 0 } : conv
-        ),
-      }));
+        );
+        const totalUnread = updatedConversations.reduce((sum, conv) => sum + (conv.unreadCount || 0), 0);
+        return {
+          unreadCount: totalUnread,
+          conversations: updatedConversations,
+        };
+      });
     } catch (error) {
       console.error('Failed to mark as read:', error);
     }
   },
 
-  fetchUnreadCount: async () => {
-    try {
-      const response = await apiClient.getUnreadCount();
+  // fetchUnreadCount: async () => {
+  //   try {
+  //     const response = await apiClient.getUnreadCount();
 
-      if (response.success) {
-        // Use the count directly from the API (calculated sum of unread messages)
-        set({ unreadCount: response.data.count || 0 });
-      }
-    } catch (error) {
-      console.error('Failed to fetch unread count:', error);
-    }
-  },
+  //     if (response.success) {
+  //       // Use the count directly from the API (calculated sum of unread messages)
+  //       set({ unreadCount: response.data.count || 0 });
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to fetch unread count:', error);
+  //   }
+  // },
 }));

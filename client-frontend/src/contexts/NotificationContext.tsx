@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { apiClient } from '@/lib/api';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 interface Notification {
   id: number;
@@ -32,29 +33,14 @@ export const useNotifications = () => {
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { isAuthenticated } = useAuthContext();
 
-  // Load notifications from localStorage on mount
+  // Fetch notifications on mount (only when authenticated)
   useEffect(() => {
-    const savedNotifications = localStorage.getItem('notifications');
-    if (savedNotifications) {
-      try {
-        const parsed = JSON.parse(savedNotifications);
-        setNotifications(parsed);
-      } catch (e) {
-        console.error('Failed to parse saved notifications:', e);
-        fetchNotifications();
-      }
-    } else {
+    if (isAuthenticated) {
       fetchNotifications();
     }
-  }, []);
-
-  // Save notifications to localStorage whenever they change
-  useEffect(() => {
-    if (notifications.length > 0) {
-      localStorage.setItem('notifications', JSON.stringify(notifications));
-    }
-  }, [notifications]);
+  }, [isAuthenticated]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -64,54 +50,24 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       const response = await apiClient.getNotifications();
       
       if (response.success && response.data?.notifications) {
+        // Use real data from API
         setNotifications(response.data.notifications);
         return;
       }
       
-      // Fall back to mock data if API not available
-      throw new Error('Using mock data');
+      // If no real data, use empty array instead of random mock data
+      console.log('No notifications from API, using empty state');
+      setNotifications([]);
     } catch (error) {
-      // Use mock data with random read status to simulate real data
-      const mockNotifications: Notification[] = [
-        {
-          id: 1,
-          title: 'Request Update',
-          message: 'Your procurement request REQ-2025001 has been updated to "In Discussion" status.',
-          type: 'info',
-          read: Math.random() > 0.5, // Randomize to simulate real data
-          created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        },
-        {
-          id: 2,
-          title: 'New Message',
-          message: 'You have received a new message from the procurement team.',
-          type: 'info',
-          read: Math.random() > 0.5,
-          created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-        },
-        {
-          id: 3,
-          title: 'Request Completed',
-          message: 'Your furniture procurement request has been completed successfully.',
-          type: 'success',
-          read: true,
-          created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-        },
-        {
-          id: 4,
-          title: 'Payment Received',
-          message: 'Your payment for order #12345 has been processed successfully.',
-          type: 'success',
-          read: Math.random() > 0.5,
-          created_at: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-        },
-      ];
-
-      setNotifications(mockNotifications);
+      // On error, use empty array instead of mock data
+      // This prevents the re-render issue with random mock data
+      console.log('Failed to fetch notifications, using empty state');
+      setNotifications([]);
     }
   };
 
-  const markAsRead = (id: number) => {
+  const markAsRead = async (id: number) => {
+    // Optimistic update - update local state first
     setNotifications(prev => 
       prev.map(notification => 
         notification.id === id 
@@ -119,21 +75,36 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
           : notification
       )
     );
+    
+    // Sync with API
+    try {
+      await apiClient.markNotificationAsRead(id);
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error);
+      // Refetch to get correct state from server
+      fetchNotifications();
+    }
   };
 
-  const markAllAsRead = () => {
+  const markAllAsRead = async () => {
+    // Optimistic update - update local state first
     setNotifications(prev => 
       prev.map(notification => ({ ...notification, read: true }))
     );
+    
+    // Sync with API
+    try {
+      await apiClient.markAllNotificationsAsRead();
+    } catch (error) {
+      console.error('Failed to mark all notifications as read:', error);
+      // Refetch to get correct state from server
+      fetchNotifications();
+    }
   };
 
   const removeNotification = (id: number) => {
     setNotifications(prev => prev.filter(notification => notification.id !== id));
   };
-
-  useEffect(() => {
-    fetchNotifications();
-  }, []);
 
   const value: NotificationContextType = {
     notifications,

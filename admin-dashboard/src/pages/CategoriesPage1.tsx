@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,9 +19,6 @@ import {
   Upload,
   Image,
   XCircle,
-  ChevronRight,
-  ChevronDown,
-  TreeDeciduous,
 } from 'lucide-react';
 
 interface Category {
@@ -30,33 +27,26 @@ interface Category {
   slug: string;
   description: string;
   image?: string;
-  parent_id?: number | null;
+  parent_id?: number;
   icon?: string;
   color?: string;
   sort_order: number;
-  is_active: boolean;
-  product_count: number;
+  status: 'active' | 'inactive';
+  total_products: number;
   created_at: string;
   updated_at: string;
-  subcategories?: Category[];
-}
-
-interface HierarchicalCategory extends Category {
-  children: HierarchicalCategory[];
-  isExpanded: boolean;
 }
 
 const CategoriesPage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [hierarchicalCategories, setHierarchicalCategories] = useState<HierarchicalCategory[]>([]);
+  const [filteredCategories, setFilteredCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<HierarchicalCategory | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [expandedCategories, setExpandedCategories] = useState<Set<number>>(new Set());
 
   // Form state
   const [formData, setFormData] = useState({
@@ -65,7 +55,7 @@ const CategoriesPage: React.FC = () => {
     description: '',
     parent_id: '',
     icon: '',
-    color: '#0F4C5C',
+    color: '#205562',
     sort_order: '0',
     status: 'active' as 'active' | 'inactive',
   });
@@ -82,8 +72,8 @@ const CategoriesPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    buildHierarchicalCategories();
-  }, [categories, searchTerm, statusFilter, expandedCategories]);
+    filterCategories();
+  }, [categories, searchTerm, statusFilter]);
 
   const fetchCategories = async () => {
     try {
@@ -91,10 +81,11 @@ const CategoriesPage: React.FC = () => {
       const response = await apiClient.getCategories();
       
       if (response.success) {
-        const transformedCategories = response.data.categories.map((category: any) => ({
+        // Transform the data to match our interface
+        const transformedCategories = response.data.categories.map((category: any, index: number) => ({
           ...category,
-          is_active: category.is_active ?? (category.status === 'active'),
-          product_count: category.product_count || 0,
+          total_products: Math.floor(Math.random() * 100), // Mock data
+          order_index: index,
         }));
         setCategories(transformedCategories);
       }
@@ -105,81 +96,23 @@ const CategoriesPage: React.FC = () => {
     }
   };
 
-  const buildHierarchicalCategories = () => {
-    // Filter categories first
+  const filterCategories = () => {
     let filtered = categories;
 
+    // Search filter
     if (searchTerm) {
       filtered = filtered.filter(category =>
         category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        category.description?.toLowerCase().includes(searchTerm.toLowerCase())
+        category.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
+    // Status filter
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(category => 
-        (statusFilter === 'active' && category.is_active) ||
-        (statusFilter === 'inactive' && !category.is_active)
-      );
+      filtered = filtered.filter(category => category.status === statusFilter);
     }
 
-    // Build hierarchical structure
-    const categoryMap = new Map<number, HierarchicalCategory>();
-    const rootCategories: HierarchicalCategory[] = [];
-
-    // First pass: create all hierarchical category objects
-    filtered.forEach(category => {
-      categoryMap.set(category.id, {
-        ...category,
-        children: [],
-        isExpanded: expandedCategories.has(category.id),
-      });
-    });
-
-    // Second pass: organize into tree structure
-    filtered.forEach(category => {
-      const hierarchicalCategory = categoryMap.get(category.id)!;
-      if (category.parent_id) {
-        const parent = categoryMap.get(category.parent_id);
-        if (parent) {
-          parent.children.push(hierarchicalCategory);
-        } else {
-          // Parent not found (可能是被过滤掉了), treat as root
-          rootCategories.push(hierarchicalCategory);
-        }
-      } else {
-        rootCategories.push(hierarchicalCategory);
-      }
-    });
-
-    // Sort each level by sort_order
-    const sortCategories = (cats: HierarchicalCategory[]) => {
-      cats.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-      cats.forEach(cat => sortCategories(cat.children));
-    };
-
-    sortCategories(rootCategories);
-    setHierarchicalCategories(rootCategories);
-  };
-
-  const toggleExpand = (categoryId: number) => {
-    setExpandedCategories(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(categoryId)) {
-        newSet.delete(categoryId);
-      } else {
-        newSet.add(categoryId);
-      }
-      return newSet;
-    });
-  };
-
-  const toggleExpandAll = () => {
-    if (expandedCategories.size === categories.length) {
-      setExpandedCategories(new Set());
-    } else {
-      setExpandedCategories(new Set(categories.map(c => c.id)));
-    }
+    setFilteredCategories(filtered);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -187,6 +120,7 @@ const CategoriesPage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
+      // Create FormData for multipart/form-data request
       const submitData = new FormData();
       submitData.append('name', formData.name);
       submitData.append('slug', formData.slug);
@@ -201,15 +135,18 @@ const CategoriesPage: React.FC = () => {
       submitData.append('sort_order', formData.sort_order);
       submitData.append('status', formData.status);
 
+      // Add image file if selected
       if (imageFile) {
         submitData.append('image', imageFile);
       }
 
+      // For edit mode, add removeImage flag if there's no new image but we want to remove existing
       if (selectedCategory && !imagePreview && uploadedImage) {
         submitData.append('removeImage', 'true');
       }
 
       if (selectedCategory) {
+        // Update existing category
         const response = await apiClient.updateCategory(selectedCategory.id, submitData);
         if (response.success) {
           setCategories(prev => prev.map(cat => 
@@ -218,20 +155,18 @@ const CategoriesPage: React.FC = () => {
           setShowEditModal(false);
         }
       } else {
+        // Create new category
         const response = await apiClient.createCategory(submitData);
         if (response.success) {
-          const newCategory = {
+          setCategories(prev => [...prev, {
             ...formData,
             id: response.data.category.id || Date.now(),
-            parent_id: formData.parent_id ? parseInt(formData.parent_id) : null,
             image: response.data.category.image,
-            sort_order: parseInt(formData.sort_order) || 0,
-            is_active: formData.status === 'active',
-            product_count: 0,
+            order_index: categories.length,
+            total_products: 0,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
-          };
-          setCategories(prev => [...prev, newCategory as Category]);
+          }]);
           setShowCreateModal(false);
         }
       }
@@ -264,7 +199,7 @@ const CategoriesPage: React.FC = () => {
       description: '',
       parent_id: '',
       icon: '',
-      color: '#0F4C5C',
+      color: '#205562',
       sort_order: '0',
       status: 'active',
     });
@@ -281,10 +216,11 @@ const CategoriesPage: React.FC = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Create preview URL for immediate display
     const previewUrl = URL.createObjectURL(file);
     setImagePreview(previewUrl);
-    setImageFile(file);
-    setUploadedImage(null);
+    setImageFile(file); // Store the file for submission
+    setUploadedImage(null); // Clear uploaded URL since we have a new file
   };
 
   const removeImage = () => {
@@ -304,24 +240,27 @@ const CategoriesPage: React.FC = () => {
     setShowCreateModal(true);
   };
 
-  const openEditModal = (category: HierarchicalCategory) => {
+  const openEditModal = (category: Category) => {
     setSelectedCategory(category);
     setFormData({
       name: category.name,
       slug: category.slug || '',
-      description: category.description || '',
+      description: category.description,
       parent_id: category.parent_id?.toString() || '',
       icon: category.icon || '',
-      color: category.color || '#0F4C5C',
+      color: category.color || '#205562',
       sort_order: category.sort_order?.toString() || '0',
-      status: category.is_active ? 'active' : 'inactive',
+      status: category.status === 'active' ? 'active' : 'inactive',
     });
     
+    // Load existing image if available
     if (category.image) {
+      // Check if it's a full URL or a relative path
       if (category.image.startsWith('http')) {
         setUploadedImage(category.image);
         setImagePreview(category.image);
       } else {
+        // Relative path - construct full URL
         const imageUrl = apiClient.getFileUrl(category.image);
         setUploadedImage(imageUrl);
         setImagePreview(imageUrl);
@@ -334,149 +273,20 @@ const CategoriesPage: React.FC = () => {
     setShowEditModal(true);
   };
 
-  const getStatusColor = (isActive: boolean) => {
-    return isActive 
+  const getStatusColor = (status: string) => {
+    return status === 'active' 
       ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
       : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
   };
 
-  // Get all root categories (no parent) for the parent dropdown
-  const rootCategories = useMemo(() => {
-    return categories.filter(cat => !cat.parent_id);
-  }, [categories]);
-
-  const renderCategoryCard = (category: HierarchicalCategory, depth: number = 0) => {
-    const hasChildren = category.children && category.children.length > 0;
-    const isExpanded = expandedCategories.has(category.id);
-    const paddingLeft = depth * 24 + 16;
-
-    return (
-      <React.Fragment key={category.id}>
-        <Card 
-          className="hover:shadow-md transition-all duration-200 overflow-hidden"
-          style={{ marginLeft: `${depth * 16}px`, maxWidth: `calc(100% - ${depth * 16}px)` }}
-        >
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3 min-w-0 flex-1">
-                {/* Expand/Collapse Button */}
-                {hasChildren ? (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="flex-shrink-0 h-8 w-8"
-                    onClick={() => toggleExpand(category.id)}
-                  >
-                    {isExpanded ? (
-                      <ChevronDown className="h-4 w-4" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4" />
-                    )}
-                  </Button>
-                ) : (
-                  <div className="w-8 flex-shrink-0" />
-                )}
-
-                {/* Category Icon */}
-                <div 
-                  className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold flex-shrink-0"
-                  style={{ backgroundColor: category.color || '#0F4C5C' }}
-                >
-                  {category.icon ? category.icon : category.name[0]}
-                </div>
-
-                {/* Category Info */}
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center space-x-2 flex-wrap gap-1">
-                    <CardTitle className="text-lg truncate">{category.name}</CardTitle>
-                    {category.parent_id && (
-                      <Badge variant="outline" className="text-xs">
-                        Sub
-                      </Badge>
-                    )}
-                    <Badge className={getStatusColor(category.is_active)}>
-                      {category.is_active ? 'Active' : 'Inactive'}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center space-x-2 mt-1 text-sm text-muted-foreground">
-                    <span>{category.product_count} products</span>
-                    {category.parent_id && (
-                      <>
-                        <span>•</span>
-                        <span className="truncate">
-                          Parent: {categories.find(c => c.id === category.parent_id)?.name || 'Unknown'}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex space-x-1 flex-shrink-0">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => openEditModal(category)}
-                  title="Edit"
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleDelete(category.id)}
-                  title="Delete"
-                  className="text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </CardHeader>
-          
-          {category.image && (
-            <CardContent className="pt-0 pb-3">
-              <div className="h-32 overflow-hidden rounded-lg">
-                <img 
-                  src={apiClient.getFileUrl(category.image)} 
-                  alt={category.name}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                  }}
-                />
-              </div>
-            </CardContent>
-          )}
-          
-          <CardContent className="pt-0">
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {category.description || 'No description provided'}
-            </p>
-          </CardContent>
-        </Card>
-
-        {/* Render children if expanded */}
-        {hasChildren && isExpanded && (
-          <div className="mt-2 space-y-2">
-            {category.children.map(child => renderCategoryCard(child, depth + 1))}
-          </div>
-        )}
-      </React.Fragment>
-    );
+  const stats = {
+    total: categories.length,
+    active: categories.filter(c => c.status === 'active').length,
+    inactive: categories.filter(c => c.status === 'inactive').length,
+    totalProducts: categories.reduce((sum, cat) => sum + cat.total_products, 0),
   };
 
-  const stats = useMemo(() => {
-    return {
-      total: categories.length,
-      active: categories.filter(c => c.is_active).length,
-      inactive: categories.filter(c => !c.is_active).length,
-      totalProducts: categories.reduce((sum, cat) => sum + (cat.product_count || 0), 0),
-      rootCategories: categories.filter(c => !c.parent_id).length,
-    };
-  }, [categories]);
+  const parentCategories = categories.filter(cat => !cat.parent_id);
 
   if (isLoading) {
     return (
@@ -493,18 +303,13 @@ const CategoriesPage: React.FC = () => {
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Categories</h1>
           <p className="text-muted-foreground text-sm">
-            Manage product categories and subcategories
+            Manage product categories and organization
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={toggleExpandAll}>
-            {expandedCategories.size > 0 ? 'Collapse All' : 'Expand All'}
-          </Button>
-          <Button onClick={openCreateModal} className="bg-[#0F4C5C] hover:bg-[#0a3d4a]">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Category
-          </Button>
-        </div>
+        <Button onClick={openCreateModal} className="w-full sm:w-auto">
+          <Plus className="h-4 w-4 mr-2" />
+          Add Category
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -512,12 +317,12 @@ const CategoriesPage: React.FC = () => {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-xs sm:text-sm font-medium">Total Categories</CardTitle>
-            <TreeDeciduous className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <Folder className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           </CardHeader>
           <CardContent>
             <div className="text-lg sm:text-2xl font-bold">{stats.total}</div>
             <p className="text-xs text-muted-foreground">
-              {stats.rootCategories} main, {stats.total - stats.rootCategories} sub
+              All categories
             </p>
           </CardContent>
         </Card>
@@ -598,36 +403,117 @@ const CategoriesPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Categories Tree */}
+      {/* Categories Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {hierarchicalCategories.length > 0 ? (
-          hierarchicalCategories.map(category => renderCategoryCard(category))
-        ) : (
-          <Card className='flex '>
-            <CardContent className="flex flex-col items-center justify-center py-16">
-              <Folder className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No categories found</h3>
-              <p className="text-muted-foreground text-center mb-4">
-                {searchTerm || statusFilter !== 'all'
-                  ? 'No categories match your search criteria'
-                  : 'Get started by creating your first category'
-                }
-              </p>
-              {!searchTerm && statusFilter === 'all' && (
-                <Button onClick={openCreateModal}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Category
-                </Button>
+        {filteredCategories.length > 0 ? (
+          filteredCategories.map((category) => (
+            <Card key={category.id} className="hover:shadow-md transition-shadow overflow-hidden">
+              {category.image && (
+                <div className="h-40 overflow-hidden">
+                  <img 
+                    src={apiClient.getFileUrl(category.image)} 
+                    alt={category.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
               )}
-            </CardContent>
-          </Card>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div 
+                      className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-semibold"
+                      style={{ backgroundColor: category.color || '#205562' }}
+                    >
+                      {category.icon ? category.icon : category.name[0]}
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">{category.name}</CardTitle>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <Badge className={getStatusColor(category.status)}>
+                          {category.status}
+                        </Badge>
+                        {category.parent_id && (
+                          <Badge variant="outline">
+                            Sub-category
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex space-x-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => openEditModal(category)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(category.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {category.description || 'No description provided'}
+                </p>
+                
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    {category.total_products} products
+                  </span>
+                  <span className="text-muted-foreground">
+                    Created {new Date(category.created_at).toLocaleDateString()}
+                  </span>
+                </div>
+                
+                {category.parent_id && (
+                  <div className="mt-2 pt-2 border-t">
+                    <span className="text-xs text-muted-foreground">
+                      Parent: {categories.find(c => c.id === category.parent_id)?.name || 'Unknown'}
+                    </span>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <div className="col-span-full">
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center py-16">
+                <Folder className="h-12 w-12 text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold mb-2">No categories found</h3>
+                <p className="text-muted-foreground text-center mb-4">
+                  {searchTerm || statusFilter !== 'all'
+                    ? 'No categories match your search criteria'
+                    : 'Get started by creating your first category'
+                  }
+                </p>
+                {!searchTerm && statusFilter === 'all' && (
+                  <Button onClick={openCreateModal}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Category
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         )}
       </div>
 
       {/* Create/Edit Modal */}
       {(showCreateModal || showEditModal) && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-background rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-background rounded-lg max-w-md w-full h-full overflow-y-scroll">
             <div className="flex items-center justify-between p-6 border-b">
               <h2 className="text-xl font-semibold">
                 {selectedCategory ? 'Edit Category' : 'Create Category'}
@@ -657,6 +543,7 @@ const CategoriesPage: React.FC = () => {
                     setFormData(prev => ({ 
                       ...prev, 
                       name,
+                      // Auto-generate slug from name if slug hasn't been manually edited
                       slug: prev.slug === '' || prev.slug === prev.name.toLowerCase().replace(/\s+/g, '-') 
                         ? name.toLowerCase().replace(/\s+/g, '-') 
                         : prev.slug
@@ -703,10 +590,9 @@ const CategoriesPage: React.FC = () => {
                   value={formData.parent_id}
                   onChange={(e) => setFormData(prev => ({ ...prev, parent_id: e.target.value }))}
                   className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-                  disabled={!!selectedCategory}
                 >
                   <option value="">No parent (main category)</option>
-                  {rootCategories
+                  {parentCategories
                     .filter(cat => !selectedCategory || cat.id !== selectedCategory.id)
                     .map(category => (
                     <option key={category.id} value={category.id}>
@@ -714,11 +600,6 @@ const CategoriesPage: React.FC = () => {
                     </option>
                   ))}
                 </select>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {selectedCategory 
-                    ? "Cannot change parent of existing category" 
-                    : "Select a parent to create a subcategory, or leave empty for main category"}
-                </p>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
@@ -729,8 +610,8 @@ const CategoriesPage: React.FC = () => {
                   <Input
                     value={formData.icon}
                     onChange={(e) => setFormData(prev => ({ ...prev, icon: e.target.value }))}
-                    placeholder="e.g., 📱"
-                    maxLength={4}
+                    placeholder="e.g., 📱 or FA"
+                    maxLength={2}
                   />
                 </div>
                 
@@ -743,18 +624,19 @@ const CategoriesPage: React.FC = () => {
                       type="color"
                       value={formData.color}
                       onChange={(e) => setFormData(prev => ({ ...prev, color: e.target.value }))}
-                      className="w-12 h-10 cursor-pointer"
+                      className="w-16 h-10"
                     />
                     <Input
                       value={formData.color}
                       onChange={(e) => setFormData(prev => ({ ...prev, color: e.target.value }))}
-                      placeholder="#0F4C5C"
+                      placeholder="#205562"
                       className="flex-1"
                     />
                   </div>
                 </div>
               </div>
               
+              {/* Image Upload Section */}
               <div>
                 <label className="text-sm font-medium mb-2 block">
                   Category Image
@@ -794,37 +676,27 @@ const CategoriesPage: React.FC = () => {
                     <p className="text-xs text-gray-400 mt-1">
                       PNG, JPG up to 5MB
                     </p>
+                    {isUploading && (
+                      <p className="text-sm text-primary mt-2">
+                        Uploading...
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">
-                    Sort Order
-                  </label>
-                  <Input
-                    type="number"
-                    value={formData.sort_order}
-                    onChange={(e) => setFormData(prev => ({ ...prev, sort_order: e.target.value }))}
-                    placeholder="0"
-                    min="0"
-                  />
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium mb-2 block">
-                    Status
-                  </label>
-                  <select
-                    value={formData.status}
-                    onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'active' | 'inactive' }))}
-                    className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
-                  >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                </div>
+              <div>
+                <label className="text-sm font-medium mb-2 block">
+                  Status
+                </label>
+                <select
+                  value={formData.status}
+                  onChange={(e) => setFormData(prev => ({ ...prev, status: e.target.value as 'active' | 'inactive' }))}
+                  className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
+                >
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
               </div>
               
               <div className="flex justify-end space-x-2 pt-4">
@@ -839,7 +711,7 @@ const CategoriesPage: React.FC = () => {
                 >
                   Cancel
                 </Button>
-                <Button type="submit" disabled={isSubmitting} className="bg-[#0F4C5C] hover:bg-[#0a3d4a]">
+                <Button type="submit" disabled={isSubmitting}>
                   <Save className="h-4 w-4 mr-2" />
                   {isSubmitting ? 'Saving...' : (selectedCategory ? 'Update' : 'Create')}
                 </Button>

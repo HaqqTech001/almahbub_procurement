@@ -17,15 +17,16 @@ import {
   Plus,
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { Link } from 'react-router-dom';
 
 interface DashboardStats {
-  totalRequests: number;
-  pendingRequests: number;
-  processingRequests: number;
-  approvedRequests: number;
-  completedRequests: number;
-  todayRequests: number;
+  totalOrders: number;
+  pendingOrders: number;
+  processingOrders: number;
+  approvedOrders: number;
+  completedOrders: number;
+  todayOrders: number;
+  unreadMessages: number;
+  aiResponses: number;
 }
 
 interface OrderData {
@@ -36,7 +37,7 @@ interface OrderData {
 const DashboardPage: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [weeklyData, setWeeklyData] = useState<OrderData[]>([]);
-  const [recentrequests, setRecentrequests] = useState<any[]>([]);
+  const [recentOrders, setRecentOrders] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -46,23 +47,39 @@ const DashboardPage: React.FC = () => {
   const fetchDashboardData = async () => {
     try {
       setIsLoading(true);
-      const [statsResponse, requestsResponse] = await Promise.all([
+      const [statsResponse, requestsResponse, unreadChatResponse, aiStatsResponse] = await Promise.all([
         apiClient.getRequestStats(),
-        apiClient.getRequests({ limit: 5 })
+        apiClient.getRequests({ limit: 5 }),
+        apiClient.getUnreadChatCount().catch(() => ({ success: true, data: { count: 0 } })),
+        apiClient.getAIStats().catch(() => ({ success: true, data: { totalResponses: 0 } }))
       ]);
-      console.log(statsResponse)
       console.log(requestsResponse)
 
       if (statsResponse.success) {
-        setStats(statsResponse.data.overview);
+        setStats({
+          ...statsResponse.data.overview,
+          unreadMessages: unreadChatResponse.success ? unreadChatResponse.data.count : 0,
+          aiResponses: aiStatsResponse.success ? aiStatsResponse.data.totalResponses : 0
+        });
         setWeeklyData(statsResponse.data.weeklyData);
       }
 
       if (requestsResponse.success) {
-        setRecentrequests(requestsResponse.data.requests);
+        setRecentOrders(requestsResponse.data.requests);
       }
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
+      // Set default values on error
+      setStats({
+        totalOrders: 0,
+        pendingOrders: 0,
+        processingOrders: 0,
+        approvedOrders: 0,
+        completedOrders: 0,
+        todayOrders: 0,
+        unreadMessages: 0,
+        aiResponses: 0
+      });
     } finally {
       setIsLoading(false);
     }
@@ -115,12 +132,12 @@ const DashboardPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 mobile-gap">
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold tracking-tight mobile-text-xl">Dashboard</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold tracking-tight mobile-text">Dashboard</h1>
           <p className="text-sm lg:text-base text-muted-foreground mobile-text">
             Welcome back! Here's what's happening with your procurement requests and client communications.
           </p>
         </div>
-        <Button size="sm" className="self-start lg:self-auto text-white">
+        <Button size="sm" className="self-start lg:self-auto">
           <Plus className="h-4 w-4 mr-2" />
           New Request
         </Button>
@@ -293,8 +310,8 @@ const DashboardPage: React.FC = () => {
         </CardHeader>
         <CardContent className="mobile-padding">
           <div className="space-y-3 sm:space-y-4">
-            {recentrequests.length > 0 ? (
-              recentrequests.map((order) => (
+            {recentOrders.length > 0 ? (
+              recentOrders.map((order) => (
                 <div
                   key={order.id}
                   className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border rounded-lg hover:bg-accent/50 transition-colors gap-3 sm:gap-0"
@@ -322,7 +339,7 @@ const DashboardPage: React.FC = () => {
               ))
             ) : (
               <div className="text-center py-8 text-muted-foreground">
-                No recent requests found
+                No recent orders found
               </div>
             )}
           </div>
@@ -336,24 +353,18 @@ const DashboardPage: React.FC = () => {
             <CardTitle className="text-lg mobile-text">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 mobile-padding">
-            <Link to={"./requests"}>
             <Button variant="outline" className="w-full justify-start text-sm h-9">
               <ShoppingCart className="h-4 w-4 mr-2" />
               Process Requests
             </Button>
-            </Link>
-            <Link to={"/users"}>
             <Button variant="outline" className="w-full justify-start text-sm h-9">
               <Users className="h-4 w-4 mr-2" />
               Manage Users
             </Button>
-            </Link>
-            <Link to={"./chat"}>
             <Button variant="outline" className="w-full justify-start text-sm h-9">
               <MessageCircle className="h-4 w-4 mr-2" />
               Client Chat
             </Button>
-            </Link>
           </CardContent>
         </Card>
 
@@ -388,11 +399,13 @@ const DashboardPage: React.FC = () => {
           <CardContent className="space-y-2 mobile-padding">
             <div className="flex items-center justify-between">
               <span className="text-xs sm:text-sm mobile-text">New Requests</span>
-              <span className="font-medium text-sm">{Number(stats?.today_requests || 0)}</span>
+              <span className="font-medium text-sm">{Number(stats?.todayOrders || 0)}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs sm:text-sm mobile-text">Messages</span>
-              <span className="font-medium text-sm">12</span>
+              <Badge variant="secondary" className="text-xs">
+                {Number(stats?.unreadMessages || 0)} unread
+              </Badge>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs sm:text-sm mobile-text">Revenue</span>
@@ -400,7 +413,9 @@ const DashboardPage: React.FC = () => {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs sm:text-sm mobile-text">AI Responses</span>
-              <span className="font-medium text-sm">8</span>
+              <Badge variant="outline" className="text-xs">
+                {Number(stats?.aiResponses || 0)} responses
+              </Badge>
             </div>
           </CardContent>
         </Card>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, User, Phone, Building, ArrowLeft, ArrowRight, CheckCircle, Facebook, Instagram, MapPin } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Phone, Building, ArrowLeft, ArrowRight, CheckCircle, Facebook, Instagram, MapPin, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -183,12 +183,12 @@ const RegisterPage: React.FC = () => {
   ];
 
   return (
-    <div className=" flex items-center justify-center p-4 lg:p-8">
+    <div className="min-h-screen flex items-center justify-center p-4 lg:p-8 bg-gray-50">
       {/* Main Card Container */}
-      <div className="w-full h-[80vh] bg-white rounded-[20px] shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+      <div className="w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col lg:flex-row">
         
         {/* Left Side - Auth Slider */}
-        <div className="hidden lg:flex lg:w-[45%] relative">
+        <div className="hidden lg:flex lg:w-[45%] relative h-[700px] lg:h-[800px] xl:h-[900px]">
           <AuthSlider 
             slides={registerSlides} 
             variant="register"
@@ -197,41 +197,39 @@ const RegisterPage: React.FC = () => {
           />
         </div>
 
-        {/* Right Side - Registration Form */} 
-        <div className="w-full lg:w-[55%]  flex flex-col justify-center">
+        {/* Right Side - Registration Form */}
+        <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center bg-white">
           {/* Mobile Logo - Visible only on small screens */}
           <div className="lg:hidden text-center mb-8">
-            <div className="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-              </svg>
+            <div className="w-14 h-14 bg-[#0F4C5C] rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Globe className="w-7 h-7 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1>
             <p className="text-gray-500 text-sm mt-1">Create your account</p>
           </div>
 
           {/* Form Header */}
-          <div className="max-w-md mx-auto w-full overflow-y-scroll p-2">
-            <div className="text-center mb-3">
+          <div className="max-w-md mx-auto w-full">
+            <div className="text-center mb-6">
               <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
               <p className="text-gray-500">
                 Already have an account?{' '}
-                <Link to="/login" className="text-purple-600 hover:text-purple-700 font-semibold transition-colors">
+                <Link to="/login" className="text-[#0F4C5C] hover:text-[#0a3d4a] font-semibold transition-colors">
                   Sign in
                 </Link>
               </p>
             </div>
 
             {/* Progress Steps */}
-            <div className="flex justify-center items-center mb-6">
+            <div className="flex justify-center items-center mb-8">
               {steps.map((step, index) => (
                 <React.Fragment key={step.number}>
                   <div className="flex items-center">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                       currentStep > step.number 
-                        ? 'bg-green-500 text-white' 
+                        ? 'bg-[#E3B505] text-white' 
                         : currentStep === step.number 
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white' 
+                          ? 'bg-[#0F4C5C] text-white' 
                           : 'bg-gray-100 text-gray-400'
                     }`}>
                       {currentStep > step.number ? (
@@ -248,14 +246,14 @@ const RegisterPage: React.FC = () => {
                   </div>
                   {index < steps.length - 1 && (
                     <div className={`w-12 h-0.5 mx-4 ${
-                      currentStep > step.number ? 'bg-green-500' : 'bg-gray-200'
+                      currentStep > step.number ? 'bg-[#E3B505]' : 'bg-gray-200'
                     }`} />
                   )}
                 </React.Fragment>
               ))}
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* Step 1: Personal Information */}
               {currentStep === 1 && (
                 <div className="space-y-5">
@@ -268,7 +266,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="First name"
                         value={formData.firstName}
                         onChange={handleChange}
-                        className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all rounded-lg"
+                        className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
                         required
                       />
                     </div>
@@ -280,7 +278,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="Last name"
                         value={formData.lastName}
                         onChange={handleChange}
-                        className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all rounded-lg"
+                        className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
                         required
                       />
                     </div>
@@ -289,7 +287,7 @@ const RegisterPage: React.FC = () => {
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-gray-700 font-medium">Email Address</Label>
                     <div className="relative group">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-purple-600 transition-colors" />
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#0F4C5C] transition-colors" />
                       <Input
                         id="email"
                         name="email"
@@ -297,7 +295,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="Enter your email"
                         value={formData.email}
                         onChange={handleChange}
-                        className="pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all rounded-lg"
+                        className="pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
                         required
                       />
                     </div>
@@ -306,7 +304,7 @@ const RegisterPage: React.FC = () => {
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="text-gray-700 font-medium">Phone Number</Label>
                     <div className="relative group">
-                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-purple-600 transition-colors" />
+                      <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#0F4C5C] transition-colors" />
                       <Input
                         id="phone"
                         name="phone"
@@ -314,7 +312,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="Enter your phone number"
                         value={formData.phone}
                         onChange={handleChange}
-                        className="pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all rounded-lg"
+                        className="pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
                         required
                       />
                     </div>
@@ -328,14 +326,14 @@ const RegisterPage: React.FC = () => {
                   <div className="space-y-2">
                     <Label htmlFor="companyName" className="text-gray-700 font-medium">Company Name</Label>
                     <div className="relative group">
-                      <Building className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-purple-600 transition-colors" />
+                      <Building className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#0F4C5C] transition-colors" />
                       <Input
                         id="companyName"
                         name="companyName"
                         placeholder="Enter your company name"
                         value={formData.companyName}
                         onChange={handleChange}
-                        className="pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all rounded-lg"
+                        className="pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
                         required
                       />
                     </div>
@@ -344,7 +342,7 @@ const RegisterPage: React.FC = () => {
                   <div className="space-y-2">
                     <Label htmlFor="companyType" className="text-gray-700 font-medium">Company Type</Label>
                     <Select onValueChange={(value) => handleSelectChange('companyType', value)}>
-                      <SelectTrigger className="h-12 bg-gray-50 border-gray-200 text-gray-900 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-100 rounded-lg">
+                      <SelectTrigger className="h-12 bg-gray-50 border-gray-200 text-gray-900 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 rounded-lg">
                         <SelectValue placeholder="Select company type" className="text-gray-400" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border-gray-200 shadow-lg">
@@ -369,7 +367,7 @@ const RegisterPage: React.FC = () => {
                       placeholder="Enter street address"
                       value={formData.address}
                       onChange={handleChange}
-                      className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all rounded-lg"
+                      className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
                       required
                     />
                   </div>
@@ -383,7 +381,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="City"
                         value={formData.city}
                         onChange={handleChange}
-                        className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all rounded-lg"
+                        className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
                         required
                       />
                     </div>
@@ -395,7 +393,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="State/Province"
                         value={formData.state}
                         onChange={handleChange}
-                        className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all rounded-lg"
+                        className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
                         required
                       />
                     </div>
@@ -404,7 +402,7 @@ const RegisterPage: React.FC = () => {
                   <div className="space-y-2">
                     <Label htmlFor="country" className="text-gray-700 font-medium">Country</Label>
                     <Select onValueChange={(value) => handleSelectChange('country', value)}>
-                      <SelectTrigger className="h-12 bg-gray-50 border-gray-200 text-gray-900 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-100 rounded-lg">
+                      <SelectTrigger className="h-12 bg-gray-50 border-gray-200 text-gray-900 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 rounded-lg">
                         <SelectValue placeholder="Select country" className="text-gray-400" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border-gray-200 shadow-lg max-h-60">
@@ -430,7 +428,7 @@ const RegisterPage: React.FC = () => {
                   <div className="space-y-2">
                     <Label htmlFor="password" className="text-gray-700 font-medium">Password</Label>
                     <div className="relative group">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-purple-600 transition-colors" />
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#0F4C5C] transition-colors" />
                       <Input
                         id="password"
                         name="password"
@@ -438,7 +436,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="Create password"
                         value={formData.password}
                         onChange={handleChange}
-                        className="pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all rounded-lg"
+                        className="pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
                         required
                       />
                       <button
@@ -454,7 +452,7 @@ const RegisterPage: React.FC = () => {
                   <div className="space-y-2">
                     <Label htmlFor="confirmPassword" className="text-gray-700 font-medium">Confirm Password</Label>
                     <div className="relative group">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-purple-600 transition-colors" />
+                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#0F4C5C] transition-colors" />
                       <Input
                         id="confirmPassword"
                         name="confirmPassword"
@@ -462,7 +460,7 @@ const RegisterPage: React.FC = () => {
                         placeholder="Confirm password"
                         value={formData.confirmPassword}
                         onChange={handleChange}
-                        className="pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-purple-500 focus:ring-2 focus:ring-purple-100 transition-all rounded-lg"
+                        className="pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
                         required
                       />
                       <button
@@ -483,15 +481,15 @@ const RegisterPage: React.FC = () => {
                       onCheckedChange={(checked) => 
                         setFormData({ ...formData, agreeToTerms: checked as boolean })
                       }
-                      className="mt-1 border-gray-300 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
+                      className="mt-1 border-gray-300 data-[state=checked]:bg-[#0F4C5C] data-[state=checked]:border-[#0F4C5C]"
                     />
                     <Label htmlFor="agreeToTerms" className="text-sm text-gray-600 leading-relaxed cursor-pointer">
                       I agree to the{' '}
-                      <Link to="/terms" className="text-purple-600 hover:text-purple-700 font-medium transition-colors">
+                      <Link to="/terms" className="text-[#0F4C5C] hover:text-[#0a3d4a] font-medium transition-colors">
                         Terms of Service
                       </Link>{' '}
                       and{' '}
-                      <Link to="/privacy" className="text-purple-600 hover:text-purple-700 font-medium transition-colors">
+                      <Link to="/privacy" className="text-[#0F4C5C] hover:text-[#0a3d4a] font-medium transition-colors">
                         Privacy Policy
                       </Link>
                     </Label>
@@ -517,7 +515,7 @@ const RegisterPage: React.FC = () => {
                     type="button"
                     onClick={handleNextStep}
                     disabled={!validateStep(currentStep)}
-                    className="flex-1 h-12 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                    className="flex-1 h-12 bg-[#0F4C5C] hover:bg-[#0a3d4a] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
                   >
                     Next
                     <ArrowRight className="ml-2 h-5 w-5" />
@@ -526,7 +524,7 @@ const RegisterPage: React.FC = () => {
                   <Button
                     type="submit"
                     disabled={isLoading || !validateStep(currentStep)}
-                    className="flex-1 h-12 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
+                    className="flex-1 h-12 bg-[#0F4C5C] hover:bg-[#0a3d4a] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
                   >
                     {isLoading ? (
                       <div className="flex items-center">
@@ -579,13 +577,13 @@ const RegisterPage: React.FC = () => {
             </form>
 
             {/* Social Media Links */}
-            <div className="mt-4 text-center">
+            <div className="mt-8 text-center">
               <div className="flex justify-center space-x-6 mb-4">
                 <a 
                   href="https://www.facebook.com/almahbubinternational" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                  className="text-gray-400 hover:text-[#0F4C5C] transition-colors"
                   title="Facebook"
                 >
                   <Facebook className="h-5 w-5" />
@@ -605,7 +603,7 @@ const RegisterPage: React.FC = () => {
                   href="https://www.instagram.com/almahbubinternational" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-pink-600 transition-colors"
+                  className="text-gray-400 hover:text-[#E3B505] transition-colors"
                   title="Instagram"
                 >
                   <Instagram className="h-5 w-5" />

@@ -58,11 +58,11 @@ const navigation: NavItem[] = [
     href: '/categories',
     icon: Grid3X3,
   },
-  {
-    title: 'Product Catalog',
-    href: '/products',
-    icon: Package,
-  },
+  // {
+  //   title: 'Product Catalog',
+  //   href: '/products',
+  //   icon: Package,
+  // },
   {
     title: 'Announcements',
     href: '/announcements',

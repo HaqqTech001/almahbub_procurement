@@ -1,17 +1,35 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
 const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:5000';
 
+// Helper function to get the token - always reads fresh from localStorage
+const getStoredToken = (): string | null => {
+  // First try the direct client_token (set by setToken method)
+  const directToken = localStorage.getItem('client_token');
+  if (directToken) return directToken;
+  
+  // Try zustand persist format
+  const zustandData = localStorage.getItem('almahbub-client-auth');
+  if (zustandData) {
+    try {
+      const parsed = JSON.parse(zustandData);
+      const token = parsed.state?.token || parsed.token;
+      if (token) return token;
+    } catch (e) {
+      console.error('Error parsing auth token:', e);
+    }
+  }
+  
+  return null;
+};
+
 class ApiClient {
   private baseURL: string;
-  private token: string | null = null;
 
   constructor(baseURL: string) {
     this.baseURL = baseURL;
-    this.token = localStorage.getItem('client_token');
   }
 
   setToken(token: string | null) {
-    this.token = token;
     if (token) {
       localStorage.setItem('client_token', token);
     } else {
@@ -25,10 +43,13 @@ class ApiClient {
   ): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
     
+    // Always get fresh token from localStorage
+    const token = getStoredToken();
+    
     // For FormData requests, don't set Content-Type header
     const defaultHeaders: Record<string, string> = {
       ...(options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
-      ...(this.token && { Authorization: `Bearer ${this.token}` }),
+      ...(token && { Authorization: `Bearer ${token}` }),
     };
     
     const config: RequestInit = {
@@ -38,15 +59,6 @@ class ApiClient {
       },
       ...options,
     };
-
-    // Debug logging
-    console.log('API Request:', {
-      method: options.method || 'GET',
-      url,
-      hasToken: !!this.token,
-      headers: config.headers,
-      hasFormData: options.body instanceof FormData
-    });
 
     try {
       const response = await fetch(url, config);
@@ -170,7 +182,7 @@ class ApiClient {
     return this.request<any>(`/products/${id}`);
   }
 
-  // requests
+  // Orders
   async createOrder(orderData: any) {
     const formData = new FormData();
     
@@ -184,7 +196,7 @@ class ApiClient {
       }
     });
 
-    return this.request<any>('/requests', {
+    return this.request<any>('/orders', {
       method: 'POST',
       body: formData,
     });
@@ -200,7 +212,7 @@ class ApiClient {
   }
 
   async getOrderTracking(orderId: string) {
-    return this.request<any>(`/tracker/request/${orderId}`);
+    return this.request<any>(`/requests/tracker/${orderId}`);
   }
 
   // ========== CHAT API METHODS ==========
@@ -221,26 +233,10 @@ class ApiClient {
   }
 
   // Send a chat message
-  // async sendChatMessage(receiverId: string, content: string, attachments?: File[]) {
-  //   const formData = new FormData();
-  //   formData.append('message', content);
-  //   formData.append('receiverId', receiverId);
-    
-  //   if (attachments && attachments.length > 0) {
-  //     attachments.forEach(file => {
-  //       formData.append('file', file);
-  //     });
-  //   }
-
-  //   return this.request<any>('/chat/send', {
-  //     method: 'POST',
-  //     body: formData,
-  //   });
-  // }
-  async sendChatMessage(conversationId: string, content: string, attachments?: File[]) {
+  async sendChatMessage(receiverId: string, content: string, attachments?: File[]) {
     const formData = new FormData();
     formData.append('message', content);
-    formData.append('receiverId', conversationId);
+    formData.append('receiverId', receiverId);
     
     if (attachments && attachments.length > 0) {
       attachments.forEach(file => {
@@ -525,7 +521,7 @@ class ApiClient {
 
   // Delete notification
   async deleteNotification(id: string | number) {
-    return this.request<any>(`/notifications/${id}`, {
+    return this.request<any>(`/auth/notifications/${id}`, {
       method: 'DELETE',
     });
   }

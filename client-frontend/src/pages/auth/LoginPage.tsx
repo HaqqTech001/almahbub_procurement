@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, ArrowLeft, Facebook, Instagram } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, ArrowLeft, Facebook, Instagram, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,7 +8,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { useAuthStore } from '@/stores/authStore';
 import { useToast } from '@/hooks/use-toast';
 import AuthSlider from '@/components/auth/AuthSlider';
-// import almahbub from '../../'
 
 interface Slide {
   id: number;
@@ -95,12 +94,12 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className=" flex items-center justify-center p-4 lg:p-8">
+    <div className="min-h-screen flex items-center justify-center p-4 lg:p-8 bg-gray-50">
       {/* Main Card Container */}
-      <div className="w-full h-[80vh] bg-white rounded-[20px] shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+      <div className="w-full max-w-6xl bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col lg:flex-row">
         
         {/* Left Side - Auth Slider */}
-        <div className="hidden lg:flex lg:w-[45%] relative">
+        <div className="hidden lg:flex lg:w-[45%] relative h-[700px] lg:h-[800px] xl:h-[900px]">
           <AuthSlider 
             slides={loginSlides} 
             variant="login"
@@ -110,19 +109,14 @@ const LoginPage: React.FC = () => {
         </div>
 
         {/* Right Side - Login Form */}
-        <div className="w-full h-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center ">
+        <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center bg-white">
           {/* Mobile Logo - Visible only on small screens */}
-          <div className="lg:hidden text-center flex flex-col mb-4 justify-center w-full items-center">
-            {/* <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-              </svg>
+          <div className="lg:hidden text-center mb-8">
+            <div className="w-14 h-14 bg-[#0F4C5C] rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Globe className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1> */}
-            <div className='w-[90px] flex justify-center items-center'>
-              <img src="./almahbub.png" alt="" className='w-[100%] h-[100%]' />
-            </div>
-            {/* <p className="text-gray-500 text-sm mt-1">Sign in to continue</p> */}
+            <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1>
+            <p className="text-gray-500 text-sm mt-1">Sign in to continue</p>
           </div>
 
           {/* Form Header */}
@@ -131,7 +125,7 @@ const LoginPage: React.FC = () => {
               <h2 className="text-3xl font-bold text-gray-900 mb-2">Sign In</h2>
               <p className="text-gray-500">
                 Don't have an account?{' '}
-                <Link to="/register" className="text-blue-600 hover:text-blue-700 font-semibold transition-colors">
+                <Link to="/register" className="text-[#0F4C5C] hover:text-[#0a3d4a] font-semibold transition-colors">
                   Create account
                 </Link>
               </p>
@@ -142,7 +136,7 @@ const LoginPage: React.FC = () => {
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-gray-700 font-medium">Email Address</Label>
                 <div className="relative group">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#0F4C5C] transition-colors" />
                   <Input
                     id="email"
                     name="email"
@@ -150,7 +144,7 @@ const LoginPage: React.FC = () => {
                     placeholder="Enter your email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="pl-12 pr-4 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all rounded-lg"
+                    className="pl-12 pr-4 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
                     required
                   />
                 </div>
@@ -160,7 +154,7 @@ const LoginPage: React.FC = () => {
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-gray-700 font-medium">Password</Label>
                 <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#0F4C5C] transition-colors" />
                   <Input
                     id="password"
                     name="password"
@@ -168,7 +162,7 @@ const LoginPage: React.FC = () => {
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all rounded-lg"
+                    className="pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
                     required
                   />
                   <button
@@ -188,13 +182,13 @@ const LoginPage: React.FC = () => {
                     id="remember" 
                     checked={rememberMe}
                     onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                    className="border-gray-300 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+                    className="border-gray-300 data-[state=checked]:bg-[#0F4C5C] data-[state=checked]:border-[#0F4C5C]"
                   />
                   <Label htmlFor="remember" className="text-sm text-gray-600 cursor-pointer">Remember me</Label>
                 </div>
                 <Link
                   to="/forgot-password"
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                  className="text-sm text-[#0F4C5C] hover:text-[#0a3d4a] font-medium transition-colors"
                 >
                   Forgot password?
                 </Link>
@@ -203,7 +197,7 @@ const LoginPage: React.FC = () => {
               {/* Submit Button */}
               <Button
                 type="submit"
-                className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.01]"
+                className="w-full h-12 bg-[#0F4C5C] hover:bg-[#0a3d4a] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -256,12 +250,12 @@ const LoginPage: React.FC = () => {
 
             {/* Social Media Links */}
             <div className="mt-8 text-center">
-              <div className="flex justify-center space-x-6 ">
+              <div className="flex justify-center space-x-6 mb-4">
                 <a 
                   href="https://www.facebook.com/almahbubinternational" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-blue-600 transition-colors"
+                  className="text-gray-400 hover:text-[#0F4C5C] transition-colors"
                   title="Facebook"
                 >
                   <Facebook className="h-5 w-5" />
@@ -281,7 +275,7 @@ const LoginPage: React.FC = () => {
                   href="https://www.instagram.com/almahbubinternational" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-pink-600 transition-colors"
+                  className="text-gray-400 hover:text-[#E3B505] transition-colors"
                   title="Instagram"
                 >
                   <Instagram className="h-5 w-5" />

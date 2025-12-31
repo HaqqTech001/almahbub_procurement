@@ -24,15 +24,17 @@ const Navbar: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuthContext();
-  const { unreadCount, fetchConversations } = useChatStore();
+  const { unreadCount, fetchUnreadCount } = useChatStore();
 
-  // Fetch conversations (which includes unread count calculation) on mount and periodically
+  // Fetch unread count on mount and periodically (only when authenticated)
   useEffect(() => {
-    fetchConversations();
-    const interval = setInterval(fetchConversations, 30000); // Refresh every 30 seconds
-    
-    return () => clearInterval(interval);
-  }, [fetchConversations]);
+    if (isAuthenticated) {
+      fetchUnreadCount();
+      const interval = setInterval(fetchUnreadCount, 60000); // Refresh every 60 seconds to avoid rate limiting
+      
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated, fetchUnreadCount]);
 
   const handleLogout = () => {
     logout();

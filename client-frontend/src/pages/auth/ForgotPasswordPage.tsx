@@ -72,12 +72,12 @@ const ForgotPasswordPage: React.FC = () => {
 
   if (emailSent) {
     return (
-      <div className=" flex items-center justify-center p-4 lg:p-8">
+      <div className="min-h-screen flex items-center justify-center p-4 lg:p-8">
         {/* Main Card Container */}
-        <div className="w-full h-[80vh] bg-white rounded-[20px] shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+        <div className="w-full max-w-6xl bg-white rounded-[20px] shadow-2xl overflow-hidden flex flex-col lg:flex-row">
           
           {/* Left Side - Auth Slider */}
-          <div className="hidden lg:flex lg:w-[45%] relative">
+          <div className="hidden lg:flex lg:w-[45%] relative h-[700px] lg:h-[800px] xl:h-[900px]">
             <AuthSlider 
               slides={forgotSlides} 
               variant="forgot"
@@ -90,7 +90,7 @@ const ForgotPasswordPage: React.FC = () => {
           <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center">
             {/* Mobile Logo */}
             <div className="lg:hidden text-center mb-8">
-              <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <div className="w-14 h-14 bg-[#0F4C5C] rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                 </svg>
@@ -126,7 +126,7 @@ const ForgotPasswordPage: React.FC = () => {
                 </Button>
                 
                 <Link to="/login" className="block">
-                  <Button className="w-full h-12 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                  <Button className="w-full h-12 bg-[#0F4C5C] hover:bg-[#0a3d48] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
                     <ArrowLeft className="mr-2 h-5 w-5" />
                     Back to Login
                   </Button>
@@ -175,7 +175,7 @@ const ForgotPasswordPage: React.FC = () => {
         <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center">
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-8">
-            <div className="w-14 h-14 bg-gradient-to-br from-indigo-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 bg-[#0F4C5C] rounded-2xl flex items-center justify-center mx-auto mb-4">
               <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
               </svg>
@@ -196,7 +196,7 @@ const ForgotPasswordPage: React.FC = () => {
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-gray-700 font-medium">Email Address</Label>
                 <div className="relative group">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-indigo-600 transition-colors" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#0F4C5C] transition-colors" />
                   <Input
                     id="email"
                     name="email"
@@ -204,21 +204,21 @@ const ForgotPasswordPage: React.FC = () => {
                     placeholder="Enter your email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all rounded-lg"
+                    className="pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/20 transition-all rounded-lg"
                     required
                   />
                 </div>
               </div>
 
-              <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-4">
-                <p className="text-sm text-indigo-700">
+              <div className="bg-[#0F4C5C]/5 border border-[#0F4C5C]/10 rounded-lg p-4">
+                <p className="text-sm text-[#0F4C5C]">
                   <strong>Note:</strong> This will send a password reset link to your email address. The link will expire in 1 hour.
                 </p>
               </div>
 
               <Button
                 type="submit"
-                className="w-full h-12 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.01]"
+                className="w-full h-12 bg-[#0F4C5C] hover:bg-[#0a3d48] text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.01]"
                 disabled={isLoading}
               >
                 {isLoading ? (

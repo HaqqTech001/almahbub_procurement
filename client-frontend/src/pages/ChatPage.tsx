@@ -58,62 +58,40 @@ const ChatPage: React.FC = () => {
   const { user } = useAuthStore();
   const { toast } = useToast();
 
-  // useEffect(() => {
-  //   if (socket && isConnected) {
-  //     socket.emit('join_chat', { userId: user?.id });
+  useEffect(() => {
+    if (socket && isConnected) {
+      socket.emit('join_chat', { userId: user?.id });
 
-  //     // Listen for messages from admin
-  //     socket.on('new_message', handleNewMessage);
-  //     socket.on('message_sent', handleMessageSent);
+      // Listen for messages from admin
+      socket.on('new_message', handleNewMessage);
+      socket.on('message_sent', handleMessageSent);
       
-  //     // Listen for typing indicators from admin
-  //     socket.on('user_typing', handleTyping);
-  //     socket.on('user_stopped_typing', handleStopTyping);
+      // Listen for typing indicators from admin
+      socket.on('user_typing', handleTyping);
+      socket.on('user_stopped_typing', handleStopTyping);
       
-  //     // Listen for admin status
-  //     socket.on('admin_online', () => setChatStatus('online'));
-  //     socket.on('admin_offline', () => setChatStatus('offline'));
+      // Listen for admin status
+      socket.on('admin_online', () => setChatStatus('online'));
+      socket.on('admin_offline', () => setChatStatus('offline'));
       
-  //     // Listen for call events
-  //     socket.on('call_incoming', handleIncomingCall);
-  //     socket.on('call_ended', handleCallEnded);
+      // Listen for call events
+      socket.on('call_incoming', handleIncomingCall);
+      socket.on('call_ended', handleCallEnded);
 
-  //     loadChatHistory();
+      loadChatHistory();
 
-  //     return () => {
-  //       socket.off('new_message');
-  //       socket.off('message_sent');
-  //       socket.off('user_typing');
-  //       socket.off('user_stopped_typing');
-  //       socket.off('admin_online');
-  //       socket.off('admin_offline');
-  //       socket.off('call_incoming');
-  //       socket.off('call_ended');
-  //     };
-  //   }
-  // }, [socket, isConnected, user]);
-
-useEffect(() => {
-  if (!socket || !isConnected || !user?.id) return;
-
-  socket.emit('join_chat', { userId: user.id });
-
-  socket.on('new_message', handleNewMessage);
-  socket.on('message_sent', handleMessageSent);
-  socket.on('user_typing', handleTyping);
-  socket.on('user_stopped_typing', handleStopTyping);
-  socket.on('admin_online', () => setChatStatus('online'));
-  socket.on('admin_offline', () => setChatStatus('offline'));
-  socket.on('call_incoming', handleIncomingCall);
-  socket.on('call_ended', handleCallEnded);
-
-  loadChatHistory();
-
-  return () => {
-    socket.off();
-  };
-}, [socket, isConnected, user?.id]);
-
+      return () => {
+        socket.off('new_message');
+        socket.off('message_sent');
+        socket.off('user_typing');
+        socket.off('user_stopped_typing');
+        socket.off('admin_online');
+        socket.off('admin_offline');
+        socket.off('call_incoming');
+        socket.off('call_ended');
+      };
+    }
+  }, [socket, isConnected, user]);
 
   useEffect(() => {
     scrollToBottom();
@@ -136,83 +114,34 @@ useEffect(() => {
     };
   }, [callState.isActive, callState.startTime]);
 
-  // const loadChatHistory = async () => {
-  //   try {
-  //     // Try to get messages from admin (assuming admin has ID 1)
-  //     const adminId = '1';
-  //     const response = await apiClient.getChatMessages(adminId);
-  //     console.log(response.data.messages)
+  const loadChatHistory = async () => {
+    try {
+      // Try to get messages from admin (assuming admin has ID 1)
+      const adminId = '1';
+      const response = await apiClient.getChatMessages(adminId);
       
-  //     if (response.success && response.data?.messages && response.data.messages.length > 0) {
-  //       setMessages(response.data.messages.map((msg: any) => ({
-  //         id: msg.id?.toString() || Date.now().toString(),
-  //         content: msg.message || msg.content || '',
-  //         senderId: msg.sender_id?.toString() || msg.senderId?.toString() || 'unknown',
-  //         senderType: msg.sender_id === user?.id ? 'user' : (msg.is_ai_response ? 'bot' : 'admin'),
-  //         timestamp: new Date(msg.timestamp || msg.created_at || Date.now()),
-  //         isRead: msg.isRead || msg.is_read || false,
-  //         type: msg.type || msg.message_type || 'text',
-  //         attachmentUrl: msg.file_url ? apiClient.getFileUrl(msg.file_url) : (msg.attachmentUrl || ''),
-  //         attachmentName: msg.attachment_name || msg.attachmentName,
-  //       })));
-  //     } else {
-  //       setMessages([]);
-  //     }
-  //   } catch (error) {
-  //     console.log('Using local chat state, API not available');
-  //     console.log(error)
-  //     setMessages([]);
-  //   }
-  // };
+      if (response.success && response.data?.messages && response.data.messages.length > 0) {
+        setMessages(response.data.messages.map((msg: any) => ({
+          id: msg.id?.toString() || Date.now().toString(),
+          content: msg.message || msg.content || '',
+          senderId: msg.sender_id?.toString() || msg.senderId?.toString() || 'unknown',
+          senderType: msg.sender_id === user?.id ? 'user' : (msg.is_ai_response ? 'bot' : 'admin'),
+          timestamp: new Date(msg.timestamp || msg.created_at || Date.now()),
+          isRead: msg.isRead || msg.is_read || false,
+          type: msg.type || msg.message_type || 'text',
+          attachmentUrl: msg.file_url ? apiClient.getFileUrl(msg.file_url) : (msg.attachmentUrl || ''),
+          attachmentName: msg.attachment_name || msg.attachmentName,
+        })));
+      } else {
+        setMessages([]);
+      }
+    } catch (error) {
+      console.log('Using local chat state, API not available');
+      setMessages([]);
+    }
+  };
 
   // Poll for new messages periodically
- 
- const loadChatHistory = async () => {
-  if (!user?.id) return;
-
-  try {
-    const adminId = '1';
-    const response = await apiClient.getChatMessages(adminId);
-    console.log(response)
-
-    const rawMessages =
-      response?.data?.messages ||
-      response?.data?.data?.messages ||
-      [];
-
-    if (!Array.isArray(rawMessages)) {
-      setMessages([]);
-      return;
-    }
-
-    setMessages(
-      rawMessages.map((msg: any) => ({
-        id: String(msg.id ?? Date.now()),
-        content: msg.message ?? '',
-        senderId: String(msg.sender_id ?? 'admin'),
-        senderType:
-          msg.sender_id === user.id
-            ? 'user'
-            : msg.is_ai_response
-            ? 'bot'
-            : 'admin',
-        timestamp: new Date(msg.created_at ?? Date.now()),
-        isRead: Boolean(msg.is_read),
-        type: msg.message_type ?? 'text',
-        attachmentUrl: msg.file_url
-          ? apiClient.getFileUrl(msg.file_url)
-          : undefined,
-        attachmentName: msg.attachment_name,
-      }))
-    );
-  } catch (err) {
-    console.error('Chat history failed:', err);
-    setMessages([]);
-  }
-};
-
- 
- 
   // useEffect(() => {
   //   const pollInterval = setInterval(() => {
   //     if (isConnected) {
@@ -563,7 +492,7 @@ useEffect(() => {
   };
 
   return (
-    <div className=" h-screen  bg-gray-50 flex flex-col ">
+    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       {/* Call Modal */}
       {callState.isActive && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
@@ -612,9 +541,9 @@ useEffect(() => {
         </div>
       )}
 
-      <div className="flex-1 flex flex-col min-h-0">
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {/* Chat Header - Responsive */}
-        <div className="m-2 mb-1 tour-chat-header flex-shrink-0 bg-white rounded-lg border shadow-sm px-4 py-3">
+        <div className="mx-1 sm:m-2 mb-0.5 sm:mb-1 tour-chat-header flex-shrink-0 bg-white rounded-lg border shadow-sm px-3 sm:px-4 py-2 sm:py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3 sm:space-x-4">
               <div className="relative flex-shrink-0">
@@ -670,13 +599,13 @@ useEffect(() => {
         </div>
 
         {/* Chat Messages - Main Content */}
-        <div className="flex-1 flex flex-col min-h-0 m-2 mt-1 overflow-hidden ">
-          <div className="min-h-0 flex-1 flex flex-col overflow-hidden bg-white rounded-lg  shadow-sm">
+        <div className="flex-1 flex flex-col min-h-0 m-1 sm:m-2 mt-1">
+          <div className="flex-1 flex flex-col overflow-hidden bg-white rounded-lg border shadow-sm">
             {/* Messages Area - Scrollable */}
-            <ScrollArea className="flex-1 min-h-0 h-[calc(100dvh-220px)] sm:h-auto max-w-screen">
-              <div className="space-y-4 py-4">
+            <ScrollArea className="flex-1 overflow-hidden">
+              <div className="space-y-3 sm:space-y-4 py-3 sm:py-4 w-screen">
                     {messages.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center  px-4">
+                      <div className="flex flex-col items-center justify-center h-full min-h-[300px] px-4">
                         <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#0F4C5C]/10 rounded-full flex items-center justify-center mb-4">
                           <MessageCircle className="h-8 w-8 sm:h-10 sm:w-10 text-[#0F4C5C]" />
                         </div>
@@ -690,39 +619,34 @@ useEffect(() => {
                         {messages.map((message) => (
                           <div
                             key={message.id}
-                            className={`flex items-start gap-2 sm:gap-3 max-w-screen  ${
-                              message.senderType === 'user' ? 'ml-auto sm:justify-end' : ''
+                            className={`h-full flex items-start gap-1.5 sm:gap-3 px-2 sm:px-4  ${
+                              message.senderType === 'user' ? 'justify-end' : 'justify-start'
                             }`}
                           >
-                            {/* <Avatar className="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0 mt-1">
-                              {message.senderType === 'user' ? (
-                                <>
-                                  <AvatarImage src={user?.avatar} alt={user?.firstName} />
-                                  <AvatarFallback className="bg-[#0F4C5C] text-white text-xs sm:text-sm">
-                                    {user?.firstName?.[0]}{user?.lastName?.[0]}
-                                  </AvatarFallback>
-                                </>
-                              ) : message.senderType === 'admin' ? (
-                                <>
-                                  <AvatarImage src="/admin-avatar.svg" alt="Admin" />
-                                  <AvatarFallback className="bg-[#0F4C5C] text-white text-xs sm:text-sm">AD</AvatarFallback>
-                                </>
-                              ) : (
-                                <>
-                                  <AvatarFallback className="bg-gray-300">
-                                    <Bot className="h-3 w-3 sm:h-4 sm:w-4" />
-                                  </AvatarFallback>
-                                </>
-                              )}
-                            </Avatar> */}
+                            {message.senderType !== 'user' && (
+                              <Avatar className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0 mt-0.5 sm:mt-1">
+                                {message.senderType === 'admin' ? (
+                                  <>
+                                    <AvatarImage src="/admin-avatar.svg" alt="Admin" />
+                                    <AvatarFallback className="bg-[#0F4C5C] text-white text-xs sm:text-sm">AD</AvatarFallback>
+                                  </>
+                                ) : (
+                                  <>
+                                    <AvatarFallback className="bg-gray-300">
+                                      <Bot className="h-3 w-3 sm:h-4 sm:w-4" />
+                                    </AvatarFallback>
+                                  </>
+                                )}
+                              </Avatar>
+                            )}
                             <div
-                              className={`max-w-[75%] sm:max-w-[70%] lg:max-w-md  rounded-2xl px-3 sm:px-4 py-2 ${
+                              className={`max-w-[75%] md:max-w-[70%] p-2 rounded-sm ${
                                 message.type === 'call_log' 
-                                  ? 'bg-gray-100 text-gray-700 text-center w-auto mx-auto'
+                                  ? 'bg-gray-100 text-gray-700 text-center'
                                   : message.senderType === 'user'
-                                    ? 'bg-[#0F4C5C] text-white rounded-tr-sm'
+                                    ? 'bg-[#0F4C5C] text-white rounded-tr-sm order-1'
                                     : message.senderType === 'admin'
-                                      ? 'bg-white border border-gray-400 text-gray-900 rounded-tl-sm'
+                                      ? 'bg-white border border-gray-200 text-gray-900 rounded-tl-sm'
                                       : 'bg-gray-100 text-gray-900'
                               }`}
                             >
@@ -785,6 +709,14 @@ useEffect(() => {
                                 </>
                               )}
                             </div>
+                            {/* {message.senderType === 'user' && (
+                              <Avatar className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0 mt-0.5 sm:mt-1">
+                                <AvatarImage src={user?.avatar} alt={user?.firstName} />
+                                <AvatarFallback className="bg-[#0F4C5C] text-white text-xs sm:text-sm">
+                                  {user?.firstName?.[0]}{user?.lastName?.[0]}
+                                </AvatarFallback>
+                              </Avatar>
+                            )} */}
                           </div>
                         ))}
                       </>

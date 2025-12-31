@@ -28,7 +28,7 @@ const toastVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border bg-white text-gray-900',
+        default: 'border bg-green-500 text-white',
         success: 'border-emerald-200 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-emerald-200/50',
         destructive: 'border-red-200 bg-gradient-to-r from-red-500 to-red-600 text-white shadow-red-200/50',
         warning: 'border-amber-200 bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-amber-200/50',

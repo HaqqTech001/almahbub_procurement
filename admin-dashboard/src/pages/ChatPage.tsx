@@ -868,11 +868,11 @@ const ChatPage: React.FC = () => {
                     return (
                       <div
                         key={message.id || index}
-                        className={`flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`}
+                        className={`flex ${isOwnMessage ? 'justify-end text-white' : 'justify-start'}`}
                       >
                         {!isOwnMessage && (
                           <div className="flex-shrink-0 mr-1.5 md:mr-2">
-                            {showAvatar ? (
+                            {/* {showAvatar ? (
                               <Avatar className="h-6 w-6 md:h-8 md:w-8">
                                 <AvatarImage src={message.sender_avatar} />
                                 <AvatarFallback className="text-[9px] md:text-xs">
@@ -887,7 +887,7 @@ const ChatPage: React.FC = () => {
                               </Avatar>
                             ) : (
                               <div className="h-6 w-6 md:h-8 md:w-8" />
-                            )}
+                            )} */}
                           </div>
                         )}
                         
@@ -975,7 +975,7 @@ const ChatPage: React.FC = () => {
                           {file.name}
                         </span>
                         <span className="text-xs text-gray-700 dark:text-gray-300 max-w-[60px] truncate sm:hidden">
-                          {file.name.substring(0, 8)}...
+                          {file.name}...
                         </span>
                         <button
                           onClick={() => handleRemoveAttachment(index)}
