@@ -135,10 +135,10 @@ const RegisterPage: React.FC = () => {
         email: formData.email,
         phone: formData.phone,
         company: formData.companyName,
-        address: formData.address,
-        city: formData.city,
-        state: formData.state,
-        country: formData.country,
+        // address: formData.address,
+        // city: formData.city,
+        // state: formData.state,
+        // country: formData.country,
         password: formData.password,
       });
       
