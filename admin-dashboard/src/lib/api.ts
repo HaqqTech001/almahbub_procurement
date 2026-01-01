@@ -1,5 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
-const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://almahbub-procurement.onrender.com/api/v1';
+const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'https://almahbub-procurement.onrender.com';
 
 // Get token from zustand auth store storage and sync to localStorage
 const getAndSyncToken = (): string | null => {
