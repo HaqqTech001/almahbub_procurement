@@ -140,10 +140,10 @@ const LoginPage: React.FC = () => {
         </div>
 
         {/* Right Side - Login Form */}
-        <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center bg-white">
+        <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center  items-center bg-white">
           {/* Mobile Logo - Visible only on small screens */}
-          <div className="lg:hidden text-center mb-8">
-            <div className="w-20 h-20 bg-[#2390ae] rounded-lg flex items-center justify-center">
+          <div className="lg:hidden text-center flex flex-col justify-center items-center mb-8">
+            <div className="w-20 h-20 bg-[#2390ae] rounded-lg flex items-center justify-center mb-4">
               <img src="./almahbub.png" alt="" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1>

@@ -172,8 +172,8 @@ const ForgotPasswordPage: React.FC = () => {
         {/* Right Side - Form */}
         <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center">
           {/* Mobile Logo */}
-          <div className="lg:hidden text-center mb-8">
-            <div className="w-20 h-20 bg-[#2390ae] rounded-lg flex items-center justify-center">
+          <div className="lg:hidden text-center mb-8 flex flex-col justify-center items-center">
+            <div className="w-20 h-20 bg-[#2390ae] rounded-lg flex items-center justify-center mb-4">
               <img src="./almahbub.png" alt="" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1>
