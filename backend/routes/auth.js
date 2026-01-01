@@ -18,24 +18,52 @@ const generateToken = (userId) => {
 
 // Register
 router.post('/register', [
-  body('email').isEmail().normalizeEmail(),
-  body('password').isLength({ min: 6 }),
-  body('firstName').trim().isLength({ min: 1 }),
-  body('lastName').trim().isLength({ min: 1 }),
+  body('email')
+    .isEmail().withMessage('Please enter a valid email address (e.g., user@example.com)')
+    .normalizeEmail(),
+  body('password')
+    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+  body('firstName')
+    .trim()
+    .isLength({ min: 1 }).withMessage('First name is required'),
+  body('lastName')
+    .trim()
+    .isLength({ min: 1 }).withMessage('Last name is required'),
   body('company').optional().trim(),
-  body('phone').optional().trim()
+  body('phone').optional().trim(),
+  body('address').optional().trim(),
+  body('city').optional().trim(),
+  body('state').optional().trim(),
+  body('country').optional().trim(),
+  body('zipCode').optional().trim(),
+  body('companyType').optional().trim()
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      // Format errors to be more user-friendly
+      const formattedErrors = errors.array().map(err => ({
+        field: err.path,
+        message: err.msg
+      }));
+      return res.status(400).json({ 
+        success: false,
+        message: 'Please fix the errors below',
+        errors: formattedErrors 
+      });
     }
 
-    const { email, password, firstName, lastName, company, phone } = req.body;
+    const { email, password, firstName, lastName, company, companyType, phone, address, city, state, country, zipCode } = req.body;
 
     // Convert undefined to null for database compatibility
     const cleanCompany = company || null;
+    const cleanCompanyType = companyType || null;
     const cleanPhone = phone || null;
+    const cleanAddress = address || null;
+    const cleanCity = city || null;
+    const cleanState = state || null;
+    const cleanCountry = country || null;
+    const cleanZipCode = zipCode || null;
 
     // Check if user already exists
     const [existingUsers] = await pool.execute(
@@ -44,11 +72,11 @@ router.post('/register', [
     );
 
     if (existingUsers.length > 0) {
-      return res.status(400).json({ error: 'User already exists with this email' });
+      return res.status(400).json({ error: 'User already exists ' });
     }
 
-    // Hash password
-    const saltRounds = 12;
+    // Hash password (10 rounds for faster registration while maintaining security)
+    const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Generate email verification token
@@ -56,27 +84,28 @@ router.post('/register', [
 
     // Create user
     const [result] = await pool.execute(
-      `INSERT INTO users (email, password, first_name, last_name, company, phone, email_verification_token) 
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [email, hashedPassword, firstName, lastName, cleanCompany, cleanPhone, emailVerificationToken]
+      `INSERT INTO users (email, password, first_name, last_name, company, companyType, phone, address, city, state, country, zip_code, email_verification_token) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [email, hashedPassword, firstName, lastName, cleanCompany, cleanCompanyType, cleanPhone, cleanAddress, cleanCity, cleanState, cleanCountry, cleanZipCode, emailVerificationToken]
     );
 
     const userId = result.insertId;
 
-    // Get created user
-    const [users] = await pool.execute(
-      'SELECT id, email, first_name, last_name, role, email_verified FROM users WHERE id = ?',
-      [userId]
-    );
+    // Create user object from form data (no need for extra database query)
+    const user = {
+      id: userId,
+      email: email,
+      first_name: firstName,
+      last_name: lastName,
+      role: 'user',
+      email_verified: false,
+      company: cleanCompany,
+      companyType: cleanCompanyType
+    };
 
-    const user = users[0];
-
-    // Send welcome email
-    try {
-      await emailService.sendWelcomeEmail({ ...user, email_verification_token: emailVerificationToken });
-    } catch (emailError) {
-      console.error('Failed to send welcome email:', emailError);
-    }
+    // Send welcome email asynchronously (non-blocking)
+    emailService.sendWelcomeEmail({ ...user, email_verification_token: emailVerificationToken })
+      .catch(emailError => console.error('Failed to send welcome email:', emailError));
 
     // Generate token
     const token = generateToken(userId);
@@ -91,7 +120,9 @@ router.post('/register', [
           firstName: user.first_name,
           lastName: user.last_name,
           role: user.role,
-          emailVerified: user.email_verified
+          emailVerified: user.email_verified,
+          company: user.company,
+          companyType: user.companyType
         },
         needsVerification: true,
         token
@@ -106,13 +137,24 @@ router.post('/register', [
 
 // Login
 router.post('/login', [
-  body('email').isEmail().normalizeEmail(),
-  body('password').exists()
+  body('email')
+    .isEmail().withMessage('Please enter a valid email address')
+    .normalizeEmail(),
+  body('password')
+    .exists().withMessage('Password is required')
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      const formattedErrors = errors.array().map(err => ({
+        field: err.path,
+        message: err.msg
+      }));
+      return res.status(400).json({ 
+        success: false,
+        message: 'Please enter a valid email and password',
+        errors: formattedErrors 
+      });
     }
 
     const { email, password } = req.body;
@@ -124,7 +166,11 @@ router.post('/login', [
     );
 
     if (users.length === 0) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ 
+        success: false,
+        message: 'No account found with this email address',
+        error: 'email_not_found'
+      });
     }
 
     const user = users[0];
@@ -132,15 +178,19 @@ router.post('/login', [
     // Check password
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+      return res.status(401).json({ 
+        success: false,
+        message: 'Incorrect password. Please try again or click "Forgot Password" to reset it.',
+        error: 'invalid_password'
+      });
     }
 
     // Check email verification
     if (!user.email_verified) {
       console.log('Login blocked - email not verified for user:', user.email);
       return res.status(403).json({ 
-        error: 'Email verification required',
-        message: 'Please verify your email address before logging in. Check your email for a verification link.',
+        success: false,
+        message: 'Please verify your email address before logging in. Check your inbox for the verification link.',
         needsVerification: true 
       });
     }
@@ -221,12 +271,22 @@ router.post('/verify-email/:token', async (req, res) => {
 
 // Forgot password
 router.post('/forgotpassword', [
-  body('email').isEmail().normalizeEmail()
+  body('email')
+    .isEmail().withMessage('Please enter a valid email address')
+    .normalizeEmail()
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      const formattedErrors = errors.array().map(err => ({
+        field: err.path,
+        message: err.msg
+      }));
+      return res.status(400).json({ 
+        success: false,
+        message: 'Please enter a valid email address',
+        errors: formattedErrors 
+      });
     }
 
     const { email } = req.body;
@@ -298,8 +358,8 @@ router.post('/resetpassword/:token', [
 
     const user = users[0];
 
-    // Hash new password
-    const saltRounds = 12;
+    // Hash new password (10 rounds for consistency)
+    const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Update password and clear reset token
@@ -328,7 +388,7 @@ router.get('/me', authenticateToken, async (req, res) => {
     }
 
     const [users] = await pool.execute(
-      'SELECT id, email, first_name, last_name, role, email_verified, company, phone, avatar, created_at FROM users WHERE id = ?',
+      'SELECT id, email, first_name, last_name, role, email_verified, company, companyType, phone, avatar, created_at FROM users WHERE id = ?',
       [req.user.id]
     );
 
@@ -337,6 +397,15 @@ router.get('/me', authenticateToken, async (req, res) => {
     }
 
     const user = users[0];
+
+    // Double-check email verification (security safeguard)
+    if (!user.email_verified) {
+      return res.status(403).json({ 
+        error: 'Email verification required',
+        message: 'Please verify your email address before accessing your account.',
+        needsVerification: true 
+      });
+    }
 
     // Ensure user data is safe
     const safeUser = {
@@ -347,6 +416,7 @@ router.get('/me', authenticateToken, async (req, res) => {
       role: user.role || 'user',
       emailVerified: Boolean(user.email_verified),
       company: user.company || '',
+      companyType: user.companyType || '',
       phone: user.phone || '',
       avatar: user.avatar || '',
       createdAt: user.created_at || new Date().toISOString()
@@ -380,7 +450,7 @@ router.get('/notifications', authenticateToken, async (req, res) => {
     const unreadOnly = req.query.unreadOnly === 'true';
 
     let countQuery = 'SELECT COUNT(*) as total FROM notifications WHERE user_id = ?';
-    let query = 'SELECT id, title, message, type, resource_type, resource_id, is_read, created_at, data FROM notifications WHERE user_id = ?';
+    let query = 'SELECT id, title, message, type, resourceType, resource_id, is_read, created_at, data FROM notifications WHERE user_id = ?';
 
     if (unreadOnly) {
       countQuery += ' AND is_read = FALSE';
@@ -400,7 +470,7 @@ router.get('/notifications', authenticateToken, async (req, res) => {
           title: n.title,
           message: n.message,
           type: n.type,
-          resourceType: n.resource_type,
+          resourceType: n.resourceType,
           resourceId: n.resource_id,
           isRead: Boolean(n.is_read),
           createdAt: n.created_at,
@@ -582,8 +652,8 @@ router.put('/updatepassword', authenticateToken, [
       return res.status(400).json({ error: 'Current password is incorrect' });
     }
 
-    // Hash new password
-    const saltRounds = 12;
+    // Hash new password (10 rounds for consistency)
+    const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
     // Update password
@@ -656,7 +726,9 @@ router.post('/admin/login', [
           firstName: user.first_name,
           lastName: user.last_name,
           role: user.role,
-          emailVerified: user.email_verified
+          emailVerified: user.email_verified,
+          company: user.company,
+          companyType: user.companyType
         },
         token
       }

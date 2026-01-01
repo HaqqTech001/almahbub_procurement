@@ -30,14 +30,19 @@ const server = http.createServer(app);
 // Initialize Socket.IO with CORS configuration
 const io = socketIo(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
-    methods: ["GET", "POST"]
+    origin: function(origin, callback) {
+      // Allow all origins for Socket.IO
+      return callback(null, true);
+    },
+    methods: ["GET", "POST"],
+    credentials: true
   }
 });
 
 // Security middleware
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false
 }));
 app.use(compression());
 
@@ -50,21 +55,20 @@ app.use(limiter);
 
 // CORS configuration - Allow all origins for development
 app.use(cors({
-  origin: '*', // Allow all origins for demo
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    return callback(null, true);
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Content-Length', 'X-Requested-With'],
+  maxAge: 86400 // 24 hours
 }));
 
-// Add CORS headers for static files (uploads)
-app.use('/uploads', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Cross-Origin-Resource-Policy', 'cross-origin');
-  res.header('Cross-Origin-Embedder-Policy', 'require-corp');
-  next();
-});
+// Handle OPTIONS preflight requests
+app.options('*', cors());
 
 // Logging
 app.use(morgan('combined'));
@@ -122,12 +126,12 @@ async function startServer() {
       console.log(`📡 Server running on port ${PORT}`);
       console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`📡 Socket.IO enabled for real-time chat`);
-      // console.log(`🔗 Admin Dashboard: http://localhost:5174`);
-      // console.log(`👤 Client Frontend: http://localhost:5173`);
+      console.log(`🔗 Admin Dashboard: http://localhost:5174`);
+      console.log(`👤 Client Frontend: http://localhost:5173`);
       console.log('');
-      // console.log('🔑 Admin Credentials:');
-      // console.log('   Email: admin@almahbub.com');
-      // console.log('   Password: admin123456');
+      console.log('🔑 Admin Credentials:');
+      console.log('   Email: admin@almahbub.com');
+      console.log('   Password: admin123456');
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);

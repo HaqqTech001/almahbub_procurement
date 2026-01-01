@@ -26,6 +26,7 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
 
   const { login } = useAuthStore();
   const { toast } = useToast();
@@ -65,6 +66,27 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrors({});
+
+    // Client-side validation
+    const newErrors: { email?: string; password?: string } = {};
+
+    if (!formData.email) {
+      newErrors.email = 'Email address is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address (e.g., user@example.com)';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    }
+    
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setIsLoading(false);
+      return;
+    }
 
     try {
       await login(formData.email, formData.password);
@@ -75,25 +97,26 @@ const LoginPage: React.FC = () => {
       });
       navigate('/dashboard');
     } catch (error: any) {
+      // Handle different error types
       if ((error as any).needsVerification || error.message?.includes('Email verification required')) {
-        toast({
-          title: 'Email Verification Required',
-          description: 'Please verify your email address before logging in. Check your email for a verification link.',
-          variant: 'destructive',
+        setErrors({
+          general: 'Please verify your email address before logging in. Check your inbox for the verification link.'
+        });
+      } else if (error.message?.includes('No account found')) {
+        setErrors({
+          email: 'No account found with this email address. Please register first.'
+        });
+      } else if (error.message?.includes('Incorrect password')) {
+        setErrors({
+          password: 'Incorrect password. Please try again or click "Forgot Password" to reset it.'
+        });
+      } else if (error.message) {
+        setErrors({
+          general: 'Please check your credentials and make sure you are connected to the internet '
         });
       } else {
-        if(error.message.includes("ETIMOUT")){
-        toast({
-          title: 'Login Failed',
-          description: 'Please check your connection and try again!',
-          variant: 'destructive',
-        });
-
-        }
-        toast({
-          title: 'Login Failed',
-          description: 'Invalid email or password',
-          variant: 'destructive',
+        setErrors({
+          general: 'Login failed. Please check your email and password and try again.'
         });
       }
     } finally {
@@ -120,8 +143,8 @@ const LoginPage: React.FC = () => {
         <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center bg-white">
           {/* Mobile Logo - Visible only on small screens */}
           <div className="lg:hidden text-center mb-8">
-            <div className="w-20 h-20 bg-[#0F4C5C]/60 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <img src="./almahbub.png" alt="a.png" />
+            <div className="w-14 h-14 bg-[#0F4C5C] rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Globe className="w-7 h-7 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1>
             <p className="text-gray-500 text-sm mt-1">Sign in to continue</p>
@@ -140,6 +163,13 @@ const LoginPage: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* General Error Message */}
+              {errors.general && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-600">{errors.general}</p>
+                </div>
+              )}
+
               {/* Email Field */}
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-gray-700 font-medium">Email Address</Label>
@@ -151,11 +181,16 @@ const LoginPage: React.FC = () => {
                     type="email"
                     placeholder="Enter your email"
                     value={formData.email}
-                    onChange={handleChange}
-                    className="pl-12 pr-4 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
-                    required
+                    onChange={(e) => {
+                      handleChange(e);
+                      if (errors.email) setErrors({ ...errors, email: undefined });
+                    }}
+                    className={`pl-12 pr-4 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
+                      errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500/10' : ''
+                    }`}
                   />
                 </div>
+                {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
               </div>
 
               {/* Password Field */}
@@ -169,9 +204,13 @@ const LoginPage: React.FC = () => {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
                     value={formData.password}
-                    onChange={handleChange}
-                    className="pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
-                    required
+                    onChange={(e) => {
+                      handleChange(e);
+                      if (errors.password) setErrors({ ...errors, password: undefined });
+                    }}
+                    className={`pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
+                      errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500/10' : ''
+                    }`}
                   />
                   <button
                     type="button"
@@ -181,6 +220,7 @@ const LoginPage: React.FC = () => {
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
+                {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
               </div>
 
               {/* Remember Me & Forgot Password */}

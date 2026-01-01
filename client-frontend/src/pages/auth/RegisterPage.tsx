@@ -39,6 +39,7 @@ const RegisterPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const { register } = useAuthStore();
   const { toast } = useToast();
@@ -107,24 +108,47 @@ const RegisterPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrors({});
 
+    // Client-side validation
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email address is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address (e.g., user@example.com)';
+    }
+    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
+    if (!formData.companyName.trim()) newErrors.companyName = 'Company name is required';
+    if (!formData.companyType) newErrors.companyType = 'Please select a company type';
+    if (!formData.address.trim()) newErrors.address = 'Street address is required';
+    if (!formData.city.trim()) newErrors.city = 'City is required';
+    if (!formData.state.trim()) newErrors.state = 'State/Province is required';
+    if (!formData.country) newErrors.country = 'Please select a country';
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
     if (formData.password !== formData.confirmPassword) {
-      toast({
-        title: 'Password Mismatch',
-        description: 'Passwords do not match',
-        variant: 'destructive',
-      });
-      setIsLoading(false);
-      return;
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+    if (!formData.agreeToTerms) {
+      newErrors.agreeToTerms = 'You must agree to the terms and conditions';
     }
 
-    if (!formData.agreeToTerms) {
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setIsLoading(false);
+      // Show toast for first error
+      const firstError = Object.values(newErrors)[0];
       toast({
-        title: 'Terms Required',
-        description: 'Please agree to the terms and conditions',
+        title: 'Please fix the errors',
+        description: firstError,
         variant: 'destructive',
       });
-      setIsLoading(false);
       return;
     }
 
@@ -135,19 +159,20 @@ const RegisterPage: React.FC = () => {
         email: formData.email,
         phone: formData.phone,
         company: formData.companyName,
-        // address: formData.address,
-        // city: formData.city,
-        // state: formData.state,
-        // country: formData.country,
+        companyType: formData.companyType,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        country: formData.country,
         password: formData.password,
       });
-      
+
       toast({
         title: 'Account Created Successfully!',
         description: 'Please check your email to verify your account before logging in.',
         variant: 'default',
       });
-      
+
       setFormData({
         firstName: '',
         lastName: '',
@@ -163,14 +188,39 @@ const RegisterPage: React.FC = () => {
         confirmPassword: '',
         agreeToTerms: false,
       });
-      
+
       navigate('/login');
     } catch (error: any) {
-      toast({
-        title: 'Registration Failed',
-        description: error.message || 'Something went wrong',
-        variant: 'destructive',
-      });
+      // Handle backend validation errors
+      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
+        const backendErrors: Record<string, string> = {};
+        error.response.data.errors.forEach((err: { field?: string; message: string }) => {
+          if (err.field) {
+            backendErrors[err.field] = err.message;
+          } else {
+            backendErrors.general = err.message;
+          }
+        });
+        setErrors(backendErrors);
+        toast({
+          title: 'Please fix the errors below',
+          description: error.response.data.message || 'There were validation errors',
+          variant: 'destructive',
+        });
+      } else if (error.response?.data?.message?.includes('already exists')) {
+        setErrors({ email: 'An account with this email already exists. Please login or use a different email.' });
+        toast({
+          title: 'Registration Failed',
+          description: 'An account with this email already exists',
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          title: 'Registration Failed',
+          description: error.message || 'Something went wrong. Please try again.',
+          variant: 'destructive',
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -201,8 +251,8 @@ const RegisterPage: React.FC = () => {
         <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center bg-white">
           {/* Mobile Logo - Visible only on small screens */}
           <div className="lg:hidden text-center mb-8">
-           <div className="w-20 h-20 bg-[#0F4C5C]/60 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <img src="./almahbub.png" alt="a.png" />
+            <div className="w-14 h-14 bg-[#0F4C5C] rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Globe className="w-7 h-7 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1>
             <p className="text-gray-500 text-sm mt-1">Create your account</p>
@@ -254,6 +304,13 @@ const RegisterPage: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* General Error Message */}
+              {errors.general && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-600">{errors.general}</p>
+                </div>
+              )}
+
               {/* Step 1: Personal Information */}
               {currentStep === 1 && (
                 <div className="space-y-5">
@@ -265,10 +322,15 @@ const RegisterPage: React.FC = () => {
                         name="firstName"
                         placeholder="First name"
                         value={formData.firstName}
-                        onChange={handleChange}
-                        className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
-                        required
+                        onChange={(e) => {
+                          handleChange(e);
+                          if (errors.firstName) setErrors({ ...errors, firstName: undefined });
+                        }}
+                        className={`h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
+                          errors.firstName ? 'border-red-500' : ''
+                        }`}
                       />
+                      {errors.firstName && <p className="text-sm text-red-500">{errors.firstName}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="lastName" className="text-gray-700 font-medium">Last Name</Label>
@@ -277,13 +339,21 @@ const RegisterPage: React.FC = () => {
                         name="lastName"
                         placeholder="Last name"
                         value={formData.lastName}
-                        onChange={handleChange}
-                        className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
-                        required
+                        onChange={(e) => {
+                          handleChange(e);
+                          if (errors.lastName) {
+                            const { lastName, ...rest } = errors;
+                            setErrors(rest);
+                          }
+                        }}
+                        className={`h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
+                          errors.lastName ? 'border-red-500' : ''
+                        }`}
                       />
+                      {errors.lastName && <p className="text-sm text-red-500">{errors.lastName}</p>}
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-gray-700 font-medium">Email Address</Label>
                     <div className="relative group">
@@ -294,11 +364,19 @@ const RegisterPage: React.FC = () => {
                         type="email"
                         placeholder="Enter your email"
                         value={formData.email}
-                        onChange={handleChange}
-                        className="pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
-                        required
+                        onChange={(e) => {
+                          handleChange(e);
+                          if (errors.email) {
+                            const { email, ...rest } = errors;
+                            setErrors(rest);
+                          }
+                        }}
+                        className={`pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
+                          errors.email ? 'border-red-500' : ''
+                        }`}
                       />
                     </div>
+                    {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
                   </div>
 
                   <div className="space-y-2">
@@ -311,11 +389,19 @@ const RegisterPage: React.FC = () => {
                         type="tel"
                         placeholder="Enter your phone number"
                         value={formData.phone}
-                        onChange={handleChange}
-                        className="pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
-                        required
+                        onChange={(e) => {
+                          handleChange(e);
+                          if (errors.phone) {
+                            const { phone, ...rest } = errors;
+                            setErrors(rest);
+                          }
+                        }}
+                        className={`pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
+                          errors.phone ? 'border-red-500' : ''
+                        }`}
                       />
                     </div>
+                    {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
                   </div>
                 </div>
               )}
@@ -332,17 +418,30 @@ const RegisterPage: React.FC = () => {
                         name="companyName"
                         placeholder="Enter your company name"
                         value={formData.companyName}
-                        onChange={handleChange}
-                        className="pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
-                        required
+                        onChange={(e) => {
+                          handleChange(e);
+                          if (errors.companyName) setErrors({ ...errors, companyName: undefined });
+                        }}
+                        className={`pl-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
+                          errors.companyName ? 'border-red-500' : ''
+                        }`}
                       />
                     </div>
+                    {errors.companyName && <p className="text-sm text-red-500">{errors.companyName}</p>}
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="companyType" className="text-gray-700 font-medium">Company Type</Label>
-                    <Select onValueChange={(value) => handleSelectChange('companyType', value)}>
-                      <SelectTrigger className="h-12 bg-gray-50 border-gray-200 text-gray-900 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 rounded-lg">
+                    <Select
+                      value={formData.companyType}
+                      onValueChange={(value) => {
+                        handleSelectChange('companyType', value);
+                        if (errors.companyType) setErrors({ ...errors, companyType: undefined });
+                      }}
+                    >
+                      <SelectTrigger className={`h-12 bg-gray-50 border-gray-200 text-gray-900 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 rounded-lg ${
+                        errors.companyType ? 'border-red-500' : ''
+                      }`}>
                         <SelectValue placeholder="Select company type" className="text-gray-400" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border-gray-200 shadow-lg">
@@ -354,6 +453,7 @@ const RegisterPage: React.FC = () => {
                         <SelectItem value="other" className="text-gray-900 hover:bg-gray-50">Other</SelectItem>
                       </SelectContent>
                     </Select>
+                    {errors.companyType && <p className="text-sm text-red-500">{errors.companyType}</p>}
                   </div>
 
                   <div className="space-y-2">
@@ -366,10 +466,15 @@ const RegisterPage: React.FC = () => {
                       name="address"
                       placeholder="Enter street address"
                       value={formData.address}
-                      onChange={handleChange}
-                      className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
-                      required
+                      onChange={(e) => {
+                        handleChange(e);
+                        if (errors.address) setErrors({ ...errors, address: undefined });
+                      }}
+                      className={`h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
+                        errors.address ? 'border-red-500' : ''
+                      }`}
                     />
+                    {errors.address && <p className="text-sm text-red-500">{errors.address}</p>}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -380,10 +485,15 @@ const RegisterPage: React.FC = () => {
                         name="city"
                         placeholder="City"
                         value={formData.city}
-                        onChange={handleChange}
-                        className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
-                        required
+                        onChange={(e) => {
+                          handleChange(e);
+                          if (errors.city) setErrors({ ...errors, city: undefined });
+                        }}
+                        className={`h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
+                          errors.city ? 'border-red-500' : ''
+                        }`}
                       />
+                      {errors.city && <p className="text-sm text-red-500">{errors.city}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="state" className="text-gray-700 font-medium">State/Province</Label>
@@ -392,17 +502,30 @@ const RegisterPage: React.FC = () => {
                         name="state"
                         placeholder="State/Province"
                         value={formData.state}
-                        onChange={handleChange}
-                        className="h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
-                        required
+                        onChange={(e) => {
+                          handleChange(e);
+                          if (errors.state) setErrors({ ...errors, state: undefined });
+                        }}
+                        className={`h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
+                          errors.state ? 'border-red-500' : ''
+                        }`}
                       />
+                      {errors.state && <p className="text-sm text-red-500">{errors.state}</p>}
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="country" className="text-gray-700 font-medium">Country</Label>
-                    <Select onValueChange={(value) => handleSelectChange('country', value)}>
-                      <SelectTrigger className="h-12 bg-gray-50 border-gray-200 text-gray-900 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 rounded-lg">
+                    <Select
+                      value={formData.country}
+                      onValueChange={(value) => {
+                        handleSelectChange('country', value);
+                        if (errors.country) setErrors({ ...errors, country: undefined });
+                      }}
+                    >
+                      <SelectTrigger className={`h-12 bg-gray-50 border-gray-200 text-gray-900 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 rounded-lg ${
+                        errors.country ? 'border-red-500' : ''
+                      }`}>
                         <SelectValue placeholder="Select country" className="text-gray-400" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border-gray-200 shadow-lg max-h-60">
@@ -418,6 +541,7 @@ const RegisterPage: React.FC = () => {
                         <SelectItem value="OTHER" className="text-gray-900 hover:bg-gray-50">Other</SelectItem>
                       </SelectContent>
                     </Select>
+                    {errors.country && <p className="text-sm text-red-500">{errors.country}</p>}
                   </div>
                 </div>
               )}
@@ -433,11 +557,15 @@ const RegisterPage: React.FC = () => {
                         id="password"
                         name="password"
                         type={showPassword ? 'text' : 'password'}
-                        placeholder="Create password"
+                        placeholder="Create password (min 6 characters)"
                         value={formData.password}
-                        onChange={handleChange}
-                        className="pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
-                        required
+                        onChange={(e) => {
+                          handleChange(e);
+                          if (errors.password) setErrors({ ...errors, password: undefined });
+                        }}
+                        className={`pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
+                          errors.password ? 'border-red-500' : ''
+                        }`}
                       />
                       <button
                         type="button"
@@ -447,6 +575,7 @@ const RegisterPage: React.FC = () => {
                         {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                       </button>
                     </div>
+                    {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
                   </div>
 
                   <div className="space-y-2">
@@ -459,9 +588,13 @@ const RegisterPage: React.FC = () => {
                         type={showConfirmPassword ? 'text' : 'password'}
                         placeholder="Confirm password"
                         value={formData.confirmPassword}
-                        onChange={handleChange}
-                        className="pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
-                        required
+                        onChange={(e) => {
+                          handleChange(e);
+                          if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: undefined });
+                        }}
+                        className={`pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
+                          errors.confirmPassword ? 'border-red-500' : ''
+                        }`}
                       />
                       <button
                         type="button"
@@ -471,17 +604,21 @@ const RegisterPage: React.FC = () => {
                         {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                       </button>
                     </div>
+                    {errors.confirmPassword && <p className="text-sm text-red-500">{errors.confirmPassword}</p>}
                   </div>
 
                   <div className="flex items-start space-x-3">
-                    <Checkbox 
+                    <Checkbox
                       id="agreeToTerms"
                       name="agreeToTerms"
                       checked={formData.agreeToTerms}
-                      onCheckedChange={(checked) => 
-                        setFormData({ ...formData, agreeToTerms: checked as boolean })
-                      }
-                      className="mt-1 border-gray-300 data-[state=checked]:bg-[#0F4C5C] data-[state=checked]:border-[#0F4C5C]"
+                      onCheckedChange={(checked) => {
+                        setFormData({ ...formData, agreeToTerms: checked as boolean });
+                        if (errors.agreeToTerms) setErrors({ ...errors, agreeToTerms: undefined });
+                      }}
+                      className={`mt-1 border-gray-300 data-[state=checked]:bg-[#0F4C5C] data-[state=checked]:border-[#0F4C5C] ${
+                        errors.agreeToTerms ? 'border-red-500' : ''
+                      }`}
                     />
                     <Label htmlFor="agreeToTerms" className="text-sm text-gray-600 leading-relaxed cursor-pointer">
                       I agree to the{' '}
@@ -494,6 +631,7 @@ const RegisterPage: React.FC = () => {
                       </Link>
                     </Label>
                   </div>
+                  {errors.agreeToTerms && <p className="text-sm text-red-500">{errors.agreeToTerms}</p>}
                 </div>
               )}
 
@@ -600,8 +738,7 @@ const RegisterPage: React.FC = () => {
                   </svg>
                 </a>
                 <a 
-                  href="https://www.instagram.com/almahbubimport" 
-                  target="_blank" 
+                  href="https://www.instagram.com/almahbubimport"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-[#E3B505] transition-colors"
                   title="Instagram"

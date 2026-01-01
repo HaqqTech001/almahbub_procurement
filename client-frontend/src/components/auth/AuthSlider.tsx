@@ -120,10 +120,10 @@ const AuthSlider: React.FC<AuthSliderProps> = ({ slides, variant = 'login', curr
             <div className="absolute inset-0 flex flex-col justify-between p-8 lg:p-12 z-10">
               {/* Top Section - Logo and Back Button */}
               <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mr-4">
-                    <Sparkles className="w-6 h-6 text-white" />
-                  </div>
+                <div className="flex items-center gap-2 justify-center">
+                  <div className="w-20 h-20 bg-[#0F4C5C]/60 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <img src="./almahbub.png" alt="a.png" />
+                 </div>
                   <div>
                     <h1 className="text-xl font-bold text-white">Almahbub International</h1>
                     <p className="text-white/60 text-xs">
