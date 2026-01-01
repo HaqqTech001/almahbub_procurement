@@ -18,6 +18,7 @@ interface MediaUploadProps {
 }
 
 const getFileType = (file: File): 'image' | 'video' | 'audio' | 'document' | 'unknown' => {
+  if (!file.type) return 'unknown';
   if (file.type.startsWith('image/')) return 'image';
   if (file.type.startsWith('video/')) return 'video';
   if (file.type.startsWith('audio/')) return 'audio';
@@ -55,7 +56,7 @@ const MediaUpload: React.FC<MediaUploadProps> = ({
   const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
   const createPreview = async (file: File): Promise<string | null> => {
-    if (file.type.startsWith('image/')) {
+    if (file.type && file.type.startsWith('image/')) {
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = (e) => resolve(e.target?.result as string);

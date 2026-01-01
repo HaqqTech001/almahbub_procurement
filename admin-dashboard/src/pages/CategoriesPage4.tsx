@@ -90,23 +90,16 @@ const CategoriesPage: React.FC = () => {
       setIsLoading(true);
       const response = await apiClient.getCategories();
       
-      if (response.success && response.data?.categories) {
+      if (response.success) {
         const transformedCategories = response.data.categories.map((category: any) => ({
           ...category,
           is_active: category.is_active ?? (category.status === 'active'),
           product_count: category.product_count || 0,
-          parent_id: category.parent_id || null,
         }));
         setCategories(transformedCategories);
-      } else {
-        // No categories found - set empty array
-        setCategories([]);
-        console.log('No categories found in database');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to fetch categories:', error);
-      // Set empty categories on error
-      setCategories([]);
     } finally {
       setIsLoading(false);
     }
@@ -606,11 +599,11 @@ const CategoriesPage: React.FC = () => {
       </Card>
 
       {/* Categories Tree */}
-      <div className="space-y-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {hierarchicalCategories.length > 0 ? (
           hierarchicalCategories.map(category => renderCategoryCard(category))
         ) : (
-          <Card>
+          <Card className='flex '>
             <CardContent className="flex flex-col items-center justify-center py-16">
               <Folder className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-semibold mb-2">No categories found</h3>

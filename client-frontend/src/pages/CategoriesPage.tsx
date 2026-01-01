@@ -103,7 +103,7 @@ const ServicesPage: React.FC = () => {
   const renderGridView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {filteredServices.map((service) => (
-        <Link key={service.id} to={`/category/${service.slug}`}>
+        <Link key={service.id} to={`/category/${service.slug}/subcategories`}>
           <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border-2 border-transparent hover:border-[#0e7490]/20 overflow-hidden">
             <CardHeader className="p-0">
               <div className="relative overflow-hidden">
@@ -158,7 +158,7 @@ const ServicesPage: React.FC = () => {
   const renderListView = () => (
     <div className="space-y-4">
       {filteredServices.map((service) => (
-        <Link key={service.id} to={`/category/${service.slug}`}>
+        <Link key={service.id} to={`/category/${service.slug}/subcategories`}>
           <Card className="group hover:shadow-md transition-all duration-300 cursor-pointer border-l-4 border-l-[#0e7490]">
             <CardContent className="p-6">
               <div className="flex items-center space-x-6">

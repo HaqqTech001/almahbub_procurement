@@ -316,7 +316,7 @@ const ChatPage: React.FC = () => {
 
   const handleFilesSelected = (files: File[]) => {
     const newFiles = files.map(file => {
-      if (file.type.startsWith('image/')) {
+      if (file.type && file.type.startsWith('image/')) {
         return {
           file,
           type: 'image' as const,

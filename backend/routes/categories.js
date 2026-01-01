@@ -84,7 +84,48 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get single category
+// Get subcategories by parent ID
+router.get('/parent/:parentId', async (req, res) => {
+  try {
+    const { parentId } = req.params;
+
+    const [subcategories] = await pool.execute(`
+      SELECT 
+        c.*,
+        COUNT(p.id) as product_count
+      FROM categories c
+      LEFT JOIN products p ON c.id = p.category_id AND p.is_active = TRUE
+      WHERE c.parent_id = ? AND c.is_active = TRUE
+      GROUP BY c.id
+      ORDER BY c.sort_order ASC, c.name ASC
+    `, [parentId]);
+
+    // Also get the parent category info
+    const [parentCategories] = await pool.execute(`
+      SELECT 
+        c.*,
+        COUNT(p.id) as product_count
+      FROM categories c
+      LEFT JOIN products p ON c.id = p.category_id AND p.is_active = TRUE
+      WHERE c.id = ?
+      GROUP BY c.id
+    `, [parentId]);
+
+    res.json({
+      success: true,
+      data: { 
+        subcategories,
+        parent: parentCategories[0] || null
+      }
+    });
+
+  } catch (error) {
+    console.error('Get subcategories error:', error);
+    res.status(500).json({ error: 'Failed to fetch subcategories' });
+  }
+});
+
+// Get single category by ID
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -114,12 +155,45 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// Get category by slug
+router.get('/slug/:slug', async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    const [categories] = await pool.execute(`
+      SELECT 
+        c.*,
+        COUNT(p.id) as product_count
+      FROM categories c
+      LEFT JOIN products p ON c.id = p.category_id AND p.is_active = TRUE
+      WHERE c.slug = ? AND c.is_active = TRUE
+      GROUP BY c.id
+    `, [slug]);
+
+    if (categories.length === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    res.json({
+      success: true,
+      data: { category: categories[0] }
+    });
+
+  } catch (error) {
+    console.error('Get category by slug error:', error);
+    res.status(500).json({ error: 'Failed to fetch category' });
+  }
+});
+
 // Create category (admin only)
 router.post('/', authenticateToken, requireAdmin, categoryUpload.single('image'), [
   body('name').trim().isLength({ min: 1 }),
   body('description').optional().trim(),
   body('slug').trim().isLength({ min: 1 }),
-  body('sortOrder').optional().isInt()
+  body('parent_id').optional().isInt(),
+  body('sort_order').optional().isInt(),
+  body('icon').optional().trim(),
+  body('color').optional().trim()
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -127,16 +201,27 @@ router.post('/', authenticateToken, requireAdmin, categoryUpload.single('image')
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, description, slug, sortOrder = 0 } = req.body;
-    
+    const { name, description, slug, parent_id, sort_order = 0, icon, color, status } = req.body;
+
     // Handle uploaded image
     let imagePath = req.body.image || null;
     if (req.file) {
       imagePath = `/uploads/categories/${req.file.filename}`;
     }
 
-    // Check if slug already exists
-    const [existing] = await pool.execute('SELECT id FROM categories WHERE slug = ?', [slug]);
+    // Check if slug already exists (in same parent scope)
+    let slugCheckQuery = 'SELECT id FROM categories WHERE slug = ?';
+    let slugParams = [slug];
+
+    // If creating a subcategory, also check within the same parent
+    if (parent_id) {
+      slugCheckQuery += ' AND parent_id = ?';
+      slugParams.push(parent_id);
+    } else {
+      slugCheckQuery += ' AND parent_id IS NULL';
+    }
+
+    const [existing] = await pool.execute(slugCheckQuery, slugParams);
     if (existing.length > 0) {
       // Delete uploaded file if slug exists
       if (req.file) {
@@ -145,9 +230,12 @@ router.post('/', authenticateToken, requireAdmin, categoryUpload.single('image')
       return res.status(400).json({ error: 'Category with this slug already exists' });
     }
 
+    // Convert status to is_active boolean
+    const isActive = status === 'active' || status === undefined;
+
     const [result] = await pool.execute(
-      'INSERT INTO categories (name, description, slug, image, sort_order) VALUES (?, ?, ?, ?, ?)',
-      [name, description, slug, imagePath, sortOrder]
+      'INSERT INTO categories (name, description, slug, image, parent_id, sort_order, icon, color, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [name, description, slug, imagePath, parent_id || null, parseInt(sort_order) || 0, icon || null, color || null, isActive]
     );
 
     const categoryId = result.insertId;
@@ -175,8 +263,11 @@ router.put('/:id', authenticateToken, requireAdmin, categoryUpload.single('image
   body('name').optional().trim().isLength({ min: 1 }),
   body('description').optional().trim(),
   body('slug').optional().trim().isLength({ min: 1 }),
-  body('sortOrder').optional().isInt(),
-  body('isActive').optional().isBoolean()
+  body('parent_id').optional().isInt(),
+  body('sort_order').optional().isInt(),
+  body('icon').optional().trim(),
+  body('color').optional().trim(),
+  body('status').optional().isIn(['active', 'inactive'])
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -185,7 +276,7 @@ router.put('/:id', authenticateToken, requireAdmin, categoryUpload.single('image
     }
 
     const { id } = req.params;
-    const { name, description, slug, sortOrder, isActive, removeImage } = req.body;
+    const { name, description, slug, parent_id, sort_order, icon, color, status, removeImage } = req.body;
 
     // Get existing category
     const [existing] = await pool.execute('SELECT * FROM categories WHERE id = ?', [id]);
@@ -207,7 +298,7 @@ router.put('/:id', authenticateToken, requireAdmin, categoryUpload.single('image
         await deleteCategoryImage(existingCategory.image);
       }
       imagePath = `/uploads/categories/${req.file.filename}`;
-    } 
+    }
     // Handle image removal
     else if (removeImage === 'true' || removeImage === true) {
       if (existingCategory.image) {
@@ -228,26 +319,48 @@ router.put('/:id', authenticateToken, requireAdmin, categoryUpload.single('image
       updateValues.push(description);
     }
     if (slug !== undefined) {
-      // Check if new slug is already taken by another category
-      const [slugCheck] = await pool.execute('SELECT id FROM categories WHERE slug = ? AND id != ?', [slug, id]);
+      // Check if new slug is already taken by another category (in same parent scope)
+      let slugCheckQuery = 'SELECT id FROM categories WHERE slug = ? AND id != ?';
+      let slugParams = [slug, id];
+
+      if (parent_id) {
+        slugCheckQuery += ' AND parent_id = ?';
+        slugParams.push(parent_id);
+      } else {
+        slugCheckQuery += ' AND parent_id IS NULL';
+      }
+
+      const [slugCheck] = await pool.execute(slugCheckQuery, slugParams);
       if (slugCheck.length > 0) {
         return res.status(400).json({ error: 'Category with this slug already exists' });
       }
       updateFields.push('slug = ?');
       updateValues.push(slug);
     }
+    if (parent_id !== undefined) {
+      updateFields.push('parent_id = ?');
+      updateValues.push(parent_id || null);
+    }
     // Always update image field if it changed
     if (imagePath !== existingCategory.image) {
       updateFields.push('image = ?');
       updateValues.push(imagePath);
     }
-    if (sortOrder !== undefined) {
+    if (sort_order !== undefined) {
       updateFields.push('sort_order = ?');
-      updateValues.push(sortOrder);
+      updateValues.push(parseInt(sort_order) || 0);
     }
-    if (isActive !== undefined) {
+    if (icon !== undefined) {
+      updateFields.push('icon = ?');
+      updateValues.push(icon || null);
+    }
+    if (color !== undefined) {
+      updateFields.push('color = ?');
+      updateValues.push(color || null);
+    }
+    if (status !== undefined) {
       updateFields.push('is_active = ?');
-      updateValues.push(isActive === 'true' || isActive === true);
+      updateValues.push(status === 'active');
     }
 
     if (updateFields.length === 0) {

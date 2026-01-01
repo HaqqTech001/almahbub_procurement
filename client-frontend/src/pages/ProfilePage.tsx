@@ -194,7 +194,7 @@ const ProfilePage: React.FC = () => {
                       </Button>
                     </>
                   ) : (
-                    <Button onClick={() => setIsEditing(true)} size="sm">
+                    <Button onClick={() => setIsEditing(true)} size="sm" className='text-white'>
                       <Edit className="h-4 w-4 mr-2" />
                       Edit Profile
                     </Button>
@@ -216,11 +216,11 @@ const ProfilePage: React.FC = () => {
                   </h2>
                   <p className="text-gray-600">{profile.company || profile.companyName || 'Not provided'}</p>
                   <div className="flex items-center space-x-2 mt-2">
-                    <Badge variant={profile.isActive ? 'default' : 'secondary'}>
-                      {profile.isActive ? 'Active' : 'Inactive'}
+                    <Badge variant={profile? 'default' : 'secondary'} className='bg-orange-400'>
+                      {profile ? 'Active' : 'Inactive'}
                     </Badge>
-                    <Badge variant={profile.isEmailVerified ? 'default' : 'secondary'}>
-                      {profile.isEmailVerified ? 'Verified' : 'Unverified'}
+                    <Badge variant={profile.isEmailVerified ? 'default' : 'secondary'} className='bg-orange-400'>
+                      {profile.emailVerified ? 'Verified' : 'Unverified'}
                     </Badge>
                   </div>
                 </div>

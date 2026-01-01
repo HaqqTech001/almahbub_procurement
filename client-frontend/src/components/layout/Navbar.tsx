@@ -59,8 +59,8 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-[#0e7490] to-[#164e63] rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">A</span>
+            <div className="w-10 h-10 bg-[#2390ae] rounded-lg flex items-center justify-center">
+              <img src="./almahbub.png" alt="" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-[#0e7490]">Almahbub</h1>

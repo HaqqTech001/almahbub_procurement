@@ -201,8 +201,8 @@ const RegisterPage: React.FC = () => {
         <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center bg-white">
           {/* Mobile Logo - Visible only on small screens */}
           <div className="lg:hidden text-center mb-8">
-            <div className="w-14 h-14 bg-[#0F4C5C] rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Globe className="w-7 h-7 text-white" />
+           <div className="w-20 h-20 bg-[#0F4C5C]/60 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <img src="./almahbub.png" alt="a.png" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1>
             <p className="text-gray-500 text-sm mt-1">Create your account</p>
@@ -600,7 +600,7 @@ const RegisterPage: React.FC = () => {
                   </svg>
                 </a>
                 <a 
-                  href="https://www.instagram.com/almahbubinternational" 
+                  href="https://www.instagram.com/almahbubimport" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-[#E3B505] transition-colors"

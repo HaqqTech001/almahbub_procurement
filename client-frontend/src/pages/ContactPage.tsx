@@ -16,7 +16,7 @@ const WHATSAPP_NUMBER = '2348074454081'; // Format: Country code + number (witho
 const WHATSAPP_MESSAGE = 'Hello Almahbub International, I need assistance with my inquiry.';
 
 // Company address for map
-const COMPANY_ADDRESS = 'Graceland Bus Stop, University Road, Tanke, Ilorin, Kwara State, Nigeria';
+const COMPANY_ADDRESS = 'Graceland Junction, Tanke Rd, University Rd, Ilorin 240102, Kwara';
 
 // WhatsApp URL generator
 const getWhatsAppUrl = (number: string, message: string) => {
@@ -350,7 +350,7 @@ const ContactPage: React.FC = () => {
               <span className="text-sm font-medium">TikTok</span>
             </a>
             <a 
-              href="https://www.instagram.com/almahbubinternational" 
+              href="https://www.instagram.com/almahbubimport" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center space-x-2 text-pink-600 hover:text-pink-800 transition-colors"

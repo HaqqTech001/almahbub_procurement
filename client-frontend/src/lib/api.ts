@@ -172,6 +172,14 @@ class ApiClient {
     return this.request<any>(`/categories/${id}`);
   }
 
+  async getCategoryBySlug(slug: string) {
+    return this.request<any>(`/categories/slug/${slug}`);
+  }
+
+  async getSubcategories(parentId: string) {
+    return this.request<any>(`/categories/parent/${parentId}`);
+  }
+
   // Products
   async getProducts(params?: any) {
     const queryString = params ? '?' + new URLSearchParams(params).toString() : '';

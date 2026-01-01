@@ -25,9 +25,9 @@ const Footer: React.FC = () => {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-gradient-brand rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">A</span>
-              </div>
+              <div className="w-10 h-10 bg-[#2390ae] rounded-lg flex items-center justify-center">
+              <img src="./almahbub.png" alt="" />
+            </div>
               <div>
                 <h3 className="text-xl font-bold">Almahbub International</h3>
                 <p className="text-sm text-gray-400">Procurement Excellence</p>

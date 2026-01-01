@@ -122,12 +122,12 @@ async function startServer() {
       console.log(`📡 Server running on port ${PORT}`);
       console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`📡 Socket.IO enabled for real-time chat`);
-      console.log(`🔗 Admin Dashboard: http://localhost:5174`);
-      console.log(`👤 Client Frontend: http://localhost:5173`);
+      // console.log(`🔗 Admin Dashboard: http://localhost:5174`);
+      // console.log(`👤 Client Frontend: http://localhost:5173`);
       console.log('');
-      console.log('🔑 Admin Credentials:');
-      console.log('   Email: admin@almahbub.com');
-      console.log('   Password: admin123456');
+      // console.log('🔑 Admin Credentials:');
+      // console.log('   Email: admin@almahbub.com');
+      // console.log('   Password: admin123456');
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);

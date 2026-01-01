@@ -58,27 +58,64 @@ const handleUploadError = (err, req, res, next) => {
 
 // Send message
 router.post('/send', authenticateToken, upload.single('file'), handleUploadError, [
-  body('receiverId').isInt(),
+  body('receiverId').optional().custom((value) => {
+    // Accept both numeric strings and integers
+    if (value === undefined || value === null || value === '') {
+      return true; // Let the route handler handle missing receiverId
+    }
+    if (!isNaN(parseInt(value)) && parseInt(value) > 0) {
+      return true;
+    }
+    throw new Error('receiverId must be a valid positive integer');
+  }),
   body('message').optional().trim(),
-  body('orderId').optional().isInt()
+  body('orderId').optional().custom((value) => {
+    if (value === undefined || value === null || value === '') {
+      return true;
+    }
+    if (!isNaN(parseInt(value))) {
+      return true;
+    }
+    throw new Error('orderId must be a valid integer');
+  })
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      // Log validation errors for debugging
+      console.log('Validation errors:', errors.array());
+      // Allow the request to proceed if we have a file (media-only message)
+      const validationErrors = errors.array();
+      const hasOnlyReceiverIdError = validationErrors.length === 1 && 
+        validationErrors.some(e => e.param === 'receiverId');
+      const hasFile = req.file;
+      
+      if (hasOnlyReceiverIdError && hasFile) {
+        // Continue with default receiverId when sending media only
+        console.log('Proceeding with default receiverId for media-only message');
+      } else if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
     }
 
-    const { receiverId, message, orderId } = req.body;
+    let { receiverId, message, orderId } = req.body;
     const file = req.file;
 
     if (!message && !file) {
       return res.status(400).json({ error: 'Message or file is required' });
     }
 
+    // Ensure receiverId is a valid number
+    if (!receiverId || isNaN(parseInt(receiverId)) || parseInt(receiverId) <= 0) {
+      // Default to admin user (ID 1) if not provided or invalid
+      receiverId = '1';
+    }
+
     let messageType = 'text';
     let fileUrl = null;
 
     if (file) {
+      const isImage = file.mimetype && typeof file.mimetype === 'string' && file.memetype. startsWith('image/')
       messageType = file.mimetype.startsWith('image/') ? 'image' : 'file';
       fileUrl = `/uploads/chat/${file.filename}`;
     }
@@ -379,14 +416,35 @@ router.get('/support/messages', authenticateToken, async (req, res) => {
 });
 
 // Send message to support/admin
-router.post('/support/send', authenticateToken ,upload.single('file'), handleUploadError, [
+router.post('/support/send', authenticateToken, upload.single('file'), handleUploadError, [
   body('message').optional().trim(),
-  body('orderId').optional().isInt()
+  body('orderId').optional().custom((value) => {
+    if (value === undefined || value === null || value === '') {
+      return true;
+    }
+    if (!isNaN(parseInt(value))) {
+      return true;
+    }
+    throw new Error('orderId must be a valid integer');
+  })
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      // Log validation errors for debugging
+      console.log('Support send validation errors:', errors.array());
+      // Allow the request to proceed if we have a file (media-only message)
+      const validationErrors = errors.array();
+      const hasOnlyOrderIdError = validationErrors.length === 1 && 
+        validationErrors.some(e => e.param === 'orderId');
+      const hasFile = req.file;
+      
+      if (hasOnlyOrderIdError && hasFile) {
+        // Continue with default orderId when sending media only
+        console.log('Proceeding with default orderId for media-only support message');
+      } else {
+        return res.status(400).json({ errors: errors.array() });
+      }
     }
 
     const { message, orderId } = req.body;

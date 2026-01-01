@@ -43,7 +43,8 @@ const FileUpload: React.FC<FileUploadProps> = ({
         return file.name.toLowerCase().endsWith(type.toLowerCase());
       }
       if (type.includes('/*')) {
-        return file.type.startsWith(type.replace('/*', ''));
+        const baseType = type.replace('/*', '');
+        return file.type && file.type.startsWith(baseType);
       }
       return file.type === type;
     });
@@ -114,6 +115,9 @@ const FileUpload: React.FC<FileUploadProps> = ({
   };
 
   const getFileIcon = (file: File) => {
+    if (!file.type) {
+      return <FileIcon className="h-8 w-8 text-gray-500" />;
+    }
     if (file.type.startsWith('image/')) {
       return <ImageIcon className="h-8 w-8 text-green-500" />;
     }

@@ -21,6 +21,7 @@ import RegisterPage from '@/pages/auth/RegisterPage';
 import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage';
 import VerifyEmailPage from '@/pages/auth/VerifyEmailPage';
 import ServicesPage from '@/pages/CategoriesPage';
+import SubcategoriesPage from '@/pages/SubcategoriesPage';
 import CategoryDetailPage from '@/pages/CategoryDetailPage';
 // import ProductDetailPage from '@/pages/ProductDetailPage';
 import CreateRequestPage from '@/pages/CreateRequestPage';
@@ -28,7 +29,7 @@ import MyRequestsPage from '@/pages/MyRequestsPage';
 import RequestDetailPage from '@/pages/RequestDetailPage';
 import ProfilePage from '@/pages/ProfilePage';
 import ChatPage from '@/pages/ChatPage';
-import ClientChatPage from '@/pages/ChatPage';
+// import ClientChatPage from '@/pages/ClientChatPage';
 // import ChatbotSettingsPage from '@/pages/ChatbotSettingsPage';
 // import CreateAnnouncementPage from '@/pages/CreateAnnouncementPage';
 import AboutPage from '@/pages/AboutPage';
@@ -68,14 +69,13 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 // Layout wrapper to conditionally show/hide footer
-const LayoutWrapper: React.FC<{ children: React.ReactNode; showFooter?: boolean; showNav?: boolean }> = ({ 
+const LayoutWrapper: React.FC<{ children: React.ReactNode; showFooter?: boolean }> = ({ 
   children, 
-  showFooter = true ,
-  showNav = true
+  showFooter = true 
 }) => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
-     { showNav && <Navbar />}
+      <Navbar />
       <main className="flex-1">
         {children}
       </main>
@@ -134,11 +134,11 @@ const AppContent: React.FC = () => {
           <CategoryDetailPage />
         </LayoutWrapper>
       } />
-      {/* <Route path="/product/:id" element={
+      <Route path="/category/:slug/subcategories" element={
         <LayoutWrapper showFooter={true}>
-          <ProductDetailPage />
+          <SubcategoriesPage />
         </LayoutWrapper>
-      } /> */}
+      } />
       <Route path="/about" element={
         <LayoutWrapper showFooter={true}>
           <AboutPage />
@@ -217,37 +217,7 @@ const AppContent: React.FC = () => {
           </ProtectedRoute>
         </LayoutWrapper>
       } />
-      {/* Client Chat Page - NO FOOTER */}
-      <Route path="/client-chat" element={
-        <LayoutWrapper showFooter={false} showNav={false}>
-          <ProtectedRoute>
-            <ClientChatPage  /> 
-          </ProtectedRoute>
-        </LayoutWrapper>
-      } />
-      {/* Chatbot Settings (Admin)
-      <Route path="/chatbot-settings" element={
-        <LayoutWrapper showFooter={true}>
-          <ProtectedRoute>
-            <ChatbotSettingsPage />
-          </ProtectedRoute>
-        </LayoutWrapper>
-      } />
-      {/* Create/Edit Announcement 
-      <Route path="/announcement/create" element={
-        <LayoutWrapper showFooter={true}>
-          <ProtectedRoute>
-            <CreateAnnouncementPage />
-          </ProtectedRoute>
-        </LayoutWrapper>
-      } />
-      <Route path="/announcement/edit/:id" element={
-        <LayoutWrapper showFooter={true}>
-          <ProtectedRoute>
-            <CreateAnnouncementPage />
-          </ProtectedRoute>
-        </LayoutWrapper>
-      } /> */}
+      
       {/* Notifications Page */}
       <Route path="/notifications" element={
         <LayoutWrapper showFooter={true}>
@@ -274,12 +244,12 @@ function App() {
           <SocketProvider>
             <NotificationProvider>
               <Router>
-                {/* <TutorialProvider> */}
+                <TutorialProvider>
                   <Toaster />
-                  {/* <TutorialManager /> */}
-                  {/* <TutorialTrigger /> */}
+                  <TutorialManager />
+                  <TutorialTrigger />
                   <AppContent />
-                {/* </TutorialProvider> */}
+                </TutorialProvider>
               </Router>
             </NotificationProvider>
           </SocketProvider>

@@ -258,7 +258,15 @@ async function initializeDatabase() {
       `ALTER TABLE orders ADD COLUMN IF NOT EXISTS request_number VARCHAR(20)`,
       
       // Migration: Add index on request_number for faster lookups
-      `CREATE INDEX IF NOT EXISTS idx_orders_request_number ON orders(request_number)`
+      `CREATE INDEX IF NOT EXISTS idx_orders_request_number ON orders(request_number)`,
+
+
+     ` ALTER TABLE categories
+      ADD COLUMN parent_id INT DEFAULT NULL AFTER slug,
+      ADD COLUMN icon VARCHAR(10) DEFAULT NULL AFTER parent_id
+      ADD COLUMN color VARCHAR(20) DEFAULT '#0F4C5C' AFTER icon`,
+
+        `CREATE INDEX idx_parent ON categories(parent_id)`
     ];
 
     for (const query of alterAnnouncementsQueries) {
