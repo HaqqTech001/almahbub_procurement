@@ -79,15 +79,35 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Static file serving for uploads
 const path = require('path');
+const emailService = require('./services/emailService');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development'
   });
+});
+
+// Email test endpoint (for debugging email issues)
+app.get('/api/test-email', async (req, res) => {
+  try {
+    await emailService.verifyConnection();
+    res.json({
+      success: true,
+      message: 'Email server connection verified successfully',
+      configured: !!process.env.GMAIL_USER
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Email server connection failed',
+      error: error.message,
+      help: 'Make sure GMAIL_USER and GMAIL_PASS environment variables are set. For Gmail, you need an App Password, not your regular password. Enable 2-Step Verification and generate an App Password from your Google Account.'
+    });
+  }
 });
 
 // API routes

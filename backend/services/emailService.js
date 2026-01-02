@@ -1,17 +1,56 @@
 const nodemailer = require('nodemailer');
 
+const GMAIL_USER='almahbubinternational@gmail.com'
+const GMAIL_PASS='fqckhnvioenqmmio'
+
 class EmailService {
   constructor() {
+    this.transporter = null;
+    this.initializeTransporter();
+  }
+
+  initializeTransporter() {
+    const gmailUser = GMAIL_USER;
+    const gmailPass = GMAIL_PASS;
+
+    if (!gmailUser || !gmailPass) {
+      console.error('Email service not configured: GMAIL_USER or GMAIL_PASS environment variables are missing');
+      return;
+    }
+
     this.transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS
+        user: gmailUser,
+        pass: gmailPass
       }
     });
+
+    console.log('Email transporter initialized for:', gmailUser);
+  }
+
+  async verifyConnection() {
+    if (!this.transporter) {
+      throw new Error('Email transporter not initialized. Check environment variables.');
+    }
+
+    try {
+      await this.transporter.verify();
+      console.log('Email server connection verified');
+      return true;
+    } catch (error) {
+      console.error('Email server connection failed:', error.message);
+      throw error;
+    }
   }
 
   async sendEmail(to, subject, html, attachments = []) {
+    if (!this.transporter) {
+      const error = new Error('Email service not configured');
+      console.error('Email sending failed:', error.message);
+      throw error;
+    }
+
     try {
       const mailOptions = {
         from: {
@@ -24,11 +63,14 @@ class EmailService {
         attachments
       };
 
+      console.log(`Attempting to send email to: ${to}`);
       const result = await this.transporter.sendMail(mailOptions);
       console.log('Email sent successfully:', result.messageId);
       return result;
     } catch (error) {
-      console.error('Email sending failed:', error);
+      console.error('Email sending failed:', error.message);
+      console.error('Error code:', error.code);
+      console.error('Response:', error.response);
       throw error;
     }
   }
