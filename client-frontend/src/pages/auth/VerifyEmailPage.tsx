@@ -23,15 +23,20 @@ const VerifyEmailPage: React.FC = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       if (!token) {
-        setError('Invalid verification link');
+        console.log('[VerifyEmail] No token found in URL');
+        setError('This verification link is broken. The link may be incomplete or corrupted. Please request a new verification email from the login page.');
         setIsVerifying(false);
         return;
       }
 
+      console.log('[VerifyEmail] Starting verification with token:', token.substring(0, 20) + '...');
+
       try {
         const response = await apiClient.verifyEmail(token);
+        console.log('[VerifyEmail] API response:', response);
         
         if (response.success) {
+          console.log('[VerifyEmail] Verification successful!');
           setIsVerified(true);
           setIsVerifying(false);
           
@@ -42,12 +47,14 @@ const VerifyEmailPage: React.FC = () => {
           });
 
           // Start countdown
-          const timer = setInterval(() => {
+          let timer: NodeJS.Timeout;
+          timer = setInterval(() => {
             setCountdown((prev) => {
               if (prev <= 1) {
                 clearInterval(timer);
                 navigate('/login', { 
                   state: { 
+                    title: 'Welcome!',
                     message: 'Email verified successfully! Please log in to your account.' 
                   }
                 });
@@ -59,15 +66,40 @@ const VerifyEmailPage: React.FC = () => {
 
           return () => clearInterval(timer);
         } else {
-          throw new Error(response.message || 'Verification failed');
+          console.log('[VerifyEmail] API returned success: false');
+          // Handle specific error cases with user-friendly messages
+          if (response.message?.toLowerCase().includes('already verified')) {
+            setError('Your email has already been verified. You can log in to your account now.');
+          } else if (response.message?.toLowerCase().includes('invalid') || response.message?.toLowerCase().includes('expired')) {
+            setError('This verification link has expired or is invalid. Please request a new verification email below.');
+          } else {
+            setError(response.message || 'Something went wrong during verification. Please try again or request a new verification email.');
+          }
+          setIsVerifying(false);
         }
       } catch (error: any) {
-        setError(error.message || 'Email verification failed');
+        console.error('[VerifyEmail] Verification error:', error);
+        
+        // Handle specific error types with user-friendly messages
+        let errorMessage = error.message || 'An unexpected error occurred. Please try again.';
+        
+        // Check for common error patterns
+        if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
+          errorMessage = 'Your session has expired. Please request a new verification email.';
+        } else if (errorMessage.includes('400') || errorMessage.includes('Bad Request')) {
+          errorMessage = 'This verification link is invalid or has already been used. Please request a new verification email.';
+        } else if (errorMessage.includes('500') || errorMessage.includes('Internal Server Error')) {
+          errorMessage = 'Our server is having trouble right now. Please wait a moment and try again.';
+        } else if (errorMessage.includes('Network Error') || errorMessage.includes('fetch')) {
+          errorMessage = 'Unable to connect to our servers. Please check your internet connection and try again.';
+        }
+        
+        setError(errorMessage);
         setIsVerifying(false);
         
         toast({
           title: 'Verification Failed',
-          description: error.message || 'The verification link is invalid or expired.',
+          description: errorMessage,
           variant: 'destructive',
         });
       }
@@ -176,7 +208,8 @@ const VerifyEmailPage: React.FC = () => {
                 </div>
               )}
 
-              {isVerified && (
+              {/* Success State */}
+              {isVerified && !isVerifying && !error && (
                 <div className="text-center py-8 space-y-6 animate-fade-in">
                   <div className="relative inline-block">
                     <CheckCircle className="h-16 w-16 text-emerald-500 mx-auto" />
@@ -203,7 +236,8 @@ const VerifyEmailPage: React.FC = () => {
                 </div>
               )}
 
-              {error && (
+              {/* Error State */}
+              {error && !isVerifying && !isVerified && (
                 <div className="text-center py-8 space-y-6 animate-fade-in">
                   <div className="relative inline-block">
                     <XCircle className="h-16 w-16 text-red-500 mx-auto" />
@@ -272,6 +306,7 @@ const VerifyEmailPage: React.FC = () => {
                 </div>
               )}
 
+              {/* Fallback State - Invalid/Unknown State */}
               {!isVerifying && !isVerified && !error && (
                 <div className="text-center py-8 space-y-6 animate-fade-in">
                   <div className="relative inline-block">

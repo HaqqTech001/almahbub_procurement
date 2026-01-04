@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, Facebook, Instagram, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,11 +26,24 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [errors, setErrors] = useState<{ email?: string; password?: string; general?: string }>({});
 
   const { login } = useAuthStore();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check for messages passed from other pages (e.g., email verification)
+  useEffect(() => {
+    if (location.state?.message) {
+      toast({
+        title: location.state.title || 'Success',
+        description: location.state.message,
+        variant: 'default',
+      });
+      // Clear the location state to prevent showing the message again on back/forward navigation
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, toast]);
 
   const loginSlides: Slide[] = [
     {
@@ -66,27 +79,6 @@ const LoginPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setErrors({});
-
-    // Client-side validation
-    const newErrors: { email?: string; password?: string } = {};
-
-    if (!formData.email) {
-      newErrors.email = 'Email address is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address (e.g., user@example.com)';
-    }
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    }
-    
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setIsLoading(false);
-      return;
-    }
 
     try {
       await login(formData.email, formData.password);
@@ -97,26 +89,34 @@ const LoginPage: React.FC = () => {
       });
       navigate('/dashboard');
     } catch (error: any) {
-      // Handle different error types
       if ((error as any).needsVerification || error.message?.includes('Email verification required')) {
-        setErrors({
-          general: 'Please verify your email address before logging in. Check your inbox for the verification link.'
-        });
-      } else if (error.message?.includes('No account found')) {
-        setErrors({
-          email: 'No account found with this email address. Please register first.'
-        });
-      } else if (error.message?.includes('Incorrect password')) {
-        setErrors({
-          password: 'Incorrect password. Please try again or click "Forgot Password" to reset it.'
-        });
-      } else if (error.message) {
-        setErrors({
-          general: 'Please check your credentials and make sure you are connected to the internet '
+        toast({
+          title: 'Email Verification Required',
+          description: 'Please verify your email address before logging in. Check your email for a verification link.',
+          variant: 'destructive',
         });
       } else {
-        setErrors({
-          general: 'Login failed. Please check your email and password and try again.'
+        // Make error messages more user-friendly
+        let errorMessage = error.message || 'The email or password you entered is incorrect.';
+        let errorTitle = 'Login Failed';
+        
+        // Check for specific error patterns and provide friendly messages
+        if (errorMessage.includes('401') || errorMessage.includes('Invalid') || errorMessage.includes('incorrect')) {
+          errorMessage = 'The email or password you entered is incorrect. Please check your credentials and try again.';
+        } else if (errorMessage.includes('Network') || errorMessage.includes('fetch') || errorMessage.includes('connection')) {
+          errorMessage = 'Unable to connect to our servers. Please check your internet connection and try again.';
+        } else if (errorMessage.includes('500') || errorMessage.includes('server')) {
+          errorMessage = 'Our servers are experiencing issues. Please wait a moment and try again.';
+        } else if (errorMessage.includes('not found') || errorMessage.includes('User not found')) {
+          errorMessage = 'No account exists with this email address. Please create a new account first.';
+        } else if (errorMessage.includes('too many') || errorMessage.includes('rate')) {
+          errorMessage = 'You have tried too many times. Please wait a few minutes before trying again.';
+        }
+        
+        toast({
+          title: errorTitle,
+          description: errorMessage,
+          variant: 'destructive',
         });
       }
     } finally {
@@ -140,11 +140,11 @@ const LoginPage: React.FC = () => {
         </div>
 
         {/* Right Side - Login Form */}
-        <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center  items-center bg-white">
+        <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center bg-white">
           {/* Mobile Logo - Visible only on small screens */}
-          <div className="lg:hidden text-center flex flex-col justify-center items-center mb-8">
-            <div className="w-20 h-20 bg-[#2390ae] rounded-lg flex items-center justify-center mb-4">
-              <img src="./almahbub.png" alt="" />
+          <div className="lg:hidden text-center mb-8">
+            <div className="w-14 h-14 bg-[#0F4C5C] rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Globe className="w-7 h-7 text-white" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1>
             <p className="text-gray-500 text-sm mt-1">Sign in to continue</p>
@@ -163,13 +163,6 @@ const LoginPage: React.FC = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* General Error Message */}
-              {errors.general && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-600">{errors.general}</p>
-                </div>
-              )}
-
               {/* Email Field */}
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-gray-700 font-medium">Email Address</Label>
@@ -181,16 +174,11 @@ const LoginPage: React.FC = () => {
                     type="email"
                     placeholder="Enter your email"
                     value={formData.email}
-                    onChange={(e) => {
-                      handleChange(e);
-                      if (errors.email) setErrors({ ...errors, email: undefined });
-                    }}
-                    className={`pl-12 pr-4 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
-                      errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500/10' : ''
-                    }`}
+                    onChange={handleChange}
+                    className="pl-12 pr-4 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
+                    required
                   />
                 </div>
-                {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
               </div>
 
               {/* Password Field */}
@@ -204,13 +192,9 @@ const LoginPage: React.FC = () => {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
                     value={formData.password}
-                    onChange={(e) => {
-                      handleChange(e);
-                      if (errors.password) setErrors({ ...errors, password: undefined });
-                    }}
-                    className={`pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg ${
-                      errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500/10' : ''
-                    }`}
+                    onChange={handleChange}
+                    className="pl-12 pr-12 h-12 bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 transition-all rounded-lg"
+                    required
                   />
                   <button
                     type="button"
@@ -220,7 +204,6 @@ const LoginPage: React.FC = () => {
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
-                {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
               </div>
 
               {/* Remember Me & Forgot Password */}
@@ -259,17 +242,17 @@ const LoginPage: React.FC = () => {
               </Button>
 
               {/* Divider */}
-              {/* <div className="relative py-2">
+              <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-gray-200"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="px-4 bg-white text-gray-500">Or continue with</span>
                 </div>
-              </div> */}
+              </div>
 
               {/* Social Buttons */}
-              {/* <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <Button
                   type="button"
                   variant="outline"
@@ -293,7 +276,7 @@ const LoginPage: React.FC = () => {
                   </svg>
                   Apple
                 </Button>
-              </div> */}
+              </div>
             </form>
 
             {/* Social Media Links */}
@@ -320,7 +303,7 @@ const LoginPage: React.FC = () => {
                   </svg>
                 </a>
                 <a 
-                  href="https://www.instagram.com/almahbubimport" 
+                  href="https://www.instagram.com/almahbubinternational" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-[#E3B505] transition-colors"

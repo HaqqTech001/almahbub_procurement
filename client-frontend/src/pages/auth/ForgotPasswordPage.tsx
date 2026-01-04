@@ -60,9 +60,29 @@ const ForgotPasswordPage: React.FC = () => {
         description: 'Password reset instructions have been sent to your email.',
       });
     } catch (error: any) {
+      // Make error messages more user-friendly
+      let errorMessage = 'Something went wrong while sending the reset email. Please try again.';
+      let errorTitle = 'Unable to Send Email';
+      
+      // Check for specific error patterns and provide friendly messages
+      if (error.message?.includes('Network') || error.message?.includes('fetch') || error.message?.includes('connection')) {
+        errorMessage = 'Unable to connect to our servers. Please check your internet connection and try again.';
+      } else if (error.message?.includes('404') || error.message?.includes('not found') || error.message?.includes('User not found')) {
+        // For security, we don't reveal if email exists or not
+        errorMessage = 'If an account with this email exists, you will receive a password reset link shortly. Please check your inbox and spam folder.';
+        errorTitle = 'Check Your Email';
+      } else if (error.message?.includes('500') || error.message?.includes('server')) {
+        errorMessage = 'Our servers are experiencing issues. Please wait a moment and try again.';
+      } else if (error.message?.includes('429') || error.message?.includes('too many')) {
+        errorMessage = 'You have requested too many password resets. Please wait a few minutes before trying again.';
+      } else if (error.message?.includes('invalid') || error.message?.includes('format')) {
+        errorMessage = 'Please enter a valid email address in the format: name@example.com';
+        errorTitle = 'Invalid Email';
+      }
+      
       toast({
-        title: 'Error',
-        description: error.response?.data?.message || 'Failed to send reset email',
+        title: errorTitle,
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
@@ -90,9 +110,11 @@ const ForgotPasswordPage: React.FC = () => {
           <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center">
             {/* Mobile Logo */}
             <div className="lg:hidden text-center mb-8">
-              <div className="w-20 h-20 bg-[#0F4C5C]/60 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <img src="./almahbub.png" alt="a.png" />
-            </div>
+              <div className="w-14 h-14 bg-[#0F4C5C] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+              </div>
               <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1>
               <p className="text-gray-500 text-sm mt-1">Password Reset</p>
             </div>
@@ -142,7 +164,7 @@ const ForgotPasswordPage: React.FC = () => {
                       <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>
                     </svg>
                   </a>
-                  <a href="https://www.instagram.com/almahbubimport" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-600 transition-colors" title="Instagram">
+                  <a href="https://www.instagram.com/almahbubinternational" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-600 transition-colors" title="Instagram">
                     <Instagram className="h-5 w-5" />
                   </a>
                 </div>
@@ -172,9 +194,11 @@ const ForgotPasswordPage: React.FC = () => {
         {/* Right Side - Form */}
         <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center">
           {/* Mobile Logo */}
-          <div className="lg:hidden text-center mb-8 flex flex-col justify-center items-center">
-            <div className="w-20 h-20 bg-[#2390ae] rounded-lg flex items-center justify-center mb-4">
-              <img src="./almahbub.png" alt="" />
+          <div className="lg:hidden text-center mb-8">
+            <div className="w-14 h-14 bg-[#0F4C5C] rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1>
             <p className="text-gray-500 text-sm mt-1">Password Recovery</p>

@@ -1,6 +1,55 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://almahbub-procurement.onrender.com/api/v1';
 const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'https://almahbub-procurement.onrender.com';
 
+// User-friendly error message mapping
+const getUserFriendlyErrorMessage = (status: number, errorKey?: string, defaultMessage?: string): string => {
+  const errorMessages: Record<number, string> = {
+    400: defaultMessage || 'The information you provided is not valid. Please check and try again.',
+    401: 'Your session has expired. Please log in again to continue.',
+    403: 'You do not have permission to perform this action. Please contact support if you think this is an error.',
+    404: 'The item you are looking for could not be found. It may have been removed or the link is incorrect.',
+    409: 'This information already exists. Please try a different one.',
+    422: 'The information you provided is incomplete or invalid. Please check all required fields.',
+    429: 'You have made too many requests. Please wait a moment and try again.',
+    500: 'Something went wrong on our server. Please try again later or contact support.',
+    503: 'Our service is temporarily unavailable. Please try again later.',
+  };
+
+  // Specific error key mappings for more detailed messages
+  const specificErrorMessages: Record<string, string> = {
+    'Invalid verification token': 'This verification link is invalid or has expired. Please request a new verification email.',
+    'Email already verified': 'Your email has already been verified. You can log in to your account.',
+    'Invalid login credentials': 'The email or password you entered is incorrect. Please try again.',
+    'Account not verified': 'Please verify your email address before logging in. Check your email for the verification link.',
+    'Email verification required': 'You need to verify your email before you can log in. Please check your email for the verification link.',
+    'Token expired': 'Your session has expired. Please log in again.',
+    'Invalid token': 'Your session is invalid. Please log in again.',
+    'User not found': 'No account exists with this email address. Please register first.',
+    'Email already exists': 'An account with this email already exists. Please log in or use a different email.',
+    'Password too short': 'Your password must be at least 6 characters long.',
+    'Incorrect password': 'The password you entered is incorrect. Please try again.',
+    'Same password': 'Your new password must be different from your current password.',
+  };
+
+  // Check for specific error message first
+  if (defaultMessage) {
+    for (const [key, message] of Object.entries(specificErrorMessages)) {
+      if (defaultMessage.toLowerCase().includes(key.toLowerCase()) || 
+          (errorKey && errorKey.toLowerCase().includes(key.toLowerCase()))) {
+        return message;
+      }
+    }
+  }
+
+  // Return status-based message
+  if (errorMessages[status]) {
+    return errorMessages[status];
+  }
+
+  // Default fallback
+  return defaultMessage || 'An unexpected error occurred. Please try again.';
+};
+
 // Helper function to get the token - always reads fresh from localStorage
 const getStoredToken = (): string | null => {
   // First try the direct client_token (set by setToken method)
@@ -64,17 +113,34 @@ class ApiClient {
       const response = await fetch(url, config);
       
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: 'Network error' }));
+        const errorData = await response.json().catch(() => ({ message: '' }));
         
         // Special handling for email verification errors
         if (response.status === 403 && errorData.error === 'Email verification required') {
-          const verificationError = new Error(errorData.message || 'Email verification required');
+          const verificationError = new Error('You need to verify your email address before logging in. Please check your email for the verification link.');
           (verificationError as any).needsVerification = true;
           (verificationError as any).status = response.status;
           throw verificationError;
         }
         
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        // Special handling for invalid verification token
+        if (response.status === 400 && errorData.error?.includes('verification token')) {
+          throw new Error('This verification link is invalid or has already been used. Please request a new verification email.');
+        }
+        
+        // Special handling for already verified email
+        if (response.status === 400 && errorData.error?.includes('already verified')) {
+          throw new Error('Your email has already been verified. You can now log in to your account.');
+        }
+        
+        // Convert to user-friendly message
+        const userFriendlyMessage = getUserFriendlyErrorMessage(
+          response.status,
+          errorData.error,
+          errorData.message
+        );
+        
+        throw new Error(userFriendlyMessage);
       }
 
       // Handle responses that might not be JSON
