@@ -114,7 +114,7 @@ app.get('/api/test-email', async (req, res) => {
 // API routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/requests', requestRoutes);
-app.use('/api/v1/order', orderRoutes);
+app.use('/api/v1/orders', orderRoutes);
 app.use('/api/v1/tracker', trackerRoutes);
 app.use('/api/v1/announcements', announcementRoutes);
 app.use('/api/v1/chat', chatRoutes);
