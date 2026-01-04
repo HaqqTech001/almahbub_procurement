@@ -84,7 +84,7 @@ const ContactPage: React.FC = () => {
     {
       icon: <Phone className="h-6 w-6 text-cyan-600" />,
       title: 'Phone',
-      details: ['08074454081', '07033546666'],
+      details: ['+2348074454081', '+2347033546666'],
     },
     {
       icon: <Mail className="h-6 w-6 text-cyan-600" />,

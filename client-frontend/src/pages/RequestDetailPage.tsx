@@ -430,7 +430,7 @@ const RequestDetailPage: React.FC = () => {
           {/* Sidebar */}
           <div className="space-y-4 md:space-y-6">
             {/* Request Summary */}
-            <Card className="tour-request-summary">
+            {/* <Card className="tour-request-summary">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg md:text-xl">Request Summary</CardTitle>
               </CardHeader>
@@ -449,7 +449,7 @@ const RequestDetailPage: React.FC = () => {
                   <span>{formatCurrency(request.totalAmount || 0, request.currency || 'USD')}</span>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
             {/* Delivery Address */}
             <Card className="tour-delivery-info">
