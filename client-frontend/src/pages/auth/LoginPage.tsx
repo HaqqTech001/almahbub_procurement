@@ -142,9 +142,9 @@ const LoginPage: React.FC = () => {
         {/* Right Side - Login Form */}
         <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center bg-white">
           {/* Mobile Logo - Visible only on small screens */}
-          <div className="lg:hidden text-center mb-8">
-            <div className="w-14 h-14 bg-[#0F4C5C] rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Globe className="w-7 h-7 text-white" />
+          <div className="lg:hidden text-center flex flex-col gap-2 items-center justify-center mb-8">
+           <div className="w-20 h-20 bg-[#2390ae] rounded-lg flex items-center justify-center">
+              <img src="./almahbub.png" alt="" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1>
             <p className="text-gray-500 text-sm mt-1">Sign in to continue</p>
@@ -242,17 +242,17 @@ const LoginPage: React.FC = () => {
               </Button>
 
               {/* Divider */}
-              <div className="relative py-2">
+              {/* <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-gray-200"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="px-4 bg-white text-gray-500">Or continue with</span>
                 </div>
-              </div>
+              </div> */}
 
               {/* Social Buttons */}
-              <div className="grid grid-cols-2 gap-4">
+              {/* <div className="grid grid-cols-2 gap-4">
                 <Button
                   type="button"
                   variant="outline"
@@ -276,7 +276,7 @@ const LoginPage: React.FC = () => {
                   </svg>
                   Apple
                 </Button>
-              </div>
+              </div> */}
             </form>
 
             {/* Social Media Links */}
@@ -303,7 +303,7 @@ const LoginPage: React.FC = () => {
                   </svg>
                 </a>
                 <a 
-                  href="https://www.instagram.com/almahbubinternational" 
+                  href="https://www.instagram.com/almahbubimport" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-[#E3B505] transition-colors"
