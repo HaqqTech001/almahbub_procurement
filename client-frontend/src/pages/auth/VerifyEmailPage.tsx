@@ -152,11 +152,11 @@ const VerifyEmailPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
+    <div className="min-h-screen flex justify-center items-center bg-gray-50 ">
       {/* Left Side - Slider */}
-      <div className="hidden lg:flex lg:w-1/2 relative">
+      {/* <div className="hidden lg:flex lg:w-1/2 relative">
         <AuthSlider />
-      </div>
+      </div>*/}
 
       {/* Right Side - Verification Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
