@@ -640,7 +640,8 @@ const CreateRequestPage: React.FC = () => {
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting} className="tour-submit-btn">
-              {isSubmitting ? (
+              {isSubmitting ?
+              (
                 <>
                   <Clock className="h-4 w-4 mr-2 animate-spin" />
                   Submitting...
