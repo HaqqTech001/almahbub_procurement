@@ -53,7 +53,7 @@ class EmailService {
     try {
       console.log(`[EMAIL] Sending email via Resend to: ${to}`);
 
-      const fromEmail = process.env.EMAIL_FROM || 'noreply@almahbub.com';
+      const fromEmail = process.env.EMAIL_FROM ;
       const fromName = process.env.EMAIL_FROM_NAME || 'Almahbub International';
 
       // Format attachments for Resend
@@ -85,7 +85,7 @@ class EmailService {
   }
 
   async sendWelcomeEmail(user) {
-    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+    const clientUrl = process.env.CLIENT_URL ;
     const verificationUrl = `${clientUrl}/verify-email/${user.email_verification_token}`;
     
     const html = `
@@ -150,7 +150,7 @@ class EmailService {
   }
 
   async sendPasswordResetEmail(user, resetToken) {
-    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+    const clientUrl = process.env.CLIENT_URL ;
     const resetUrl = `${clientUrl}/reset-password/${resetToken}`;
     
     const html = `
@@ -214,7 +214,7 @@ class EmailService {
   }
 
   async sendOrderStatusUpdate(user, order, status) {
-    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+    const clientUrl = process.env.CLIENT_URL ;
     const orderUrl = `${clientUrl}/orders/${order.id}`;
 
     const statusMessages = {
