@@ -248,8 +248,13 @@ const CategoryDetailPage: React.FC = () => {
   const handleRequestProcurement = () => {
     navigate('/create-request', { 
       state: { 
-        category: category?.name || slug,
-        categoryId: category?.id 
+        category: {
+          id: category?.id,
+          name: category?.name || slug,
+          slug: category?.slug,
+          image: category?.image,
+          description: category?.description,
+        }
       } 
     });
   };
@@ -318,8 +323,8 @@ const CategoryDetailPage: React.FC = () => {
               <h1 className="text-3xl font-bold text-gray-900 mb-4">{category.name}</h1>
               <p className="text-gray-600 text-lg mb-4">{category.description}</p>
               <div className="flex items-center space-x-4">
-                <Badge variant="secondary">{products.length} Products</Badge>
-                {category.isActive && (
+                <Badge variant="secondary">{category.product_count || 0} Products</Badge>
+                {category.is_active && (
                   <Badge className="bg-green-100 text-green-800">Active</Badge>
                 )}
               </div>

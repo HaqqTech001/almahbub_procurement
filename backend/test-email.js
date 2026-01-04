@@ -1,108 +1,157 @@
 /**
- * Email Service Test Script
- * Run this to test if your email configuration is working
- *
- * Usage: node test-email.js
+ * Test script for the Resend email service
+ * 
+ * Usage:
+ *   node backend/test-email.js
+ * 
+ * Required environment variables:
+ *   RESEND_API_KEY - Your Resend API key (get it from https://resend.com/api-keys)
+ *   FROM_EMAIL - The sender email address (must be verified in Resend)
+ *   TO_EMAIL - The recipient email address for testing (optional, defaults to FROM_EMAIL)
  */
 
-require('dotenv').config();
-const nodemailer = require('nodemailer');
+// const emailService = require('./services/emailService');
+// require('dotenv').config();
 
-console.log('='.repeat(60));
-console.log('Email Service Test');
-console.log('='.repeat(60));
+// async function testResendConfig() {
+//   console.log('='.repeat(60));
+//   console.log('Testing Resend Email Service Configuration');
+//   console.log('='.repeat(60));
+//   console.log();
 
-// Check environment variables
-console.log('\n1. Checking Environment Variables...');
-const gmailUser = process.env.GMAIL_USER;
-const gmailPass = process.env.GMAIL_PASS;
-const clientUrl = process.env.CLIENT_URL;
+//   // Check for required environment variables
+//   console.log('1. Checking environment variables...');
+  
+//   const resendApiKey = process.env.RESEND_API_KEY;
+//   const fromEmail = process.env.FROM_EMAIL;
+//   const toEmail = process.env.TO_EMAIL || fromEmail;
 
-console.log(`   GMAIL_USER: ${gmailUser ? '✓ Set' : '✗ NOT SET'}`);
-console.log(`   GMAIL_PASS: ${gmailPass ? '✓ Set' : '✗ NOT SET'}`);
-console.log(`   CLIENT_URL: ${clientUrl || '✗ NOT SET'}`);
+//   if (!resendApiKey) {
+//     console.error('❌ ERROR: RESEND_API_KEY is not set');
+//     console.log('   Please set the RESEND_API_KEY environment variable.');
+//     console.log('   Get your API key from: https://resend.com/api-keys');
+//     console.log();
+//     console.log('   Example:');
+//     console.log('   export RESEND_API_KEY=re_123456789');
+//     console.log('   node backend/test-email.js');
+//     return false;
+//   }
 
-if (!gmailUser || !gmailPass) {
-  console.log('\n❌ ERROR: GMAIL_USER and GMAIL_PASS must be set in .env file');
-  console.log('\nCreate a .env file with:');
-  console.log('   GMAIL_USER=your-email@gmail.com');
-  console.log('   GMAIL_PASS=your-app-password');
-  process.exit(1);
+//   if (!fromEmail) {
+//     console.error('❌ ERROR: FROM_EMAIL is not set');
+//     console.log('   Please set the FROM_EMAIL environment variable.');
+//     console.log('   This must be a verified email domain in your Resend account.');
+//     console.log();
+//     console.log('   Example:');
+//     console.log('   export FROM_EMAIL=noreply@yourdomain.com');
+//     console.log('   node backend/test-email.js');
+//     return false;
+//   }
+
+//   console.log('✓ RESEND_API_KEY is set');
+//   console.log(`✓ FROM_EMAIL is set: ${fromEmail}`);
+//   console.log(`✓ TO_EMAIL: ${toEmail}`);
+//   console.log();
+
+//   // Check API key format
+//   if (!resendApiKey.startsWith('re_')) {
+//     console.warn('⚠️  Warning: RESEND_API_KEY does not start with "re_".');
+//     console.log('   This might indicate an invalid API key format.');
+//     console.log();
+//   }
+
+//   // Test sending an email
+//   console.log('2. Sending test email...');
+//   console.log();
+
+//   try {
+//     const testSubject = 'Test Email from Procurement System';
+//     const testHtmlBody = `
+//       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+//         <h1 style="color: #2563eb;">Test Email</h1>
+//         <p>This is a test email to verify that the Resend email service is working correctly.</p>
+//         <p><strong>Sent at:</strong> ${new Date().toISOString()}</p>
+//         <p><strong>From:</strong> ${fromEmail}</p>
+//         <p><strong>To:</strong> ${toEmail}</p>
+//         <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+//         <p style="color: #6b7280; font-size: 14px;">
+//           This is an automated test email from your Procurement Management System.
+//         </p>
+//       </div>
+//     `;
+
+//     const result = await emailService.sendEmail({
+//       to: toEmail,
+//       subject: testSubject,
+//       html: testHtmlBody,
+//     });
+
+//     console.log('✓ Email sent successfully!');
+//     console.log();
+//     console.log('Response details:');
+//     console.log(`  - ID: ${result.id || 'N/A'}`);
+//     console.log(`  - From: ${fromEmail}`);
+//     console.log(`  - To: ${toEmail}`);
+//     console.log(`  - Subject: ${testSubject}`);
+//     console.log();
+//     console.log('='.repeat(60));
+//     console.log('SUCCESS: Resend email service is configured correctly!');
+//     console.log('='.repeat(60));
+//     console.log();
+//     console.log('You can now use the email service in your production environment.');
+//     console.log('Make sure to set the following environment variables in Render.com:');
+//     console.log(`  - RESEND_API_KEY: ${resendApiKey.substring(0, 7)}...`);
+//     console.log(`  - FROM_EMAIL: ${fromEmail}`);
+//     console.log();
+
+//     return true;
+
+//   } catch (error) {
+//     console.error('❌ Failed to send email:');
+//     console.error(`   ${error.message || error}`);
+//     console.log();
+//     console.log('Troubleshooting steps:');
+//     console.log('1. Verify your Resend API key is valid and active');
+//     console.log('2. Check that your FROM_EMAIL domain is verified in Resend');
+//     console.log('3. Ensure you have enough email credits in your Resend account');
+//     console.log('4. Check for any rate limiting restrictions');
+//     console.log();
+//     console.log('Resend dashboard: https://resend.com/home');
+//     console.log('API documentation: https://resend.com/docs');
+//     console.log();
+
+//     return false;
+//   }
+// }
+
+// // Run the test
+// testResendConfig()
+//   .then((success) => {
+//     process.exit(success ? 0 : 1);
+//   })
+//   .catch((error) => {
+//     console.error('Unexpected error during test:', error);
+//     process.exit(1);
+//   });
+
+
+import { Resend } from 'resend';
+async function testEmail(){
+try {
+  const resend = new Resend('re_MS6zd91Q_PCcsUcYU7yTxyRK9VBN3MnAF');
+
+resend.emails.send({
+  from: 'noreply@almahbubinternational.com',
+  to: 'almujahidalimam@gmail.com',
+  subject: 'Hello World',
+  html: '<p>Congratulations on sending your <strong>first email</strong>!</p>'
+});
+
+console.log("email sent")
+} catch (error) {
+  console.log(error)
+}
 }
 
-// Create transporter
-console.log('\n2. Creating Email Transporter...');
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: gmailUser,
-    pass: gmailPass
-  }
-});
-console.log('   ✓ Transporter created');
 
-// Verify connection
-console.log('\n3. Verifying Email Server Connection...');
-transporter.verify()
-  .then(() => {
-    console.log('   ✓ Server connection verified successfully!');
-    console.log('\n4. Sending Test Email...');
-    
-    const testEmail = {
-      from: {
-        name: 'Almahbub International',
-        address: gmailUser
-      },
-      to: gmailUser, // Send to yourself for testing
-      subject: 'Test Email from Almahbub Procurement Platform',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <div style="background: linear-gradient(135deg, #205562, #0E5A5C); padding: 40px; text-align: center;">
-            <h1 style="color: white; margin: 0; font-size: 28px;">Email Test Successful!</h1>
-          </div>
-          <div style="padding: 40px; background: #f5f7f8;">
-            <h2 style="color: #205562;">Hi,</h2>
-            <p style="font-size: 16px; line-height: 1.6; color: #333;">
-              Your email configuration is working correctly!
-            </p>
-            <p style="font-size: 14px; color: #666;">
-              This is a test email sent from the Almahbub Procurement Platform backend.
-            </p>
-            <p style="font-size: 14px; color: #666;">
-              Sent at: ${new Date().toISOString()}
-            </p>
-          </div>
-        </div>
-      `
-    };
-    
-    return transporter.sendMail(testEmail);
-  })
-  .then((result) => {
-    console.log('   ✓ Test email sent successfully!');
-    console.log(`   Message ID: ${result.messageId}`);
-    console.log('\n' + '='.repeat(60));
-    console.log('✅ ALL TESTS PASSED!');
-    console.log('='.repeat(60));
-    console.log('\nCheck your email inbox for the test message.');
-    console.log('If you dont receive it, check your spam folder.');
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.log('   ✗ Connection failed!');
-    console.log('\n' + '='.repeat(60));
-    console.log('❌ TEST FAILED');
-    console.log('='.repeat(60));
-    console.log('\nError Details:');
-    console.log(`   Code: ${error.code}`);
-    console.log(`   Message: ${error.message}`);
-    console.log('\nCommon Solutions:');
-    console.log('1. Make sure you enabled 2-Step Verification on your Google Account');
-    console.log('2. Generate an App Password and use it instead of your regular password');
-    console.log('3. Visit: https://myaccount.google.com/apppasswords');
-    console.log('\nFor Gmail:');
-    console.log('   - Go to Google Account → Security → 2-Step Verification → ON');
-    console.log('   - Then go to App passwords and generate one');
-    console.log('   - Use the 16-character app password in GMAIL_PASS');
-    process.exit(1);
-  });
+testEmail()

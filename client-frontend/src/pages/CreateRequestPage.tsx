@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Plus, Minus, FileText, Package, MapPin, Clock, Upload } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Plus, Minus, FileText, Package, MapPin, Clock, Upload, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,6 +11,14 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { useAuthStore } from '@/stores/authStore';
 import { apiClient } from '@/lib/api';
+
+interface CategoryInfo {
+  id?: number;
+  name: string;
+  slug?: string;
+  image?: string;
+  description?: string;
+}
 
 interface RequestItem {
   id: number;
@@ -47,8 +55,11 @@ const CreateRequestPage: React.FC = () => {
   const [urgency, setUrgency] = useState('');
   const [referenceFiles, setReferenceFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryInfo | null>(null);
+  const [categoryImagePreview, setCategoryImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuthStore();
   const { toast } = useToast();
 
@@ -63,6 +74,45 @@ const CreateRequestPage: React.FC = () => {
       }));
     }
   }, [user]);
+
+  useEffect(() => {
+    // Check if category info was passed from CategoryDetailPage
+    const categoryState = location.state?.category as CategoryInfo | undefined;
+    if (categoryState && categoryState.name) {
+      setSelectedCategory(categoryState);
+      
+      // Set category image preview if available
+      if (categoryState.image) {
+        const imageUrl = categoryState.image.startsWith('http') 
+          ? categoryState.image 
+          : apiClient.getFileUrl(categoryState.image);
+        setCategoryImagePreview(imageUrl);
+      }
+      
+      // Pre-fill first request item with category info
+      const initialItem: RequestItem = {
+        id: Date.now(),
+        name: '',
+        category: categoryState.slug || '',
+        description: categoryState.description || '',
+        quantity: 1,
+        unit: 'pcs',
+        priority: 'medium',
+        deliveryLocation: '',
+        requiredDate: '',
+        specifications: '',
+      };
+      setRequestItems([initialItem]);
+      
+      toast({
+        title: 'Category Selected',
+        description: `Creating request for: ${categoryState.name}`,
+      });
+      
+      // Clear the location state to prevent re-using on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, toast]);
 
   const addRequestItem = () => {
     const newItem: RequestItem = {
@@ -135,14 +185,29 @@ const CreateRequestPage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
+      // Build items description for the backend
+      const itemsDescription = requestItems.map((item, index) => {
+        return `${index + 1}. ${item.name || 'Unnamed Item'} (Qty: ${item.quantity} ${item.unit}) - ${item.category || 'No category'}${item.description ? '\n   Description: ' + item.description : ''}${item.specifications ? '\n   Specs: ' + item.specifications : ''}`;
+      }).join('\n');
+
+      // Build title with category info if selected
+      const title = selectedCategory 
+        ? `${selectedCategory.name} - ${requesterInfo.companyName}`
+        : `Procurement Request - ${requesterInfo.companyName}`;
+
+      // Build comprehensive description
+      let description = `Category: ${selectedCategory?.name || 'General Procurement'}\n\n`;
+      description += `Items Requested:\n${itemsDescription}\n\n`;
+      if (specialRequirements) {
+        description += `Special Requirements: ${specialRequirements}\n`;
+      }
+      description += `Total Items: ${requestItems.length}`;
+
       const requestData = {
-        title: `Procurement Request - ${requesterInfo.companyName}`,
-        description: `${specialRequirements || 'Procurement request'} - ${requestItems.length} items requested`,
-        budget: requesterInfo.budget,
-        quantity: 1,
+        title: title,
+        description: description,
+        quantity: requestItems.reduce((sum, item) => sum + item.quantity, 1),
         priority: urgency || 'medium',
-        deliveryAddress: deliveryAddress,
-        items: requestItems,
       };
 
       console.log('Submitting procurement request:', requestData);
@@ -169,11 +234,59 @@ const CreateRequestPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Category Banner - Show when category is selected */}
+        {selectedCategory && (
+          <Card className="mb-6 bg-gradient-to-r from-[#0e7490] to-[#164e63] text-white border-0">
+            <CardContent className="p-6">
+              <div className="flex flex-col md:flex-row md:items-center gap-4">
+                {categoryImagePreview ? (
+                  <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                    <img 
+                      src={categoryImagePreview} 
+                      alt={selectedCategory.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
+                    <ImageIcon className="h-10 w-10 text-white/80" />
+                  </div>
+                )}
+                <div className="flex-1">
+                  <p className="text-sm text-white/80 mb-1">Creating request for category:</p>
+                  <h2 className="text-2xl font-bold">{selectedCategory.name}</h2>
+                  {selectedCategory.description && (
+                    <p className="text-sm text-white/90 mt-1 line-clamp-2">{selectedCategory.description}</p>
+                  )}
+                </div>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedCategory(null);
+                    setCategoryImagePreview(null);
+                    setRequestItems([]);
+                  }}
+                  className="flex-shrink-0"
+                >
+                  Change Category
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Header */}
         <div className="mb-8 tour-form-header">
-          <h1 className="text-3xl font-bold text-gray-900">Create Procurement Request</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {selectedCategory ? `Request ${selectedCategory.name}` : 'Create Procurement Request'}
+          </h1>
           <p className="mt-2 text-gray-600">
-            Submit your procurement request for goods and services. Our team will review and respond with quotes and availability.
+            {selectedCategory 
+              ? `Submit your procurement request for ${selectedCategory.name}. Our team will review and respond with quotes and availability.`
+              : 'Submit your procurement request for goods and services. Our team will review and respond with quotes and availability.'
+            }
           </p>
         </div>
 
@@ -275,7 +388,10 @@ const CreateRequestPage: React.FC = () => {
                     </div>
                     <div>
                       <Label>Category</Label>
-                      <Select onValueChange={(value) => updateRequestItem(item.id, 'category', value)}>
+                      <Select 
+                        value={item.category} 
+                        onValueChange={(value) => updateRequestItem(item.id, 'category', value)}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>

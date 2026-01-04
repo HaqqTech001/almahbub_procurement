@@ -15,8 +15,9 @@ interface Service {
   slug: string;
   description: string;
   image: string;
-  productCount: number;
-  isActive: boolean;
+  parent_id: number | null;
+  product_count: number;
+  is_active: boolean;
   createdAt: string;
 }
 
@@ -50,18 +51,20 @@ const ServicesPage: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await apiClient.getCategories();
-      const categoriesData = response.data?.categories || response.data || [];
+      const categoriesData = response.data?.categories || [];
       
       if (categoriesData.length === 0) {
         setServices([
-          { id: 1, name: 'iPhones & Gadgets', description: 'We source latest iPhones, smartphones, tablets, and electronic gadgets directly from manufacturers worldwide', slug: 'iphones-gadgets', image: '/images/categories/electronics.svg', productCount: 5, isActive: true, createdAt: new Date().toISOString() },
-          { id: 2, name: 'Medical Equipments', description: 'We source medical equipment, hospital furniture, diagnostic tools, and healthcare devices from certified manufacturers', slug: 'medical-equipments', image: '/images/categories/medical.svg', productCount: 5, isActive: true, createdAt: new Date().toISOString() },
-          { id: 3, name: 'Home & Garden Wares', description: 'We source home furniture, kitchen appliances, garden equipment, and household items for residential use', slug: 'home-garden-wares', image: '/images/categories/home.svg', productCount: 5, isActive: true, createdAt: new Date().toISOString() },
-          { id: 4, name: 'Machineries', description: 'We source heavy machinery, industrial equipment, construction machinery, and specialized equipment', slug: 'machineries', image: '/images/categories/machinery.svg', productCount: 5, isActive: true, createdAt: new Date().toISOString() },
-          { id: 5, name: 'General Procurement', description: 'General procurement requests for items not covered in specific categories. Submit any procurement need', slug: 'general-procurement', image: '/images/categories/general.svg', productCount: 999, isActive: true, createdAt: new Date().toISOString() }
+          { id: 1, name: 'iPhones & Gadgets', description: 'We source latest iPhones, smartphones, tablets, and electronic gadgets directly from manufacturers worldwide', slug: 'iphones-gadgets', image: '/images/categories/electronics.svg', product_count: 5, is_active: true, createdAt: new Date().toISOString() },
+          { id: 2, name: 'Medical Equipments', description: 'We source medical equipment, hospital furniture, diagnostic tools, and healthcare devices from certified manufacturers', slug: 'medical-equipments', image: '/images/categories/medical.svg', product_count: 5, is_active: true, createdAt: new Date().toISOString() },
+          { id: 3, name: 'Home & Garden Wares', description: 'We source home furniture, kitchen appliances, garden equipment, and household items for residential use', slug: 'home-garden-wares', image: '/images/categories/home.svg', product_count: 5, is_active: true, createdAt: new Date().toISOString() },
+          { id: 4, name: 'Machineries', description: 'We source heavy machinery, industrial equipment, construction machinery, and specialized equipment', slug: 'machineries', image: '/images/categories/machinery.svg', product_count: 5, is_active: true, createdAt: new Date().toISOString() },
+          { id: 5, name: 'General Procurement', description: 'General procurement requests for items not covered in specific categories. Submit any procurement need', slug: 'general-procurement', image: '/images/categories/general.svg', product_count: 999, is_active: true, createdAt: new Date().toISOString() }
         ]);
       } else {
-        setServices(categoriesData);
+        // Filter to only show MAIN categories (where parent_id is null)
+        const mainCategories = categoriesData.filter((cat: any) => !cat.parent_id);
+        setServices(mainCategories);
       }
     } catch (error: any) {
       console.error('Failed to fetch categories:', error);
@@ -71,11 +74,11 @@ const ServicesPage: React.FC = () => {
         variant: 'destructive',
       });
       setServices([
-        { id: 1, name: 'iPhones & Gadgets', description: 'Latest smartphones, tablets, and electronic gadgets', slug: 'iphones-gadgets', image: '/images/categories/electronics.svg', productCount: 5, isActive: true, createdAt: new Date().toISOString() },
-        { id: 2, name: 'Medical Equipments', description: 'Medical equipment and healthcare devices', slug: 'medical-equipments', image: '/images/categories/medical.svg', productCount: 5, isActive: true, createdAt: new Date().toISOString() },
-        { id: 3, name: 'Home & Garden Wares', description: 'Home furniture and household items', slug: 'home-garden-wares', image: '/images/categories/home.svg', productCount: 5, isActive: true, createdAt: new Date().toISOString() },
-        { id: 4, name: 'Machineries', description: 'Heavy machinery and industrial equipment', slug: 'machineries', image: '/images/categories/machinery.svg', productCount: 5, isActive: true, createdAt: new Date().toISOString() },
-        { id: 5, name: 'General Procurement', description: 'Any procurement need', slug: 'general-procurement', image: '/images/categories/general.svg', productCount: 999, isActive: true, createdAt: new Date().toISOString() }
+        { id: 1, name: 'iPhones & Gadgets', description: 'Latest smartphones, tablets, and electronic gadgets', slug: 'iphones-gadgets', image: '/images/categories/electronics.svg', product_count: 5, is_active: true, createdAt: new Date().toISOString() },
+        { id: 2, name: 'Medical Equipments', description: 'Medical equipment and healthcare devices', slug: 'medical-equipments', image: '/images/categories/medical.svg', product_count: 5, is_active: true, createdAt: new Date().toISOString() },
+        { id: 3, name: 'Home & Garden Wares', description: 'Home furniture and household items', slug: 'home-garden-wares', image: '/images/categories/home.svg', product_count: 5, is_active: true, createdAt: new Date().toISOString() },
+        { id: 4, name: 'Machineries', description: 'Heavy machinery and industrial equipment', slug: 'machineries', image: '/images/categories/machinery.svg', product_count: 5, is_active: true, createdAt: new Date().toISOString() },
+        { id: 5, name: 'General Procurement', description: 'Any procurement need', slug: 'general-procurement', image: '/images/categories/general.svg', product_count: 999, is_active: true, createdAt: new Date().toISOString() }
       ]);
     } finally {
       setIsLoading(false);
@@ -91,7 +94,7 @@ const ServicesPage: React.FC = () => {
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'name': return a.name.localeCompare(b.name);
-        case 'products': return b.productCount - a.productCount;
+        case 'products': return b.product_count - a.product_count;
         case 'newest': return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         default: return 0;
       }
@@ -127,7 +130,7 @@ const ServicesPage: React.FC = () => {
                 )}
                 <div className="absolute top-4 right-4">
                   <Badge className="bg-white/90 text-gray-700 shadow-md">
-                    {service.productCount} items
+                    {service.product_count} items
                   </Badge>
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0e7490]/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
@@ -191,7 +194,7 @@ const ServicesPage: React.FC = () => {
                   </p>
                   <div className="flex items-center mt-3 space-x-4">
                     <Badge variant="secondary">
-                      {service.productCount} items
+                      {service.product_count} items
                     </Badge>
                     <div className="flex items-center text-[#0e7490] group-hover:text-[#0e7490]">
                       <span className="text-sm font-medium">Explore</span>
