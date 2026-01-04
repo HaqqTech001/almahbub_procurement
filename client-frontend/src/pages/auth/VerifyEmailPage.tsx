@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { apiClient } from '@/lib/api';
-import AuthSlider from '@/components/auth/AuthSlider';
 
 const VerifyEmailPage: React.FC = () => {
   const { token } = useParams<{ token: string }>();
@@ -152,15 +151,13 @@ const VerifyEmailPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-50">
-      {/* Left Side - Slider */}
-      <div className="hidden lg:flex lg:w-1/2 relative">
-        <AuthSlider />
-      </div>
-
-      {/* Right Side - Verification Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center p-4 lg:p-8 bg-gray-50">
+      {/* Main Card Container */}
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
+        
+        {/* Right Side - Verification Form */}
+        <div className="w-full p-8">
+          <div className="w-full max-w-md mx-auto">
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-8">
             <div className="flex items-center justify-center mb-4">
@@ -379,21 +376,6 @@ const VerifyEmailPage: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Mobile Slider */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 h-1/3">
-        <AuthSlider />
-      </div>
-
-      <style>{`
-        .animate-fade-in {
-          animation: fadeIn 0.6s ease-in-out;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(30px) scale(0.95); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-      `}</style>
     </div>
   );
 };
