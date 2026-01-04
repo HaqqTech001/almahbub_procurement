@@ -18,6 +18,7 @@ const categoryRoutes = require('./routes/categories');
 const productRoutes = require('./routes/products');
 const userRoutes = require('./routes/users');
 const aiRoutes = require('./routes/ai');
+const orderRoutes = require('./routes/orders')
 
 const { initializeDatabase } = require('./config/database');
 const { authenticateToken } = require('./middleware/auth');
@@ -113,6 +114,7 @@ app.get('/api/test-email', async (req, res) => {
 // API routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/requests', requestRoutes);
+app.use('/api/v1/order', orderRoutes);
 app.use('/api/v1/tracker', trackerRoutes);
 app.use('/api/v1/announcements', announcementRoutes);
 app.use('/api/v1/chat', chatRoutes);
