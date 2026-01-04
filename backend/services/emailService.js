@@ -49,12 +49,42 @@ class EmailService {
   }
 
   async sendEmail(to, subject, html, attachments = []) {
+    if (!this.resend) {
+      throw new Error('Email provider not configured. Please set RESEND_API_KEY in environment variables.');
+    }
 
     try {
       console.log(`[EMAIL] Sending email via Resend to: ${to}`);
 
-      const fromEmail = process.env.EMAIL_FROM ;
-      const fromName = process.env.EMAIL_FROM_NAME || 'Almahbub International';
+      // Support both EMAIL_FROM and FROM_EMAIL environment variables
+      let fromEmail = process.env.EMAIL_FROM || process.env.FROM_EMAIL;
+      const fromName = process.env.EMAIL_FROM_NAME || process.env.FROM_NAME || 'Almahbub International';
+
+      // Validate FROM_EMAIL is set
+      if (!fromEmail) {
+        console.error('[EMAIL] ERROR: FROM_EMAIL or EMAIL_FROM environment variable is not set!');
+        console.error('[EMAIL] Please set one of these in your Render environment variables:');
+        console.error('[EMAIL]   - FROM_EMAIL=your-verified-email@yourdomain.com');
+        console.error('[EMAIL]   - OR EMAIL_FROM=your-verified-email@yourdomain.com');
+        throw new Error('FROM_EMAIL environment variable is not configured');
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(fromEmail)) {
+        console.error(`[EMAIL] ERROR: Invalid email format for FROM_EMAIL: ${fromEmail}`);
+        throw new Error(`Invalid email format: ${fromEmail}`);
+      }
+
+      // Format: "Name <email@example.com>" or just "email@example.com"
+      let fromField;
+      if (fromName && fromName.trim()) {
+        fromField = `${fromName} <${fromEmail}>`;
+      } else {
+        fromField = fromEmail;
+      }
+
+      console.log(`[EMAIL] From field: ${fromField}`);
 
       // Format attachments for Resend
       const resendAttachments = attachments.map(att => ({
@@ -64,7 +94,7 @@ class EmailService {
       }));
 
       const result = await this.resend.emails.send({
-        from: `${fromName} <${fromEmail}>`,
+        from: fromField,
         to: [to],
         subject: subject,
         html: html,
@@ -85,7 +115,7 @@ class EmailService {
   }
 
   async sendWelcomeEmail(user) {
-    const clientUrl = process.env.CLIENT_URL ;
+    const clientUrl = process.env.CLIENT_URL || 'https://almahbub-international.onrender.com/login';
     const verificationUrl = `${clientUrl}/verify-email/${user.email_verification_token}`;
     
     const html = `
@@ -150,7 +180,7 @@ class EmailService {
   }
 
   async sendPasswordResetEmail(user, resetToken) {
-    const clientUrl = process.env.CLIENT_URL ;
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
     const resetUrl = `${clientUrl}/reset-password/${resetToken}`;
     
     const html = `
@@ -214,7 +244,7 @@ class EmailService {
   }
 
   async sendOrderStatusUpdate(user, order, status) {
-    const clientUrl = process.env.CLIENT_URL ;
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
     const orderUrl = `${clientUrl}/orders/${order.id}`;
 
     const statusMessages = {
