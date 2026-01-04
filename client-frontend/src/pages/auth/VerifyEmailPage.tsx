@@ -151,7 +151,6 @@ const VerifyEmailPage: React.FC = () => {
   };
 
   return (
-<<<<<<< HEAD
     <div className="min-h-screen flex items-center justify-center p-4 lg:p-8 bg-gray-50">
       {/* Main Card Container */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
@@ -159,17 +158,6 @@ const VerifyEmailPage: React.FC = () => {
         {/* Right Side - Verification Form */}
         <div className="w-full p-8">
           <div className="w-full max-w-md mx-auto">
-=======
-    <div className="min-h-screen flex justify-center items-center bg-gray-50 ">
-      {/* Left Side - Slider */}
-      {/* <div className="hidden lg:flex lg:w-1/2 relative">
-        <AuthSlider />
-      </div>*/}
-
-      {/* Right Side - Verification Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-        <div className="w-full max-w-md">
->>>>>>> 3d43d4baa41d78385caf89850c6f866735d81439
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-8">
             <div className="flex items-center justify-center mb-4">
@@ -388,6 +376,7 @@ const VerifyEmailPage: React.FC = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
