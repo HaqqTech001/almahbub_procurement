@@ -797,7 +797,7 @@ const ChatPage: React.FC = () => {
       )}
 
       {/* Chat Interface */}
-      <div className="flex flex-col lg:flex-row gap-4 min-h-[calc(100vh-280px)] lg:h-[700px]">
+      <div className="flex flex-col lg:flex-row gap-4 min-h-[calc(100vh-280px)] lg:h-[700px] w-full">
         {/* Mobile: Show conversations list first */}
         {isMobile ? (
           !selectedConversation ? (
@@ -1074,9 +1074,9 @@ const ChatPage: React.FC = () => {
           )
         ) : (
           // Desktop layout - Conversations list and chat side by side
-          <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 min-h-[calc(100vh-280px)] lg:h-[700px] w-full">
+          <div className="flex gap-4 lg:gap-6 min-h-[calc(100vh-280px)] lg:h-[700px] w-full">
             {/* Conversations List - Desktop */}
-            <Card className="lg:col-span-1 flex flex-col overflow-hidden w-full lg:w-80 shrink-0">
+            <Card className="flex-shrink-0 w-80 flex flex-col overflow-hidden">
               <CardHeader className="pb-2 md:pb-3 flex-shrink-0">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base md:text-lg">Conversations</CardTitle>

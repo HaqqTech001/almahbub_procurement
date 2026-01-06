@@ -71,9 +71,9 @@ router.post('/', authenticateToken, requireVerified, upload.array('files', 5), [
 
     // Create request with user-specific request number
     const [result] = await pool.execute(
-      `INSERT INTO orders (user_id, request_number, product_id, title, description, quantity, files) 
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [req.user.id, requestNumber, productId || null, title, description, quantity, JSON.stringify(fileUrls)]
+      `INSERT INTO orders (user_id, request_number, product_id, title, description, quantity, files, delivery_street, delivery_city, delivery_state, delivery_zipcode, delivery_country, budget_currency, budget_amount) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [req.user.id, requestNumber, productId || null, title, description, quantity, JSON.stringify(fileUrls), req.body.deliveryStreet || '', req.body.deliveryCity || '', req.body.deliveryState || '', req.body.deliveryZipCode || '', req.body.deliveryCountry || '', req.body.budgetCurrency || 'NGN', req.body.budgetAmount || null]
     );
 
     const requestId = result.insertId;
@@ -253,11 +253,11 @@ router.get('/:id', authenticateToken, async (req, res) => {
       deliveryAddress: {
         fullName: `${requestData.first_name} ${requestData.last_name}`,
         companyName: requestData.company || '',
-        street: requestData.delivery_address || 'Address to be provided',
-        city: 'City',
-        state: 'State',
-        zipCode: '00000',
-        country: 'Country',
+        street: requestData.delivery_street || requestData.delivery_address || 'Address to be provided',
+        city: requestData.delivery_city || 'City',
+        state: requestData.delivery_state || 'State',
+        zipCode: requestData.delivery_zipcode || '00000',
+        country: requestData.delivery_country || 'Country',
         phone: requestData.phone || ''
       },
       paymentMethod: requestData.payment_method || 'Quote-based',
@@ -270,6 +270,8 @@ router.get('/:id', authenticateToken, async (req, res) => {
       specialInstructions: requestData.special_instructions,
       assignedTo: requestData.assigned_to,
       notes: requestData.admin_notes,
+      budgetCurrency: requestData.budget_currency || 'NGN',
+      budgetAmount: requestData.budget_amount || null,
       // Include original request data
       _request: requestData
     };

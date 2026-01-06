@@ -41,6 +41,8 @@ interface ProcurementRequest {
   specialInstructions?: string;
   assignedTo?: string;
   notes?: string;
+  budgetCurrency?: string;
+  budgetAmount?: number;
 }
 
 interface RequestItem {
@@ -84,8 +86,7 @@ const RequestDetailPage: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await apiClient.getOrder(id!);
-      console.log(response)
-      setRequest(response.data.request || response.data);
+      setRequest(response.data.data || response.data);
     } catch (error: any) {
       // If API not available, use sample data
       setRequest({
@@ -202,6 +203,15 @@ const RequestDetailPage: React.FC = () => {
     }).format(amount);
   };
 
+  const formatBudget = (amount: number | undefined, currency: string | undefined) => {
+    if (!amount || amount <= 0) return null;
+    const curr = currency || 'NGN';
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: curr,
+    }).format(amount);
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -275,7 +285,7 @@ const RequestDetailPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <div className="mb-4 md:mb-8">
-          <Link to="/my-requests" className="text-teal-600 hover:text-teal-800 flex items-center text-sm md:text-base">
+          <Link to="/my-requests" className="text-cyan-600 hover:text-cyan-800 flex items-center text-sm md:text-base">
             <ArrowLeft className="h-4 w-4 mr-1 md:mr-2" />
             Back to My Requests
           </Link>
@@ -430,11 +440,19 @@ const RequestDetailPage: React.FC = () => {
           {/* Sidebar */}
           <div className="space-y-4 md:space-y-6">
             {/* Request Summary */}
-            {/* <Card className="tour-request-summary">
+            <Card className="tour-request-summary">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg md:text-xl">Request Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3 md:space-y-4">
+                {request.budgetAmount && request.budgetAmount > 0 && (
+                  <div className="flex justify-between text-sm md:text-base bg-green-50 p-3 rounded-lg">
+                    <span className="text-green-800 font-medium">Budget:</span>
+                    <span className="font-semibold text-green-800">
+                      {formatBudget(request.budgetAmount, request.budgetCurrency)}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm md:text-base">
                   <span className="text-gray-600">Subtotal</span>
                   <span className="font-medium">{formatCurrency(request.subtotal || 0, request.currency || 'USD')}</span>
@@ -449,7 +467,7 @@ const RequestDetailPage: React.FC = () => {
                   <span>{formatCurrency(request.totalAmount || 0, request.currency || 'USD')}</span>
                 </div>
               </CardContent>
-            </Card> */}
+            </Card>
 
             {/* Delivery Address */}
             <Card className="tour-delivery-info">

@@ -16,7 +16,11 @@ const WHATSAPP_NUMBER = '2348074454081'; // Format: Country code + number (witho
 const WHATSAPP_MESSAGE = 'Hello Almahbub International, I need assistance with my inquiry.';
 
 // Company address for map
-const COMPANY_ADDRESS = 'Graceland Junction, Tanke Rd, University Rd, Ilorin 240102, Kwara';
+const COMPANY_ADDRESS = 'Graceland Junction, Tanke Road, University Road, Ilorin, Kwara State, Nigeria, 240102';
+
+// Company coordinates for more reliable map display
+const COMPANY_LAT = 8.4799;
+const COMPANY_LNG = 4.5418;
 
 // WhatsApp URL generator
 const getWhatsAppUrl = (number: string, message: string) => {
@@ -34,6 +38,7 @@ const ContactPage: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapError, setMapError] = useState(false);
 
   const { toast } = useToast();
 
@@ -84,7 +89,7 @@ const ContactPage: React.FC = () => {
     {
       icon: <Phone className="h-6 w-6 text-cyan-600" />,
       title: 'Phone',
-      details: ['+2348074454081', '+2347033546666'],
+      details: ['08074454081', '07033546666'],
     },
     {
       icon: <Mail className="h-6 w-6 text-cyan-600" />,
@@ -94,7 +99,7 @@ const ContactPage: React.FC = () => {
     {
       icon: <MapPin className="h-6 w-6 text-cyan-600" />,
       title: 'Office Address',
-      details: ['Graceland Bus Stop', 'University Road', 'Tanke, Ilorin, Kwara State, Nigeria'],
+      details: ['Graceland Junction', 'Tanke Road, University Road', 'Ilorin 240102, Kwara State, Nigeria'],
     },
     {
       icon: <MessageSquare className="h-6 w-6 text-cyan-600" />,
@@ -350,7 +355,7 @@ const ContactPage: React.FC = () => {
               <span className="text-sm font-medium">TikTok</span>
             </a>
             <a 
-              href="https://www.instagram.com/almahbubimport" 
+              href="https://www.instagram.com/almahbubinternational" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center space-x-2 text-pink-600 hover:text-pink-800 transition-colors"
@@ -425,7 +430,7 @@ const ContactPage: React.FC = () => {
             <CardContent className="p-0">
               {/* Google Maps Embed */}
               <div className="relative w-full h-80 md:h-auto flex-grow">
-                {!mapLoaded && (
+                {!mapLoaded && !mapError && (
                   <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
                     <div className="text-center">
                       <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-2" />
@@ -433,19 +438,38 @@ const ContactPage: React.FC = () => {
                     </div>
                   </div>
                 )}
-                <iframe
-                  src={`https://maps.google.com/maps?q=${encodeURIComponent(COMPANY_ADDRESS)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
-                  width="100%"
-                  height="100%"
-                  style={{ minHeight: '320px', border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  onLoad={() => setMapLoaded(true)}
-                  title="Office Location"
-                  className={mapLoaded ? 'block' : 'hidden'}
-                />
-                {/* Fallback map link if iframe doesn't work */}
+                {!mapError && (
+                  <iframe
+                    src={`https://maps.google.com/maps?q=${COMPANY_LAT},${COMPANY_LNG}&t=&z=17&ie=UTF8&iwloc=&output=embed`}
+                    width="100%"
+                    height="100%"
+                    style={{ minHeight: '320px', border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    onLoad={() => setMapLoaded(true)}
+                    onError={() => setMapError(true)}
+                    title="Office Location"
+                    className={mapLoaded ? 'block' : 'hidden'}
+                  />
+                )}
+                {/* Fallback when map fails to load */}
+                {mapError && (
+                  <div className="w-full h-80 bg-gray-100 flex flex-col items-center justify-center p-4">
+                    <MapPin className="w-12 h-12 text-gray-400 mb-2" />
+                    <p className="text-gray-600 text-center mb-3">Map could not be loaded</p>
+                    <a 
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(COMPANY_ADDRESS)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors"
+                    >
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      Open in Google Maps
+                    </a>
+                  </div>
+                )}
+                {/* Address info below map */}
                 <div className="p-4 bg-gray-50 border-t">
                   <p className="text-sm text-gray-600 mb-2 font-medium">{COMPANY_ADDRESS}</p>
                   <a 

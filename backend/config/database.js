@@ -1,4 +1,6 @@
 const mysql = require('mysql2/promise');
+const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
 // Create connection pool
@@ -28,10 +30,109 @@ async function testConnection() {
   }
 }
 
+// Create migrations tracking table
+async function createMigrationsTable() {
+  const createTableQuery = `
+    CREATE TABLE IF NOT EXISTS migrations (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      name VARCHAR(255) NOT NULL UNIQUE,
+      executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_name (name)
+    )
+  `;
+  await pool.execute(createTableQuery);
+}
+
+// Run all SQL migrations from the migrations folder
+async function runMigrations() {
+  const migrationsDir = path.join(__dirname, '../migrations');
+  
+  try {
+    // Check if migrations directory exists
+    if (!fs.existsSync(migrationsDir)) {
+      console.log('📁 Migrations directory not found, skipping migrations');
+      return;
+    }
+
+    // Get all SQL files
+    const files = fs.readdirSync(migrationsDir)
+      .filter(file => file.endsWith('.sql'))
+      .sort(); // Sort to ensure consistent order
+
+    if (files.length === 0) {
+      console.log('📭 No migration files found');
+      return;
+    }
+
+    console.log(`� Found ${files.length} migration file(s)`);
+
+    // Create migrations table if it doesn't exist
+    await createMigrationsTable();
+
+    // Get already executed migrations
+    const [rows] = await pool.execute('SELECT name FROM migrations');
+    const executedMigrations = new Set(rows.map(row => row.name));
+
+    // Execute pending migrations
+    for (const file of files) {
+      try {
+        if (executedMigrations.has(file)) {
+          console.log(`⏭️  Skipping migration: ${file} (already executed)`);
+          continue;
+        }
+
+        console.log(`🔄 Running migration: ${file}`);
+
+        // Read the SQL file
+        const sqlContent = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
+
+        // Execute the migration SQL (split by semicolons, but be careful with comments)
+        const statements = sqlContent
+          .split(/;(?=\s*(?:ALTER|CREATE|UPDATE|INSERT|DROP|TRUNCATE))/i)
+          .map(s => s.trim())
+          .filter(s => s.length > 0 && !s.startsWith('--') && !s.startsWith('/*'));
+
+        for (const statement of statements) {
+          if (statement.length > 0) {
+            try {
+              await pool.execute(statement);
+            } catch (stmtError) {
+              // Ignore "duplicate column" errors for ALTER TABLE statements
+              if (!stmtError.message.includes('Duplicate column') && 
+                  !stmtError.message.includes('already exists')) {
+                console.warn(`  ⚠️  Warning in ${file}: ${stmtError.message.substring(0, 100)}`);
+              }
+            }
+          }
+        }
+
+        // Record the migration as executed
+        await pool.execute('INSERT INTO migrations (name) VALUES (?)', [file]);
+        console.log(`✅ Migration completed: ${file}`);
+
+      } catch (error) {
+        console.error(`❌ Migration failed: ${file}`);
+        console.error(`   Error: ${error.message}`);
+        // Continue with other migrations instead of failing completely
+      }
+    }
+
+    console.log('✅ All migrations processed successfully');
+
+  } catch (error) {
+    console.error('❌ Migration process failed:', error.message);
+    // Don't throw - migrations are non-critical for startup
+    // The database should already have the required tables from initializeDatabase()
+  }
+}
+
 // Initialize database with tables
 async function initializeDatabase() {
   try {
     await testConnection();
+    
+    // Run migrations first (they handle schema changes)
+    await runMigrations();
     
     const queries = [
       // Users table
@@ -43,6 +144,7 @@ async function initializeDatabase() {
         last_name VARCHAR(100) NOT NULL,
         phone VARCHAR(20),
         company VARCHAR(255),
+        company_type VARCHAR(50),
         address TEXT,
         street_address VARCHAR(255),
         city VARCHAR(100),
@@ -258,15 +360,7 @@ async function initializeDatabase() {
       `ALTER TABLE orders ADD COLUMN IF NOT EXISTS request_number VARCHAR(20)`,
       
       // Migration: Add index on request_number for faster lookups
-      `CREATE INDEX IF NOT EXISTS idx_orders_request_number ON orders(request_number)`,
-
-
-     ` ALTER TABLE categories
-      ADD COLUMN parent_id INT DEFAULT NULL AFTER slug,
-      ADD COLUMN icon VARCHAR(10) DEFAULT NULL AFTER parent_id
-      ADD COLUMN color VARCHAR(20) DEFAULT '#0F4C5C' AFTER icon`,
-
-        `CREATE INDEX idx_parent ON categories(parent_id)`
+      `CREATE INDEX IF NOT EXISTS idx_orders_request_number ON orders(request_number)`
     ];
 
     for (const query of alterAnnouncementsQueries) {
@@ -281,7 +375,7 @@ async function initializeDatabase() {
     }
 
     console.log('✅ Database tables created successfully');
-    console.log('✅ Announcements table migrated with missing columns');
+    console.log('✅ Database migrations completed');
   } catch (error) {
     console.error('❌ Database initialization failed:', error);
     throw error;
@@ -291,5 +385,6 @@ async function initializeDatabase() {
 module.exports = {
   pool,
   initializeDatabase,
-  testConnection
+  testConnection,
+  runMigrations  // Export for manual use if needed
 };

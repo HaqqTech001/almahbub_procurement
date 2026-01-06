@@ -97,7 +97,15 @@ const NotificationsPage: React.FC = () => {
   };
 
   const formatTime = (timestamp: string) => {
+    if (!timestamp) return 'Unknown';
+    
     const date = new Date(timestamp);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return 'Invalid date';
+    }
+    
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
     const diffInMinutes = Math.floor(diffInSeconds / 60);
@@ -108,7 +116,7 @@ const NotificationsPage: React.FC = () => {
     if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
     if (diffInHours < 24) return `${diffInHours}h ago`;
     if (diffInDays < 7) return `${diffInDays}d ago`;
-    return date.toLocaleDateString();
+    return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
   const handleNotificationClick = async (notification: Notification) => {

@@ -1,5 +1,5 @@
-// Tutorial configuration for all pages
-// Each page has specific steps that guide users through key features
+// Tutorial configuration - Action-oriented workflow tutorial for new users
+// Focuses on helping users accomplish tasks, not explaining obvious UI elements
 
 export interface TutorialStep {
   target: string;
@@ -10,349 +10,150 @@ export interface TutorialStep {
 }
 
 export const tutorialSteps: Record<string, TutorialStep[]> = {
-  '/': [
+  // Dashboard - Main entry point after login
+  '/dashboard': [
     {
-      target: '.tour-hero-title',
-      content: 'Welcome to Almahbub Procurement. We connect buyers with trusted suppliers for all your business needs.',
-      title: 'Welcome to Almahbub',
+      target: '.tour-quick-actions',
+      content: 'Start here! These quick actions let you create new procurement requests or find what you need fast. Click "Create Request" to submit your first request.',
+      title: 'Quick Actions',
       disableBeacon: true,
       placement: 'bottom',
     },
     {
-      target: '.tour-categories',
-      content: 'Browse our extensive catalog of product categories to find exactly what you need for your business.',
+      target: '.tour-create-request-btn',
+      content: 'Ready to request something? Click this button to start a new procurement request. You can specify items, quantities, delivery address, and your budget.',
+      title: 'Create New Request',
+      placement: 'left',
+    },
+    {
+      target: '.tour-my-requests-link',
+      content: 'View and track all your procurement requests here. See status, details, and communicate with our team about any request.',
+      title: 'View Your Requests',
+      placement: 'bottom',
+    },
+    {
+      target: '.tour-chat-link',
+      content: 'Need help or have questions? Click here to chat with our support team directly. We are available 24/7 to assist you.',
+      title: 'Get Support',
+      placement: 'bottom',
+    },
+    {
+      target: '.tour-categories-link',
+      content: 'Browse available product categories to see what we can procure for you. Click to explore iPhones, medical equipment, machinery, and more.',
       title: 'Browse Categories',
       placement: 'bottom',
     },
-    {
-      target: '.tour-services',
-      content: 'Learn about our comprehensive procurement services designed to streamline your purchasing process.',
-      title: 'Our Services',
-      placement: 'top',
-    },
-    {
-      target: '.tour-cta',
-      content: 'Ready to get started? Create your first procurement request in just a few simple steps.',
-      title: 'Get Started',
-      placement: 'bottom',
-    },
   ],
-  '/dashboard': [
-    {
-      target: '.tour-welcome',
-      content: 'This is your personal dashboard where you can monitor all your procurement activities at a glance.',
-      title: 'Your Dashboard',
-      disableBeacon: true,
-      placement: 'bottom',
-    },
-    {
-      target: '.tour-stats',
-      content: 'Quick overview of your active requests, total spending, and pending approvals. Click any card for details.',
-      title: 'Quick Stats',
-      placement: 'bottom',
-    },
-    {
-      target: '.tour-recent-requests',
-      content: 'View your most recent procurement requests and their current status. Click to view full details.',
-      title: 'Recent Requests',
-      placement: 'top',
-    },
-    {
-      target: '.tour-quick-actions',
-      content: 'Create new requests or access frequently used features instantly from this quick actions panel.',
-      title: 'Quick Actions',
-      placement: 'left',
-    },
-  ],
+  // My Requests page
   '/my-requests': [
     {
-      target: '.tour-requests-header',
-      content: 'Manage all your procurement requests in one place. Track status, view details, or create new requests.',
-      title: 'My Requests',
+      target: '.tour-create-request-btn',
+      content: 'Create a new procurement request. Fill in the details of what you need, and our team will get you quotes from suppliers.',
+      title: 'Create New Request',
       disableBeacon: true,
-      placement: 'bottom',
+      placement: 'left',
     },
     {
       target: '.tour-filter-tabs',
-      content: 'Filter requests by status to quickly find what you are looking for. All, Active, Completed, or Cancelled.',
+      content: 'Quickly filter your requests by status: Active (pending), Completed, or Cancelled. Find exactly what you are looking for in seconds.',
       title: 'Filter by Status',
       placement: 'bottom',
     },
     {
       target: '.tour-search-bar',
-      content: 'Search through your requests by request number, product name, or date range.',
+      content: 'Search any request by request number, product name, or date. No need to scroll through all your requests.',
       title: 'Search Requests',
       placement: 'bottom',
     },
-    {
-      target: '.tour-create-request-btn',
-      content: 'Need something new? Click here to create a fresh procurement request with detailed specifications.',
-      title: 'Create New Request',
-      placement: 'left',
-    },
   ],
+  // Create Request page
   '/requests/new': [
     {
-      target: '.tour-form-header',
-      content: 'Fill in the details of what you need. Be as specific as possible to get accurate quotes.',
-      title: 'New Request Form',
-      disableBeacon: true,
-      placement: 'bottom',
-    },
-    {
       target: '.tour-item-list',
-      content: 'Add all the items you need to this list. Include quantity, specifications, and any preferred brands.',
-      title: 'Add Items',
+      content: 'Add all items you need to procure. Include product names, quantities, and any specific brand or specifications you prefer.',
+      title: 'Add Request Items',
+      disableBeacon: true,
       placement: 'top',
     },
     {
-      target: '.tour-upload-section',
-      content: 'Upload reference documents, quotes from other suppliers, or technical specifications here.',
-      title: 'Upload Documents',
+      target: '.tour-budget-section',
+      content: 'Set your estimated budget (optional) to help us provide you with accurate quotes. You can choose NGN or USD.',
+      title: 'Set Budget (Optional)',
       placement: 'top',
     },
     {
       target: '.tour-delivery-address',
-      content: 'Specify where and when you need your items delivered. Accurate information prevents delays.',
+      content: 'Enter the complete delivery address. Accurate information ensures your items arrive at the right location on time.',
       title: 'Delivery Details',
       placement: 'top',
     },
     {
+      target: '.tour-upload-section',
+      content: 'Upload reference documents, quotes, or specifications to help us understand exactly what you need.',
+      title: 'Attach Documents',
+      placement: 'top',
+    },
+    {
       target: '.tour-submit-btn',
-      content: 'Review all details and submit your request. Our team will review and respond within 24 hours.',
+      content: 'Review all details and submit your request. Our team will review and respond with supplier quotes within 24 hours.',
       title: 'Submit Request',
       placement: 'left',
     },
   ],
+  // Request Detail page
   '/requests/:id': [
     {
-      target: '.tour-request-header',
-      content: 'View complete details of your procurement request including all items and specifications.',
-      title: 'Request Details',
-      disableBeacon: true,
-      placement: 'bottom',
-    },
-    {
       target: '.tour-request-timeline',
-      content: 'Track your request progress through each stage from submission to completion.',
-      title: 'Progress Timeline',
+      content: 'Track your request progress through each stage: Received → Reviewing → Sourcing → Completed. Click to see updates.',
+      title: 'Track Progress',
+      disableBeacon: true,
       placement: 'top',
     },
     {
       target: '.tour-request-summary',
-      content: 'View the cost breakdown including subtotal, taxes, and total estimated amount.',
-      title: 'Cost Summary',
+      content: 'View the cost breakdown including your budget (if set), subtotal, taxes, and estimated total.',
+      title: 'Cost Details',
       placement: 'left',
     },
     {
-      target: '.tour-delivery-info',
-      content: 'Check the delivery address and expected delivery date for this request.',
-      title: 'Delivery Information',
+      target: '.tour-chat-link',
+      content: 'Have questions about this request? Click here to chat with our support team directly.',
+      title: 'Contact Support',
       placement: 'left',
     },
   ],
+  // Chat page
   '/chat': [
     {
-      target: '.tour-chat-header',
-      content: 'Your central hub for all communications with our procurement team and suppliers.',
-      title: 'Chat System',
-      disableBeacon: true,
-      placement: 'bottom',
-    },
-    {
-      target: '.tour-conversations',
-      content: 'View all your active conversations. Click on any conversation to open the chat.',
-      title: 'Conversations',
-      placement: 'right',
-    },
-    {
       target: '.tour-chat-input',
-      content: 'Type your message here. You can attach images, documents, or use quick reply templates.',
+      content: 'Type your message here and press Enter to send. You can ask questions about requests, get quotes, or request updates.',
       title: 'Send Messages',
+      disableBeacon: true,
       placement: 'top',
     },
     {
-      target: '.tour-call-buttons',
-      content: 'Need to talk directly? Use voice or video call buttons to start a real-time conversation.',
-      title: 'Voice & Video Calls',
+      target: '.tour-call-support',
+      content: 'Need to talk directly? Use the phone or video buttons to start a voice or video call with our support team.',
+      title: 'Call Support',
       placement: 'left',
     },
   ],
-  '/announcements': [
-    {
-      target: '.tour-announcements-header',
-      content: 'Stay updated with the latest news, policy changes, and special offers from Almahbub.',
-      title: 'Announcements',
-      disableBeacon: true,
-      placement: 'bottom',
-    },
-    {
-      target: '.tour-announcement-cards',
-      content: 'Click on any announcement to read the full details and see if there are any required actions.',
-      title: 'Read Announcements',
-      placement: 'bottom',
-    },
-    {
-      target: '.tour-reactions',
-      content: 'React to announcements with emojis to show you have read and understood the message.',
-      title: 'React to Updates',
-      placement: 'top',
-    },
-    {
-      target: '.tour-replies',
-      content: 'Have questions or need clarification? Click to reply directly to any announcement.',
-      title: 'Reply to Updates',
-      placement: 'top',
-    },
-  ],
+  // Categories page
   '/categories': [
     {
-      target: '.tour-categories-header',
-      content: 'Explore our comprehensive catalog of product and service categories.',
-      title: 'Categories',
-      disableBeacon: true,
-      placement: 'bottom',
-    },
-    {
       target: '.tour-category-cards',
-      content: 'Click on any category to browse specific products and services available.',
-      title: 'Browse Products',
-      placement: 'bottom',
-    },
-    {
-      target: '.tour-search-products',
-      content: 'Search for specific products within categories using keywords or specifications.',
-      title: 'Search Products',
-      placement: 'bottom',
-    },
-  ],
-  '/profile': [
-    {
-      target: '.tour-profile-header',
-      content: 'Manage your personal information, company details, and account preferences.',
-      title: 'Your Profile',
+      content: 'Browse our product categories. Click on any category to see available products or start a procurement request for that category.',
+      title: 'Browse Categories',
       disableBeacon: true,
       placement: 'bottom',
     },
     {
-      target: '.tour-company-info',
-      content: 'Keep your company information up to date for accurate billing and delivery.',
-      title: 'Company Details',
-      placement: 'top',
-    },
-    {
-      target: '.tour-notification-settings',
-      content: 'Control how and when you receive notifications about requests and announcements.',
-      title: 'Notification Settings',
-      placement: 'top',
-    },
-    {
-      target: '.tour-password-section',
-      content: 'Update your password regularly to keep your account secure.',
-      title: 'Security',
-      placement: 'top',
+      target: '.tour-create-from-category',
+      content: 'Found what you need? Click the "Create Request" button on any category to start a request for products in that category.',
+      title: 'Quick Request',
+      placement: 'right',
     },
   ],
-  '/help': [
-    {
-      target: '.tour-help-header',
-      content: 'Find answers to common questions or contact our support team directly.',
-      title: 'Help Center',
-      disableBeacon: true,
-      placement: 'bottom',
-    },
-    {
-      target: '.tour-faq-section',
-      content: 'Browse frequently asked questions organized by category for quick answers.',
-      title: 'FAQs',
-      placement: 'top',
-    },
-    {
-      target: '.tour-contact-support',
-      content: 'Can not find what you need? Contact our support team and we will get back to you within 24 hours.',
-      title: 'Contact Support',
-      placement: 'top',
-    },
-  ],
-  // Authenticated pages (after login)
-  '/announcements/:id': [
-    {
-      target: '.announcement-title',
-      title: 'Announcement Details',
-      content: 'This is the full announcement. Read all the details about company updates, maintenance notices, or special promotions here.',
-      placement: 'bottom',
-    },
-    {
-      target: '.announcement-content',
-      title: 'Announcement Content',
-      content: 'The main content of the announcement is displayed here. You can see all text, formatted sections, and important information.',
-      placement: 'top',
-    },
-    {
-      target: '.announcement-media',
-      title: 'Attached Media',
-      content: 'Any images, documents, or files attached to this announcement appear here. Click on images to view them fullscreen.',
-      placement: 'top',
-    },
-    {
-      target: '.reply-section',
-      title: 'Reply to Announcement',
-      content: 'Use this section to reply to the announcement. Your response will be visible to the admin team and other users.',
-      placement: 'top',
-    },
-  ],
-  '/orders/new': [
-    {
-      target: '.order-form-header',
-      title: 'Create Procurement Order',
-      content: 'This form lets you submit a new procurement request. Fill in all required details to help us process your order efficiently.',
-      placement: 'bottom',
-    },
-    {
-      target: '.product-selection',
-      title: 'Product Selection',
-      content: 'Select the products or services you want to procure. You can browse categories, search for specific items, and add them to your order.',
-      placement: 'top',
-    },
-    {
-      target: '.quantity-budget',
-      title: 'Quantity & Budget',
-      content: 'Specify how many units you need and your budget constraints. This helps ensure your request gets approved quickly.',
-      placement: 'top',
-    },
-    {
-      target: '.file-upload',
-      title: 'Attach Files',
-      content: 'Upload any relevant documents, specifications, or files that help explain your procurement request.',
-      placement: 'top',
-    },
-    {
-      target: '.submit-order',
-      title: 'Submit Request',
-      content: 'Once you\'ve filled in all details, review your order and click submit. You\'ll receive updates as your request is processed.',
-      placement: 'top',
-    },
-  ],
-  // '/profile': [
-  //   {
-  //     target: '.profile-header',
-  //     title: 'Your Profile',
-  //     content: 'This page shows your account information. You can view and update your personal details, contact information, and preferences.',
-  //     placement: 'bottom',
-  //   },
-  //   {
-  //     target: '.profile-details',
-  //     title: 'Account Details',
-  //     content: 'Your name, email, phone, and company information are displayed here. Keep this information up to date for better communication.',
-  //     placement: 'top',
-  //   },
-  //   {
-  //     target: '.profile-actions',
-  //     title: 'Account Actions',
-  //     content: 'You can update your password, notification preferences, and other account settings from this section.',
-  //     placement: 'top',
-  //   },
-  // ],
 };
 
 // Helper function to get steps for current route
@@ -376,3 +177,26 @@ export const getStepsForPath = (path: string): TutorialStep[] => {
 
   return [];
 };
+
+// Tutorial configuration for the welcome modal on dashboard
+export const dashboardWelcomeSteps: TutorialStep[] = [
+  {
+    target: '.tour-quick-actions',
+    content: 'Welcome! These quick actions help you get things done fast. Create requests, view your history, or browse products.',
+    title: 'Welcome to Your Dashboard',
+    disableBeacon: true,
+    placement: 'bottom',
+  },
+  {
+    target: '.tour-create-request-btn',
+    content: 'Click here to create a new procurement request. It is the fastest way to get started with your first order.',
+    title: 'Create Your First Request',
+    placement: 'bottom',
+  },
+  {
+    target: '.tour-my-requests-link',
+    content: 'All your requests are stored here. Track status, view details, and communicate with our team.',
+    title: 'Track Your Requests',
+    placement: 'bottom',
+  },
+];

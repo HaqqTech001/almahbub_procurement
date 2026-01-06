@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Plus, Minus, FileText, Package, MapPin, Clock, Upload, Image as ImageIcon } from 'lucide-react';
+import { Plus, Minus, FileText, Package, MapPin, Clock, Upload, Image as ImageIcon, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -33,12 +33,24 @@ interface RequestItem {
   specifications: string;
 }
 
+interface DeliveryAddressInfo {
+  street: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  country: string;
+}
+
 interface RequesterInfo {
   fullName: string;
   companyName: string;
   email: string;
   phone: string;
-  budget: number;
+}
+
+interface BudgetInfo {
+  currency: string;
+  amount: number | null;
 }
 
 const CreateRequestPage: React.FC = () => {
@@ -48,9 +60,18 @@ const CreateRequestPage: React.FC = () => {
     companyName: '',
     email: '',
     phone: '',
-    budget: 0,
   });
-  const [deliveryAddress, setDeliveryAddress] = useState('');
+  const [budget, setBudget] = useState<BudgetInfo>({
+    currency: 'NGN',
+    amount: null,
+  });
+  const [deliveryAddress, setDeliveryAddress] = useState<DeliveryAddressInfo>({
+    street: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: 'Nigeria',
+  });
   const [specialRequirements, setSpecialRequirements] = useState('');
   const [urgency, setUrgency] = useState('');
   const [referenceFiles, setReferenceFiles] = useState<File[]>([]);
@@ -208,25 +229,46 @@ const CreateRequestPage: React.FC = () => {
         description: description,
         quantity: requestItems.reduce((sum, item) => sum + item.quantity, 1),
         priority: urgency || 'medium',
+        deliveryStreet: deliveryAddress.street,
+        deliveryCity: deliveryAddress.city,
+        deliveryState: deliveryAddress.state,
+        deliveryZipCode: deliveryAddress.zipCode,
+        deliveryCountry: deliveryAddress.country,
+        budgetCurrency: budget.currency,
+        budgetAmount: budget.amount,
       };
 
-      console.log('Submitting procurement request:', requestData);
+      console.log('Submitting procurement request to /api/v1/orders:', requestData);
       
       const response = await apiClient.createOrder(requestData);
-      
+      console.log('Order created successfully:', response);
+    
       toast({
         title: 'Success',
         description: 'Your procurement request has been submitted successfully. You will receive a confirmation email shortly.',
       });
 
-      navigate('/dashboard');
+      navigate('/my-requests');
     } catch (error: any) {
+      console.error('Create order error:', error);
+      // Improve error message display
+      let errorMessage = error.message || 'Failed to submit procurement request. Please try again.';
+      
+      // Check for common errors and provide user-friendly messages
+      if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
+        errorMessage = 'Your session has expired. Please log in again and try submitting your request.';
+      } else if (errorMessage.includes('404') || errorMessage.includes('not found')) {
+        errorMessage = 'The service is temporarily unavailable. Please try again later or contact support.';
+      } else if (errorMessage.includes('500') || errorMessage.includes('server')) {
+        errorMessage = 'Our server is having issues. Please wait a moment and try again.';
+      }
+      
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to submit procurement request. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
+          title: 'Submission Failed',
+          description: errorMessage,
+          variant: 'destructive',
+        });
+      } finally {
       setIsSubmitting(false);
     }
   };
@@ -501,17 +543,114 @@ const CreateRequestPage: React.FC = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label htmlFor="deliveryAddress">Delivery Address *</Label>
-                <Textarea
-                  id="deliveryAddress"
-                  className="tour-delivery-address"
-                  value={deliveryAddress}
-                  onChange={(e) => setDeliveryAddress(e.target.value)}
-                  placeholder="Enter complete delivery address"
-                  rows={3}
+                <Label htmlFor="deliveryStreet">Street Address *</Label>
+                <Input
+                  id="deliveryStreet"
+                  value={deliveryAddress.street}
+                  onChange={(e) => setDeliveryAddress(prev => ({ ...prev, street: e.target.value }))}
+                  placeholder="Enter street address"
                   required
                 />
               </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="deliveryCity">City *</Label>
+                  <Input
+                    id="deliveryCity"
+                    value={deliveryAddress.city}
+                    onChange={(e) => setDeliveryAddress(prev => ({ ...prev, city: e.target.value }))}
+                    placeholder="Enter city"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="deliveryState">State *</Label>
+                  <Input
+                    id="deliveryState"
+                    value={deliveryAddress.state}
+                    onChange={(e) => setDeliveryAddress(prev => ({ ...prev, state: e.target.value }))}
+                    placeholder="Enter state"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="deliveryZipCode">Zip Code</Label>
+                  <Input
+                    id="deliveryZipCode"
+                    value={deliveryAddress.zipCode}
+                    onChange={(e) => setDeliveryAddress(prev => ({ ...prev, zipCode: e.target.value }))}
+                    placeholder="Enter zip code"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="deliveryCountry">Country *</Label>
+                  <Input
+                    id="deliveryCountry"
+                    value={deliveryAddress.country}
+                    onChange={(e) => setDeliveryAddress(prev => ({ ...prev, country: e.target.value }))}
+                    placeholder="Enter country"
+                    required
+                  />
+                </div>
+              </div>
+              
+              {/* Budget Information */}
+              <Card className="bg-gray-50 border-2 border-dashed border-gray-200">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center text-lg">
+                    <CreditCard className="h-5 w-5 mr-2" />
+                    Budget Information (Optional)
+                  </CardTitle>
+                  <CardDescription>
+                    Set an estimated budget for this procurement request. This helps us provide you with accurate quotes.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="budgetCurrency">Currency</Label>
+                      <Select 
+                        value={budget.currency} 
+                        onValueChange={(value) => setBudget(prev => ({ ...prev, currency: value }))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select currency" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="NGN">NGN (₦) - Nigerian Naira</SelectItem>
+                          <SelectItem value="USD">USD ($) - US Dollar</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="budgetAmount">Estimated Budget Amount</Label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                          {budget.currency === 'NGN' ? '₦' : '$'}
+                        </span>
+                        <Input
+                          id="budgetAmount"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={budget.amount || ''}
+                          onChange={(e) => setBudget(prev => ({ 
+                            ...prev, 
+                            amount: e.target.value ? parseFloat(e.target.value) : null 
+                          }))}
+                          placeholder="0.00"
+                          className="pl-8"
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">Leave blank if you don't have a budget in mind</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
               
               <div>
                 <Label htmlFor="urgency">Urgency Level *</Label>
@@ -640,8 +779,7 @@ const CreateRequestPage: React.FC = () => {
               Cancel
             </Button>
             <Button type="submit" disabled={isSubmitting} className="tour-submit-btn">
-              {isSubmitting ?
-              (
+              {isSubmitting ? (
                 <>
                   <Clock className="h-4 w-4 mr-2 animate-spin" />
                   Submitting...
