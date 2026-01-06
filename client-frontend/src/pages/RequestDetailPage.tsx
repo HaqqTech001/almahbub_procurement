@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiClient } from '@/lib/api';
 
 // Backend URL for serving static files (uploads)
-const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:5000';
+const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'https://almahbub-procurement.onrender.com';
 
 // Helper function to get full image URL from relative path
 const getFullImageUrl = (relativePath: string): string => {
@@ -86,7 +86,8 @@ const RequestDetailPage: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await apiClient.getOrder(id!);
-      setRequest(response.data.data || response.data);
+      console.log(response.data.request)
+      setRequest(response.data.request || response.data);
     } catch (error: any) {
       // If API not available, use sample data
       setRequest({

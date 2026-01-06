@@ -283,7 +283,7 @@ const MyRequestsPage: React.FC = () => {
               Showing {filteredRequests.length} of {requests.length} requests
             </p>
             <Link to="/create-request" className="tour-create-request-btn">
-              <Button className="bg-gradient-brand hover:opacity-90">
+              <Button className="bg-gradient-brand hover:opacity-90 text-white">
                 Create New Request
               </Button>
             </Link>
@@ -303,7 +303,7 @@ const MyRequestsPage: React.FC = () => {
               </p>
               {requests.length === 0 && (
                 <Link to="/create-request" className="tour-create-request-btn">
-                  <Button className="bg-gradient-brand hover:opacity-90">
+                  <Button className="bg-gradient-brand hover:opacity-90 text-white">
                     Create First Request
                   </Button>
                 </Link>
