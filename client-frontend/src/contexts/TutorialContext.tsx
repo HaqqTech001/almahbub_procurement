@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
+import { getStepsForPath, tutorialSteps } from '@/config/tutorialSteps';
 
 interface TutorialContextType {
   run: boolean;
@@ -92,17 +93,14 @@ const TutorialTracker: React.FC<{ children: ReactNode; setContextData: (data: an
 
   // Get current page tutorial steps
   const getCurrentPageSteps = useCallback((): TutorialStep[] => {
-    // Import dynamically to avoid circular dependency
-    const { getStepsForPath } = require('@/config/tutorialSteps');
-    
-    // Check for exact match
+    // Use the imported getStepsForPath helper function
     const exactSteps = getStepsForPath(location.pathname);
     if (exactSteps.length > 0) {
       return exactSteps;
     }
     
-    // Check for parameterized routes
-    for (const [path, pageSteps] of Object.entries(require('@/config/tutorialSteps').tutorialSteps)) {
+    // Check for parameterized routes using the imported tutorialSteps object
+    for (const [path, pageSteps] of Object.entries(tutorialSteps)) {
       if (path.includes(':')) {
         const pathParts = location.pathname.split('/');
         const patternParts = path.split('/');

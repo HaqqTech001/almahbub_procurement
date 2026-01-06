@@ -22,6 +22,12 @@ const COMPANY_ADDRESS = 'Graceland Junction, Tanke Road, University Road, Ilorin
 const COMPANY_LAT = 8.4799;
 const COMPANY_LNG = 4.5418;
 
+// OpenStreetMap embed URL (more reliable, no API key needed)
+const OSM_MAP_URL = `https://www.openstreetmap.org/export/embed.html?bbox=${COMPANY_LNG - 0.01},${COMPANY_LAT - 0.01},${COMPANY_LNG + 0.01},${COMPANY_LAT + 0.01}&layer=mapnik&marker=${COMPANY_LAT},${COMPANY_LNG}`;
+
+// Static map image URL - more reliable than iframe
+const STATIC_MAP_URL = `https://static-maps.yandex.ru/1.x/?lang=en-US&ll=${COMPANY_LNG},${COMPANY_LAT}&size=800,400&z=16&l=map&pt=${COMPANY_LNG},${COMPANY_LAT},pm2rdm`;
+
 // WhatsApp URL generator
 const getWhatsAppUrl = (number: string, message: string) => {
   return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
@@ -37,8 +43,6 @@ const ContactPage: React.FC = () => {
     inquiryType: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [mapLoaded, setMapLoaded] = useState(false);
-  const [mapError, setMapError] = useState(false);
 
   const { toast } = useToast();
 
@@ -428,58 +432,47 @@ const ContactPage: React.FC = () => {
               <p className="text-white/90 text-sm mt-1">Visit our office for in-person assistance</p>
             </div>
             <CardContent className="p-0">
-              {/* Google Maps Embed */}
-              <div className="relative w-full h-80 md:h-auto flex-grow">
-                {!mapLoaded && !mapError && (
-                  <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-                    <div className="text-center">
-                      <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-500 text-sm">Loading map...</p>
-                    </div>
+              {/* Static Map Image - More reliable than iframe */}
+              <div className="relative w-full h-64 bg-gray-100">
+                <img
+                  src={STATIC_MAP_URL}
+                  alt="Office Location Map"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback to OpenStreetMap static image if Yandex fails
+                    const target = e.target as HTMLImageElement;
+                    target.src = `https://static-maps.yandex.ru/1.x/?lang=en-US&ll=${COMPANY_LNG},${COMPANY_LAT}&size=800,400&z=16&l=map&pt=${COMPANY_LNG},${COMPANY_LAT},pm2rdm`;
+                  }}
+                />
+                {/* Location marker overlay */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="bg-white rounded-full p-2 shadow-lg">
+                    <MapPin className="w-6 h-6 text-cyan-600" />
                   </div>
-                )}
-                {!mapError && (
-                  <iframe
-                    src={`https://maps.google.com/maps?q=${COMPANY_LAT},${COMPANY_LNG}&t=&z=17&ie=UTF8&iwloc=&output=embed`}
-                    width="100%"
-                    height="100%"
-                    style={{ minHeight: '320px', border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    onLoad={() => setMapLoaded(true)}
-                    onError={() => setMapError(true)}
-                    title="Office Location"
-                    className={mapLoaded ? 'block' : 'hidden'}
-                  />
-                )}
-                {/* Fallback when map fails to load */}
-                {mapError && (
-                  <div className="w-full h-80 bg-gray-100 flex flex-col items-center justify-center p-4">
-                    <MapPin className="w-12 h-12 text-gray-400 mb-2" />
-                    <p className="text-gray-600 text-center mb-3">Map could not be loaded</p>
-                    <a 
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(COMPANY_ADDRESS)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors"
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      Open in Google Maps
-                    </a>
-                  </div>
-                )}
-                {/* Address info below map */}
-                <div className="p-4 bg-gray-50 border-t">
-                  <p className="text-sm text-gray-600 mb-2 font-medium">{COMPANY_ADDRESS}</p>
+                </div>
+              </div>
+              
+              {/* Address info below map */}
+              <div className="p-4 bg-gray-50 border-t">
+                <p className="text-sm text-gray-600 mb-3 font-medium">{COMPANY_ADDRESS}</p>
+                <div className="flex flex-wrap gap-3">
                   <a 
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(COMPANY_ADDRESS)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center text-cyan-600 hover:text-cyan-800 text-sm font-medium"
+                    className="inline-flex items-center px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors text-sm"
                   >
-                    <ExternalLink className="w-4 h-4 mr-1" />
-                    View on Google Maps
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Open in Google Maps
+                  </a>
+                  <a 
+                    href={`https://www.openstreetmap.org/?mlat=${COMPANY_LAT}&mlon=${COMPANY_LNG}#map=17/${COMPANY_LAT}/${COMPANY_LNG}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Open in OpenStreetMap
                   </a>
                 </div>
               </div>

@@ -15,8 +15,18 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ className }
   const [isOpen, setIsOpen] = useState(false);
 
   const formatTimeAgo = (dateString: string) => {
+    if (!dateString || dateString === 'null' || dateString === 'undefined') {
+      return 'Just now';
+    }
+    
     const now = new Date();
     const date = new Date(dateString);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return 'Just now';
+    }
+    
     const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
     
     if (diffInMinutes < 60) {

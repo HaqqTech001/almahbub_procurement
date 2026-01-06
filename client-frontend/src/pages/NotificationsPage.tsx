@@ -181,7 +181,17 @@ const NotificationsPage: React.FC = () => {
   };
 
   const formatTime = (timestamp: string) => {
+    if (!timestamp || timestamp === 'null' || timestamp === 'undefined') {
+      return 'Just now';
+    }
+    
     const date = new Date(timestamp);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return 'Just now';
+    }
+    
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
     const diffInMinutes = Math.floor(diffInSeconds / 60);
@@ -202,7 +212,7 @@ const NotificationsPage: React.FC = () => {
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-cyan-600"></div>
           </div>
         </div>
       </div>
@@ -237,7 +247,7 @@ const NotificationsPage: React.FC = () => {
                 Mark all as read
               </Button>
             )}
-            <Badge variant="secondary" className="text-sm bg-teal-100 text-teal-700">
+            <Badge variant="secondary" className="text-sm bg-cyan-100 text-cyan-700">
               {unreadCount} unread
             </Badge>
           </div>
@@ -249,7 +259,7 @@ const NotificationsPage: React.FC = () => {
             variant={filter === 'all' ? 'default' : 'outline'}
             onClick={() => setFilter('all')}
             size="sm"
-            className={filter === 'all' ? 'bg-teal-600 hover:bg-teal-700' : ''}
+            className={filter === 'all' ? 'bg-cyan-600 hover:bg-cyan-700' : ''}
           >
             All ({notifications.length})
           </Button>
@@ -257,7 +267,7 @@ const NotificationsPage: React.FC = () => {
             variant={filter === 'unread' ? 'default' : 'outline'}
             onClick={() => setFilter('unread')}
             size="sm"
-            className={filter === 'unread' ? 'bg-teal-600 hover:bg-teal-700' : ''}
+            className={filter === 'unread' ? 'bg-cyan-600 hover:bg-cyan-700' : ''}
           >
             Unread ({unreadCount})
           </Button>
@@ -294,7 +304,7 @@ const NotificationsPage: React.FC = () => {
                     className={`
                       p-4 rounded-lg border cursor-pointer transition-all hover:shadow-md
                       ${getNotificationColor(notification.type, notification.is_read)}
-                      ${!notification.is_read ? 'border-l-4 border-l-teal-500' : ''}
+                      ${!notification.is_read ? 'border-l-4 border-l-cyan-500' : ''}
                     `}
                   >
                     <div className="flex items-start gap-4">
@@ -331,7 +341,7 @@ const NotificationsPage: React.FC = () => {
                       {/* Unread Indicator */}
                       {!notification.is_read && (
                         <div className="flex-shrink-0">
-                          <div className="h-2 w-2 bg-teal-500 rounded-full" />
+                          <div className="h-2 w-2 bg-cyan-500 rounded-full" />
                         </div>
                       )}
                     </div>

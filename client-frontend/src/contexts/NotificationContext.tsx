@@ -23,6 +23,9 @@ interface NotificationContextType {
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
+// LocalStorage key for persisted notification read statuses
+const NOTIFICATION_READ_STATUS_KEY = 'notification_read_status';
+
 export const useNotifications = () => {
   const context = useContext(NotificationContext);
   if (context === undefined) {
@@ -31,9 +34,39 @@ export const useNotifications = () => {
   return context;
 };
 
+// Helper to get persisted read statuses from localStorage
+const getPersistedReadStatus = (): Record<number, boolean> => {
+  try {
+    const stored = localStorage.getItem(NOTIFICATION_READ_STATUS_KEY);
+    return stored ? JSON.parse(stored) : {};
+  } catch {
+    return {};
+  }
+};
+
+// Helper to save read status to localStorage
+const saveReadStatus = (notificationId: number, isRead: boolean) => {
+  try {
+    const status = getPersistedReadStatus();
+    status[notificationId] = isRead;
+    localStorage.setItem(NOTIFICATION_READ_STATUS_KEY, JSON.stringify(status));
+  } catch (error) {
+    console.error('Failed to save notification read status:', error);
+  }
+};
+
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const { isAuthenticated } = useAuthContext();
+  
+  // Load persisted read statuses on mount
+  const [persistedReadStatus, setPersistedReadStatus] = useState<Record<number, boolean>>({});
+
+  useEffect(() => {
+    // Load persisted read status
+    const status = getPersistedReadStatus();
+    setPersistedReadStatus(status);
+  }, []);
 
   // Fetch notifications on mount (only when authenticated)
   useEffect(() => {
@@ -42,7 +75,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
   }, [isAuthenticated]);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter(n => !persistedReadStatus[n.id] && !n.read).length;
 
   const fetchNotifications = async () => {
     try {
@@ -50,23 +83,35 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       const response = await apiClient.getNotifications();
       
       if (response.success && response.data?.notifications) {
-        // Use real data from API
-        setNotifications(response.data.notifications);
+        // Merge API data with persisted read status
+        const apiNotifications = response.data.notifications;
+        const readStatus = getPersistedReadStatus();
+        
+        // Apply persisted read status to notifications
+        const mergedNotifications = apiNotifications.map((n: Notification) => ({
+          ...n,
+          read: n.read || readStatus[n.id] || false
+        }));
+        
+        setNotifications(mergedNotifications);
         return;
       }
       
-      // If no real data, use empty array instead of random mock data
+      // If no real data, use empty array
       console.log('No notifications from API, using empty state');
       setNotifications([]);
     } catch (error) {
-      // On error, use empty array instead of mock data
-      // This prevents the re-render issue with random mock data
+      // On error, use empty array
       console.log('Failed to fetch notifications, using empty state');
       setNotifications([]);
     }
   };
 
   const markAsRead = async (id: number) => {
+    // Save to localStorage immediately
+    saveReadStatus(id, true);
+    setPersistedReadStatus(prev => ({ ...prev, [id]: true }));
+    
     // Optimistic update - update local state first
     setNotifications(prev => 
       prev.map(notification => 
@@ -81,12 +126,21 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       await apiClient.markNotificationAsRead(id);
     } catch (error) {
       console.error('Failed to mark notification as read:', error);
-      // Refetch to get correct state from server
-      fetchNotifications();
+      // Note: We keep the localStorage update even if API fails
+      // so the user's experience is preserved
     }
   };
 
   const markAllAsRead = async () => {
+    // Save all current notification IDs as read to localStorage
+    const currentIds = notifications.map(n => n.id);
+    const readStatus = getPersistedReadStatus();
+    currentIds.forEach(id => {
+      readStatus[id] = true;
+    });
+    localStorage.setItem(NOTIFICATION_READ_STATUS_KEY, JSON.stringify(readStatus));
+    setPersistedReadStatus(readStatus);
+    
     // Optimistic update - update local state first
     setNotifications(prev => 
       prev.map(notification => ({ ...notification, read: true }))
@@ -97,12 +151,17 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
       await apiClient.markAllNotificationsAsRead();
     } catch (error) {
       console.error('Failed to mark all notifications as read:', error);
-      // Refetch to get correct state from server
-      fetchNotifications();
+      // Note: We keep the localStorage update even if API fails
     }
   };
 
   const removeNotification = (id: number) => {
+    // Remove from localStorage
+    const readStatus = getPersistedReadStatus();
+    delete readStatus[id];
+    localStorage.setItem(NOTIFICATION_READ_STATUS_KEY, JSON.stringify(readStatus));
+    setPersistedReadStatus(readStatus);
+    
     setNotifications(prev => prev.filter(notification => notification.id !== id));
   };
 
