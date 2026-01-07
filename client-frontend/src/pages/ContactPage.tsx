@@ -339,7 +339,7 @@ const ContactPage: React.FC = () => {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Follow Us on Social Media</h3>
           <div className="flex justify-center space-x-6">
             <a 
-              href="https://www.facebook.com/almahbubinternational" 
+              href="https://web.facebook.com/almahbubIMport/?_rdc=1&_rdr#" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 transition-colors"

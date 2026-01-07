@@ -38,7 +38,7 @@ const Footer: React.FC = () => {
               We connect businesses worldwide with quality products and services.
             </p>
             <div className="flex space-x-4">
-              <a href="https://www.facebook.com/Almahbub_International" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-accent transition-colors">
+              <a href="https://web.facebook.com/almahbubIMport/?_rdc=1&_rdr#" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-accent transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
               <a href="https://www.tiktok.com/@almahbubinternational" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-accent transition-colors">

@@ -18,7 +18,7 @@ const AboutPage: React.FC = () => {
     {
       icon: <Globe className="h-8 w-8" />,
       title: 'Global Reach',
-      description: 'Operating in over 50 countries with a vast network of suppliers and partners worldwide.',
+      description: 'Operating in over 5 countries with a vast network of suppliers and partners worldwide.',
     },
     {
       icon: <Award className="h-8 w-8" />,
@@ -168,7 +168,7 @@ const AboutPage: React.FC = () => {
               </h2>
               <div className="space-y-5 text-gray-600">
                 <p className="text-lg leading-relaxed">
-                  Founded in 2009, <strong className="text-[#0e7490]">Almahbub International</strong> has grown 
+                  Founded in 2020, <strong className="text-[#0e7490]">Almahbub International</strong> has grown 
                   from a small trading company to a leading global procurement and service management platform. 
                   Our journey began with a simple vision: to bridge the gap between businesses worldwide 
                   and make international trade more accessible and efficient.

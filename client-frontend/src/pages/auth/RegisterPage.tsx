@@ -601,7 +601,7 @@ const RegisterPage: React.FC = () => {
             <div className="mt-8 text-center">
               <div className="flex justify-center space-x-6 mb-4">
                 <a 
-                  href="https://www.facebook.com/almahbubinternational" 
+                  href="https://web.facebook.com/almahbubIMport/?_rdc=1&_rdr#" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-[#0F4C5C] transition-colors"
