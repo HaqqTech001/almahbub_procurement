@@ -169,7 +169,7 @@ const LoginPage: React.FC = () => {
               </Button>
             </form>
 
-            {/* Demo credentials */}
+            {/* Demo credentials
             <div className="mt-6 p-4 bg-muted rounded-lg">
               <h4 className="text-sm font-medium mb-2">Demo Credentials</h4>
               <p className="text-sm text-muted-foreground mb-1">
@@ -178,7 +178,7 @@ const LoginPage: React.FC = () => {
               <p className="text-sm text-muted-foreground">
                 <strong>Password:</strong> admin123456
               </p>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
 
