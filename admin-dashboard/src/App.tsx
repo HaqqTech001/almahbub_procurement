@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { SocketProvider } from '@/contexts/SocketContext';
 import { Layout } from '@/components/layout/Layout';
@@ -22,6 +22,19 @@ import  NotFoundPage  from '@/pages/NotFoundPage';
 import { Toaster } from '@/components/ui/toaster';
 import './index.css';
 
+
+const scrollToTop: React.FC ()=>{
+  const {pathname }= useLocation()
+
+  useEffect(()=>{
+    window.scrollTo({
+      top:0,
+      left:0,
+      behavior: 'smooth'
+    })
+  },[pathname])
+
+}
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading } = useAuth();
