@@ -308,7 +308,7 @@ const CategoryDetailPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         {/* Breadcrumb */}
         <div className="mb-6 sm:mb-8">
-          <Link to="/categories" className="text-teal-600 hover:text-teal-800 flex items-center text-sm sm:text-base">
+          <Link to="/services" className="text-teal-600 hover:text-teal-800 flex items-center text-sm sm:text-base">
             <ArrowLeft className="h-4 w-4 mr-1 sm:mr-2" />
             Back to Categories
           </Link>
