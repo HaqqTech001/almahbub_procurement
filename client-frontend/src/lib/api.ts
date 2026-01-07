@@ -1,5 +1,7 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://almahbub-procurement.onrender.com/api/v1';
-const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'https://almahbub-procurement.onrender.com';
+// Ensure API_BASE_URL always ends with /api/v1
+const rawApiUrl = import.meta.env.VITE_API_URL || 'https://almahbub_procurement.onrender.com';
+const API_BASE_URL = rawApiUrl.replace(/\/+$/, '') + '/api/v1';
+const BASE_URL = rawApiUrl.replace(/\/+$/, '');
 
 // User-friendly error message mapping
 const getUserFriendlyErrorMessage = (status: number, errorKey?: string, defaultMessage?: string): string => {

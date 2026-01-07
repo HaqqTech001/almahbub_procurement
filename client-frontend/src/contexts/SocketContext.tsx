@@ -35,40 +35,72 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (isAuthenticated && token) {
-      // Initialize socket connection
-      const socketInstance = io(import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'https://almahbub-procurement.onrender.com', {
+      // Determine the correct socket URL for the current environment
+      const getSocketUrl = () => {
+        // Priority 1: Use dedicated socket URL environment variable if available
+        if (import.meta.env.VITE_SOCKET_URL) {
+          return import.meta.env.VITE_SOCKET_URL;
+        }
+        
+        // Priority 2: Extract from API URL by removing the /api/v1 path
+        if (import.meta.env.VITE_API_URL) {
+          const apiUrl = import.meta.env.VITE_API_URL;
+          // Remove /api/v1 or /api prefix if present
+          const baseUrl = apiUrl.replace(/\/api(\/v\d+)?\/?$/, '');
+          return baseUrl || apiUrl;
+        }
+        
+        // Priority 3: Default to localhost for development
+        return 'http://localhost:5000';
+      };
+
+      const socketUrl = getSocketUrl();
+      
+      // Initialize socket connection with production-optimized settings
+      const socketInstance = io(socketUrl, {
         auth: {
           token,
         },
-        transports: ['websocket', 'polling'],
+        // Use polling first for better compatibility with proxies and load balancers
+        transports: ['polling', 'websocket'],
+        // Enable automatic reconnection
         reconnection: true,
-        reconnectionAttempts: 5,
+        reconnectionAttempts: 10,
         reconnectionDelay: 1000,
-        timeout: 20000,
+        reconnectionDelayMax: 5000,
+        // Timeout for connection establishment
+        timeout: 30000,
+        // Keep connection alive
+        pingTimeout: 60000,
+        pingInterval: 25000,
       });
 
       setSocket(socketInstance);
 
       // Connection event handlers
       socketInstance.on('connect', () => {
-        console.log('Connected to server');
+        console.log('Socket connected successfully to:', socketUrl);
         setConnected(true);
         unreadCountFetched.current = false;
         fetchUnreadCount();
         unreadCountFetched.current = true;
       });
 
-      socketInstance.on('disconnect', () => {
-        console.log('Disconnected from server');
+      socketInstance.on('disconnect', (reason) => {
+        console.log('Socket disconnected:', reason);
         setConnected(false);
+        
+        // Attempt to reconnect if disconnected unexpectedly
+        if (reason === 'io server disconnect') {
+          // Server initiated disconnect, manually reconnect
+          socketInstance.connect();
+        }
       });
 
       socketInstance.on('connect_error', (error) => {
-        // WebSocket connection errors are normal during initial connection
-        // Socket.IO will fall back to polling automatically
-        if (error.message && !error.message.includes('WebSocket')) {
-          console.error('Socket connection error:', error);
-        }
+        // Log connection errors for debugging
+        console.warn('Socket connection error:', error.message);
+        console.warn('Socket URL:', socketUrl);
         setConnected(false);
       });
 
