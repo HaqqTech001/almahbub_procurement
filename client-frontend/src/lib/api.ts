@@ -31,6 +31,9 @@ const getUserFriendlyErrorMessage = (status: number, errorKey?: string, defaultM
     'Password too short': 'Your password must be at least 6 characters long.',
     'Incorrect password': 'The password you entered is incorrect. Please try again.',
     'Same password': 'Your new password must be different from your current password.',
+    // Password reset specific errors
+    'Invalid or expired reset token': 'This password reset link has expired or has already been used. Please request a new password reset link.',
+    'reset token': 'This password reset link has expired or is invalid. Please request a new password reset link.',
   };
 
   // Check for specific error message first
