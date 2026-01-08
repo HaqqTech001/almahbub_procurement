@@ -90,7 +90,7 @@ const Footer: React.FC = () => {
               <Link to="/category/machineries" className="block text-gray-400 hover:text-white transition-colors">
                 Machineries
               </Link>
-              <Link to="/create-order" className="block text-gray-400 hover:text-white transition-colors">
+              <Link to="/create-request" className="block text-gray-400 hover:text-white transition-colors">
                 Create Order
               </Link>
             </nav>

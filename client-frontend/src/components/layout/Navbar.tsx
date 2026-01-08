@@ -101,7 +101,7 @@ const Navbar: React.FC = () => {
                 {/* Chat Link with Badge */}
                 <div className="relative">
                   <Button variant="ghost" size="icon" asChild className="relative">
-                    <Link to="/client-chat">
+                    <Link to="/chat">
                       <MessageCircle className="h-5 w-5" />
                       {unreadCount > 0 && (
                         <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
@@ -158,7 +158,7 @@ const Navbar: React.FC = () => {
                         My Requests
                       </Link>
                       <Link
-                        to="/client-chat"
+                        to="/chat"
                         className="flex items-center px-4 py-2.5 text-sm text-[#0e7490] hover:bg-gray-50 transition-colors font-medium"
                         onClick={() => setIsProfileOpen(false)}
                       >
@@ -230,7 +230,7 @@ const Navbar: React.FC = () => {
               <div className="flex items-center justify-center space-x-4 mb-4 px-3">
                 <NotificationDropdown />
                 <Link 
-                  to="/client-chat" 
+                  to="/chat" 
                   className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   onClick={() => setIsMenuOpen(false)}
                 >

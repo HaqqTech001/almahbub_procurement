@@ -1,17 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@/components/theme-provider';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { SocketProvider } from '@/contexts/SocketContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
-import { TutorialProvider } from '@/contexts/TutorialContext';
+import { TutorialProvider, useTutorial } from '@/contexts/TutorialContext';
 import { Toaster } from '@/components/ui/toaster';
 import { useAuthStore } from '@/stores/authStore';
+
+// ScrollToTop Component - Automatically scrolls to top on route change
+const ScrollToTop: React.FC = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // Scroll to top of the page immediately (instant scroll for better reliability)
+    window.scrollTo(0, 0);
+    
+    // Also reset html/body scroll position for better browser support
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [pathname]);
+
+  return null;
+};
 
 // Onboarding Components
 import TutorialManager from '@/components/onboarding/TutorialManager';
 import TutorialTrigger from '@/components/onboarding/TutorialTrigger';
+import WelcomeModal from '@/components/onboarding/WelcomeModal';
 
 // Pages
 import HomePage from '@/pages/HomePage';
@@ -19,6 +36,7 @@ import DashboardPage from '@/pages/DashboardPage';
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
 import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from '@/pages/auth/ResetPasswordPage';
 import VerifyEmailPage from '@/pages/auth/VerifyEmailPage';
 import ServicesPage from '@/pages/CategoriesPage';
 import SubcategoriesPage from '@/pages/SubcategoriesPage';
@@ -117,6 +135,13 @@ const AppContent: React.FC = () => {
           </PublicRoute>
         </LayoutWrapper>
       } />
+      <Route path="/reset-password/:token" element={
+        <LayoutWrapper showFooter={true}>
+          <PublicRoute>
+            <ResetPasswordPage />
+          </PublicRoute>
+        </LayoutWrapper>
+      } />
       <Route path="/verify-email/:token" element={
         <LayoutWrapper showFooter={true}>
           <PublicRoute>
@@ -139,6 +164,11 @@ const AppContent: React.FC = () => {
           <SubcategoriesPage />
         </LayoutWrapper>
       } />
+      {/* <Route path="/product/:id" element={
+        <LayoutWrapper showFooter={true}>
+          <ProductDetailPage />
+        </LayoutWrapper>
+      } /> */}
       <Route path="/about" element={
         <LayoutWrapper showFooter={true}>
           <AboutPage />
@@ -217,7 +247,37 @@ const AppContent: React.FC = () => {
           </ProtectedRoute>
         </LayoutWrapper>
       } />
-      
+      {/* Client Chat Page - NO FOOTER */}
+      <Route path="/client-chat" element={
+        <LayoutWrapper showFooter={false}>
+          <ProtectedRoute>
+            <ClientChatPage />
+          </ProtectedRoute>
+        </LayoutWrapper>
+      } />
+      {/* Chatbot Settings (Admin)
+      <Route path="/chatbot-settings" element={
+        <LayoutWrapper showFooter={true}>
+          <ProtectedRoute>
+            <ChatbotSettingsPage />
+          </ProtectedRoute>
+        </LayoutWrapper>
+      } />
+      {/* Create/Edit Announcement 
+      <Route path="/announcement/create" element={
+        <LayoutWrapper showFooter={true}>
+          <ProtectedRoute>
+            <CreateAnnouncementPage />
+          </ProtectedRoute>
+        </LayoutWrapper>
+      } /> */}
+      <Route path="/announcement/edit/:id" element={
+        <LayoutWrapper showFooter={true}>
+          <ProtectedRoute>
+            <CreateAnnouncementPage />
+          </ProtectedRoute>
+        </LayoutWrapper>
+      } />
       {/* Notifications Page */}
       <Route path="/notifications" element={
         <LayoutWrapper showFooter={true}>
@@ -237,6 +297,17 @@ const AppContent: React.FC = () => {
 };
 
 function App() {
+  // WelcomeModal wrapper component
+  const WelcomeModalWrapper: React.FC = () => {
+    const { showWelcome, setShowWelcome } = useTutorial();
+    
+    const handleClose = () => {
+      setShowWelcome(false);
+    };
+    
+    return <WelcomeModal isOpen={showWelcome} onClose={handleClose} />;
+  };
+  
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light" storageKey="almahbub-client-theme">
@@ -244,10 +315,12 @@ function App() {
           <SocketProvider>
             <NotificationProvider>
               <Router>
+                <ScrollToTop />
                 <TutorialProvider>
                   <Toaster />
                   <TutorialManager />
                   <TutorialTrigger />
+                  <WelcomeModalWrapper />
                   <AppContent />
                 </TutorialProvider>
               </Router>
