@@ -1,5 +1,6 @@
 // Ensure API_BASE_URL always ends with /api/v1
 const rawApiUrl = import.meta.env.VITE_API_URL || 'https://almahbub_procurement.onrender.com';
+// const rawApiUrl =  'http://localhost:5000';
 const API_BASE_URL = rawApiUrl.replace(/\/+$/, '') + '/api/v1';
 const BASE_URL = rawApiUrl.replace(/\/+$/, '');
 

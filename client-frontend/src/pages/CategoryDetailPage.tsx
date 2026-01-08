@@ -323,9 +323,9 @@ const CategoryDetailPage: React.FC = () => {
               <h1 className="text-3xl font-bold text-gray-900 mb-4">{category.name}</h1>
               <p className="text-gray-600 text-lg mb-4">{category.description}</p>
               <div className="flex items-center space-x-4">
-                <Badge variant="secondary">{category.product_count || 0} Products</Badge>
+                <Badge variant="secondary" className='bg-orange-400'>{category.product_count || 0} Products</Badge>
                 {category.is_active && (
-                  <Badge className="bg-green-100 text-green-800">Active</Badge>
+                  <Badge className="bg-green-400 text-green-800">Active</Badge>
                 )}
               </div>
             </div>
@@ -346,7 +346,7 @@ const CategoryDetailPage: React.FC = () => {
         {/* Procurement Process Info */}
         <Card className="mb-8 bg-blue-50 border-blue-200">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between sm:flex-col">
+            <div className="xl:flex items-center justify-between sm:flex-col">
               <div className="flex items-center space-x-4">
                 <div className="p-3 bg-blue-100 rounded-full">
                   <Package className="h-6 w-6 text-blue-600" />
