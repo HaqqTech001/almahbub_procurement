@@ -346,7 +346,7 @@ const CategoryDetailPage: React.FC = () => {
         {/* Procurement Process Info */}
         <Card className="mb-8 bg-blue-50 border-blue-200">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between sm:flex-col">
               <div className="flex items-center space-x-4">
                 <div className="p-3 bg-blue-100 rounded-full">
                   <Package className="h-6 w-6 text-blue-600" />
