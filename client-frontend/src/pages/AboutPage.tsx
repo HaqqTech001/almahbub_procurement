@@ -300,7 +300,7 @@ const AboutPage: React.FC = () => {
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-4xl md:text-5xl font-bold text-[#E3B505] mb-2">
-                  {stat.number}
+                  {stat.value}
                 </div>
                 <div className="text-gray-200 font-medium">
                   {stat.label}
