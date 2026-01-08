@@ -162,10 +162,10 @@ const HomePage: React.FC = () => {
   ];
 
   const stats = [
-    { value: '8+', label: 'Years Experience' },
+     { value: '5+', label: 'Years Experience' },
     { value: '500+', label: 'Global Suppliers' },
-    { value: '10,000+', label: 'Products Sourced' },
-    { value: '5,000+', label: 'Happy Clients' },
+    { value: '1000+', label: 'Products Sourced' },
+    { value: '500+', label: 'Happy Clients' },
   ];
 
   const trustIndicators = [
