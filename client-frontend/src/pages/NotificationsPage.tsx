@@ -18,6 +18,7 @@ import {
   CheckCheck,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
+import { getRelativeTime } from '@/lib/dateUtils';
 
 interface Notification {
   id: number;
@@ -181,28 +182,7 @@ const NotificationsPage: React.FC = () => {
   };
 
   const formatTime = (timestamp: string) => {
-    if (!timestamp || timestamp === 'null' || timestamp === 'undefined') {
-      return 'Just now';
-    }
-    
-    const date = new Date(timestamp);
-    
-    // Check if date is valid
-    if (isNaN(date.getTime())) {
-      return 'Just now';
-    }
-    
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    const diffInMinutes = Math.floor(diffInSeconds / 60);
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    const diffInDays = Math.floor(diffInHours / 24);
-
-    if (diffInSeconds < 60) return 'Just now';
-    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    if (diffInDays < 7) return `${diffInDays}d ago`;
-    return date.toLocaleDateString();
+    return getRelativeTime(timestamp, 'Unknown');
   };
 
   const unreadCount = notifications.filter(n => !n.is_read).length;

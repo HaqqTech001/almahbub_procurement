@@ -131,7 +131,7 @@ const AboutPage: React.FC = () => {
             </div>
 
             <p className="text-lg md:text-xl text-gray-200 max-w-3xl mx-auto">
-              Your trusted partner in international procurement and supply chain management since 2009
+              Your trusted partner in international procurement and supply chain management since 2020
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
@@ -141,7 +141,7 @@ const AboutPage: React.FC = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-white hover:text-[#0e7490]" asChild>
+              <Button variant="outline" className="border-white hover:bg-white/90 text-[#0e7490]" asChild>
                 <Link to="/services">
                   Our Services
                 </Link>
@@ -363,7 +363,7 @@ const AboutPage: React.FC = () => {
                 Get Started
               </Link>
             </Button>
-            <Button variant="outline" className="border-white text-white hover:bg-white hover:text-[#0e7490]" asChild>
+            <Button variant="outline" className="border-white  hover:bg-white/90 text-[#0e7490]" asChild>
               <Link to="/contact">
                 Contact Us
               </Link>

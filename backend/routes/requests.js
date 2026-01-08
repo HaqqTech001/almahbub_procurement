@@ -361,10 +361,10 @@ router.put('/:id', authenticateToken, requireAdmin, [
         console.error('Failed to send status update email:', emailError);
       }
 
-      // Create notification
+      // Create notification with proper resource links
       await pool.execute(
-        'INSERT INTO notifications (user_id, title, message, type, data) VALUES (?, ?, ?, ?, ?)',
-        [updatedRequest.user_id, 'Request Status Updated', `Your request status is now: ${status}`, 'request', JSON.stringify({ requestId: id, newStatus: status })]
+        'INSERT INTO notifications (user_id, title, message, type, resource_type, resource_id, data) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [updatedRequest.user_id, 'Request Status Updated', `Your request status is now: ${status}`, 'order_update', 'order', String(id), JSON.stringify({ requestId: id, newStatus: status })]
       );
     }
 

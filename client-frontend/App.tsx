@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -8,6 +8,22 @@ import { NotificationProvider } from '@/contexts/NotificationContext';
 import { TutorialProvider, useTutorial } from '@/contexts/TutorialContext';
 import { Toaster } from '@/components/ui/toaster';
 import { useAuthStore } from '@/stores/authStore';
+
+// ScrollToTop Component - Automatically scrolls to top on route change
+const ScrollToTop: React.FC = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // Scroll to top of the page immediately (instant scroll for better reliability)
+    window.scrollTo(0, 0);
+    
+    // Also reset html/body scroll position for better browser support
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [pathname]);
+
+  return null;
+};
 
 // Onboarding Components
 import TutorialManager from '@/components/Onboarding/TutorialManager';
@@ -20,6 +36,7 @@ import DashboardPage from '@/pages/DashboardPage';
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
 import ForgotPasswordPage from '@/pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from '@/pages/auth/ResetPasswordPage';
 import VerifyEmailPage from '@/pages/auth/VerifyEmailPage';
 import ServicesPage from '@/pages/CategoriesPage';
 import SubcategoriesPage from '@/pages/SubcategoriesPage';
@@ -57,19 +74,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
-
-const scrollToTop: React.FC ()=>{
-  const {pathname }= useLocation()
-
-  useEffect(()=>{
-    window.scrollTo({
-      top:0,
-      left:0,
-      behavior: 'smooth'
-    })
-  },[pathname])
-
 
 // Public Route Component
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -128,6 +132,13 @@ const AppContent: React.FC = () => {
         <LayoutWrapper showFooter={true}>
           <PublicRoute>
             <ForgotPasswordPage />
+          </PublicRoute>
+        </LayoutWrapper>
+      } />
+      <Route path="/reset-password/:token" element={
+        <LayoutWrapper showFooter={true}>
+          <PublicRoute>
+            <ResetPasswordPage />
           </PublicRoute>
         </LayoutWrapper>
       } />
@@ -304,6 +315,7 @@ function App() {
           <SocketProvider>
             <NotificationProvider>
               <Router>
+                <ScrollToTop />
                 <TutorialProvider>
                   <Toaster />
                   <TutorialManager />

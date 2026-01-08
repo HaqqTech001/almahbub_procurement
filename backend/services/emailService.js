@@ -115,7 +115,7 @@ class EmailService {
   }
 
   async sendWelcomeEmail(user) {
-    const clientUrl = process.env.CLIENT_URL || 'https://almahbub-international.onrender.com/login';
+    const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
     const verificationUrl = `${clientUrl}/verify-email/${user.email_verification_token}`;
     
     const html = `
@@ -245,7 +245,7 @@ class EmailService {
 
   async sendOrderStatusUpdate(user, order, status) {
     const clientUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-    const orderUrl = `${clientUrl}/orders/${order.id}`;
+    const orderUrl = `${clientUrl}/request/${order.id}`;
 
     const statusMessages = {
       pending: 'Your request has been received and is pending review.',

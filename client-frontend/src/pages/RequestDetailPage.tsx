@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, FileText, MapPin, CreditCard, Clock, CheckCircle, Search, Phone, Mail, AlertCircle, Package } from 'lucide-react';
+import { ArrowLeft, FileText, MapPin, CreditCard, Clock, CheckCircle, Search, Phone, Mail, AlertCircle, Package, User, Calendar, DollarSign, File, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,9 +8,11 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { apiClient } from '@/lib/api';
+import RequestProgressBar from '@/components/ui/RequestProgressBar';
+import { formatDateTime, formatDate, formatCurrency, getStatusColor, getPriorityColor, parseDate } from '@/lib/dateUtils';
 
 // Backend URL for serving static files (uploads)
-const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'https://almahbub-procurement.onrender.com';
+const BACKEND_URL = import.meta.env.VITE_API_URL?.replace('/api/v1', '') || 'http://localhost:5000';
 
 // Helper function to get full image URL from relative path
 const getFullImageUrl = (relativePath: string): string => {
@@ -86,10 +88,74 @@ const RequestDetailPage: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await apiClient.getOrder(id!);
-      console.log(response.data.request)
-      setRequest(response.data.request || response.data);
+      
+      // Handle different API response structures
+      let requestData = null;
+      
+      if (response.data?.data?.request) {
+        // Nested data structure
+        requestData = response.data.data.request;
+      } else if (response.data?.request) {
+        // Single level data structure
+        requestData = response.data.request;
+      } else if (response.data) {
+        // Direct data
+        requestData = response.data;
+      } else if (response) {
+        // Response is the data directly
+        requestData = response;
+      }
+      
+      if (requestData) {
+        // Transform request data to match frontend expectations
+        setRequest({
+          id: requestData.id || parseInt(id!),
+          requestNumber: requestData.request_number || requestData.requestNumber || `REQ-${String(requestData.id || id).padStart(6, '0')}`,
+          status: requestData.status || 'received',
+          totalAmount: requestData.total_amount || requestData.totalAmount || 0,
+          currency: requestData.currency || requestData.budget_currency || 'USD',
+          subtotal: requestData.subtotal || 0,
+          tax: requestData.tax || 0,
+          items: requestData.items || [{
+            id: 1,
+            productId: requestData.product_id,
+            productName: requestData.product_name || requestData.title || 'Procurement Item',
+            description: requestData.description || 'No description provided',
+            specifications: requestData.specifications || 'Standard specifications',
+            quantity: requestData.quantity || 1,
+            unitPrice: requestData.unit_price || 0,
+            totalPrice: requestData.total_amount || 0,
+            category: 'General Procurement'
+          }],
+          deliveryAddress: {
+            fullName: `${requestData.first_name || ''} ${requestData.last_name || ''}`.trim() || 'N/A',
+            companyName: requestData.company || '',
+            street: requestData.delivery_street || requestData.delivery_address || 'Address to be provided',
+            city: requestData.delivery_city || 'City',
+            state: requestData.delivery_state || 'State',
+            zipCode: requestData.delivery_zipcode || '00000',
+            country: requestData.delivery_country || 'Country',
+            phone: requestData.phone || ''
+          },
+          paymentMethod: requestData.payment_method || 'Quote-based',
+          paymentStatus: requestData.payment_status || 'pending',
+          createdAt: requestData.created_at || requestData.createdAt || new Date().toISOString(),
+          updatedAt: requestData.updated_at || requestData.updatedAt || new Date().toISOString(),
+          description: requestData.description || 'No description provided',
+          priority: requestData.priority || 'medium',
+          expectedDeliveryDate: requestData.expected_delivery_date,
+          specialInstructions: requestData.special_instructions,
+          assignedTo: requestData.assigned_to || requestData.assignedTo,
+          notes: requestData.admin_notes || requestData.notes,
+          budgetCurrency: requestData.budget_currency || requestData.currency || 'USD',
+          budgetAmount: requestData.budget_amount || requestData.budgetAmount || null,
+        });
+      } else {
+        throw new Error('No request data found');
+      }
     } catch (error: any) {
-      // If API not available, use sample data
+      console.error('Failed to fetch request details:', error);
+      // Use sample data for demo
       setRequest({
         id: parseInt(id!),
         requestNumber: `REQ-${id?.padStart(6, '0')}`,
@@ -214,13 +280,7 @@ const RequestDetailPage: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    return formatDateTime(dateString, 'N/A');
   };
 
   const handleCancelRequest = async () => {
@@ -315,6 +375,17 @@ const RequestDetailPage: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Progress Bar */}
+        <Card className="mb-6 md:mb-8">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg md:text-xl">Request Progress</CardTitle>
+            <CardDescription>Track the current status of your request</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RequestProgressBar currentStatus={request.status || 'received'} />
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
           {/* Main Content */}
