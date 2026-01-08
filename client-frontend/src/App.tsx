@@ -248,13 +248,13 @@ const AppContent: React.FC = () => {
         </LayoutWrapper>
       } />
       {/* Client Chat Page - NO FOOTER */}
-      <Route path="/client-chat" element={
+      {/* <Route path="/client-chat" element={
         <LayoutWrapper showFooter={false}>
           <ProtectedRoute>
             <ClientChatPage />
           </ProtectedRoute>
         </LayoutWrapper>
-      } />
+      } /> */}
       {/* Chatbot Settings (Admin)
       <Route path="/chatbot-settings" element={
         <LayoutWrapper showFooter={true}>
@@ -271,13 +271,13 @@ const AppContent: React.FC = () => {
           </ProtectedRoute>
         </LayoutWrapper>
       } /> */}
-      <Route path="/announcement/edit/:id" element={
+      {/* <Route path="/announcement/edit/:id" element={
         <LayoutWrapper showFooter={true}>
           <ProtectedRoute>
             <CreateAnnouncementPage />
           </ProtectedRoute>
         </LayoutWrapper>
-      } />
+      } /> */}
       {/* Notifications Page */}
       <Route path="/notifications" element={
         <LayoutWrapper showFooter={true}>
