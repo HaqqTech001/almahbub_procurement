@@ -5,24 +5,27 @@ const { body, validationResult } = require('express-validator');
 const { pool } = require('../config/database');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const fs = require('fs');
+const { createCloudinaryStorage, deleteFile, isCloudinaryConfigured } = require('../config/cloudStorage');
 
 const router = express.Router();
 
 // Configure multer for category image uploads
-const categoryStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadsDir = path.join(__dirname, '..', 'uploads', 'categories');
-    // Create directory if it doesn't exist
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
-    }
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, 'category-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+const categoryStorage = isCloudinaryConfigured() 
+  ? createCloudinaryStorage('categories')
+  : multer.diskStorage({
+      destination: (req, file, cb) => {
+        const uploadsDir = path.join(__dirname, '..', 'uploads', 'categories');
+        // Create directory if it doesn't exist
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+        cb(null, uploadsDir);
+      },
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, 'category-' + uniqueSuffix + path.extname(file.originalname));
+      }
+    });
 
 const categoryUpload = multer({
   storage: categoryStorage,
@@ -46,16 +49,9 @@ const categoryUpload = multer({
 async function deleteCategoryImage(imagePath) {
   if (!imagePath) return;
   
-  // Only delete if it's a local file path (not external URL)
-  if (imagePath.startsWith('/uploads/')) {
-    const fullPath = path.join(__dirname, '..', imagePath);
-    try {
-      if (fs.existsSync(fullPath)) {
-        fs.unlinkSync(fullPath);
-      }
-    } catch (error) {
-      console.error('Error deleting old image:', error);
-    }
+  // For Cloudinary URLs or local paths, use the unified delete function
+  if (imagePath.startsWith('/uploads/') || imagePath.includes('cloudinary.com')) {
+    await deleteFile(imagePath);
   }
 }
 
@@ -203,10 +199,11 @@ router.post('/', authenticateToken, requireAdmin, categoryUpload.single('image')
 
     const { name, description, slug, parent_id, sort_order = 0, icon, color, status } = req.body;
 
-    // Handle uploaded image
+    // Handle uploaded image - works for both Cloudinary and local storage
     let imagePath = req.body.image || null;
     if (req.file) {
-      imagePath = `/uploads/categories/${req.file.filename}`;
+      // Cloudinary returns full URL in req.file.path, local returns file path
+      imagePath = req.file.path;
     }
 
     // Check if slug already exists (in same parent scope)
@@ -225,7 +222,7 @@ router.post('/', authenticateToken, requireAdmin, categoryUpload.single('image')
     if (existing.length > 0) {
       // Delete uploaded file if slug exists
       if (req.file) {
-        deleteCategoryImage(`/uploads/categories/${req.file.filename}`);
+        deleteCategoryImage(imagePath);
       }
       return res.status(400).json({ error: 'Category with this slug already exists' });
     }
@@ -252,7 +249,7 @@ router.post('/', authenticateToken, requireAdmin, categoryUpload.single('image')
     console.error('Create category error:', error);
     // Delete uploaded file on error
     if (req.file) {
-      deleteCategoryImage(`/uploads/categories/${req.file.filename}`);
+      deleteCategoryImage(imagePath);
     }
     res.status(500).json({ error: 'Failed to create category' });
   }
@@ -283,7 +280,7 @@ router.put('/:id', authenticateToken, requireAdmin, categoryUpload.single('image
     if (existing.length === 0) {
       // Delete uploaded file if category doesn't exist
       if (req.file) {
-        deleteCategoryImage(`/uploads/categories/${req.file.filename}`);
+        deleteCategoryImage(req.file.path);
       }
       return res.status(404).json({ error: 'Category not found' });
     }
@@ -297,7 +294,8 @@ router.put('/:id', authenticateToken, requireAdmin, categoryUpload.single('image
       if (existingCategory.image) {
         await deleteCategoryImage(existingCategory.image);
       }
-      imagePath = `/uploads/categories/${req.file.filename}`;
+      // Cloudinary returns full URL, local returns file path
+      imagePath = req.file.path;
     }
     // Handle image removal
     else if (removeImage === 'true' || removeImage === true) {
