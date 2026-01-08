@@ -81,7 +81,7 @@ const HomePage: React.FC = () => {
         apiClient.getCategories(),
         apiClient.getAnnouncements(),
       ]);
-      console.log(categoriesResponse)
+      // console.log(categoriesResponse)
 
       if (categoriesResponse.success) {
         setCategories((categoriesResponse.data.categories || categoriesResponse.data || []).slice(0, 6));

@@ -98,7 +98,7 @@ const NotificationsPage: React.FC = () => {
     switch (resourceType) {
       case 'message':
       case 'chat':
-        navigate('/client-chat');
+        navigate('/chat');
         break;
       case 'announcement':
         if (notification.data?.announcementId) {
@@ -122,7 +122,7 @@ const NotificationsPage: React.FC = () => {
         }
         break;
       case 'new_message':
-        navigate('/client-chat');
+        navigate('/chat');
         break;
       default:
         // Default behavior - just mark as read

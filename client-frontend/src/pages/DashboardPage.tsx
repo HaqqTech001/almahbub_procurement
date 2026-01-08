@@ -111,7 +111,7 @@ const DashboardPage: React.FC = () => {
             apiClient.getAnnouncements(),
             apiClient.getNotifications({ limit: 5 }),
           ]);
-          console.log('Admin orders response:', ordersResponse);
+          // console.log('Admin orders response:', ordersResponse);
           requests = ordersResponse.data?.requests || ordersResponse.data?.orders || ordersResponse.data?.data || ordersResponse.data || [];
           announcementsData = announcementsResponse.data?.announcements || announcementsResponse.data?.data || announcementsResponse.data || [];
           notificationsData = notificationsResponse.data?.notifications || notificationsResponse.data?.data || notificationsResponse.data || [];
@@ -126,7 +126,7 @@ const DashboardPage: React.FC = () => {
             apiClient.getAnnouncements(),
             apiClient.getNotifications({ limit: 5 }),
           ]);
-          console.log('User orders response:', ordersResponse);
+          // console.log('User orders response:', ordersResponse);
           requests = ordersResponse.data?.requests || ordersResponse.data?.orders || ordersResponse.data?.data || ordersResponse.data || [];
           announcementsData = announcementsResponse.data?.announcements || announcementsResponse.data?.data || announcementsResponse.data || [];
           notificationsData = notificationsResponse.data?.notifications || notificationsResponse.data?.data || notificationsResponse.data || [];
@@ -151,7 +151,7 @@ const DashboardPage: React.FC = () => {
         completedRequests = requests.filter((r: any) => r.status === 'completed').length;
         activeProjects = requests.filter((r: any) => ['reviewing', 'in_discussion', 'sourcing','processing'].includes(r.status)).length;
       }
-      console.log(pendingRequests)
+      // console.log(pendingRequests)
 
       setStats({
         totalRequests,

@@ -67,7 +67,7 @@ const OrderDetailPage: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await apiClient.get(`/orders/${id}`);
-      console.log(response.data)
+      // console.log(response.data)
       setOrder(response.data.data || response.data);
     } catch (error: any) {
       // If API not available, use sample data
