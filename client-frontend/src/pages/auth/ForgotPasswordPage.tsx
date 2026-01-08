@@ -53,7 +53,7 @@ const ForgotPasswordPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await apiClient.post('/auth/forgot-password', { email });
+      await apiClient.forgotPassword(email);
       setEmailSent(true);
       toast({
         title: 'Email Sent',
