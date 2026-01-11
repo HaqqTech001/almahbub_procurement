@@ -135,9 +135,10 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6">
-              <p className="text-gray-400 text-sm">
-                © {currentYear} Almahbub International. All rights reserved.
+               <p className="text-gray-400 text-sm">
+                © {currentYear} Almahbub International. All rights reserved. 
               </p>
+            
               <div className="flex space-x-4">
                 <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
                   Privacy Policy
@@ -156,6 +157,11 @@ const Footer: React.FC = () => {
             >
               <ArrowUp className="h-4 w-4" />
             </Button>
+          </div>
+          <div>
+            <a href="https://wa.me/2349124448745">  <p className="text-gray-400 text-sm hover:text-yellow-500 mt-2">
+                Developed By <span className='font-bold'>HaqqTech</span>  </p></a>
+              
           </div>
         </div>
       </div>

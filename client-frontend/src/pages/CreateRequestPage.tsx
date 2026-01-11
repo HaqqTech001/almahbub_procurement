@@ -447,15 +447,42 @@ const CreateRequestPage: React.FC = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div>
+                                        <div>
                       <Label>Quantity *</Label>
-                      <Input
-                        type="number"
-                        min="1"
-                        value={item.quantity}
-                        onChange={(e) => updateRequestItem(item.id, 'quantity', parseInt(e.target.value) || 1)}
-                        required
-                      />
+                      <div className="flex items-center gap-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className="h-10 w-10 shrink-0"
+                          onClick={() => updateRequestItem(item.id, 'quantity', Math.max(1, (item.quantity || 1) - 1))}
+                          disabled={item.quantity <= 1}
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <Input
+                          type="number"
+                          min="1"
+                          className="text-center h-10 w-20 shrink-0"
+                          value={item.quantity || ''}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (val === '' || (parseInt(val) > 0 && /^\d+$/.test(val))) {
+                              updateRequestItem(item.id, 'quantity', val === '' ? 1 : parseInt(val));
+                            }
+                          }}
+                          required
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          className="h-10 w-10 shrink-0"
+                          onClick={() => updateRequestItem(item.id, 'quantity', (item.quantity || 1) + 1)}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                     <div>
                       <Label>Unit</Label>
@@ -620,17 +647,36 @@ const CreateRequestPage: React.FC = () => {
                         <SelectTrigger>
                           <SelectValue placeholder="Select currency" />
                         </SelectTrigger>
-                        <SelectContent>
+                                                <SelectContent>
                           <SelectItem value="NGN">NGN (₦) - Nigerian Naira</SelectItem>
                           <SelectItem value="USD">USD ($) - US Dollar</SelectItem>
+                          <SelectItem value="EUR">EUR (€) - Euro</SelectItem>
+                          <SelectItem value="GBP">GBP (£) - British Pound</SelectItem>
+                          <SelectItem value="CNY">CNY (¥) - Chinese Yuan</SelectItem>
+                          <SelectItem value="JPY">JPY (¥) - Japanese Yen</SelectItem>
+                          <SelectItem value="CAD">CAD (C$) - Canadian Dollar</SelectItem>
+                          <SelectItem value="AUD">AUD (A$) - Australian Dollar</SelectItem>
+                          <SelectItem value="GHS">GHS (₵) - Ghanaian Cedi</SelectItem>
+                          <SelectItem value="KES">KES (KSh) - Kenyan Shilling</SelectItem>
+                          <SelectItem value="ZAR">ZAR (R) - South African Rand</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
                       <Label htmlFor="budgetAmount">Estimated Budget Amount</Label>
                       <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                          {budget.currency === 'NGN' ? '₦' : '$'}
+                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                          {budget.currency === 'NGN' ? '₦' : 
+                           budget.currency === 'USD' ? '$' : 
+                           budget.currency === 'EUR' ? '€' : 
+                           budget.currency === 'GBP' ? '£' : 
+                           budget.currency === 'CNY' || budget.currency === 'JPY' ? '¥' : 
+                           budget.currency === 'CAD' ? 'C$' : 
+                           budget.currency === 'AUD' ? 'A$' : 
+                           budget.currency === 'GHS' ? '₵' : 
+                           budget.currency === 'KES' ? 'KSh' : 
+                           budget.currency === 'ZAR' ? 'R' : 
+                           '$'}
                         </span>
                         <Input
                           id="budgetAmount"
