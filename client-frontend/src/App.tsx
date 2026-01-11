@@ -64,6 +64,7 @@ import NotFoundPage from '@/pages/NotFoundPage';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import AnnouncementsPage from './pages/AnnouncementsPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -87,13 +88,14 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 // Layout wrapper to conditionally show/hide footer
-const LayoutWrapper: React.FC<{ children: React.ReactNode; showFooter?: boolean }> = ({ 
+const LayoutWrapper: React.FC<{ children: React.ReactNode; showFooter?: boolean; showHeader?: boolean; }> = ({ 
   children, 
-  showFooter = true 
+  showFooter = true ,
+  showHeader = true
 }) => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Navbar />
+      {showHeader && <Navbar />}
       <main className="flex-1">
         {children}
       </main>
@@ -199,6 +201,11 @@ const AppContent: React.FC = () => {
           <AnnouncementDetailPage />
         </LayoutWrapper>
       } />
+      <Route path="/announcements" element={
+        <LayoutWrapper showFooter={true}>
+          <AnnouncementsPage />
+        </LayoutWrapper>
+      } />
       <Route path="/help" element={
         <LayoutWrapper showFooter={true}>
           <HelpPage />
@@ -241,7 +248,7 @@ const AppContent: React.FC = () => {
       } />
       {/* Chat Routes */}
       <Route path="/chat" element={
-        <LayoutWrapper showFooter={false}>
+        <LayoutWrapper showFooter={false} showHeader={false}>
           <ProtectedRoute>
             <ChatPage />
           </ProtectedRoute>

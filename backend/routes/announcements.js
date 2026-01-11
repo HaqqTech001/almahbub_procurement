@@ -87,6 +87,9 @@ router.post('/:id/replies', authenticateToken, upload.array('media', 3), [
 
     const replyId = result.insertId;
 
+    // Increment the announcement's reply count
+    await pool.execute('UPDATE announcements SET reply_count = reply_count + 1 WHERE id = ?', [id]);
+
     // Get the created reply with user info
     const [replies] = await pool.execute(`
       SELECT 
@@ -130,9 +133,15 @@ router.get('/:id/replies', async (req, res) => {
       ORDER BY r.created_at ASC
     `, [id]);
 
+    // Parse JSON fields for each reply
+    const parsedReplies = replies.map(r => ({
+      ...r,
+      media_files: r.media_files ? (typeof r.media_files === 'string' ? JSON.parse(r.media_files) : r.media_files) : []
+    }));
+
     res.json({
       success: true,
-      data: { replies }
+      data: { replies: parsedReplies }
     });
 
   } catch (error) {
@@ -156,9 +165,16 @@ router.get('/', async (req, res) => {
       ORDER BY a.pinned DESC, a.priority DESC, a.created_at DESC
     `);
 
+    // Parse JSON fields for each announcement
+    const parsedAnnouncements = announcements.map(a => ({
+      ...a,
+      media_files: a.media_files ? (typeof a.media_files === 'string' ? JSON.parse(a.media_files) : a.media_files) : [],
+      tags: a.tags ? (typeof a.tags === 'string' ? JSON.parse(a.tags) : a.tags) : []
+    }));
+
     res.json({
       success: true,
-      data: { announcements }
+      data: { announcements: parsedAnnouncements }
     });
 
   } catch (error) {
@@ -187,9 +203,16 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Announcement not found' });
     }
 
+    // Parse JSON fields for the announcement
+    const announcement = {
+      ...announcements[0],
+      media_files: announcements[0].media_files ? (typeof announcements[0].media_files === 'string' ? JSON.parse(announcements[0].media_files) : announcements[0].media_files) : [],
+      tags: announcements[0].tags ? (typeof announcements[0].tags === 'string' ? JSON.parse(announcements[0].tags) : announcements[0].tags) : []
+    };
+
     res.json({
       success: true,
-      data: { announcement: announcements[0] }
+      data: { announcement }
     });
 
   } catch (error) {
@@ -298,7 +321,7 @@ router.post('/', authenticateToken, requireAdmin, upload.array('media', 5), [
     // Format scheduled_for and expires_at for MySQL
     const formattedScheduledFor = scheduled_for ? formatDateForMySQL(scheduled_for) : null;
     const formattedExpiresAt = expires_at ? formatDateForMySQL(expires_at) : null;
-  
+    
 
     const [result] = await pool.execute(
       `INSERT INTO announcements (

@@ -1,811 +1,808 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Send, Phone, Video, MoreVertical, User, Bot, X, Mic, MicOff, VideoOff, PhoneOff, Paperclip, MessageCircle } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { Send, Phone, Video, MoreVertical, X, Paperclip, Eye, MessageSquare, Menu, ClipboardList, Check, CheckCheck, Smile, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import RichInput from '@/components/ui/RichInput';
+import EmojiPickerComponent from '@/components/ui/EmojiPicker';
 import { useSocketContext } from '@/contexts/SocketContext';
 import { useAuthStore } from '@/stores/authStore';
 import { useToast } from '@/hooks/use-toast';
 import { apiClient } from '@/lib/api';
+import { getChatTime } from '@/lib/dateUtils';
 
 interface Message {
-  id: string;
-  content: string;
-  senderId: string;
+  id: number;
+  message: string; // Backend returns 'message' not 'content'
+  content?: string; // Optional alias for compatibility
+  sender_id: number;
+  receiver_id: number;
   senderType: 'user' | 'admin' | 'bot';
+  message_type: 'text' | 'file' | 'form' | 'call_log';
   timestamp: Date;
+  created_at?: string;
   isRead: boolean;
+  read_at?: string;
+  is_read?: boolean;
   type?: 'text' | 'call_log' | 'image' | 'file';
   callDuration?: number;
   callType?: 'voice' | 'video';
   attachmentUrl?: string;
   attachmentName?: string;
+  file_url?: string; // Backend returns 'file_url'
+  firstName?: string;
+  lastName?: string;
+  sender_first_name?: string; // Backend field name
+  sender_last_name?: string; // Backend field name
+  avatar?: string;
+  sender_avatar?: string; // Backend field name
+  form_data?: {
+    title: string;
+    fields: Array<{
+      label: string;
+      type: 'text' | 'number' | 'date' | 'select' | 'textarea';
+      options?: string[];
+      required?: boolean;
+    }>;
+    submitted: boolean;
+    responses?: Record<string, string>;
+    submittedAt?: string;
+  };
 }
 
-
-
-interface CallState {
-  isActive: boolean;
-  isConnecting: boolean;
-  type: 'voice' | 'video' | null;
-  startTime: Date | null;
-  duration: number;
+interface FileAttachment {
+  id: string;
+  file: File;
+  preview?: string;
 }
 
 const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [attachedFiles, setAttachedFiles] = useState<{ file: File; type: 'image' | 'file'; preview?: string }[]>([]);
-
+  const [attachedFiles, setAttachedFiles] = useState<FileAttachment[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [chatStatus, setChatStatus] = useState<'online' | 'offline' | 'away'>('online');
-  const [callState, setCallState] = useState<CallState>({
-    isActive: false,
-    isConnecting: false,
-    type: null,
-    startTime: null,
-    duration: 0
-  });
+  const [chatStatus, setChatStatus] = useState<'online' | 'offline' | 'away'>('offline');
+  const [supportUser, setSupportUser] = useState<{id: number; firstName: string; lastName: string; avatar?: string; is_online?: boolean} | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSending, setIsSending] = useState(false);
+  const [viewCount, setViewCount] = useState(0);
+  const [replyCount, setReplyCount] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  const callTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { socket, isConnected } = useSocketContext();
   const { user } = useAuthStore();
   const { toast } = useToast();
 
+  // Load support conversation on mount
   useEffect(() => {
-    if (socket && isConnected) {
-      socket.emit('join_chat', { userId: user?.id });
+    let isMounted = true;
 
-      // Listen for messages from admin
-      socket.on('new_message', handleNewMessage);
-      socket.on('message_sent', handleMessageSent);
-      
-      // Listen for typing indicators from admin
-      socket.on('user_typing', handleTyping);
-      socket.on('user_stopped_typing', handleStopTyping);
-      
-      // Listen for admin status
-      socket.on('admin_online', () => setChatStatus('online'));
-      socket.on('admin_offline', () => setChatStatus('offline'));
-      
-      // Listen for call events
-      socket.on('call_incoming', handleIncomingCall);
-      socket.on('call_ended', handleCallEnded);
+    const loadSupportConversation = async () => {
+      try {
+        setIsLoading(true);
+        const response = await apiClient.getSupportConversation();
+        
+        if (isMounted && response.success && response.data) {
+          setSupportUser(response.data.user);
+          if (response.data.viewCount !== undefined) {
+            setViewCount(response.data.viewCount);
+          }
+          if (response.data.replyCount !== undefined) {
+            setReplyCount(response.data.replyCount);
+          }
+          
+          // Set initial online status from the conversation data
+          if (response.data.user?.is_online) {
+            setChatStatus('online');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load support conversation:', error);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
 
-      loadChatHistory();
-
-      return () => {
-        socket.off('new_message');
-        socket.off('message_sent');
-        socket.off('user_typing');
-        socket.off('user_stopped_typing');
-        socket.off('admin_online');
-        socket.off('admin_offline');
-        socket.off('call_incoming');
-        socket.off('call_ended');
-      };
-    }
-  }, [socket, isConnected, user]);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
-    if (callState.isActive && callState.startTime) {
-      callTimerRef.current = setInterval(() => {
-        setCallState(prev => ({
-          ...prev,
-          duration: Math.floor((Date.now() - prev.startTime!.getTime()) / 1000)
-        }));
-      }, 1000);
+    if (user) {
+      loadSupportConversation();
     }
 
     return () => {
-      if (callTimerRef.current) {
-        clearInterval(callTimerRef.current);
-      }
+      isMounted = false;
     };
-  }, [callState.isActive, callState.startTime]);
+  }, [user]);
 
-  const loadChatHistory = async () => {
-    try {
-      // Try to get messages from admin (assuming admin has ID 1)
-      const adminId = '1';
-      const response = await apiClient.getChatMessages(adminId);
+  // Socket event handlers
+  useEffect(() => {
+    if (!socket || !isConnected || !supportUser) return;
+
+    // Join user's personal room is handled by SocketContext
+    // We just need to listen for messages in our support conversation
+
+    // Listen for new messages
+    const handleNewMessage = (message: any) => {
+      console.log('New message received:', message);
       
-      if (response.success && response.data?.messages && response.data.messages.length > 0) {
-        setMessages(response.data.messages.map((msg: any) => ({
-          id: msg.id?.toString() || Date.now().toString(),
-          content: msg.message || msg.content || '',
-          senderId: msg.sender_id?.toString() || msg.senderId?.toString() || 'unknown',
-          senderType: msg.sender_id === user?.id ? 'user' : (msg.is_ai_response ? 'bot' : 'admin'),
-          timestamp: new Date(msg.timestamp || msg.created_at || Date.now()),
-          isRead: msg.isRead || msg.is_read || false,
-          type: msg.type || msg.message_type || 'text',
-          attachmentUrl: msg.file_url ? apiClient.getFileUrl(msg.file_url) : (msg.attachmentUrl || ''),
-          attachmentName: msg.attachment_name || msg.attachmentName,
-        })));
-      } else {
-        setMessages([]);
+      // Only process if this message is from our support agent
+      const isFromSupport = message.sender_id === supportUser.id;
+      const isFromUser = message.sender_id === user?.id;
+      
+      if (isFromSupport || isFromUser) {
+        setMessages(prev => {
+          // Check if message already exists
+          const exists = prev.some(m => m.id === message.id);
+          if (exists) return prev;
+          
+          return [...prev, {
+            ...message,
+            timestamp: new Date(message.created_at || message.timestamp),
+            senderType: isFromUser ? 'user' : 'admin'
+          }];
+        });
+        
+        // Mark as read if from support/admin
+        if (isFromSupport && !message.is_read) {
+          markAsRead(supportUser.id.toString());
+        }
       }
-    } catch (error) {
-      console.log('Using local chat state, API not available');
-      setMessages([]);
-    }
-  };
-
-  // Poll for new messages periodically
-  // useEffect(() => {
-  //   const pollInterval = setInterval(() => {
-  //     if (isConnected) {
-  //       loadChatHistory();
-  //     }
-  //   }, 5000); // Poll every 5 seconds
-
-  //   return () => clearInterval(pollInterval);
-  // }, [isConnected]);
-
-  const handleNewMessage = (messageData: any) => {
-    // Handle both direct messages and wrapped events
-    const message = messageData.message || messageData;
-    
-    const newMessage: Message = {
-      id: message.id?.toString() || Date.now().toString(),
-      content: message.message || message.content || '',
-      senderId: message.sender_id?.toString() || 'admin',
-      senderType: message.is_ai_response ? 'bot' : 'admin',
-      timestamp: new Date(message.created_at || message.timestamp || Date.now()),
-      isRead: message.is_read || false,
-      type: message.message_type || message.type || 'text',
-      attachmentUrl: message.file_url ? apiClient.getFileUrl(message.file_url) : '',
-      attachmentName: message.attachment_name,
     };
-    
-    setMessages(prev => {
-      // Avoid duplicates
-      if (prev.some(m => m.id === newMessage.id)) return prev;
-      return [...prev, newMessage];
-    });
-  };
 
-  const handleMessageSent = (messageData: any) => {
-    // Handle confirmation that message was sent
-    const message = messageData.message || messageData;
-    console.log('Message sent confirmation:', message);
-  };
-
-  const handleTyping = (data: { userId: number; userName: string }) => {
-    // Admin is typing
-    setIsTyping(true);
-    setTimeout(() => setIsTyping(false), 3000);
-  };
-
-  const handleStopTyping = (data: { userId: number }) => {
-    setIsTyping(false);
-  };
-
-  const handleIncomingCall = (data: { type: 'voice' | 'video'; from: string }) => {
-    toast({
-      title: 'Incoming Call',
-      description: `Incoming ${data.type} call from ${data.from}`,
-    });
-  };
-
-  const handleCallEnded = () => {
-    setCallState({
-      isActive: false,
-      isConnecting: false,
-      type: null,
-      startTime: null,
-      duration: 0
-    });
-  };
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const initiateCall = async (type: 'voice' | 'video') => {
-    if (!socket || !isConnected) {
-      toast({
-        title: 'Connection Error',
-        description: 'Please check your connection and try again.',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    // Request permissions first
-    try {
-      if (type === 'video') {
-        await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      } else {
-        await navigator.mediaDevices.getUserMedia({ audio: true });
+    // Handle typing indicators
+    const handleUserTyping = (data: { userId: number; userName: string }) => {
+      if (data.userId === supportUser.id) {
+        setIsTyping(true);
+        // Auto-stop typing after 3 seconds
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
+        typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 3000);
       }
+    };
 
-      setCallState({
-        isActive: true,
-        isConnecting: true,
-        type,
-        startTime: null,
-        duration: 0
+    const handleUserStoppedTyping = (data: { userId: number }) => {
+      if (data.userId === supportUser.id) {
+        setIsTyping(false);
+      }
+    };
+
+    // Handle user online/offline status
+    const handleUserOnline = (data: { userId: number; userName: string; role: string }) => {
+      if (data.userId === supportUser.id) {
+        setChatStatus('online');
+        setSupportUser(prev => prev ? { ...prev, is_online: true } : null);
+      }
+    };
+
+    const handleUserOffline = (data: { userId: number }) => {
+      if (data.userId === supportUser.id) {
+        setChatStatus('offline');
+        setSupportUser(prev => prev ? { ...prev, is_online: false } : null);
+      }
+    };
+
+    // Handle message sent confirmation
+    const handleMessageSent = (message: any) => {
+      console.log('Message sent confirmation:', message);
+      setMessages(prev => {
+        // Check if message already exists
+        const exists = prev.some(m => m.id === message.id);
+        if (exists) return prev;
+        
+        return [...prev, {
+          ...message,
+          timestamp: new Date(message.created_at || message.timestamp),
+          senderType: 'user'
+        }];
       });
+    };
 
-      // Emit call request to admin
-      socket.emit('initiate_call', { type, userId: user?.id });
+    // Handle messages read confirmation
+    const handleMessagesRead = (data: { messageIds: number[] }) => {
+      setMessages(prev => prev.map(msg => 
+        data.messageIds.includes(msg.id) ? { ...msg, isRead: true } : msg
+      ));
+    };
 
-      // Simulate connection delay
-      setTimeout(() => {
-        setCallState(prev => ({
-          ...prev,
-          isConnecting: false,
-          startTime: new Date()
+    // Register event listeners
+    socket.on('new_message', handleNewMessage);
+    socket.on('user_typing', handleUserTyping);
+    socket.on('user_stopped_typing', handleUserStoppedTyping);
+    socket.on('user_online', handleUserOnline);
+    socket.on('user_offline', handleUserOffline);
+    socket.on('message_sent', handleMessageSent);
+    socket.on('messages_read', handleMessagesRead);
+
+    // Load messages
+    loadMessages();
+
+    // Cleanup
+    return () => {
+      socket.off('new_message', handleNewMessage);
+      socket.off('user_typing', handleUserTyping);
+      socket.off('user_stopped_typing', handleUserStoppedTyping);
+      socket.off('user_online', handleUserOnline);
+      socket.off('user_offline', handleUserOffline);
+      socket.off('message_sent', handleMessageSent);
+      socket.off('messages_read', handleMessagesRead);
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, [socket, isConnected, supportUser, user]);
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const loadMessages = async () => {
+    try {
+      const response = await apiClient.getSupportMessages({ limit: 50 });
+      if (response.success && response.data?.messages) {
+        // console.log('Raw messages from API:', response.data.messages);
+        
+        const loadedMessages = (response.data.messages || []).map((msg: any) => ({
+          id: msg.id,
+          message: msg.message || '', // Backend field 'message'
+          content: msg.message || msg.content || '', // Support both
+          sender_id: msg.sender_id,
+          receiver_id: msg.receiver_id,
+          message_type: msg.message_type || 'text',
+          timestamp: new Date(msg.created_at || msg.timestamp),
+          created_at: msg.created_at,
+          isRead: msg.is_read || msg.isRead || false,
+          read_at: msg.read_at,
+          type: msg.message_type === 'video' ? 'video' : (msg.message_type === 'image' ? 'image' : msg.type || (msg.message_type === 'file' ? 'file' : 'text')),
+          file_url: msg.file_url,
+          attachmentUrl: msg.file_url || msg.attachmentUrl, // Map file_url to attachmentUrl
+          attachmentName: msg.file_name || msg.attachmentName,
+          // Map sender info
+          firstName: msg.sender_first_name || msg.firstName,
+          lastName: msg.sender_last_name || msg.lastName,
+          avatar: msg.sender_avatar || msg.avatar,
+          sender_first_name: msg.sender_first_name,
+          sender_last_name: msg.sender_last_name,
+          sender_avatar: msg.sender_avatar,
+          senderType: msg.sender_id === user?.id ? 'user' : 'admin'
         }));
         
-        // Add call log message
-        const callLogMessage: Message = {
-          id: Date.now().toString(),
-          content: `${type === 'video' ? 'Video' : 'Voice'} call started`,
-          senderId: 'system',
-          senderType: 'bot',
-          timestamp: new Date(),
-          isRead: true,
-          type: 'call_log',
-          callType: type
-        };
-        setMessages(prev => [...prev, callLogMessage]);
-
-        toast({
-          title: 'Call Connected',
-          description: `${type === 'video' ? 'Video' : 'Voice'} call is now active`,
-        });
-      }, 2000);
-
+        // console.log('Mapped messages:', loadedMessages);
+        setMessages(loadedMessages);
+      }
     } catch (error) {
-      toast({
-        title: 'Permission Denied',
-        description: 'Please allow camera/microphone access to make calls.',
-        variant: 'destructive',
-      });
+      console.error('Failed to load messages:', error);
     }
   };
 
-  const endCall = () => {
-    if (callTimerRef.current) {
-      clearInterval(callTimerRef.current);
+  const markAsRead = async (userId: string) => {
+    try {
+      await apiClient.markAsRead(userId);
+    } catch (error) {
+      console.error('Failed to mark message as read:', error);
     }
-
-    if (socket && isConnected) {
-      socket.emit('end_call', { userId: user?.id });
-    }
-
-    // Add call log message
-    const callLogMessage: Message = {
-      id: Date.now().toString(),
-      content: `${callState.type === 'video' ? 'Video' : 'Voice'} call ended. Duration: ${formatDuration(callState.duration)}`,
-      senderId: 'system',
-      senderType: 'bot',
-      timestamp: new Date(),
-      isRead: true,
-      type: 'call_log',
-      callType: callState.type || undefined,
-      callDuration: callState.duration
-    };
-    setMessages(prev => [...prev, callLogMessage]);
-
-    setCallState({
-      isActive: false,
-      isConnecting: false,
-      type: null,
-      startTime: null,
-      duration: 0
-    });
-
-    toast({
-      title: 'Call Ended',
-      description: `Call duration: ${formatDuration(callState.duration)}`,
-    });
   };
 
-  const handleFilesSelected = (files: File[]) => {
-    const newFiles = files.map(file => {
-      if (file.type && file.type.startsWith('image/')) {
-        return {
-          file,
-          type: 'image' as const,
-          preview: URL.createObjectURL(file),
-        };
-      }
-      return {
-        file,
-        type: 'file' as const,
-      };
-    });
-    setAttachedFiles(prev => [...prev, ...newFiles].slice(0, 5));
-  };
-
-  const removeFile = (index: number) => {
-    setAttachedFiles(prev => {
-      const newFiles = [...prev];
-      // Revoke object URL to avoid memory leaks
-      if (newFiles[index].preview) {
-        URL.revokeObjectURL(newFiles[index].preview);
-      }
-      newFiles.splice(index, 1);
-      return newFiles;
-    });
-  };
-
-  const sendMessage = async () => {
-    const textContent = newMessage.trim();
-    
-    if (!textContent && attachedFiles.length === 0) return;
-
-    const tempId = Date.now().toString();
-
-    // Capture files before clearing state
-    const currentFiles = [...attachedFiles];
-    const messageType = currentFiles.length > 0 ? (currentFiles[0].type === 'image' ? 'image' : 'file') : 'text';
-
-    // Create optimistic message
-    const optimisticMessage: Message = {
-      id: tempId,
-      content: textContent,
-      senderId: user?.id?.toString() || 'user',
-      senderType: 'user',
-      timestamp: new Date(),
-      isRead: false,
-      type: messageType,
-      attachmentUrl: currentFiles.length > 0 ? (currentFiles[0].preview || URL.createObjectURL(currentFiles[0].file)) : undefined,
-      attachmentName: currentFiles.length > 0 ? currentFiles[0].file.name : undefined,
-    };
-
-    // Add optimistic message immediately
-    setMessages(prev => [...prev, optimisticMessage]);
-    setNewMessage('');
-    setAttachedFiles([]);
+  const handleSendMessage = async () => {
+    if ((!newMessage.trim() && attachedFiles.length === 0) || !isConnected || !supportUser) return;
 
     try {
-      // Emit socket event for real-time delivery
-      if (socket && isConnected) {
-        socket.emit('send_message', {
-          receiverId: 1, // Send to admin (ID 1)
-          message: textContent,
-          messageType: messageType,
-          tempId,
-        });
-      }
-
-      // Send to API for persistence with files
-      const files = currentFiles.map(f => f.file);
-      const response = await apiClient.sendChatMessage('1', textContent, files.length > 0 ? files : undefined);
+      setIsSending(true);
+      
+      // Send regular message with or without attachments
+      const response = await apiClient.sendSupportMessage(
+        newMessage || 'Sent an attachment',
+        attachedFiles.length > 0 ? attachedFiles.map(a => a.file) : undefined
+      );
       
       if (response.success) {
-        // Update with real message from server
-        setMessages(prev => prev.map(msg => 
-          msg.id === tempId ? {
-            ...msg,
-            id: response.data?.id?.toString() || msg.id,
-            attachmentUrl: response.data?.file_url ? apiClient.getFileUrl(response.data.file_url) : msg.attachmentUrl,
-          } : msg
-        ));
-
-        // Check if we should get auto-reply from chatbot
-        checkForAutoReply(textContent);
-      } else {
-        // Remove optimistic message on failure
-        setMessages(prev => prev.filter(msg => msg.id !== tempId));
-        throw new Error('Failed to send message');
+        // Message will be added via socket event 'message_sent'
+        // Clear input
+        setNewMessage('');
+        setAttachedFiles([]);
       }
-    } catch (error) {
-      console.error('Error sending message:', error);
-      // Remove optimistic message on error
-      setMessages(prev => prev.filter(msg => msg.id !== tempId));
       
+    } catch (error) {
+      console.error('Failed to send message:', error);
       toast({
         title: 'Error',
         description: 'Failed to send message. Please try again.',
         variant: 'destructive',
       });
+    } finally {
+      setIsSending(false);
     }
   };
 
-  // Check if chatbot should auto-reply
-  const checkForAutoReply = async (userMessage: string) => {
-    try {
-      // Get chatbot settings
-      const settingsResponse = await apiClient.getChatbotSettings();
-      
-      if (settingsResponse.success && settingsResponse.data?.autoReplyEnabled) {
-        // Send message to AI for auto-response
-        const aiResponse = await apiClient.getAIResponse(userMessage);
-        
-        if (aiResponse.success && aiResponse.data?.response) {
-          const botMessage: Message = {
-            id: Date.now().toString(),
-            content: aiResponse.data.response,
-            senderId: 'admin',
-            senderType: 'admin',
-            timestamp: new Date(),
-            isRead: true,
-          };
-
-          setMessages(prev => [...prev, botMessage]);
-        }
+  const handleAttachFile = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.accept = 'image/*,.pdf,.doc,.docx,.txt';
+    input.onchange = (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (files) {
+        const newFiles = Array.from(files).map(file => ({
+          id: Math.random().toString(36).substr(2, 9),
+          file,
+          preview: file.type.startsWith('image/') ? URL.createObjectURL(file) : undefined
+        }));
+        setAttachedFiles(prev => [...prev, ...newFiles]);
       }
-    } catch (error) {
-      console.log('Chatbot not available or disabled');
-    }
+    };
+    input.click();
+  };
+
+  const handleRemoveAttachment = (id: string) => {
+    setAttachedFiles(prev => {
+      const file = prev.find(f => f.id === id);
+      if (file?.preview) {
+        URL.revokeObjectURL(file.preview);
+      }
+      return prev.filter(f => f.id !== id);
+    });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      sendMessage();
+      handleSendMessage();
     }
   };
 
-
-
-  const formatTime = (timestamp: Date) => {
-    return new Date(timestamp).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  const formatMessageTime = (timestamp: Date) => {
+    return getChatTime(timestamp, 'Unknown');
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  // Helper to get message text content
+  const getMessageContent = (msg: Message): string => {
+    return msg.message || msg.content || '';
   };
 
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  // Helper to get sender name
+  const getSenderName = (msg: Message, isUser: boolean): string => {
+    if (isUser) return user?.firstName || 'You';
+    return msg.sender_first_name || msg.firstName || 'Support';
+  };
+
+  // Helper to get avatar URL
+  const getAvatarUrl = (msg: Message, isUser: boolean): string | undefined => {
+    if (isUser) return user?.avatar;
+    return msg.sender_avatar || msg.avatar || supportUser?.avatar;
   };
 
   const getStatusColor = () => {
     switch (chatStatus) {
-      case 'online': return 'bg-green-500';
-      case 'away': return 'bg-yellow-500';
-      case 'offline': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'online':
+        return 'bg-green-500';
+      case 'away':
+        return 'bg-yellow-500';
+      case 'offline':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
     }
   };
 
   const getStatusText = () => {
     switch (chatStatus) {
-      case 'online': return 'Online';
-      case 'away': return 'Away';
-      case 'offline': return 'Offline - Leave a message';
-      default: return 'Unknown';
+      case 'online':
+        return 'Online';
+      case 'away':
+        return 'Away';
+      case 'offline':
+        return 'Offline';
+      default:
+        return 'Unknown';
     }
   };
 
+  const initiateCall = (type: 'voice' | 'video') => {
+    if (!supportUser || !socket) return;
+    
+    toast({
+      title: 'Call Feature',
+      description: `${type === 'video' ? 'Video' : 'Voice'} calls require WebRTC integration. This is a demo UI.`,
+    });
+  };
+
+  const endCall = () => {
+    // Call functionality would be implemented with WebRTC
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0e7490] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading chat...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
-      {/* Call Modal */}
-      {callState.isActive && (
-        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
-          <div className="text-center text-white">
-            {callState.isConnecting ? (
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile Header */}
+      {/* <div className="lg:hidden bg-white border-b px-4 py-3 flex items-center justify-between sticky top-0 z-50">
+        <Link to="/" className="flex items-center text-gray-600">
+          <MessageSquare className="h-5 w-5 mr-2" />
+          <span className="font-medium">Back</span>
+        </Link>
+        <h1 className="text-lg font-semibold"></h1>
+        <Button variant="ghost" size="icon" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+          <Menu className="h-5 w-5" />
+        </Button>
+      </div> */}
+
+      <div className="flex h-[calc(100vh-0px)] lg:h-[calc(100vh-0px)]">
+        {/* Chat Area */}
+        <div className="flex-1 flex flex-col">
+          {/* Chat Header */}
+          <div className="bg-white border-b px-4 py-3 flex items-center justify-between shadow-sm">
+            <div className="flex items-center space-x-3">
               <div>
-                <div className="w-32 h-32 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-8 animate-pulse">
-                  <Video className="h-16 w-16" />
-                </div>
-                <h2 className="text-2xl font-bold mb-2">Connecting...</h2>
-                <p className="text-gray-400">Please wait while we connect you</p>
+                <Link to={("/")}><ArrowLeft/></Link>
+              </div>
+              <div className="relative">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={supportUser?.avatar} alt={supportUser?.firstName} />
+                  <AvatarFallback className="bg-[#0e7490] text-white">
+                    {supportUser?.firstName?.[0]}{supportUser?.lastName?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white ${getStatusColor()}`}></div>
+              </div>
+              <div>
+                <h2 className="font-semibold text-gray-900">
+                  {supportUser ? `${supportUser.firstName} ${supportUser.lastName}` : 'Support Team'}
+                </h2>
+                <p className="text-sm text-gray-500 flex items-center">
+                  <div className={`w-2 h-2 rounded-full mr-1.5 ${getStatusColor()}`}></div>
+                  {getStatusText()}
+                </p>
+              </div>
+            </div>
+            
+            {/* <div className="flex items-center space-x-2">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="hidden sm:flex"
+                onClick={() => initiateCall('voice')}
+                disabled={!isConnected || chatStatus === 'offline'}
+              >
+                <Phone className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="icon"
+                className="hidden sm:flex" 
+                onClick={() => initiateCall('video')}
+                disabled={!isConnected || chatStatus === 'offline'}
+              >
+                <Video className="h-4 w-4" />
+              </Button>
+              <Button variant="outline" size="icon" className="hidden sm:flex">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </div> */}
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+            {messages.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-full text-gray-500">
+                <MessageSquare className="h-16 w-16 mb-4 text-gray-300" />
+                <p className="text-lg font-medium mb-1">No messages yet</p>
+                <p className="text-sm">Start a conversation with our support team</p>
               </div>
             ) : (
-              <div>
-                <div className="w-48 h-48 bg-[#0F4C5C] rounded-full flex items-center justify-center mx-auto mb-8">
-                  <span className="text-6xl font-bold text-white">
-                    {callState.type === 'video' && <Video className="h-24 w-24" />}
-                    {callState.type !== 'video' && <Phone className="h-24 w-24" />}
-                  </span>
-                </div>
-                <h2 className="text-3xl font-bold mb-2">
-                  {callState.type === 'video' ? 'Video Call' : 'Voice Call'}
-                </h2>
-                <p className="text-xl mb-8 text-[#E3B505]">{formatDuration(callState.duration)}</p>
-                <div className="flex justify-center space-x-4">
-                  <Button variant="outline" size="icon" className="w-16 h-16 rounded-full bg-gray-700 border-gray-600 hover:bg-gray-600">
-                    <Mic className="h-6 w-6" />
-                  </Button>
-                  {callState.type === 'video' && (
-                    <Button variant="outline" size="icon" className="w-16 h-16 rounded-full bg-gray-700 border-gray-600 hover:bg-gray-600">
-                      <VideoOff className="h-6 w-6" />
-                    </Button>
-                  )}
-                  <Button 
-                    variant="destructive" 
-                    size="icon" 
-                    className="w-16 h-16 rounded-full bg-red-600 hover:bg-red-700"
-                    onClick={endCall}
+              messages.map((message, index) => {
+                const isUser = message.senderType === 'user';
+                const showAvatar = index === 0 || 
+                  (messages[index - 1]?.senderType !== message.senderType);
+
+                return (
+                  <div
+                    key={message.id || index}
+                    className={`flex items-end space-x-2 ${isUser ? 'flex-row-reverse space-x-reverse' : ''}`}
                   >
-                    <PhoneOff className="h-8 w-8" />
-                  </Button>
+                    {showAvatar ? (
+                      <Avatar className="h-8 w-8 flex-shrink-0">
+                        <AvatarImage src={getAvatarUrl(message, isUser)} alt={getSenderName(message, isUser)} />
+                        <AvatarFallback className={`text-xs ${isUser ? 'bg-[#0e7490] text-white' : 'bg-gray-300'}`}>
+                          {getSenderName(message, isUser)?.[0] || 'S'}
+                        </AvatarFallback>
+                      </Avatar>
+                    ) : (
+                      <div className="w-8" />
+                    )}
+                    
+                    <div className={`max-w-[75%] sm:max-w-[70%] ${isUser ? 'order-1' : ''}`}>
+                      {message.message_type === 'call_log' ? (
+                        <div className={`text-center text-xs text-gray-500 my-2 flex items-center justify-center`}>
+                          <ClipboardList className="h-3 w-3 mr-1" />
+                          {getMessageContent(message)}
+                        </div>
+                      ) : message.message_type === 'form' ? (
+                        <div className={`rounded-lg p-3 ${
+                          isUser 
+                            ? 'bg-[#0e7490] text-white' 
+                            : 'bg-white border border-gray-200 shadow-sm'
+                        }`}>
+                          <div className="font-medium text-sm mb-2">{message.form_data?.title || 'Form'}</div>
+                          {message.form_data?.submitted ? (
+                            <div className="text-sm">
+                              {Object.entries(message.form_data.responses || {}).map(([key, value]) => (
+                                <div key={key} className="text-xs opacity-80">
+                                  <span className="font-medium">{key}:</span> {value}
+                                </div>
+                              ))}
+                              <div className="text-xs mt-2 opacity-60">
+                                Submitted: {message.form_data.submittedAt || formatMessageTime(message.timestamp)}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-sm opacity-80">Form not yet completed</div>
+                          )}
+                          <div className={`text-xs mt-2 ${isUser ? 'text-teal-100' : 'text-gray-400'}`}>
+                            {formatMessageTime(message.timestamp)}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className={`rounded-2xl px-4 py-2 shadow-sm ${
+                          isUser 
+                            ? 'bg-[#0e7490] text-white rounded-br-md' 
+                            : 'bg-white text-gray-900 rounded-bl-md'
+                        }`}>
+                          {getMessageContent(message) && <div className="text-sm break-words">{getMessageContent(message)}</div>}
+                          
+                          {message.attachmentUrl && (
+                            <div className="mt-2">
+                              {message.type === 'image' ? (
+                                <img 
+                                  src={apiClient.getFileUrl(message.attachmentUrl)} 
+                                  alt={message.attachmentName || 'Image'} 
+                                  className="rounded-lg max-w-full h-auto"
+                                  loading="lazy"
+                                />
+                              ) : message.type === 'video' ? (
+                                <video 
+                                  src={apiClient.getFileUrl(message.attachmentUrl)} 
+                                  controls 
+                                  className="rounded-lg max-w-full max-h-48"
+                                  preload="metadata"
+                                /> ): (
+                                <a 
+                                  href={apiClient.getFileUrl(message.attachmentUrl)} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className={`flex items-center space-x-2 text-sm ${isUser ? 'text-teal-100' : 'text-[#0e7490]'}`}
+                                >
+                                  <Paperclip className="h-4 w-4" />
+                                  <span>{message.attachmentName || 'Attachment'}</span>
+                                </a>
+                              )}
+                            </div>
+                          )}
+                          
+                          <div className={`flex items-center justify-end mt-1 space-x-1 ${isUser ? 'text-teal-100' : 'text-gray-400'}`}>
+                            <span className="text-xs">{formatMessageTime(message.timestamp)}</span>
+                            {isUser && (
+                              message.isRead ? (
+                                <CheckCheck className="h-3.5 w-3.5 text-blue-300" />
+                              ) : (
+                                <Check className="h-3.5 w-3.5" />
+                              )
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+
+            {/* Typing Indicator */}
+            {isTyping && (
+              <div className="flex items-center space-x-2">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={supportUser?.avatar} alt="Support" />
+                  <AvatarFallback className="bg-gray-300 text-xs">
+                    {supportUser?.firstName?.[0] || 'S'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="bg-white rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
+                  <div className="flex space-x-1">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  </div>
                 </div>
+              </div>
+            )}
+
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Attachment Previews */}
+          {attachedFiles.length > 0 && (
+            <div className="px-4 py-2 bg-white border-t flex flex-wrap gap-2">
+              {attachedFiles.map((attachment) => (
+                <div key={attachment.id} className="relative group">
+                  {attachment.preview ? (
+                    <div className="relative">
+                      <img 
+                        src={attachment.preview} 
+                        alt={attachment.file.name} 
+                        className="h-16 w-16 object-cover rounded-lg"
+                      />
+                      <button
+                        onClick={() => handleRemoveAttachment(attachment.id)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="h-16 w-16 bg-gray-100 rounded-lg flex items-center justify-center relative">
+                      <Paperclip className="h-6 w-6 text-gray-400" />
+                      <button
+                        onClick={() => handleRemoveAttachment(attachment.id)}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Message Input */}
+          <div className="bg-white border-t p-4">
+            <div className="flex items-end space-x-2">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="flex-shrink-0"
+                onClick={handleAttachFile}
+                disabled={!isConnected}
+              >
+                <Paperclip className="h-5 w-5" />
+              </Button>
+              
+              {/* Emoji Picker */}
+              <EmojiPickerComponent 
+                onEmojiSelect={(emoji) => setNewMessage(prev => prev + emoji)}
+                position="top"
+              />
+              
+              <div className="flex-1">
+                <textarea
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Type your message..."
+                  disabled={!isConnected}
+                  className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#0e7490] resize-none text-sm"
+                  rows={1}
+                  style={{ minHeight: '44px', maxHeight: '150px' }}
+                />
+              </div>
+              
+              <Button 
+                onClick={handleSendMessage}
+                disabled={(!newMessage.trim() && attachedFiles.length === 0) || !isConnected || isSending}
+                className="flex-shrink-0 bg-[#0e7490] hover:bg-[#0a5f70]"
+                size="icon"
+              >
+                {isSending ? (
+                  <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Send className="h-5 w-5" />
+                )}
+              </Button>
+            </div>
+            
+            {!isConnected && (
+              <div className="mt-2 text-center">
+                <p className="text-sm text-red-600 flex items-center justify-center">
+                  <div className="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></div>
+                  Connection lost. Attempting to reconnect...
+                </p>
               </div>
             )}
           </div>
         </div>
-      )}
 
-      <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-        {/* Chat Header - Responsive */}
-        <div className="mx-1 sm:m-2 mb-0.5 sm:mb-1 tour-chat-header flex-shrink-0 bg-white rounded-lg border shadow-sm px-3 sm:px-4 py-2 sm:py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              <div className="relative flex-shrink-0">
-                <Avatar className="w-10 h-10 sm:w-12 sm:h-12">
-                  <AvatarImage src="/admin-avatar.svg" alt="Support Agent" />
-                  <AvatarFallback className="bg-[#0F4C5C] text-white text-sm sm:text-base">AD</AvatarFallback>
+        {/* Sidebar */}
+        <div className={`hidden lg:flex w-80 bg-white border-l flex-col ${isSidebarOpen ? 'flex' : ''}`}>
+          <div className="p-4 border-b">
+            <h3 className="font-semibold text-gray-900">Conversation Info</h3>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto p-4">
+            {/* Support Agent Info */}
+            {supportUser && (
+              <div className="text-center mb-6">
+                <Avatar className="h-20 w-20 mx-auto mb-3">
+                  <AvatarImage src={supportUser.avatar} alt={supportUser.firstName} />
+                  <AvatarFallback className="bg-[#0e7490] text-white text-xl">
+                    {supportUser.firstName?.[0]}{supportUser.lastName?.[0]}
+                  </AvatarFallback>
                 </Avatar>
-                <div className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white ${getStatusColor()}`}></div>
+                <h4 className="font-medium text-gray-900">
+                  {supportUser.firstName} {supportUser.lastName}
+                </h4>
+                <p className="text-sm text-gray-500">Support Agent</p>
+                <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${
+                  chatStatus === 'online' 
+                    ? 'bg-green-100 text-green-700' 
+                    : 'bg-gray-100 text-gray-600'
+                }`}>
+                  <div className={`w-1.5 h-1.5 rounded-full mr-1.5 ${getStatusColor()}`}></div>
+                  {getStatusText()}
+                </div>
               </div>
-              <div className="min-w-0">
-                <h1 className="text-base sm:text-lg md:text-xl font-semibold text-gray-900 truncate">Customer Support</h1>
-                <div className="text-xs sm:text-sm text-gray-600 flex items-center gap-1.5">
-                  {isConnected ? (
-                    <>
-                      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${getStatusColor()}`}></div>
-                      <span className="truncate">{getStatusText()}</span>
-                    </>
-                  ) : (
-                    <span className="text-yellow-600 flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
-                      Connecting...
-                    </span>
-                  )}
+            )}
+
+            {/* Stats */}
+            <div className="space-y-3">
+              <div className="bg-gray-50 rounded-lg p-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600 flex items-center">
+                    <Eye className="h-4 w-4 mr-2" />
+                    Views
+                  </span>
+                  <span className="font-medium">{viewCount}</span>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600 flex items-center">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Replies
+                  </span>
+                  <span className="font-medium">{replyCount}</span>
                 </div>
               </div>
             </div>
-            <div className="flex space-x-1 sm:space-x-2 tour-call-buttons">
-              <Button 
-                variant="outline" 
-                size="icon"
-                onClick={() => initiateCall('voice')}
-                disabled={!isConnected}
-                className="w-8 h-8 sm:w-9 sm:h-9 hover:bg-green-50 hover:border-green-300 transition-colors"
-                title="Voice Call"
-              >
-                <Phone className="h-4 w-4 text-green-600" />
-              </Button>
-              <Button 
-                variant="outline" 
-                size="icon"
-                onClick={() => initiateCall('video')}
-                disabled={!isConnected}
-                className="w-8 h-8 sm:w-9 sm:h-9 hover:bg-blue-50 hover:border-blue-300 transition-colors"
-                title="Video Call"
-              >
-                <Video className="h-4 w-4 text-blue-600" />
-              </Button>
-              <Button variant="outline" size="icon" className="w-8 h-8 sm:w-9 sm:h-9" title="More Options">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
 
-        {/* Chat Messages - Main Content */}
-        <div className="flex-1 flex flex-col min-h-0 m-1 sm:m-2 mt-1">
-          <div className="flex-1 flex flex-col overflow-hidden bg-white rounded-lg border shadow-sm">
-            {/* Messages Area - Scrollable */}
-            <ScrollArea className="flex-1 overflow-hidden">
-              <div className="space-y-3 sm:space-y-4 py-3 sm:py-4 w-screen">
-                    {messages.length === 0 ? (
-                      <div className="flex flex-col items-center justify-center h-full min-h-[300px] px-4">
-                        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#0F4C5C]/10 rounded-full flex items-center justify-center mb-4">
-                          <MessageCircle className="h-8 w-8 sm:h-10 sm:w-10 text-[#0F4C5C]" />
-                        </div>
-                        <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-2 text-center">Start a Conversation</h3>
-                        <p className="text-sm sm:text-base text-gray-600 max-w-sm mx-auto text-center">
-                          Send a message to start chatting with our support team. We typically reply within minutes.
-                        </p>
-                      </div>
-                    ) : (
-                      <>
-                        {messages.map((message) => (
-                          <div
-                            key={message.id}
-                            className={`h-full flex items-start gap-1.5 sm:gap-3 px-2 sm:px-4  ${
-                              message.senderType === 'user' ? 'justify-end' : 'justify-start'
-                            }`}
-                          >
-                            {message.senderType !== 'user' && (
-                              <Avatar className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0 mt-0.5 sm:mt-1">
-                                {message.senderType === 'admin' ? (
-                                  <>
-                                    <AvatarImage src="/admin-avatar.svg" alt="Admin" />
-                                    <AvatarFallback className="bg-[#0F4C5C] text-white text-xs sm:text-sm">AD</AvatarFallback>
-                                  </>
-                                ) : (
-                                  <>
-                                    <AvatarFallback className="bg-gray-300">
-                                      <Bot className="h-3 w-3 sm:h-4 sm:w-4" />
-                                    </AvatarFallback>
-                                  </>
-                                )}
-                              </Avatar>
-                            )}
-                            <div
-                              className={`max-w-[75%] md:max-w-[70%] p-2 rounded-sm ${
-                                message.type === 'call_log' 
-                                  ? 'bg-gray-100 text-gray-700 text-center'
-                                  : message.senderType === 'user'
-                                    ? 'bg-[#0F4C5C] text-white rounded-tr-sm order-1'
-                                    : message.senderType === 'admin'
-                                      ? 'bg-white border border-gray-200 text-gray-900 rounded-tl-sm'
-                                      : 'bg-gray-100 text-gray-900'
-                              }`}
-                            >
-                              {message.type === 'call_log' ? (
-                                <div className="flex items-center justify-center gap-2">
-                                  <Phone className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                  <p className="text-xs sm:text-sm">{message.content}</p>
-                                </div>
-                              ) : (
-                                <>
-                                  <p className="text-sm sm:text-base whitespace-pre-wrap break-words leading-relaxed">{message.content}</p>
-                                  {message.attachmentUrl && (
-                                    <div className="mt-2">
-                                      {message.type === 'image' ? (
-                                        <div className="relative group">
-                                          <img 
-                                            src={message.attachmentUrl} 
-                                            alt={message.attachmentName || 'Attachment'}
-                                            className="max-w-[200px] sm:max-w-[250px] lg:max-w-[300px] h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity border border-gray-200"
-                                            onClick={() => window.open(message.attachmentUrl, '_blank')}
-                                            onError={(e) => {
-                                              const target = e.target as HTMLImageElement;
-                                              target.style.display = 'none';
-                                              target.parentElement?.insertAdjacentHTML(
-                                                'beforebegin',
-                                                '<div class="text-xs text-gray-500 p-2 bg-gray-100 rounded">Image failed to load</div>'
-                                              );
-                                            }}
-                                          />
-                                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-black group-hover:bg-opacity-10 transition-colors rounded-lg pointer-events-none" />
-                                        </div>
-                                      ) : (
-                                        <a 
-                                          href={message.attachmentUrl} 
-                                          download={message.attachmentName}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg px-3 py-2 mt-2 transition-colors shadow-sm"
-                                        >
-                                          <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center">
-                                            <Paperclip className="w-4 h-4 text-gray-500" />
-                                          </div>
-                                          <div className="flex flex-col min-w-0">
-                                            <span className="text-xs sm:text-sm font-medium text-gray-900 truncate max-w-[120px] sm:max-w-[180px]">
-                                              {message.attachmentName || 'Attachment'}
-                                            </span>
-                                            <span className="text-[10px] text-gray-500">Click to download</span>
-                                          </div>
-                                        </a>
-                                      )}
-                                    </div>
-                                  )}
-                                  <p
-                                    className={`text-[10px] sm:text-xs mt-1 ${
-                                      message.senderType === 'user' ? 'text-cyan-100/80' : 'text-gray-400'
-                                    }`}
-                                  >
-                                    {formatTime(message.timestamp)}
-                                  </p>
-                                </>
-                              )}
-                            </div>
-                            {/* {message.senderType === 'user' && (
-                              <Avatar className="w-6 h-6 sm:w-8 sm:h-8 flex-shrink-0 mt-0.5 sm:mt-1">
-                                <AvatarImage src={user?.avatar} alt={user?.firstName} />
-                                <AvatarFallback className="bg-[#0F4C5C] text-white text-xs sm:text-sm">
-                                  {user?.firstName?.[0]}{user?.lastName?.[0]}
-                                </AvatarFallback>
-                              </Avatar>
-                            )} */}
-                          </div>
-                        ))}
-                      </>
-                    )}
-
-                    {isTyping && (
-                      <div className="flex items-start gap-2 sm:gap-3 px-3 sm:px-4">
-                        <Avatar className="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0">
-                          <AvatarImage src="/admin-avatar.svg" alt="Admin" />
-                          <AvatarFallback className="bg-[#0F4C5C] text-white text-xs sm:text-sm">AD</AvatarFallback>
-                        </Avatar>
-                        <div className="bg-gray-100 px-4 py-3 rounded-2xl rounded-tl-sm">
-                          <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    <div ref={messagesEndRef} />
-                  </div>
-                </ScrollArea>
-
-                {/* Message Input - Fixed at bottom */}
-                <div className="border-t bg-white shrink-0">
-                  {/* Attached Files Preview - Compact horizontal scroll */}
-                  {attachedFiles.length > 0 && (
-                    <div className="px-3 sm:px-4 pt-2 sm:pt-3 border-b bg-gray-50 shrink-0">
-                      <div className="flex items-center gap-2 overflow-x-auto overflow-y-hidden max-h-[70px] sm:max-h-[80px] pb-2">
-                        {attachedFiles.map((file, index) => (
-                          <div 
-                            key={index}
-                            className="relative group flex-shrink-0 flex items-center gap-2 px-2.5 sm:px-3 py-1.5 bg-white rounded-lg border shadow-sm"
-                          >
-                            {file.type === 'image' && file.preview ? (
-                              <img 
-                                src={file.preview} 
-                                alt="Preview" 
-                                className="w-7 h-7 sm:w-8 sm:h-8 object-cover rounded"
-                              />
-                            ) : (
-                              <Paperclip className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-500" />
-                            )}
-                            <span className="text-xs sm:text-sm text-gray-700 max-w-[100px] sm:max-w-[120px] truncate">
-                              {file.file.name}
-                            </span>
-                            <button
-                              onClick={() => removeFile(index)}
-                              className="absolute -top-1.5 -right-1.5 w-4 h-4 sm:w-5 sm:h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
-                            >
-                              <X className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Input Area */}
-                  <div className="p-2 sm:p-3 md:p-4">
-                    <RichInput
-                      value={newMessage}
-                      onChange={setNewMessage}
-                      onSubmit={sendMessage}
-                      placeholder="Type your message..."
-                      isLoading={isTyping}
-                      showAttachments={true}
-                      maxAttachments={5}
-                      attachedFiles={attachedFiles}
-                      onFilesSelected={handleFilesSelected}
-                      onRemoveFile={removeFile}
-                    />
-                  </div>
-                  
-                  {!isConnected && (
-                    <div className="px-3 sm:px-4 pb-2 sm:pb-3">
-                      <p className="text-xs sm:text-sm text-red-600 flex items-center gap-1.5">
-                        <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-                        Connection lost. Please wait while we reconnect...
-                      </p>
-                    </div>
-                  )}
-                </div>
+            {/* Quick Actions */}
+            <div className="mt-6">
+              <h4 className="text-sm font-medium text-gray-900 mb-3">Quick Actions</h4>
+              <div className="space-y-2">
+                <Button variant="outline" className="w-full justify-start" asChild>
+                  <Link to="/my-requests">
+                    <ClipboardList className="h-4 w-4 mr-2" />
+                    View My Requests
+                  </Link>
+                </Button>
+                <Button variant="outline" className="w-full justify-start" asChild>
+                  <Link to="/announcements">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    View Announcements
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>
+
+          {/* Footer */}
+          <div className="p-4 border-t">
+            <p className="text-xs text-gray-500 text-center">
+              Powered by Almahbub Procurement
+            </p>
+          </div>
         </div>
+      </div>
+    </div>
   );
 };
 

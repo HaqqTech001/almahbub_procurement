@@ -2,8 +2,11 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { apiClient } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useChatStore } from '@/stores/chatStore';
@@ -33,7 +36,12 @@ import {
   Menu,
   LayoutGrid,
   UsersIcon,
+  FileText,
+  Plus,
+  Trash,
 } from 'lucide-react';
+
+
 
 interface Message {
   id: number;
@@ -49,6 +57,33 @@ interface Message {
   sender_last_name: string;
   sender_role: string;
   sender_avatar?: string;
+  read_at?: string;
+  form_data?: FormResponse;
+}
+
+interface FormField {
+  id: string;
+  label: string;
+  type: 'text' | 'textarea' | 'number' | 'email' | 'date';
+  placeholder?: string;
+  required: boolean;
+}
+
+interface FormData {
+  title: string;
+  description: string;
+  fields: FormField[];
+}
+
+interface FormResponse {
+  title: string;
+  description: string;
+  responses: {
+    fieldId: string;
+    label: string;
+    value: string | number;
+  }[];
+  submitted_at: string;
 }
 
 interface Conversation {
@@ -60,6 +95,8 @@ interface Conversation {
   last_message_time: string;
   unread_count: number;
   last_message: string;
+  is_online?: boolean;
+  last_active_at?: string;
 }
 
 const ChatPage: React.FC = () => {
@@ -80,6 +117,17 @@ const ChatPage: React.FC = () => {
   const [showCallModal, setShowCallModal] = useState(false);
   const [callType, setCallType] = useState<'audio' | 'video'>('audio');
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Online status tracking
+  const [userOnlineStatus, setUserOnlineStatus] = useState<{ [key: number]: boolean }>({});
+  
+  // Form modal state
+  const [showFormModal, setShowFormModal] = useState(false);
+  const [formTitle, setFormTitle] = useState('');
+  const [formDescription, setFormDescription] = useState('');
+  const [formFields, setFormFields] = useState<FormField[]>([
+    { id: '1', label: '', type: 'text', placeholder: '', required: false }
+  ]);
   
   // Drawer states
   const statsDrawer = useDrawer();
@@ -202,6 +250,24 @@ const ChatPage: React.FC = () => {
       handleSocketMessage({ ...data, type: 'conversations_list' });
     });
     
+    // Listen for user online/offline status
+    newSocket.on('user_online', (data: any) => {
+      console.log('User came online:', data);
+      setUserOnlineStatus(prev => ({ ...prev, [data.userId]: true }));
+    });
+    
+    newSocket.on('user_offline', (data: any) => {
+      console.log('User went offline:', data);
+      setUserOnlineStatus(prev => ({ ...prev, [data.userId]: false }));
+    });
+    
+    newSocket.on('user_status', (data: any) => {
+      console.log('Received user status:', data);
+      if (data?.userId) {
+        setUserOnlineStatus(prev => ({ ...prev, [data.userId]: data.isOnline || data.isConnected }));
+      }
+    });
+    
     // Listen for incoming call events
     newSocket.on('incoming_call', (data: any) => {
       console.log('Received incoming_call event:', data);
@@ -248,6 +314,12 @@ const ChatPage: React.FC = () => {
         break;
       case 'conversation_history':
         setMessages(data.messages || []);
+        break;
+      case 'user_online':
+        setUserOnlineStatus(prev => ({ ...prev, [data.userId]: true }));
+        break;
+      case 'user_offline':
+        setUserOnlineStatus(prev => ({ ...prev, [data.userId]: false }));
         break;
       default:
         console.log('Unknown socket event:', eventType, data);
@@ -345,6 +417,10 @@ const ChatPage: React.FC = () => {
     if (selectedConversation) {
       fetchMessages(selectedConversation.id);
       markAsRead(selectedConversation.id);
+      // Request user's online status
+      if (socket) {
+        socket.emit('get_user_status', { userId: selectedConversation.id });
+      }
     }
   }, [selectedConversation]);
 
@@ -364,6 +440,15 @@ const ChatPage: React.FC = () => {
       if (response.success && response.data) {
         const fetchedConversations = response.data.conversations || [];
         setConversations(fetchedConversations);
+        
+        // Update online status for all users
+        const onlineStatus: { [key: number]: boolean } = {};
+        fetchedConversations.forEach((conv: Conversation) => {
+          if (conv.is_online !== undefined) {
+            onlineStatus[conv.id] = conv.is_online;
+          }
+        });
+        setUserOnlineStatus(prev => ({ ...prev, ...onlineStatus }));
         
         // Sync with chatStore to update Layout badge
         const totalUnread = fetchedConversations.reduce((sum, conv) => sum + (conv.unread_count || 0), 0);
@@ -513,6 +598,79 @@ const ChatPage: React.FC = () => {
     }
   };
 
+  // Form-related functions
+  const addFormField = () => {
+    const newId = (formFields.length + 1).toString();
+    setFormFields([
+      ...formFields,
+      { id: newId, label: '', type: 'text', placeholder: '', required: false }
+    ]);
+  };
+
+  const removeFormField = (id: string) => {
+    if (formFields.length > 1) {
+      setFormFields(formFields.filter(field => field.id !== id));
+    }
+  };
+
+  const updateFormField = (id: string, updates: Partial<FormField>) => {
+    setFormFields(formFields.map(field => 
+      field.id === id ? { ...field, ...updates } : field
+    ));
+  };
+
+  const sendFormMessage = async () => {
+    if (!selectedConversation || !socket || !formTitle.trim() || formFields.length === 0) return;
+
+    const validFields = formFields.filter(f => f.label.trim() !== '');
+    if (validFields.length === 0) return;
+
+    const formData: FormData = {
+      title: formTitle.trim(),
+      description: formDescription.trim(),
+      fields: validFields
+    };
+
+    // Create optimistic message
+    const tempId = Date.now();
+    const optimisticMessage: Message & { tempId?: number } = {
+      id: tempId,
+      sender_id: user?.id || 0,
+      receiver_id: selectedConversation.id,
+      message: JSON.stringify(formData),
+      message_type: 'form',
+      file_url: undefined,
+      is_read: false,
+      is_ai_response: false,
+      created_at: new Date().toISOString(),
+      sender_first_name: user?.first_name || 'Admin',
+      sender_last_name: user?.last_name || '',
+      sender_role: user?.role || 'admin',
+      sender_avatar: user?.avatar || undefined,
+      tempId,
+    };
+
+    setMessages(prev => [...prev, optimisticMessage]);
+
+    // Emit via socket
+    if (socket.connected) {
+      socket.emit('send_form_message', {
+        receiverId: selectedConversation.id,
+        formData,
+        tempId
+      });
+    }
+
+    // Close modal and reset
+    setShowFormModal(false);
+    setFormTitle('');
+    setFormDescription('');
+    setFormFields([{ id: '1', label: '', type: 'text', placeholder: '', required: false }]);
+    
+    fetchConversations();
+    scrollToBottom();
+  };
+
   // Handle voice call
   const initiateVoiceCall = () => {
     if (!selectedConversation || !socket) return;
@@ -635,6 +793,7 @@ const ChatPage: React.FC = () => {
 
   const getUserName = (conv: Conversation) => {
     return `${conv.first_name} ${conv.last_name}`;
+    // console.log(conv)
   };
 
   const getInitials = (conv: Conversation) => {
@@ -664,7 +823,7 @@ const ChatPage: React.FC = () => {
   }
 
   return (
-    <div className="space-y-4 lg:space-y-6">
+    <div className="flex flex-col h-[calc(100vh-64px)] gap-4 lg:gap-6 overflow-hidden">
       {/* Header - Responsive */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
@@ -697,7 +856,7 @@ const ChatPage: React.FC = () => {
 
       {/* Stats Cards - Desktop (always visible) / Mobile (in drawer) */}
       {isMobile ? (
-        <Drawer {...statsDrawer} title="Chat Statistics" position="bottom" size="lg">
+        <Drawer isOpen={statsDrawer.isOpen} onClose={statsDrawer.close} title="Chat Statistics" position="bottom" size="lg">
           <div className="grid grid-cols-2 gap-3">
             <Card>
               <CardHeader className="p-3 flex flex-row items-center justify-between space-y-0">
@@ -741,7 +900,7 @@ const ChatPage: React.FC = () => {
           </div>
         </Drawer>
       ) : (
-        <div className="grid gap-4 md:grid-cols-4 hidden lg:grid">
+        <div className="grid gap-4 md:grid-cols-4  lg:grid">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Chats</CardTitle>
@@ -797,7 +956,7 @@ const ChatPage: React.FC = () => {
       )}
 
       {/* Chat Interface */}
-      <div className="flex flex-col lg:flex-row gap-4 min-h-[calc(100vh-280px)] lg:h-[700px] w-full">
+      <div className="flex flex-1 lg:flex-row gap-4 w-full overflow-hidden">
         {/* Mobile: Show conversations list first */}
         {isMobile ? (
           !selectedConversation ? (
@@ -821,7 +980,7 @@ const ChatPage: React.FC = () => {
                 </div>
               </CardHeader>
               <CardContent className="p-0 flex-1 overflow-hidden">
-                <div className="h-full overflow-y-auto space-y-1">
+                <div className="h-full overflow-y-scroll space-y-1">
                   {filteredConversations.map((conversation) => (
                     <div
                       key={conversation.id}
@@ -834,12 +993,12 @@ const ChatPage: React.FC = () => {
                         <div className="relative flex-shrink-0">
                           <Avatar className="h-10 w-10">
                             <AvatarImage src={conversation.avatar} />
-                            <AvatarFallback className={conversation.unread_count && conversation.unread_count > 0 ? 'bg-primary text-primary-foreground' : ''}>
+                            <AvatarFallback className={conversation.unread_count && conversation.unread_count > 0 ? 'bg-green-100' : 'bg-green-100'}>
                               {getInitials(conversation)}
                             </AvatarFallback>
                           </Avatar>
                           {conversation.unread_count && conversation.unread_count > 0 && (
-                            <span className="absolute -top-1 -right-1 h-4 w-4 bg-primary rounded-full text-[10px] text-primary-foreground flex items-center justify-center">
+                            <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center">
                               {conversation.unread_count > 9 ? '9+' : conversation.unread_count}
                             </span>
                           )}
@@ -876,7 +1035,7 @@ const ChatPage: React.FC = () => {
             </Card>
           ) : (
             // Mobile: Show selected chat with back button
-            <Card className="flex-1 flex flex-col overflow-hidden">
+            <Card className="flex-1 flex flex-col ">
               {/* Chat Header */}
               <CardHeader className="py-2 border-b shrink-0">
                 <div className="flex items-center justify-between">
@@ -889,18 +1048,31 @@ const ChatPage: React.FC = () => {
                     >
                       <X className="h-4 w-4" />
                     </Button>
-                    <Avatar className="h-9 w-9 flex-shrink-0">
-                      <AvatarImage src={selectedConversation.avatar} />
-                      <AvatarFallback>
-                        {getInitials(selectedConversation)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="relative">
+                      <Avatar className="h-9 w-9 flex-shrink-0">
+                        <AvatarImage src={selectedConversation.avatar} />
+                        <AvatarFallback>
+                          {getInitials(selectedConversation)}
+                        </AvatarFallback>
+                      </Avatar>
+                      {selectedConversation.id && userOnlineStatus[selectedConversation.id] && (
+                        <span className="absolute bottom-0 right-0 h-2.5 w-2.5 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full"></span>
+                      )}
+                    </div>
                     <div className="min-w-0 flex-1">
                       <h3 className="font-semibold text-sm truncate">{getUserName(selectedConversation)}</h3>
                       <div className="text-xs text-muted-foreground flex items-center gap-2 flex-wrap">
                         <Badge variant="outline" className="text-[10px] px-1.5 py-0">
                           {selectedConversation.role}
                         </Badge>
+                        {selectedConversation.id && userOnlineStatus[selectedConversation.id] ? (
+                          <span className="text-green-500 text-[10px] flex items-center gap-1">
+                            <span className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                            Online
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground text-[10px]">Offline</span>
+                        )}
                         {typingUsers.has(selectedConversation.id) && (
                           <span className="text-primary text-[10px] flex items-center gap-1">
                             <span className="animate-pulse">typing...</span>
@@ -910,6 +1082,16 @@ const ChatPage: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex items-center space-x-1">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      title="Send Fillable Form"
+                      className="h-8 w-8"
+                      onClick={() => setShowFormModal(true)}
+                    >
+                      <FileText className="h-4 w-4" />
+                    </Button>
+                    
                     <Button 
                       variant="ghost" 
                       size="icon" 
@@ -933,8 +1115,9 @@ const ChatPage: React.FC = () => {
               </CardHeader>
 
               {/* Messages */}
-              <CardContent className="flex-1 p-3 overflow-hidden bg-slate-50 dark:bg-slate-950/50">
-                <div className="h-full overflow-y-auto space-y-3">
+              <CardContent className="flex-1 p-3 bg-slate-50 dark:bg-slate-950/50 overflow-y-scroll w-screen">
+                <div className="flex flex-col h-full ">
+                  <div className="flex-1 overflow-y-auto space-y-3 scroll-smooth">
                   {messages.map((message, index) => {
                     const isOwnMessage = message.sender_id === user?.id;
                     const showAvatar = !isOwnMessage && (index === 0 || messages[index - 1]?.sender_id !== message.sender_id);
@@ -964,11 +1147,11 @@ const ChatPage: React.FC = () => {
                           </div>
                         )}
                         
-                        <div className={`max-w-[80%] ${isOwnMessage ? 'order-1' : ''}`}>
+                        <div className={`max-w-[70%] ${isOwnMessage ? 'order-1' : ''}`}>
                           <div className={`rounded-2xl px-3 py-2 ${
                             isOwnMessage 
-                              ? 'bg-primary text-primary-foreground rounded-br-md' 
-                              : 'bg-white dark:bg-slate-800 border rounded-bl-md'
+                              ? 'bg-primary text-white rounded-br-md' 
+                              : 'bg-white/90 dark:bg-slate-800 border rounded-bl-md'
                           }`}>
                             {message.is_ai_response && (
                               <div className="flex items-center gap-1 mb-1 text-[10px] opacity-70">
@@ -977,12 +1160,40 @@ const ChatPage: React.FC = () => {
                               </div>
                             )}
                             
-                            {message.message_type === 'image' && message.file_url ? (
+                            {/* {message.message_type === 'image' && message.file_url ? (
                               <img 
                                 src={apiClient.getFileUrl(message.file_url)} 
                                 alt="Shared image" 
                                 className="max-w-full rounded-lg cursor-pointer hover:opacity-90 max-h-40"
                                 onClick={() => window.open(apiClient.getFileUrl(message.file_url), '_blank')}
+                              />
+                            ) : message.message_type === 'file' && message.file_url ? (
+                              <a 
+                                href={apiClient.getFileUrl(message.file_url)} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 p-1.5 bg-white/10 rounded-lg hover:bg-white/20"
+                              >
+                                <Paperclip className="h-4 w-4" />
+                                <span className="text-xs underline">Download</span>
+                              </a>
+                            ) : (
+                              <p className="text-sm whitespace-pre-wrap break-words">{message.message}</p>
+                            )} */}
+
+                             {message.message_type === 'image' && message.file_url ? (
+                              <img 
+                                src={apiClient.getFileUrl(message.file_url)} 
+                                alt="Shared image" 
+                                className="max-w-full rounded-lg cursor-pointer hover:opacity-90 max-h-40"
+                                onClick={() => window.open(apiClient.getFileUrl(message.file_url), '_blank')}
+                              />
+                            ) : message.message_type === 'video' && message.file_url ? (
+                              <video 
+                                src={apiClient.getFileUrl(message.file_url)} 
+                                controls 
+                                className="max-w-full rounded-lg max-h-40"
+                                preload="metadata"
                               />
                             ) : message.message_type === 'file' && message.file_url ? (
                               <a 
@@ -1017,10 +1228,11 @@ const ChatPage: React.FC = () => {
                   })}
                   <div ref={messagesEndRef} />
                 </div>
+                </div>
               </CardContent>
 
               {/* Message Input */}
-              <div className="border-t p-2 bg-white dark:bg-slate-900 shrink-0">
+              <div className="border-t p-2 bg-white dark:bg-slate-900 shrink-0 w-screen">
                 {attachedFiles.length > 0 && (
                   <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-2">
                     {attachedFiles.map((file, index) => (
@@ -1074,7 +1286,7 @@ const ChatPage: React.FC = () => {
           )
         ) : (
           // Desktop layout - Conversations list and chat side by side
-          <div className="flex gap-4 lg:gap-6 min-h-[calc(100vh-280px)] lg:h-[700px] w-full">
+          <div className="flex gap-4 lg:gap-6 min-h-[calc(100vh-280px)] h-[700px] w-full">
             {/* Conversations List - Desktop */}
             <Card className="flex-shrink-0 w-80 flex flex-col overflow-hidden">
               <CardHeader className="pb-2 md:pb-3 flex-shrink-0">
@@ -1097,8 +1309,8 @@ const ChatPage: React.FC = () => {
                 </div>
               </CardHeader>
               
-              <CardContent className="p-0 flex-1 overflow-hidden">
-                <div className="h-full overflow-y-auto space-y-1">
+              <CardContent className="p-0 flex-1">
+                <div className="h-full overflow-hidden ">
                   {filteredConversations.map((conversation) => (
                     <div
                       key={conversation.id}
@@ -1111,7 +1323,7 @@ const ChatPage: React.FC = () => {
                         <div className="relative flex-shrink-0">
                           <Avatar className="h-8 w-8 md:h-10 md:w-10">
                             <AvatarImage src={conversation.avatar} />
-                            <AvatarFallback className={conversation.unread_count && conversation.unread_count > 0 ? 'bg-primary text-primary-foreground' : ''}>
+                            <AvatarFallback className={conversation.unread_count && conversation.unread_count > 0 ? 'bg-red-500 text-white' : ''}>
                               {getInitials(conversation)}
                             </AvatarFallback>
                           </Avatar>
@@ -1157,25 +1369,38 @@ const ChatPage: React.FC = () => {
             </Card>
 
             {/* Chat Window - Desktop */}
-            <Card className="flex-1 flex flex-col overflow-hidden">
+            <Card className="flex-1 flex flex-col overflow-hidden h-2">
               {selectedConversation ? (
                 <>
                   {/* Chat Header */}
                   <CardHeader className="py-2 md:pb-3 border-b shrink-0">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2 md:space-x-3 min-w-0">
-                        <Avatar className="h-8 w-8 md:h-10 md:w-10 flex-shrink-0">
-                          <AvatarImage src={selectedConversation.avatar} />
-                          <AvatarFallback>
-                            {getInitials(selectedConversation)}
-                          </AvatarFallback>
-                        </Avatar>
+                        <div className="relative">
+                          <Avatar className="h-8 w-8 md:h-10 md:w-10 flex-shrink-0">
+                            <AvatarImage src={selectedConversation.avatar} />
+                            <AvatarFallback>
+                              {getInitials(selectedConversation)}
+                            </AvatarFallback>
+                          </Avatar>
+                          {selectedConversation.id && userOnlineStatus[selectedConversation.id] && (
+                            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 md:h-3 md:w-3 bg-green-500 border-2 border-white dark:border-slate-800 rounded-full"></span>
+                          )}
+                        </div>
                         <div className="min-w-0">
                           <h3 className="font-semibold text-sm md:text-base truncate">{getUserName(selectedConversation)}</h3>
                           <div className="text-xs md:text-sm text-muted-foreground flex items-center gap-1 md:gap-2 flex-wrap">
                             <Badge variant="outline" className="text-[9px] md:text-xs px-1 md:px-1.5 py-0">
                               {selectedConversation.role}
                             </Badge>
+                            {selectedConversation.id && userOnlineStatus[selectedConversation.id] ? (
+                              <span className="text-green-500 text-[9px] md:text-xs flex items-center gap-1">
+                                <span className="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                                Online
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground text-[9px] md:text-xs">Offline</span>
+                            )}
                             {typingUsers.has(selectedConversation.id) && (
                               <span className="text-primary text-[9px] md:text-xs flex items-center gap-1">
                                 <span className="animate-pulse">typing...</span>
@@ -1186,6 +1411,16 @@ const ChatPage: React.FC = () => {
                       </div>
                       
                       <div className="flex items-center space-x-0.5 md:space-x-1">
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          title="Send Fillable Form"
+                          className="h-7 w-7 md:h-8 md:w-8"
+                          onClick={() => setShowFormModal(true)}
+                        >
+                          <FileText className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                        </Button>
+                        
                         <Button 
                           variant="ghost" 
                           size="icon" 
@@ -1214,8 +1449,9 @@ const ChatPage: React.FC = () => {
                   </CardHeader>
 
                   {/* Messages - Scrollable */}
-                  <CardContent className="flex-1 p-2 md:p-4 overflow-hidden bg-slate-50 dark:bg-slate-950/50">
-                    <div className="h-full overflow-y-auto space-y-2 md:space-y-4">
+                  <CardContent className="flex-1 flex-col overflow-hidden p-0 bg-slate-50 dark:bg-slate-950/50">
+                    <div className="flex flex-col h-[100%]">
+                      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-3 scroll-smooth">
                       {messages.map((message, index) => {
                         const isOwnMessage = message.sender_id === user?.id;
                         const showAvatar = !isOwnMessage && (index === 0 || messages[index - 1]?.sender_id !== message.sender_id);
@@ -1259,7 +1495,7 @@ const ChatPage: React.FC = () => {
                                   </div>
                                 )}
                                 
-                                {message.message_type === 'image' && message.file_url ? (
+                                {/* {message.message_type === 'image' && message.file_url ? (
                                   <img 
                                     src={apiClient.getFileUrl(message.file_url)} 
                                     alt="Shared image" 
@@ -1276,9 +1512,57 @@ const ChatPage: React.FC = () => {
                                     <Paperclip className="h-3 w-3 md:h-4 md:w-4" />
                                     <span className="text-xs md:text-sm underline">Download</span>
                                   </a>
+                                ) : message.message_type === 'form' ? (
+                                  <FormMessageDisplay message={message} />
                                 ) : (
                                   <p className="text-xs md:text-sm whitespace-pre-wrap break-words">{message.message}</p>
-                                )}
+                                )} */}
+
+
+                                {message.message_type === 'image' && message.file_url ? (
+                                  <img src={apiClient.getFileUrl(message.file_url)}  alt="Shared image" className="max-w-full rounded-lg cursor-pointer hover:opacity-90 max-h-32 md:max-h-48" onClick={() => window.open(apiClient.getFileUrl(message.file_url), '_blank')}
+                                  />) : message.message_type === 'video' && message.file_url ? (<video src={apiClient.getFileUrl(message.file_url)} controls className="max-w-full rounded-lg max-h-48" preload="metadata"/>) : message.message_type === 'file' && message.file_url ? ((() => {
+    const fileExt = message.file_url?.split('.').pop()?.toLowerCase() || '';
+    const isImageByExt = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(fileExt);
+    const isVideoByExt = ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv'].includes(fileExt);
+    
+    if (isImageByExt) {
+      return (
+        <img 
+          src={apiClient.getFileUrl(message.file_url)} 
+          alt="Shared image" 
+          className="max-w-full rounded-lg cursor-pointer hover:opacity-90 max-h-32 md:max-h-48"
+          onClick={() => window.open(apiClient.getFileUrl(message.file_url), '_blank')}
+        />
+      );
+    }
+    if (isVideoByExt) {
+      return (
+        <video 
+          src={apiClient.getFileUrl(message.file_url)} 
+          controls 
+          className="max-w-full rounded-lg max-h-48"
+          preload="metadata"
+        />
+      );
+    }
+    return (
+      <a 
+        href={apiClient.getFileUrl(message.file_url)} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="flex items-center gap-1.5 md:gap-2 p-1.5 md:p-2 bg-white/10 rounded-lg hover:bg-white/20"
+      >
+        <Paperclip className="h-3 w-3 md:h-4 md:w-4" />
+        <span className="text-xs md:text-sm underline">Download</span>
+      </a>
+    );
+  })()
+) : message.message_type === 'form' ? (
+  <FormMessageDisplay message={message} />
+) : (
+  <p className="text-xs md:text-sm whitespace-pre-wrap break-words">{message.message}</p>
+)}
                                 
                                 <div className={`flex items-center justify-end gap-0.5 md:gap-1 mt-0.5 md:mt-1 ${
                                   isOwnMessage ? 'text-primary-foreground/70' : 'text-muted-foreground'
@@ -1294,16 +1578,17 @@ const ChatPage: React.FC = () => {
                                 </div>
                               </div>
                               
-                              {!isOwnMessage && showAvatar && (
-                                <p className="text-[9px] md:text-xs text-muted-foreground mt-0.5 md:ml-1 ml-0.5">
-                                  {message.sender_first_name} {message.sender_last_name}
-                                </p>
+                              {isOwnMessage && (
+                                <span className="text-[9px] md:text-[10px] text-primary-foreground/70 mt-0.5">
+                                  {message.read_at ? 'Read' : 'Delivered'}
+                                </span>
                               )}
                             </div>
                           </div>
                         );
                       })}
                       <div ref={messagesEndRef} />
+                    </div>
                     </div>
                   </CardContent>
 
@@ -1411,6 +1696,190 @@ const ChatPage: React.FC = () => {
               </Button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Form Modal */}
+      <Dialog open={showFormModal} onOpenChange={setShowFormModal}>
+        <DialogContent className="sm:max-w-lg max-w-[95vw]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Send Fillable Form
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+            {/* Form Title */}
+            <div className="space-y-2">
+              <Label htmlFor="formTitle">Form Title *</Label>
+              <Input
+                id="formTitle"
+                value={formTitle}
+                onChange={(e) => setFormTitle(e.target.value)}
+                placeholder="e.g., Customer Feedback Form"
+              />
+            </div>
+            
+            {/* Form Description */}
+            <div className="space-y-2">
+              <Label htmlFor="formDescription">Description</Label>
+              <Textarea
+                id="formDescription"
+                value={formDescription}
+                onChange={(e) => setFormDescription(e.target.value)}
+                placeholder="Brief description of the form..."
+                rows={2}
+              />
+            </div>
+            
+            {/* Form Fields */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label>Form Fields</Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addFormField}
+                  className="gap-1"
+                >
+                  <Plus className="h-3 w-3" />
+                  Add Field
+                </Button>
+              </div>
+              
+              {formFields.map((field, index) => (
+                <div 
+                  key={field.id} 
+                  className="p-3 border rounded-lg space-y-2 bg-gray-50 dark:bg-slate-800/50"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-muted-foreground">
+                      Field {index + 1}
+                    </span>
+                    {formFields.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 text-red-500"
+                        onClick={() => removeFormField(field.id)}
+                      >
+                        <Trash className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <Input
+                      value={field.label}
+                      onChange={(e) => updateFormField(field.id, { label: e.target.value })}
+                      placeholder="Field label (e.g., Your Name)"
+                    />
+                    
+                    <div className="grid grid-cols-2 gap-2">
+                      <select
+                        value={field.type}
+                        onChange={(e) => updateFormField(field.id, { type: e.target.value as FormField['type'] })}
+                        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <option value="text">Text</option>
+                        <option value="textarea">Long Text</option>
+                        <option value="number">Number</option>
+                        <option value="email">Email</option>
+                        <option value="date">Date</option>
+                      </select>
+                      
+                      <Input
+                        value={field.placeholder || ''}
+                        onChange={(e) => updateFormField(field.id, { placeholder: e.target.value })}
+                        placeholder="Placeholder"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <DialogFooter className="mt-4">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowFormModal(false);
+                setFormTitle('');
+                setFormDescription('');
+                setFormFields([{ id: '1', label: '', type: 'text', placeholder: '', required: false }]);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={sendFormMessage}
+              disabled={!formTitle.trim() || formFields.every(f => !f.label.trim())}
+            >
+              <Send className="h-4 w-4 mr-2" />
+              Send Form
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+// Form Message Display Component
+const FormMessageDisplay: React.FC<{ message: Message }> = ({ message }) => {
+  const formData: FormData | null = React.useMemo(() => {
+    try {
+      return JSON.parse(message.message);
+    } catch {
+      return null;
+    }
+  }, [message.message]);
+
+  if (!formData) {
+    return <p className="text-xs md:text-sm">Invalid form data</p>;
+  }
+
+  const isResponse = message.message_type === 'form_response' || message.form_data;
+  const responses = message.form_data?.responses || [];
+
+  return (
+    <div className="bg-white dark:bg-slate-800 rounded-lg border p-3 md:p-4 max-w-xs md:max-w-sm">
+      <div className="flex items-center gap-2 mb-2">
+        <FileText className="h-4 w-4 text-primary" />
+        <span className="font-semibold text-sm">{formData.title}</span>
+      </div>
+      
+      {formData.description && (
+        <p className="text-xs text-muted-foreground mb-3">{formData.description}</p>
+      )}
+      
+      {isResponse ? (
+        <div className="space-y-2">
+          {responses.map((response, idx) => (
+            <div key={idx} className="text-xs">
+              <span className="text-muted-foreground">{response.label}:</span>
+              <span className="font-medium ml-1">{response.value}</span>
+            </div>
+          ))}
+          <p className="text-[10px] text-muted-foreground mt-2">
+            Submitted: {new Date(message.form_data?.submitted_at || message.created_at).toLocaleString()}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-1.5">
+          {formData.fields?.map((field) => (
+            <div key={field.id} className="text-xs">
+              <span className="text-muted-foreground">{field.label}{field.required && ' *'}</span>
+              <div className="mt-0.5 h-6 bg-gray-100 dark:bg-slate-700 rounded" />
+            </div>
+          ))}
+          <p className="text-[10px] text-muted-foreground mt-2">
+            Waiting for user to fill this form...
+          </p>
         </div>
       )}
     </div>

@@ -157,10 +157,13 @@ async function initializeDatabase() {
         reset_password_token VARCHAR(255),
         reset_password_expires DATETIME,
         avatar VARCHAR(255),
+        is_online BOOLEAN DEFAULT FALSE,
+        last_seen DATETIME,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         INDEX idx_email (email),
-        INDEX idx_role (role)
+        INDEX idx_role (role),
+        INDEX idx_online (is_online)
       )`,
 
       // Categories table
@@ -333,6 +336,21 @@ async function initializeDatabase() {
         INDEX idx_announcement (announcement_id),
         INDEX idx_user (user_id),
         INDEX idx_created (created_at)
+      )`,
+
+      // Announcement views tracking table
+      `CREATE TABLE IF NOT EXISTS announcement_views (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        announcement_id INT NOT NULL,
+        user_id INT DEFAULT NULL,
+        session_id VARCHAR(100) DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (announcement_id) REFERENCES announcements(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        INDEX idx_announcement (announcement_id),
+        INDEX idx_user (user_id),
+        INDEX idx_session (session_id),
+        INDEX idx_created (created_at)
       )`
     ];
 
@@ -342,25 +360,27 @@ async function initializeDatabase() {
     }
 
     // Add missing columns to existing announcements table (for database migrations)
+    // Note: We use try-catch to handle "duplicate column" errors instead of IF NOT EXISTS
+    // because IF NOT EXISTS for ALTER TABLE ADD COLUMN is only supported in MySQL 8.0.19+
     const alterAnnouncementsQueries = [
-      `ALTER TABLE announcements ADD COLUMN IF NOT EXISTS summary TEXT`,
-      `ALTER TABLE announcements ADD COLUMN IF NOT EXISTS type ENUM('info', 'maintenance', 'update', 'urgent', 'promotion') DEFAULT 'info'`,
-      `ALTER TABLE announcements ADD COLUMN IF NOT EXISTS status ENUM('draft', 'published', 'scheduled', 'expired') DEFAULT 'draft'`,
-      `ALTER TABLE announcements ADD COLUMN IF NOT EXISTS target_audience ENUM('all', 'customers', 'admins', 'users') DEFAULT 'all'`,
-      `ALTER TABLE announcements ADD COLUMN IF NOT EXISTS scheduled_for DATETIME`,
-      `ALTER TABLE announcements ADD COLUMN IF NOT EXISTS expires_at DATETIME`,
-      `ALTER TABLE announcements ADD COLUMN IF NOT EXISTS pinned BOOLEAN DEFAULT FALSE`,
-      `ALTER TABLE announcements ADD COLUMN IF NOT EXISTS tags JSON`,
-      `ALTER TABLE announcements ADD COLUMN IF NOT EXISTS media_files JSON`,
-      `ALTER TABLE announcements ADD COLUMN IF NOT EXISTS published_at DATETIME`,
-      `ALTER TABLE announcements ADD COLUMN IF NOT EXISTS views INT DEFAULT 0`,
-      `ALTER TABLE announcements ADD COLUMN IF NOT EXISTS reads INT DEFAULT 0`,
+      `ALTER TABLE announcements ADD COLUMN summary TEXT`,
+      `ALTER TABLE announcements ADD COLUMN type ENUM('info', 'maintenance', 'update', 'urgent', 'promotion') DEFAULT 'info'`,
+      `ALTER TABLE announcements ADD COLUMN status ENUM('draft', 'published', 'scheduled', 'expired') DEFAULT 'draft'`,
+      `ALTER TABLE announcements ADD COLUMN target_audience ENUM('all', 'customers', 'admins', 'users') DEFAULT 'all'`,
+      `ALTER TABLE announcements ADD COLUMN scheduled_for DATETIME`,
+      `ALTER TABLE announcements ADD COLUMN expires_at DATETIME`,
+      `ALTER TABLE announcements ADD COLUMN pinned BOOLEAN DEFAULT FALSE`,
+      `ALTER TABLE announcements ADD COLUMN tags JSON`,
+      `ALTER TABLE announcements ADD COLUMN media_files JSON`,
+      `ALTER TABLE announcements ADD COLUMN published_at DATETIME`,
+      `ALTER TABLE announcements ADD COLUMN views INT DEFAULT 0`,
+      `ALTER TABLE announcements ADD COLUMN reads INT DEFAULT 0`,
       
       // Migration: Add request_number column to orders table
-      `ALTER TABLE orders ADD COLUMN IF NOT EXISTS request_number VARCHAR(20)`,
+      `ALTER TABLE orders ADD COLUMN request_number VARCHAR(20)`,
       
       // Migration: Add index on request_number for faster lookups
-      `CREATE INDEX IF NOT EXISTS idx_orders_request_number ON orders(request_number)`
+      // Note: CREATE INDEX IF NOT EXISTS is also not supported in older MySQL versions
     ];
 
     for (const query of alterAnnouncementsQueries) {
@@ -368,9 +388,49 @@ async function initializeDatabase() {
         await pool.execute(query);
       } catch (error) {
         // Ignore "duplicate column" errors
-        if (!error.message.includes('Duplicate column')) {
-          console.warn('Migration warning:', error.message);
+        if (!error.message.includes('Duplicate column') && 
+            !error.message.includes('already exists')) {
+          console.warn('Migration warning:', error.message.substring(0, 150));
         }
+      }
+    }
+
+    // Add missing columns to existing users table (for database migrations)
+    const alterUsersQueries = [
+      `ALTER TABLE users ADD COLUMN is_online BOOLEAN DEFAULT FALSE`,
+      `ALTER TABLE users ADD COLUMN last_seen DATETIME`,
+      `ALTER TABLE users ADD COLUMN last_active_at DATETIME`,
+    ];
+
+    for (const query of alterUsersQueries) {
+      try {
+        await pool.execute(query);
+      } catch (error) {
+        // Ignore "duplicate column" errors
+        if (!error.message.includes('Duplicate column') && 
+            !error.message.includes('already exists')) {
+          console.warn('Migration warning:', error.message.substring(0, 150));
+        }
+      }
+    }
+    
+    // Add indexes for users table
+    try {
+      await pool.execute(`CREATE INDEX idx_users_online ON users(is_online)`);
+    } catch (error) {
+      if (!error.message.includes('Duplicate key name') && 
+          !error.message.includes('already exists')) {
+        console.warn('Index creation warning:', error.message.substring(0, 150));
+      }
+    }
+
+    // Handle index creation separately with try-catch
+    try {
+      await pool.execute(`CREATE INDEX idx_orders_request_number ON orders(request_number)`);
+    } catch (error) {
+      if (!error.message.includes('Duplicate key name') && 
+          !error.message.includes('already exists')) {
+        console.warn('Index creation warning:', error.message.substring(0, 150));
       }
     }
 

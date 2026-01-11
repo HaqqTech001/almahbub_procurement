@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { useChatStore } from '@/stores/chatStore';
-import NotificationDropdown from '@/components/notifications/NotificationDropdown';
+import { apiClient } from '@/lib/api';
 import { 
   Menu, 
   X, 
@@ -15,26 +14,59 @@ import {
   MessageCircle, 
   LogOut,
   Bell,
-  Search,
-  BellRing
+  Megaphone
 } from 'lucide-react';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const [unreadAnnouncements, setUnreadAnnouncements] = useState(0);
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuthContext();
   const { unreadCount, fetchUnreadCount } = useChatStore();
 
-  // Fetch unread count on mount and periodically (only when authenticated)
+  // Fetch unread counts on mount and periodically
   useEffect(() => {
     if (isAuthenticated) {
       fetchUnreadCount();
-      const interval = setInterval(fetchUnreadCount, 60000); // Refresh every 60 seconds to avoid rate limiting
+      fetchUnreadNotifications();
+      fetchUnreadAnnouncements();
+      
+      const interval = setInterval(() => {
+        fetchUnreadCount();
+        fetchUnreadNotifications();
+        fetchUnreadAnnouncements();
+      }, 60000); // Refresh every 60 seconds
       
       return () => clearInterval(interval);
     }
   }, [isAuthenticated, fetchUnreadCount]);
+
+  const fetchUnreadNotifications = async () => {
+    try {
+      const response = await apiClient.get('/auth/notifications');
+      const notifications = response.data?.notifications || response.data || [];
+      const unread = Array.isArray(notifications) ? notifications.filter((n: any) => !n.is_read).length : 0;
+      setUnreadNotifications(unread);
+    } catch (error) {
+      console.error('Failed to fetch unread notifications:', error);
+    }
+  };
+
+  const fetchUnreadAnnouncements = async () => {
+    try {
+      const response = await apiClient.get('/announcements');
+      const announcements = response.data?.announcements || response.data || [];
+      // Count announcements that don't have a read record for this user
+      // For simplicity, we'll count total announcements and subtract read ones
+      // In a real app, you'd have a proper read tracking table
+      const unread = Array.isArray(announcements) ? announcements.length : 0;
+      setUnreadAnnouncements(unread > 0 ? unread : 0);
+    } catch (error) {
+      console.error('Failed to fetch announcements:', error);
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -48,7 +80,7 @@ const Navbar: React.FC = () => {
     ...(isAuthenticated ? [
       { name: 'Dashboard', href: '/dashboard', icon: Home },
       { name: 'My Requests', href: '/my-requests', icon: ShoppingCart },
-      // { name: 'Chat', href: '/client-chat', icon: MessageCircle },
+      // { name: 'Chat', href: '/chat', icon: MessageCircle },
       { name: 'Profile', href: '/profile', icon: User },
     ] : []),
   ];
@@ -59,7 +91,7 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-[#2390ae] rounded-lg flex items-center justify-center">
+             <div className="w-10 h-10 bg-[#2390ae] rounded-lg flex items-center justify-center">
               <img src="./almahbub.png" alt="" />
             </div>
             <div>
@@ -69,7 +101,7 @@ const Navbar: React.FC = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden lg:flex items-center space-x-6">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -92,11 +124,36 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Right Side - Desktop */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-3">
             {isAuthenticated ? (
               <>
-                {/* Notifications */}
-                <NotificationDropdown />
+                {/* Announcements Link with Badge */}
+                <div className="relative">
+                  <Button variant="ghost" size="icon" asChild className="relative">
+                    <Link to="/announcements">
+                      <Megaphone className="h-5 w-5" />
+                      {unreadAnnouncements > 0 && (
+                        <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">
+                          {unreadAnnouncements > 9 ? '9+' : unreadAnnouncements}
+                        </span>
+                      )}
+                    </Link>
+                  </Button>
+                </div>
+
+                {/* Notifications Link with Badge - Links to notifications page */}
+                <div className="relative">
+                  <Button variant="ghost" size="icon" asChild className="relative">
+                    <Link to="/notifications">
+                      <Bell className="h-5 w-5" />
+                      {unreadNotifications > 0 && (
+                        <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                          {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                        </span>
+                      )}
+                    </Link>
+                  </Button>
+                </div>
                 
                 {/* Chat Link with Badge */}
                 <div className="relative">
@@ -125,7 +182,6 @@ const Navbar: React.FC = () => {
                           const firstChar = user?.firstName?.[0] || '';
                           const lastChar = user?.lastName?.[0] || '';
                           const initials = (firstChar + lastChar).toUpperCase();
-                          // Only show if it's a letter, not a number or special character
                           return /^[A-Z]$/.test(initials) ? initials : '';
                         })()}
                       </span>
@@ -158,6 +214,14 @@ const Navbar: React.FC = () => {
                         My Requests
                       </Link>
                       <Link
+                        to="/announcements"
+                        className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <Megaphone className="h-4 w-4 mr-3" />
+                        Announcements
+                      </Link>
+                      <Link
                         to="/chat"
                         className="flex items-center px-4 py-2.5 text-sm text-[#0e7490] hover:bg-gray-50 transition-colors font-medium"
                         onClick={() => setIsProfileOpen(false)}
@@ -183,8 +247,13 @@ const Navbar: React.FC = () => {
                         className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                         onClick={() => setIsProfileOpen(false)}
                       >
-                        <BellRing className="h-4 w-4 mr-3" />
+                        <Bell className="h-4 w-4 mr-3" />
                         Notifications
+                        {unreadNotifications > 0 && (
+                          <span className="ml-auto px-2 py-0.5 text-xs bg-red-100 text-red-600 rounded-full">
+                            {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                          </span>
+                        )}
                       </Link>
                       <hr className="my-1" />
                       <button
@@ -211,109 +280,146 @@ const Navbar: React.FC = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? <X className="h-6 w-6 " /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-4">
-            {/* Mobile Notification and Chat Icons */}
-            {isAuthenticated && (
-              <div className="flex items-center justify-center space-x-4 mb-4 px-3">
-                <NotificationDropdown />
-                <Link 
-                  to="/chat" 
-                  className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <MessageCircle className="h-6 w-6 text-gray-700" />
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                      {unreadCount > 9 ? '9+' : unreadCount}
-                    </span>
-                  )}
-                </Link>
-              </div>
-            )}
-            
-            <div className="space-y-1">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    item.name === 'Chat'
-                      ? 'bg-[#0e7490]/10 text-[#0e7490] font-medium'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.name}</span>
-                  {item.name === 'Chat' && unreadCount > 0 && (
-                    <span className="ml-auto px-2 py-0.5 text-xs bg-red-500 text-white rounded-full">
-                      {unreadCount > 9 ? '9+' : unreadCount}
-                    </span>
-                  )}
-                </Link>
-              ))}
-              
-              {!isAuthenticated && (
-                <div className="pt-4 border-t border-gray-200 space-y-2">
-                  <Button variant="ghost" className="w-full justify-start" asChild>
-                    <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                      Sign in
-                    </Link>
-                  </Button>
-                  <Button className="w-full bg-[#0e7490] hover:bg-[#155e75]" asChild>
-                    <Link to="/register" onClick={() => setIsMenuOpen(false)}>
-                      Get Started
-                    </Link>
-                  </Button>
-                </div>
-              )}
-
+      {/* Mobile Navigation - Full width, outside container */}
+      {isMenuOpen && (
+        <div className="lg:hidden fixed inset-0 top-16 z-40">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 "
+            onClick={() => setIsMenuOpen(false)}
+          />
+          
+          {/* Mobile Menu Panel - Full width on mobile */}
+          <div className="relative bg-white border-t border-gray-200 shadow-xl max-h-[calc(100vh-4rem)] overflow-y-auto">
+            <div className="px-4 py-4 space-y-1">
+              {/* Mobile Notification, Announcement and Chat Icons */}
               {isAuthenticated && (
-                <div className="pt-4 border-t border-gray-200">
-                  <div className="flex items-center space-x-3 px-3 py-2">
-                    <div className="w-10 h-10 bg-[#0e7490] rounded-full flex items-center justify-center">
-                      <span className="text-white font-medium">
-                        {(() => {
-                          const firstChar = user?.firstName?.[0] || '';
-                          const lastChar = user?.lastName?.[0] || '';
-                          const initials = (firstChar + lastChar).toUpperCase();
-                          // Only show if it's a letter, not a number or special character
-                          return /^[A-Z]$/.test(initials) ? initials : '';
-                        })()}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{user?.firstName || 'User'} {user?.lastName}</p>
-                      <p className="text-xs text-gray-500">{user?.email}</p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start mt-2 text-red-600 hover:text-red-700 hover:bg-red-50"
-                    onClick={handleLogout}
+                <div className="flex items-center justify-center space-x-4 mb-4 px-3 py-3 bg-gray-50 rounded-lg">
+                  {/* Announcements Link with Badge */}
+                  <Link 
+                    to="/announcements" 
+                    className="relative p-3 rounded-lg hover:bg-gray-100 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
                   >
-                    <LogOut className="h-4 w-4 mr-3" />
-                    Sign out
-                  </Button>
+                    <Megaphone className="h-6 w-6 text-gray-700" />
+                    {unreadAnnouncements > 0 && (
+                      <span className="absolute -top-0 -right-0 h-5 w-5 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center border-2 border-white">
+                        {unreadAnnouncements > 9 ? '9+' : unreadAnnouncements}
+                      </span>
+                    )}
+                  </Link>
+                  
+                  {/* Notifications Link with Badge */}
+                  <Link 
+                    to="/notifications" 
+                    className="relative p-3 rounded-lg hover:bg-gray-100 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Bell className="h-6 w-6 text-gray-700" />
+                    {unreadNotifications > 0 && (
+                      <span className="absolute -top-0 -right-0 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center border-2 border-white">
+                        {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                      </span>
+                    )}
+                  </Link>
+                  
+                  <Link 
+                    to="/chat" 
+                    className="relative p-3 rounded-lg hover:bg-gray-100 transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <MessageCircle className="h-6 w-6 text-gray-700" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-0 -right-0 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center border-2 border-white">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </Link>
                 </div>
               )}
+              
+              <div className="space-y-1">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                      item.name === 'Chat'
+                        ? 'bg-[#0e7490]/10 text-[#0e7490] font-medium'
+                        : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.name}</span>
+                    {item.name === 'Chat' && unreadCount > 0 && (
+                      <span className="ml-auto px-2 py-0.5 text-xs bg-red-500 text-white rounded-full">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
+                  </Link>
+                ))}
+                
+                {!isAuthenticated && (
+                  <div className="pt-4 border-t border-gray-200 space-y-2">
+                    <Button variant="outline" className="w-full justify-start" asChild>
+                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                        Sign in
+                      </Link>
+                    </Button>
+                    <Button className="w-full bg-[#0e7490] hover:bg-[#155e75]" asChild>
+                      <Link to="/register" onClick={() => setIsMenuOpen(false)}>
+                        Get Started
+                      </Link>
+                    </Button>
+                  </div>
+                )}
+
+                {isAuthenticated && (
+                  <div className="pt-4 border-t border-gray-200">
+                    <div className="flex items-center space-x-3 px-4 py-3 mb-2 bg-gray-50 rounded-lg">
+                      <div className="w-12 h-12 bg-[#0e7490] rounded-full flex items-center justify-center">
+                        <span className="text-white font-medium text-lg">
+                          {(() => {
+                            const firstChar = user?.firstName?.[0] || '';
+                            const lastChar = user?.lastName?.[0] || '';
+                            const initials = (firstChar + lastChar).toUpperCase();
+                            return /^[A-Z]$/.test(initials) ? initials : '';
+                          })()}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{user?.firstName || 'User'} {user?.lastName}</p>
+                        <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start mt-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      onClick={handleLogout}
+                    >
+                      <LogOut className="h-4 w-4 mr-3" />
+                      Sign out
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </nav>
   );
 };

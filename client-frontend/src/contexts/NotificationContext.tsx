@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { apiClient } from '@/lib/api';
 import { useAuthContext } from '@/contexts/AuthContext';
 
@@ -19,6 +19,7 @@ interface NotificationContextType {
   markAllAsRead: () => void;
   removeNotification: (id: number) => void;
   fetchNotifications: () => Promise<void>;
+  onNotification: (callback: (notification: Notification) => void) => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
@@ -61,9 +62,44 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   
   // Load persisted read statuses on mount
   const [persistedReadStatus, setPersistedReadStatus] = useState<Record<number, boolean>>({});
+  
+  // Callback for real-time notifications
+  const notificationCallbackRef = React.useRef<((notification: Notification) => void) | null>(null);
 
+  // Listen for real-time socket notifications
   useEffect(() => {
-    // Load persisted read status
+    if (!isAuthenticated) return;
+    
+    const handleSocketNotification = (event: CustomEvent) => {
+      const notification = event.detail as Notification;
+      console.log('Received real-time notification:', notification);
+      
+      // Add to notifications list
+      setNotifications(prev => [notification, ...prev]);
+      
+      // Trigger callback if registered
+      if (notificationCallbackRef.current) {
+        notificationCallbackRef.current(notification);
+      }
+    };
+    
+    // Listen for custom event from SocketContext
+    const handleCustomEvent = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      if (customEvent.detail && customEvent.detail.title) {
+        handleSocketNotification(customEvent as unknown as CustomEvent<Notification>);
+      }
+    };
+    
+    window.addEventListener('socket_notification', handleCustomEvent as EventListener);
+    
+    return () => {
+      window.removeEventListener('socket_notification', handleCustomEvent as EventListener);
+    };
+  }, [isAuthenticated]);
+
+  // Load persisted read status
+  useEffect(() => {
     const status = getPersistedReadStatus();
     setPersistedReadStatus(status);
   }, []);
@@ -165,6 +201,11 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setNotifications(prev => prev.filter(notification => notification.id !== id));
   };
 
+  // Register callback for real-time notifications
+  const onNotification = useCallback((callback: (notification: Notification) => void) => {
+    notificationCallbackRef.current = callback;
+  }, []);
+
   const value: NotificationContextType = {
     notifications,
     unreadCount,
@@ -172,6 +213,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     markAllAsRead,
     removeNotification,
     fetchNotifications,
+    onNotification,
   };
 
   return (

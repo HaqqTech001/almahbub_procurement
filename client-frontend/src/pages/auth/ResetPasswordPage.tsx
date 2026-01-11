@@ -219,10 +219,8 @@ const ResetPasswordPage: React.FC = () => {
         <div className="w-full lg:w-[55%] p-8 lg:p-12 xl:p-16 flex flex-col justify-center">
           {/* Mobile Logo */}
           <div className="lg:hidden text-center mb-8">
-            <div className="w-14 h-14 bg-[#0F4C5C] rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-              </svg>
+            <div className="w-20 h-20 bg-[#2390ae] rounded-lg flex items-center justify-center">
+              <img src="./almahbub.png" alt="" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900">Almahbub International</h1>
             <p className="text-gray-500 text-sm mt-1">Reset Password</p>

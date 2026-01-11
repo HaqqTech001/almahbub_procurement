@@ -13,7 +13,7 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined);
 export const useSocketContext = () => {
   const context = useContext(SocketContext);
   if (context === undefined) {
-    throw new Error('useSocketContext must be used within a SocketProvider');
+    throw new Error('useSocketContext must be within a SocketProvider');
   }
   return context;
 };
@@ -32,6 +32,20 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   } = useChatStore();
   const [socket, setSocket] = useState<Socket | null>(null);
   const unreadCountFetched = useRef(false);
+  const notificationCallbackRef = useRef<((notification: any) => void) | null>(null);
+
+  // Register notification callback for other components to use
+  useEffect(() => {
+    const handleNewNotification = (notification: any) => {
+      if (notificationCallbackRef.current) {
+        notificationCallbackRef.current(notification);
+      }
+    };
+    
+    return () => {
+      notificationCallbackRef.current = null;
+    };
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated && token) {
@@ -127,6 +141,67 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       socketInstance.on('unread_count', (data) => {
         if (!unreadCountFetched.current && typeof data.count === 'number') {
           setUnreadCount(data.count);
+        }
+      });
+
+      // Handle real-time notifications
+      socketInstance.on('notification', (notification) => {
+        console.log('Real-time notification received:', notification);
+        
+        // Trigger notification callback if registered
+        if (notificationCallbackRef.current) {
+          notificationCallbackRef.current(notification);
+        }
+        
+        // Also dispatch a custom event for components that can't use the callback
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('socket_notification', { detail: notification }));
+        }
+      });
+
+      // Handle announcement notifications
+      socketInstance.on('announcement_notification', (data) => {
+        console.log('Announcement notification received:', data);
+        
+        const notification = {
+          id: data.id || Date.now(),
+          title: 'New Announcement',
+          message: data.title || 'A new announcement has been posted',
+          type: 'info',
+          read: false,
+          created_at: new Date().toISOString(),
+          data: { announcementId: data.announcementId }
+        };
+        
+        if (notificationCallbackRef.current) {
+          notificationCallbackRef.current(notification);
+        }
+        
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('socket_notification', { detail: notification }));
+        }
+      });
+
+      // Handle order/request notifications
+      socketInstance.on('order_notification', (data) => {
+        console.log('Order notification received:', data);
+        
+        const notification = {
+          id: data.id || Date.now(),
+          title: data.title || 'Request Update',
+          message: data.message || 'Your request status has been updated',
+          type: 'info',
+          read: false,
+          created_at: new Date().toISOString(),
+          data: { requestId: data.requestId, status: data.status }
+        };
+        
+        if (notificationCallbackRef.current) {
+          notificationCallbackRef.current(notification);
+        }
+        
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('socket_notification', { detail: notification }));
         }
       });
 

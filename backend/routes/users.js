@@ -15,10 +15,11 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
 
     let query = `
       SELECT 
-        id, email, first_name, last_name, role, email_verified, 
-        company, phone, avatar, created_at, updated_at,
-        street_address, city, state, zip_code, country
-      FROM users 
+        u.id, u.email, u.first_name, u.last_name, u.role, u.email_verified, 
+        u.company, u.phone, u.avatar, u.created_at, u.updated_at,
+        u.street_address, u.city, u.state, u.zip_code, u.country,
+        (SELECT COUNT(*) FROM requests WHERE user_id = u.id) as total_requests
+      FROM users u 
       WHERE 1=1
     `;
     let params = [];
@@ -105,12 +106,14 @@ router.get('/:id', authenticateToken, async (req, res) => {
         SELECT 
           COUNT(*) as total_orders,
           COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending_orders,
-          COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_orders
+          COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_orders,
+          (SELECT COUNT(*) FROM requests WHERE user_id = ?) as total_requests
         FROM orders 
         WHERE user_id = ?
-      `, [id]);
+      `, [id, id]);
 
       user.statistics = stats[0];
+      user.total_requests = stats[0].total_requests || 0;
     }
 
     res.json({

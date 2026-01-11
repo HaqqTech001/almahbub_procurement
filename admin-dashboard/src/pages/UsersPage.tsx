@@ -85,7 +85,7 @@ const UsersPage: React.FC = () => {
             last_login: String(user.last_login || ''),
             created_at: String(user.created_at || ''),
             updated_at: String(user.updated_at || ''),
-            total_requests: Number(Math.floor(Math.random() * 50)),
+            total_requests: Number(user.total_requests || user.statistics?.total_requests || 0),
             avatar: String(user.avatar || ''),
         }));
         setUsers(transformedUsers);

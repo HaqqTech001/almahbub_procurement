@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Calendar, Clock, Bell, ExternalLink, Send, Paperclip, MessageCircle, Heart, MessageSquare, Eye } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Bell, ExternalLink, Send, Paperclip, MessageCircle, Heart, MessageSquare, Eye, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +14,7 @@ import { apiClient } from '@/lib/api';
 import ReactionButton from '@/components/ui/ReactionButton';
 import RichInput from '@/components/ui/RichInput';
 import ImageViewer from '@/components/ui/ImageViewer';
+import { formatDate, formatDateShort, formatDateTime } from '@/lib/dateUtils';
 
 interface Announcement {
   id: number;
@@ -31,6 +32,16 @@ interface Announcement {
   user_has_reacted?: boolean;
   reply_count?: number;
   views?: number;
+}
+
+// Video file with error tracking
+interface VideoFile extends any {
+  filename: string;
+  originalname: string;
+  mimetype: string;
+  size: number;
+  url: string;
+  loadError?: boolean;
 }
 
 interface Reply {
@@ -62,6 +73,9 @@ const AnnouncementDetailPage: React.FC = () => {
   // Image viewer state
   const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [imageViewerIndex, setImageViewerIndex] = useState(0);
+
+  // Video error tracking state (keyed by file URL)
+  const [videoErrors, setVideoErrors] = useState<Record<string, boolean>>({});
 
   const { toast } = useToast();
 
@@ -319,16 +333,6 @@ For urgent procurement needs during this period, please contact our support team
     setSelectedFiles(prev => prev.filter((_, i) => i.toString() !== id));
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high':
@@ -411,11 +415,11 @@ For urgent procurement needs during this period, please contact our support team
                 <div className="flex items-center space-x-4 text-sm text-gray-500">
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-1" />
-                    <span>{formatDate(announcement.created_at)}</span>
+                    <span>{formatDateTime(announcement.created_at)}</span>
                   </div>
                   <div className="flex items-center">
                     <Clock className="h-4 w-4 mr-1" />
-                    <span>Published {new Date(announcement.created_at).toLocaleDateString()}</span>
+                    <span>Published {formatDate(announcement.created_at)}</span>
                   </div>
                   <div className="flex items-center space-x-4">
                     <ReactionButton
@@ -477,7 +481,81 @@ For urgent procurement needs during this period, please contact our support team
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {announcement.media_files.map((file: any, index: number) => (
                       <div key={index} className="border rounded-lg p-4 bg-gray-50">
-                        {file.mimetype && file.mimetype.startsWith('image/') ? (
+                        {file.mimetype && file.mimetype.startsWith('video/') ? (
+                          <div>
+                            <div className="relative w-full h-48 bg-gray-900 rounded-lg mb-2 overflow-hidden">
+                              {/* Show error UI if video failed to load */}
+                              {videoErrors[apiClient.getFileUrl(file.url)] ? (
+                                <div className="absolute inset-0 flex items-center justify-center bg-gray-900 text-white">
+                                  <div className="text-center p-4">
+                                    <Play className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                                    <p className="text-sm mb-2">Video format not supported</p>
+                                    <p className="text-xs text-gray-400 mb-3">
+                                      {file.mimetype}
+                                    </p>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                                      onClick={() => window.open(apiClient.getFileUrl(file.url), '_blank')}
+                                    >
+                                      Open in new tab
+                                    </Button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <video
+                                  src={apiClient.getFileUrl(file.url)}
+                                  controls
+                                  className="w-full h-full object-contain"
+                                  preload="metadata"
+                                  onError={(e) => {
+                                    const video = e.currentTarget;
+                                    console.error('Video load error:', video.error);
+                                    // Mark this video URL as having an error
+                                    setVideoErrors(prev => ({
+                                      ...prev,
+                                      [apiClient.getFileUrl(file.url)]: true
+                                    }));
+                                  }}
+                                  onLoadedData={() => {
+                                    console.log('Video loaded successfully');
+                                  }}
+                                />
+                              )}
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-600 truncate">{file.originalname}</span>
+                              <div className="flex items-center space-x-2">
+                                {!videoErrors[apiClient.getFileUrl(file.url)] && (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      const video = (e.target as HTMLElement).closest('.border')?.querySelector('video') as HTMLVideoElement;
+                                      if (video) {
+                                        if (video.paused) {
+                                          video.play();
+                                        } else {
+                                          video.pause();
+                                        }
+                                      }
+                                    }}
+                                  >
+                                    <Play className="h-4 w-4 mr-1" />
+                                    Play/Pause
+                                  </Button>
+                                )}
+                                <Button variant="outline" size="sm" asChild>
+                                  <a href={apiClient.getFileUrl(file.url)} target="_blank" rel="noopener noreferrer">
+                                    Download
+                                  </a>
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : file.mimetype && file.mimetype.startsWith('image/') ? (
                           <div>
                             <img 
                               src={apiClient.getFileUrl(file.url)} 
@@ -599,7 +677,7 @@ For urgent procurement needs during this period, please contact our support team
                           <Badge variant="outline" className="text-xs">Admin</Badge>
                         )}
                         <span className="text-xs text-gray-500">
-                          {formatDate(reply.created_at)}
+                          {formatDateTime(reply.created_at)}
                         </span>
                       </div>
                       <p className="text-sm text-gray-700 mb-2">{reply.content}</p>
@@ -661,7 +739,7 @@ For urgent procurement needs during this period, please contact our support team
                             </Badge>
                           )}
                           <span className="text-xs text-gray-500">
-                            {new Date(related.created_at).toLocaleDateString()}
+                            {formatDateShort(related.created_at)}
                           </span>
                         </div>
                       </div>

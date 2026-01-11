@@ -42,6 +42,18 @@ function setupSocketHandlers(io) {
       connectedAt: new Date()
     });
 
+    // Update user status to online in database
+    (async () => {
+      try {
+        await pool.execute(
+          'UPDATE users SET is_online = TRUE, last_active_at = NOW() WHERE id = ?',
+          [socket.user.id]
+        );
+      } catch (error) {
+        console.error('Error updating user online status:', error);
+      }
+    })();
+
     // Join user to their personal room
     socket.join(`user_${socket.user.id}`);
 
@@ -50,18 +62,36 @@ function setupSocketHandlers(io) {
       socket.join('admin_room');
     }
 
-    // Send initial unread count
-    socket.emit('unread_count', { count: 0 });
+    // Broadcast user online status to all connected users
+    io.emit('user_online', { 
+      userId: socket.user.id, 
+      userName: `${socket.user.first_name} ${socket.user.last_name}`,
+      role: socket.user.role
+    });
+
+    // Send initial unread count - calculate from database, don't just emit 0
+    (async () => {
+      try {
+        const [result] = await pool.execute(
+          'SELECT COUNT(*) as count FROM chat_messages WHERE receiver_id = ? AND is_read = FALSE',
+          [socket.user.id]
+        );
+        socket.emit('unread_count', { count: result[0].count || 0 });
+      } catch (error) {
+        console.error('Error calculating unread count:', error);
+        socket.emit('unread_count', { count: 0 });
+      }
+    })();
 
     // Handle sending messages
     socket.on('send_message', async (data) => {
       try {
-        const { receiverId, message, messageType = 'text', fileUrl, orderId } = data;
+        const { receiverId, message, messageType = 'text', fileUrl, orderId, formData } = data;
 
         // Save message to database
         const [result] = await pool.execute(
-          'INSERT INTO chat_messages (sender_id, receiver_id, order_id, message, message_type, file_url) VALUES (?, ?, ?, ?, ?, ?)',
-          [socket.user.id, receiverId, orderId, message, messageType, fileUrl]
+          'INSERT INTO chat_messages (sender_id, receiver_id, order_id, message, message_type, file_url, form_data) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          [socket.user.id, receiverId, orderId || null, message, messageType, fileUrl || null, formData ? JSON.stringify(formData) : null]
         );
 
         const messageId = result.insertId;
@@ -106,18 +136,158 @@ function setupSocketHandlers(io) {
       }
     });
 
+    // Handle sending form messages (admin only)
+    socket.on('send_form_message', async (data) => {
+      try {
+        const { receiverId, formTitle, formFields, orderId } = data;
+
+        if (socket.user.role !== 'admin') {
+          return socket.emit('error', { message: 'Only admins can send form messages' });
+        }
+
+        // Create form message
+        const formData = {
+          title: formTitle,
+          fields: formFields,
+          submitted: false,
+          responses: null
+        };
+
+        // Save form message to database
+        const [result] = await pool.execute(
+          'INSERT INTO chat_messages (sender_id, receiver_id, order_id, message, message_type, form_data) VALUES (?, ?, ?, ?, ?, ?)',
+          [socket.user.id, receiverId, orderId || null, formTitle, 'form', JSON.stringify(formData)]
+        );
+
+        const messageId = result.insertId;
+
+        // Get the saved message with user info
+        const [messages] = await pool.execute(`
+          SELECT 
+            m.*,
+            u1.first_name as sender_first_name,
+            u1.last_name as sender_last_name,
+            u1.role as sender_role,
+            u1.avatar as sender_avatar,
+            u2.first_name as receiver_first_name,
+            u2.last_name as receiver_last_name
+          FROM chat_messages m
+          LEFT JOIN users u1 ON m.sender_id = u1.id
+          LEFT JOIN users u2 ON m.receiver_id = u2.id
+          WHERE m.id = ?
+        `, [messageId]);
+
+        const savedMessage = messages[0];
+
+        // Send to receiver
+        io.to(`user_${receiverId}`).emit('new_message', savedMessage);
+
+        // Send confirmation to sender
+        socket.emit('form_sent', savedMessage);
+
+        // Create notification for receiver
+        await createNotification(receiverId, 'form_message', 'Form Received', `You have received a form from ${socket.user.first_name}`, {
+          messageId,
+          senderId: socket.user.id,
+          senderName: `${socket.user.first_name} ${socket.user.last_name}`
+        });
+
+      } catch (error) {
+        console.error('Error sending form message:', error);
+        socket.emit('error', { message: 'Failed to send form message' });
+      }
+    });
+
+    // Handle form response submission
+    socket.on('submit_form_response', async (data) => {
+      try {
+        const { messageId, responses } = data;
+
+        // Get the original message
+        const [originalMessages] = await pool.execute(
+          'SELECT * FROM chat_messages WHERE id = ? AND receiver_id = ?',
+          [messageId, socket.user.id]
+        );
+
+        if (originalMessages.length === 0) {
+          return socket.emit('error', { message: 'Form not found' });
+        }
+
+        const originalMessage = originalMessages[0];
+        let formData = typeof originalMessage.form_data === 'string' 
+          ? JSON.parse(originalMessage.form_data) 
+          : originalMessage.form_data;
+
+        // Update form data with responses
+        formData.submitted = true;
+        formData.responses = responses;
+        formData.submittedAt = new Date().toISOString();
+
+        // Update message in database
+        await pool.execute(
+          'UPDATE chat_messages SET form_data = ?, is_read = FALSE WHERE id = ?',
+          [JSON.stringify(formData), messageId]
+        );
+
+        // Get updated message with user info
+        const [updatedMessages] = await pool.execute(`
+          SELECT 
+            m.*,
+            u1.first_name as sender_first_name,
+            u1.last_name as sender_last_name,
+            u1.role as sender_role,
+            u1.avatar as sender_avatar
+          FROM chat_messages m
+          LEFT JOIN users u1 ON m.sender_id = u1.id
+          WHERE m.id = ?
+        `, [messageId]);
+
+        const updatedMessage = updatedMessages[0];
+
+        // Notify the original sender (admin) that form was submitted
+        io.to(`user_${originalMessage.sender_id}`).emit('form_response_received', updatedMessage);
+
+        // Confirm to the user who submitted
+        socket.emit('form_response_sent', { success: true, messageId });
+
+      } catch (error) {
+        console.error('Error submitting form response:', error);
+        socket.emit('error', { message: 'Failed to submit form response' });
+      }
+    });
+
     // Handle marking messages as read
     socket.on('mark_read', async (data) => {
       try {
-        const { senderId } = data;
+        const { senderId, messageIds } = data;
         
+        if (messageIds && Array.isArray(messageIds)) {
+          // Mark specific messages as read
+          const placeholders = messageIds.map(() => '?').join(',');
+          await pool.execute(
+            `UPDATE chat_messages SET read_at = NOW() WHERE sender_id = ? AND receiver_id = ? AND id IN (${placeholders})`,
+            [senderId, socket.user.id, ...messageIds]
+          );
+        } else {
+          // Mark all messages from sender as read
+          await pool.execute(
+            'UPDATE chat_messages SET read_at = NOW() WHERE sender_id = ? AND receiver_id = ? AND read_at IS NULL',
+            [senderId, socket.user.id]
+          );
+        }
+
+        // Update online status and last active
         await pool.execute(
-          'UPDATE chat_messages SET is_read = TRUE WHERE sender_id = ? AND receiver_id = ? AND is_read = FALSE',
-          [senderId, socket.user.id]
+          'UPDATE users SET is_online = TRUE, last_active_at = NOW() WHERE id = ?',
+          [socket.user.id]
         );
 
         // Notify sender that messages were read
-        io.to(`user_${senderId}`).emit('messages_read', { readerId: socket.user.id });
+        io.to(`user_${senderId}`).emit('messages_read', { 
+          readerId: socket.user.id,
+          readerName: `${socket.user.first_name} ${socket.user.last_name}`,
+          messageIds: messageIds || 'all'
+        });
 
       } catch (error) {
         console.error('Error marking messages as read:', error);
@@ -136,6 +306,26 @@ function setupSocketHandlers(io) {
       io.to(`user_${data.receiverId}`).emit('user_stopped_typing', {
         userId: socket.user.id
       });
+    });
+
+    // Get online users
+    socket.on('get_online_users', async () => {
+      try {
+        // Get users who are connected via socket
+        const onlineUserIds = Array.from(connectedUsers.keys());
+        
+        // Also check database for recently active users
+        const [recentUsers] = await pool.execute(
+          `SELECT id, first_name, last_name, role, is_online, last_active_at 
+           FROM users 
+           WHERE is_online = TRUE OR last_active_at > DATE_SUB(NOW(), INTERVAL 5 MINUTE)`
+        );
+
+        socket.emit('online_users_list', { users: recentUsers });
+      } catch (error) {
+        console.error('Error getting online users:', error);
+        socket.emit('online_users_list', { users: [] });
+      }
     });
 
     // Handle AI auto-responder
@@ -212,6 +402,25 @@ function setupSocketHandlers(io) {
     socket.on('disconnect', () => {
       console.log(`User disconnected: ${socket.user.first_name} ${socket.user.last_name} (${socket.user.id})`);
       connectedUsers.delete(socket.user.id);
+
+      // Update user status to offline in database
+      (async () => {
+        try {
+          await pool.execute(
+            'UPDATE users SET is_online = FALSE WHERE id = ?',
+            [socket.user.id]
+          );
+
+          // Broadcast user offline status
+          io.emit('user_offline', { 
+            userId: socket.user.id,
+            userName: `${socket.user.first_name} ${socket.user.last_name}`,
+            role: socket.user.role
+          });
+        } catch (error) {
+          console.error('Error updating user offline status:', error);
+        }
+      })();
     });
 
     // Get conversation history
@@ -259,6 +468,8 @@ function setupSocketHandlers(io) {
             u.last_name,
             u.role,
             u.avatar,
+            u.is_online,
+            u.last_active_at,
             MAX(m.created_at) as last_message_time,
             SUM(CASE WHEN m.receiver_id = ? AND m.is_read = FALSE THEN 1 ELSE 0 END) as unread_count,
             (SELECT message FROM chat_messages WHERE ((sender_id = u.id AND receiver_id = ?) OR (sender_id = ? AND receiver_id = u.id)) ORDER BY created_at DESC LIMIT 1) as last_message

@@ -557,13 +557,26 @@ class ApiClient {
   }
 
   // Helper to get full file URL
+  // getFileUrl(relativePath: string): string {
+  //   if (!relativePath) return '';
+  //   if (relativePath.startsWith('http')) return relativePath;
+  //   // Remove leading slash if present for clean URL construction
+  //   const cleanPath = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
+  //   return `${BASE_URL}/${cleanPath}`;
+  // }
+
   getFileUrl(relativePath: string): string {
-    if (!relativePath) return '';
-    if (relativePath.startsWith('http')) return relativePath;
-    // Remove leading slash if present for clean URL construction
-    const cleanPath = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
-    return `${BASE_URL}/${cleanPath}`;
+  if (!relativePath) return '';
+  if (relativePath.startsWith('http://') || relativePath.startsWith('https://')) {
+    return relativePath;
   }
+  let baseUrl = BASE_URL.replace(/\/+$/, '');
+  let cleanPath = relativePath;
+  if (cleanPath.startsWith('/')) {
+    cleanPath = cleanPath.substring(1);
+  }
+  return `${baseUrl}/${cleanPath}`;
+}
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);

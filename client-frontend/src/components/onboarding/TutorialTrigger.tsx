@@ -29,7 +29,7 @@ const TutorialTrigger: React.FC = () => {
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-teal-600 hover:bg-teal-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110"
+        className="fixed bottom-6 right-6 z-50 w-12 h-12 bg-teal-600 hover:bg-teal-700 text-white rounded-full shadow-lg hidden items-center justify-center transition-all hover:scale-110"
         aria-label="Help & Tutorials"
         title="Help & Tutorials"
       >

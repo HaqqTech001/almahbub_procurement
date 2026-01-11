@@ -115,9 +115,24 @@ router.post('/send', authenticateToken, upload.single('file'), handleUploadError
     let fileUrl = null;
 
     if (file) {
-      const isImage = file.mimetype && typeof file.mimetype === 'string' && file.memetype. startsWith('image/')
-      messageType = file.mimetype.startsWith('image/') ? 'image' : 'file';
-      fileUrl = `/uploads/chat/${file.filename}`;
+      // Safely check if the file is an image by checking mimetype
+      // const isImage = file.mimetype && typeof file.mimetype === 'string' && file.mimetype.startsWith('image/');
+      // messageType = isImage ? 'image' : 'file';
+      // fileUrl = `/uploads/chat/${file.filename}`;
+
+      const mimetype = file.mimetype && typeof file.mimetype === 'string' ? file.mimetype : '';
+const ext = path.extname(file.originalname || '').toLowerCase();
+
+messageType = 'file';
+
+if (mimetype.startsWith('image/')) {
+  messageType = 'image';
+} else if (
+  mimetype.startsWith('video/') || 
+  ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.mkv', '.webm'].includes(ext)
+) {
+  messageType = 'video';
+}
     }
 
     const [result] = await pool.execute(
@@ -195,10 +210,16 @@ router.get('/conversation/:userId', authenticateToken, async (req, res) => {
 
     const [messages] = await pool.execute(query, params);
 
+    // Parse JSON fields and format messages for frontend
+    const formattedMessages = messages.map(m => ({
+      ...m,
+      form_data: m.form_data ? (typeof m.form_data === 'string' ? JSON.parse(m.form_data) : m.form_data) : null
+    }));
+
     res.json({
       success: true,
       data: {
-        messages: messages.reverse(),
+        messages: formattedMessages.reverse(),
         hasMore: messages.length === limitNum
       }
     });
@@ -401,10 +422,16 @@ router.get('/support/messages', authenticateToken, async (req, res) => {
       ORDER BY m.created_at DESC LIMIT ${limitNum} OFFSET ${offsetNum}
     `, [req.user.id, adminId, adminId, req.user.id]);
 
+    // Parse JSON fields and format messages for frontend
+    const formattedMessages = messages.map(m => ({
+      ...m,
+      form_data: m.form_data ? (typeof m.form_data === 'string' ? JSON.parse(m.form_data) : m.form_data) : null
+    }));
+
     res.json({
       success: true,
       data: {
-        messages: messages.reverse(),
+        messages: formattedMessages.reverse(),
         adminId: adminId
       }
     });
@@ -469,7 +496,9 @@ router.post('/support/send', authenticateToken, upload.single('file'), handleUpl
     let fileUrl = null;
 
     if (file) {
-      messageType = file.mimetype.startsWith('image/') ? 'image' : 'file';
+      // Safely check if the file is an image by checking mimetype
+      const isImage = file.mimetype && typeof file.mimetype === 'string' && file.mimetype.startsWith('image/');
+      messageType = isImage ? 'image' : 'file';
       fileUrl = `/uploads/chat/${file.filename}`;
     }
 
