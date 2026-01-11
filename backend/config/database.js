@@ -351,6 +351,20 @@ async function initializeDatabase() {
         INDEX idx_user (user_id),
         INDEX idx_session (session_id),
         INDEX idx_created (created_at)
+      )`,
+      
+      `CREATE TABLE IF NOT EXISTS announcement_reactions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        announcement_id INT NOT NULL,
+        user_id INT NOT NULL,
+        reaction_type VARCHAR(50) NOT NULL DEFAULT 'like',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY unique_user_reaction (announcement_id, user_id),
+        FOREIGN KEY (announcement_id) REFERENCES announcements(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        INDEX idx_announcement (announcement_id),
+        INDEX idx_user (user_id),
+        INDEX idx_reaction (reaction_type)
       )`
     ];
 
@@ -378,6 +392,7 @@ async function initializeDatabase() {
       
       // Migration: Add request_number column to orders table
       `ALTER TABLE orders ADD COLUMN request_number VARCHAR(20)`,
+       `ALTER TABLE announcements ADD COLUMN reactions_count INT DEFAULT 0`,
       
       // Migration: Add index on request_number for faster lookups
       // Note: CREATE INDEX IF NOT EXISTS is also not supported in older MySQL versions

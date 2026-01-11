@@ -18,7 +18,7 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
         u.id, u.email, u.first_name, u.last_name, u.role, u.email_verified, 
         u.company, u.phone, u.avatar, u.created_at, u.updated_at,
         u.street_address, u.city, u.state, u.zip_code, u.country,
-        (SELECT COUNT(*) FROM requests WHERE user_id = u.id) as total_requests
+        (SELECT COUNT(*) FROM orders WHERE user_id = u.id) as total_requests
       FROM users u 
       WHERE 1=1
     `;

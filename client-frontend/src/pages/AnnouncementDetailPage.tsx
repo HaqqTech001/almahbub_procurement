@@ -412,7 +412,7 @@ For urgent procurement needs during this period, please contact our support team
                 <CardTitle className="text-2xl md:text-3xl text-gray-900 mb-2">
                   {announcement.title}
                 </CardTitle>
-                <div className="flex items-center space-x-4 text-sm text-gray-500">
+                <div className="flex items-center space-x-1 text-sm text-gray-500">
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-1" />
                     <span>{formatDateTime(announcement.created_at)}</span>
@@ -489,14 +489,34 @@ For urgent procurement needs during this period, please contact our support team
                                 <div className="absolute inset-0 flex items-center justify-center bg-gray-900 text-white">
                                   <div className="text-center p-4">
                                     <Play className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                                    <p className="text-sm mb-2">Video format not supported</p>
+                                    <p className="text-sm mb-2">Unable to play video</p>
                                     <p className="text-xs text-gray-400 mb-3">
-                                      {file.mimetype}
+                                      Format may not be supported by your browser
                                     </p>
+                                    <div className="text-xs text-gray-500 mb-3">
+                                      <p>{file.mimetype}</p>
+                                      <p className="mt-1">File: {file.originalname}</p>
+                                    </div>
                                     <Button
                                       variant="outline"
                                       size="sm"
                                       className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                                      onClick={() => {
+                                        const videoUrl = apiClient.getFileUrl(file.url);
+                                        // Try to reload the video by resetting the error state
+                                        setVideoErrors(prev => {
+                                          const newErrors = { ...prev };
+                                          delete newErrors[videoUrl];
+                                          return newErrors;
+                                        });
+                                      }}
+                                    >
+                                      Try Again
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="ml-2 text-white hover:bg-white/10"
                                       onClick={() => window.open(apiClient.getFileUrl(file.url), '_blank')}
                                     >
                                       Open in new tab
@@ -504,24 +524,50 @@ For urgent procurement needs during this period, please contact our support team
                                   </div>
                                 </div>
                               ) : (
-                                <video
-                                  src={apiClient.getFileUrl(file.url)}
-                                  controls
-                                  className="w-full h-full object-contain"
-                                  preload="metadata"
-                                  onError={(e) => {
-                                    const video = e.currentTarget;
-                                    console.error('Video load error:', video.error);
-                                    // Mark this video URL as having an error
-                                    setVideoErrors(prev => ({
-                                      ...prev,
-                                      [apiClient.getFileUrl(file.url)]: true
-                                    }));
-                                  }}
-                                  onLoadedData={() => {
-                                    console.log('Video loaded successfully');
-                                  }}
-                                />
+                                <div>
+                                  <video
+                                    src={apiClient.getFileUrl(file.url)}
+                                    controls
+                                    className="w-full h-48 object-cover rounded-lg mb-2"
+                                    preload="metadata"
+                                    onError={(e) => {
+                                      const video = e.currentTarget;
+                                      const error = video.error;
+                                      console.error('Video load error:', {
+                                        code: error?.code,
+                                        message: error?.message,
+                                        networkState: video.networkState,
+                                        readyState: video.readyState,
+                                        src: video.src,
+                                        mimetype: file.mimetype,
+                                        filename: file.originalname
+                                      });
+                                      
+                                      // Network error (file not found or server error)
+                                      if (video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE || 
+                                          video.networkState === HTMLMediaElement.NETWORK_IDLE) {
+                                        console.error('Video network error - file may not exist');
+                                      }
+                                      
+                                      // Mark this video URL as having an error
+                                      setVideoErrors(prev => ({
+                                        ...prev,
+                                        [apiClient.getFileUrl(file.url)]: true
+                                      }));
+                                    }}
+                                    onLoadedData={() => {
+                                      console.log('Video loaded successfully:', file.originalname);
+                                    }}
+                                  />
+                                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                                    <span className="text-sm text-gray-600 truncate">{file.originalname}</span>
+                                    <Button variant="outline" size="sm" asChild>
+                                      <a href={apiClient.getFileUrl(file.url)} target="_blank" rel="noopener noreferrer">
+                                        Open Video
+                                      </a>
+                                    </Button>
+                                  </div>
+                                </div>
                               )}
                             </div>
                             <div className="flex items-center justify-between">

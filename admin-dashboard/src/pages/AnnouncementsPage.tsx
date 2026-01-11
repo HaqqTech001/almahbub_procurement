@@ -531,7 +531,7 @@ const AnnouncementsPage: React.FC = () => {
                         </span>
                       </div>
                       
-                      {announcement.tags && (
+                      {announcement.tags.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-2">
                           {announcement.tags.slice(0, 4).map((tag, index) => (
                             <Badge key={index} variant="outline" className="text-xs">
@@ -705,6 +705,23 @@ const AnnouncementsPage: React.FC = () => {
                               <Button variant="outline" size="sm" asChild>
                                 <a href={apiClient.getFileUrl(file.url)} target="_blank" rel="noopener noreferrer">
                                   View Full Size
+                                </a>
+                              </Button>
+                            </div>
+                          </div>
+                        ) : file.mimetype && file.mimetype.startsWith('video/') ? (
+                          <div>
+                            <video
+                              src={apiClient.getFileUrl(file.url)}
+                              controls
+                              className="w-full h-48 object-cover rounded-lg mb-2"
+                              preload="metadata"
+                            />
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                              <span className="text-sm text-gray-600 truncate">{file.originalname}</span>
+                              <Button variant="outline" size="sm" asChild>
+                                <a href={apiClient.getFileUrl(file.url)} target="_blank" rel="noopener noreferrer">
+                                  Open Video
                                 </a>
                               </Button>
                             </div>

@@ -95,31 +95,44 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Static file serving for uploads with proper MIME types
 const path = require('path');
 
+// Extended MIME types mapping for better video format support
+const mimeTypes = {
+  // Video formats
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
+  '.ogg': 'video/ogg',
+  '.mov': 'video/quicktime',
+  '.avi': 'video/x-msvideo',
+  '.mkv': 'video/x-matroska',
+  '.flv': 'video/x-flv',
+  '.wmv': 'video/x-ms-wmv',
+  '.m3u8': 'application/x-mpegURL',
+  '.ts': 'video/mp2t',
+  // Image formats
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.png': 'image/png',
+  '.gif': 'image/gif',
+  '.webp': 'image/webp',
+  '.svg': 'image/svg+xml',
+  // Document formats
+  '.pdf': 'application/pdf',
+  '.doc': 'application/msword',
+  '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  '.txt': 'text/plain',
+  '.csv': 'text/csv'
+};
+
 // Custom static file middleware with proper MIME types
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   setHeaders: (res, filePath) => {
     const ext = path.extname(filePath).toLowerCase();
-    const mimeTypes = {
-      '.mp4': 'video/mp4',
-      '.webm': 'video/webm',
-      '.ogg': 'video/ogg',
-      '.mov': 'video/quicktime',
-      '.avi': 'video/x-msvideo',
-      '.mkv': 'video/x-matroska',
-      '.jpg': 'image/jpeg',
-      '.jpeg': 'image/jpeg',
-      '.png': 'image/png',
-      '.gif': 'image/gif',
-      '.webp': 'image/webp',
-      '.pdf': 'application/pdf',
-      '.doc': 'application/msword',
-      '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      '.txt': 'text/plain'
-    };
     
     if (mimeTypes[ext]) {
       res.setHeader('Content-Type', mimeTypes[ext]);
     }
+    // Add cache headers for better performance
+    res.setHeader('Cache-Control', 'public, max-age=31536000');
   }
 }));
 

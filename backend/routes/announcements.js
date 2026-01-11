@@ -269,6 +269,132 @@ function generateSessionId(req) {
   return req.cookies.sessionId;
 }
 
+
+// Toggle reaction on announcement
+router.post('/:id/react', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { type = 'like' } = req.body;
+    const userId = req.user.id;
+
+    // Check if announcement exists
+    const [announcements] = await pool.execute('SELECT id, reactions_count FROM announcements WHERE id = ? AND is_active = TRUE', [id]);
+    if (announcements.length === 0) {
+      return res.status(404).json({ error: 'Announcement not found' });
+    }
+
+    // Check if user has already reacted
+    const [existingReactions] = await pool.execute(
+      'SELECT id, reaction_type FROM announcement_reactions WHERE announcement_id = ? AND user_id = ?',
+      [id, userId]
+    );
+
+    let reactionType = type;
+
+    if (existingReactions.length > 0) {
+      // User has already reacted - toggle off (remove reaction)
+      const existingType = existingReactions[0].reaction_type;
+      
+      if (existingType === type) {
+        // Same reaction type - remove it
+        await pool.execute(
+          'DELETE FROM announcement_reactions WHERE announcement_id = ? AND user_id = ?',
+          [id, userId]
+        );
+        
+        // Decrement reactions count
+        await pool.execute(
+          'UPDATE announcements SET reactions_count = GREATEST(0, reactions_count - 1) WHERE id = ?',
+          [id]
+        );
+
+        return res.json({
+          success: true,
+          data: { action: 'removed', reactionType: type }
+        });
+      } else {
+        // Different reaction type - update it
+        await pool.execute(
+          'UPDATE announcement_reactions SET reaction_type = ? WHERE announcement_id = ? AND user_id = ?',
+          [type, id, userId]
+        );
+
+        // Reactions count stays the same (one reaction per user)
+        return res.json({
+          success: true,
+          data: { action: 'updated', reactionType: type }
+        });
+      }
+    } else {
+      // New reaction - add it
+      await pool.execute(
+        'INSERT INTO announcement_reactions (announcement_id, user_id, reaction_type) VALUES (?, ?, ?)',
+        [id, userId, type]
+      );
+
+      // Increment reactions count
+      await pool.execute(
+        'UPDATE announcements SET reactions_count = COALESCE(reactions_count, 0) + 1 WHERE id = ?',
+        [id]
+      );
+
+      return res.json({
+        success: true,
+        data: { action: 'added', reactionType: type }
+      });
+    }
+
+  } catch (error) {
+    console.error('Toggle reaction error:', error);
+    res.status(500).json({ error: 'Failed to toggle reaction' });
+  }
+});
+
+// Get reactions for announcement
+router.get('/:id/reactions', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const [reactions] = await pool.execute(
+      `SELECT reaction_type, COUNT(*) as count 
+       FROM announcement_reactions 
+       WHERE announcement_id = ? 
+       GROUP BY reaction_type`,
+      [id]
+    );
+
+    // Get user's reaction if authenticated
+    let userReaction = null;
+    if (req.user) {
+      const [userReact] = await pool.execute(
+        'SELECT reaction_type FROM announcement_reactions WHERE announcement_id = ? AND user_id = ?',
+        [id, req.user.id]
+      );
+      if (userReact.length > 0) {
+        userReaction = userReact[0].reaction_type;
+      }
+    }
+
+    const reactionCounts = reactions.reduce((acc, r) => {
+      acc[r.reaction_type] = r.count;
+      return acc;
+    }, {});
+
+    res.json({
+      success: true,
+      data: { 
+        reactions: reactionCounts,
+        userReaction,
+        total: reactions.reduce((sum, r) => sum + r.count, 0)
+      }
+    });
+
+  } catch (error) {
+    console.error('Get reactions error:', error);
+    res.status(500).json({ error: 'Failed to fetch reactions' });
+  }
+});
+
 // Create announcement (admin only)
 router.post('/', authenticateToken, requireAdmin, upload.array('media', 5), [
   body('title').trim().isLength({ min: 1 }),
