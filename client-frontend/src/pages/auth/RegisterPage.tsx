@@ -362,7 +362,8 @@ const RegisterPage: React.FC = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="companyType" className="text-gray-700 font-medium">Company Type</Label>
-                    <Select onValueChange={(value) => handleSelectChange('companyType', value)}>
+                    <Select 
+                    onValueChange={(value) => handleSelectChange('companyType', value)}>
                       <SelectTrigger className="h-12 bg-gray-50 border-gray-200 text-gray-900 focus:bg-white focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/10 rounded-lg">
                         <SelectValue placeholder="Select company type" className="text-gray-400" />
                       </SelectTrigger>
