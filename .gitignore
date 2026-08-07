@@ -3,3 +3,13 @@ dist/
 build/
 .env
 .env.*
+!.env.example
+.turbo/
+.pnpm-store/
+.DS_Store
+coverage/
+*.tsbuildinfo
+database/generated/
+/uploads/
+apps/api/uploads/
+
