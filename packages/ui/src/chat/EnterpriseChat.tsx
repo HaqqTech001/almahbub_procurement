@@ -229,8 +229,8 @@ function MediaBody({
           files={attachments.map((att) => ({
             id: att.id,
             name: att.name,
-            href: att.url,
-            previewUrl: att.previewUrl,
+            href: att.url ?? undefined,
+            previewUrl: att.previewUrl ?? undefined,
             mimeType: att.mimeType,
             kind: att.kind,
             sizeBytes: att.sizeBytes,

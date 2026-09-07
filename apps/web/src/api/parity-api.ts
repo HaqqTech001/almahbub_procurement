@@ -2,7 +2,7 @@ import { readResponseBody, toCancelledRequestError, unwrapEnvelopeData, fetchWit
 
 import { browserApiBase } from "../lib/api-origin.js";
 
-type Envelope<T> = { data: T };
+// type Envelope<T> = { data: T };
 
 function apiBase(): string {
   return browserApiBase();

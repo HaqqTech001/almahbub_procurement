@@ -14,7 +14,7 @@ import { getAccessToken } from "../auth/session/token-store.js";
 import { sessionFetch } from "../auth/session/session-http.js";
 import { browserApiBase } from "../lib/api-origin.js";
 
-type Envelope<T> = { data: T; error?: { code?: string; message?: string } };
+// type Envelope<T> = { data: T; error?: { code?: string; message?: string } };
 
 export type ApiQuotation = {
   id: string;

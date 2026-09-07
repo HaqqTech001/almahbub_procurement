@@ -72,7 +72,7 @@ export function getGoogleIdentity(): GoogleIdentityApi | null {
 
 export function loadGoogleIdentityScript(): Promise<GoogleIdentityApi> {
   const existing = getGoogleIdentity();
-  if (existing?.initialize && existing.renderButton) {
+  if (existing) {
     return Promise.resolve(existing);
   }
   if (loadPromise) return loadPromise;
@@ -80,7 +80,7 @@ export function loadGoogleIdentityScript(): Promise<GoogleIdentityApi> {
   loadPromise = new Promise<GoogleIdentityApi>((resolve, reject) => {
     const finish = () => {
       const api = getGoogleIdentity();
-      if (api?.initialize && api.renderButton) {
+      if (api) {
         resolve(api);
         return;
       }

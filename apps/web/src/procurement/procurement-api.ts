@@ -386,7 +386,7 @@ export async function uploadProcurementFiles(
     body: form,
     credentials: "include",
   });
-  const body = await parseJson(response);
+  const body = await readResponseBody(response);
   if (!response.ok) {
     const envelope = body as {
       error?: { code?: string; message?: string };

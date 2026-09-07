@@ -166,7 +166,9 @@ export function GuidanceProvider({
       if (options?.resume) {
         const row = progress.find((p) => p.tourId === tour.id);
         if (row?.status === "in_progress" && row.currentStepKey) {
-          const idx = tour.steps.findIndex((step) => step.stepKey === row.currentStepKey);
+          const idx = tour.steps.findIndex(
+            (step: GuidanceTour["steps"][number]) => step.stepKey === row.currentStepKey,
+          );
           if (idx >= 0) startIndex = idx;
         }
       }
