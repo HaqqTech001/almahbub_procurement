@@ -1,6 +1,7 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { join, normalize, resolve } from "node:path";
+import { WEDDING_MEDIA_STORAGE_ID } from "@hamd/constants";
 
 import { Router } from "express";
 
@@ -52,7 +53,7 @@ export function createCatalogMediaRouter(
         });
       }
 
-      if (access) {
+      if (access && productId !== WEDDING_MEDIA_STORAGE_ID) {
         const allowed = await access.canServeCatalogEntity(productId);
         if (!allowed) {
           throw new AppError({
@@ -104,7 +105,7 @@ export function createCatalogMediaRouter(
       response.setHeader("Cache-Control", "public, max-age=86400, immutable");
       response.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
       response.setHeader("Content-Length", String(info.size));
-      if (mime.startsWith("video/")) {
+      if (mime.startsWith("video/") || mime.startsWith("audio/")) {
         response.setHeader("Accept-Ranges", "bytes");
       }
       createReadStream(absolute).pipe(response);

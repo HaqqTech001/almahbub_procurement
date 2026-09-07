@@ -3819,3 +3819,684 @@ html.dark .hamd-ops-product-more__menu a:focus-visible {
   }
 }
 
+/* ============================================================
+   Wedding Broadcast Studio — mobile-first broadcast experience
+   ============================================================ */
+
+/* Reserve the top-right corner for the theme toggle so it never
+   overlaps the viewers / Exit Studio actions. */
+.hamd-wedding-studio-page__theme {
+  position: fixed;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 60;
+}
+
+.hamd-wedding-studio__header {
+  padding-right: 4.5rem;
+}
+
+/* Status hierarchy: attribute on top, value underneath, card background. */
+.hamd-wedding-ops-ready {
+  gap: 0.65rem;
+}
+
+.hamd-wedding-ops-ready > div {
+  min-width: 0;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--hamd-ops-border) 82%, transparent);
+  border-radius: 0.8rem;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--hamd-ops-surface) 94%, transparent),
+      color-mix(in srgb, var(--hamd-ops-surface) 82%, #140d14)
+    );
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+}
+
+.hamd-wedding-ops-ready dt {
+  margin: 0;
+  color: var(--hamd-ops-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.hamd-wedding-ops-ready dd {
+  margin: 0.38rem 0 0;
+  color: var(--hamd-ops-text);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+/* Mobile-only controls are hidden on desktop. */
+.hamd-wedding-mobile-actions,
+.hamd-wedding-ops-controls__mobile-head,
+.hamd-wedding-ops-controls__mobile-done,
+.hamd-wedding-ops-controls__backdrop {
+  display: none;
+}
+
+/* Keep the normal desktop studio layout untouched above tablet size. */
+@media (max-width: 1024px) {
+  .hamd-wedding-studio {
+    min-height: 100dvh;
+    display: block;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-live {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-live__grid {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    width: 100%;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-stage,
+  .hamd-wedding-studio .hamd-wedding-ops-stage__frame {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Phone broadcast experience:
+   - tall video canvas like a social live app
+   - setup becomes a bottom-sheet modal
+   - status cards stay compact underneath
+*/
+@media (max-width: 640px) {
+  .hamd-wedding-studio-page {
+    width: 100%;
+    max-width: 100vw;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    background: #09090b;
+  }
+
+  .hamd-wedding-studio__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "title status"
+      "actions actions";
+    align-items: center;
+    gap: 0.45rem 0.65rem;
+    min-height: auto;
+    padding: 0.7rem 4.15rem 0.7rem 0.75rem;
+    background: color-mix(in srgb, #09090b 94%, transparent);
+  }
+
+  .hamd-wedding-studio__header > div:first-child {
+    grid-area: title;
+    min-width: 0;
+  }
+
+  .hamd-wedding-studio__header > .hamd-wedding-portal__status {
+    grid-area: status;
+    justify-self: end;
+  }
+
+  .hamd-wedding-studio__header h1 {
+    margin: 0.1rem 0 0;
+    font-size: 0.96rem;
+    line-height: 1.18;
+    overflow-wrap: anywhere;
+  }
+
+  .hamd-wedding-studio__eyebrow {
+    font-size: 0.58rem;
+  }
+
+  .hamd-wedding-studio__actions {
+    grid-area: actions;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    width: 100%;
+    gap: 0.45rem;
+  }
+
+  .hamd-wedding-studio__actions .hamd-btn {
+    min-width: 0;
+    min-height: 2.45rem;
+  }
+
+  .hamd-wedding-studio-page__theme {
+    top: 0.58rem;
+    right: 0.58rem;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-live {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 0.55rem;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-live > .hamd-ops-alert {
+    order: 0;
+    position: relative;
+    bottom: auto;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-live__grid {
+    order: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    width: 100%;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-ready {
+    order: 2;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-feeds,
+  .hamd-wedding-studio .hamd-wedding-ops-diag,
+  .hamd-wedding-studio .hamd-wedding-ops-live__meta {
+    order: 3;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-stage {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-stage__frame {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    height: clamp(30rem, 68dvh, 48rem);
+    aspect-ratio: auto;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: #050506;
+    box-shadow: 0 12px 30px rgb(0 0 0 / 0.28);
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-stage__frame video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #050506;
+  }
+
+  .hamd-wedding-ops-stage__overlay {
+    left: 0.7rem;
+    right: 0.7rem;
+    bottom: 0.75rem;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0.45rem 0.55rem;
+    border-radius: 0.65rem;
+    background: rgb(5 5 6 / 0.58);
+    backdrop-filter: blur(10px);
+    font-size: 0.72rem;
+  }
+
+  /* Three compact status cards directly below the live canvas. */
+  .hamd-wedding-ops-ready {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.42rem;
+    width: 100%;
+    margin: 0;
+  }
+
+  .hamd-wedding-ops-ready > div {
+    padding: 0.58rem 0.52rem;
+    border-radius: 0.72rem;
+    text-align: left;
+    background: linear-gradient(180deg, #17181d, #101116);
+    border-color: #2d3038;
+  }
+
+  .hamd-wedding-ops-ready dt {
+    font-size: 0.56rem;
+    letter-spacing: 0.07em;
+    color: #9ca3af;
+  }
+
+  .hamd-wedding-ops-ready dd {
+    margin-top: 0.32rem;
+    font-size: 0.72rem;
+    color: #f8fafc;
+  }
+
+  /* Mobile action rail under the video. */
+  .hamd-wedding-mobile-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.8rem 0.25rem 0.3rem;
+  }
+
+  .hamd-wedding-mobile-actions__button,
+  .hamd-wedding-mobile-actions__primary {
+    border: 0;
+    color: #f8fafc;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .hamd-wedding-mobile-actions__button {
+    display: grid;
+    justify-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem;
+    background: transparent;
+    font-size: 0.74rem;
+  }
+
+  .hamd-wedding-mobile-actions__button > span:first-child {
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    border: 1px solid #3b3f49;
+    border-radius: 999px;
+    background: #15161b;
+    font-size: 1.15rem;
+  }
+
+  .hamd-wedding-mobile-actions__primary {
+    display: grid;
+    place-items: center;
+    gap: 0.38rem;
+    min-width: 5.35rem;
+    padding: 0;
+    background: transparent;
+    font-size: 0.78rem;
+  }
+
+  .hamd-wedding-mobile-actions__primary-dot {
+    display: block;
+    width: 4.65rem;
+    height: 4.65rem;
+    border-radius: 999px;
+    border: 0.28rem solid #f56b7f;
+    background:
+      radial-gradient(circle at center, #fff 0 18%, #e11d48 19% 100%);
+    box-shadow:
+      0 0 0 0.2rem #3f111b,
+      0 8px 24px rgb(225 29 72 / 0.28);
+  }
+
+  .hamd-wedding-mobile-actions__primary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  /* On phones, the desktop aside becomes a real bottom-sheet setup modal. */
+  .hamd-wedding-ops-controls {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 81;
+    width: 100%;
+    max-width: 100%;
+    max-height: 88dvh;
+    min-width: 0;
+    overflow-y: auto;
+    padding: 1rem 1rem max(1rem, env(safe-area-inset-bottom, 0px));
+    border: 1px solid #30333c;
+    border-bottom: 0;
+    border-radius: 1.35rem 1.35rem 0 0;
+    background: #13151b;
+    color: #f8fafc;
+    box-shadow: 0 -18px 50px rgb(0 0 0 / 0.45);
+    transform: translateY(110%);
+    visibility: hidden;
+    transition:
+      transform 180ms ease,
+      visibility 180ms ease;
+  }
+
+  .hamd-wedding-ops-controls.is-mobile-open {
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .hamd-wedding-ops-controls__backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: rgb(0 0 0 / 0.6);
+    backdrop-filter: blur(3px);
+  }
+
+  .hamd-wedding-ops-controls__desktop-title {
+    display: none;
+  }
+
+  .hamd-wedding-ops-controls__mobile-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.9rem;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+
+  .hamd-wedding-ops-controls__mobile-head h2 {
+    margin: 0.12rem 0 0.28rem;
+    font-size: 1.25rem;
+  }
+
+  .hamd-wedding-ops-controls__mobile-head p {
+    margin: 0;
+    color: #aeb4bf;
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+
+  .hamd-wedding-ops-controls__mobile-kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.62rem !important;
+    font-weight: 700;
+  }
+
+  .hamd-wedding-ops-controls__mobile-close {
+    display: grid;
+    flex: 0 0 auto;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 1px solid #3b3f49;
+    border-radius: 999px;
+    background: #1b1d24;
+    color: #f8fafc;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .hamd-wedding-ops-controls label {
+    display: grid;
+    gap: 0.38rem;
+    margin: 0.72rem 0;
+    color: #d8dce5;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .hamd-wedding-ops-controls select {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #343843;
+    border-radius: 0.72rem;
+    background: #191c24;
+    color: #f8fafc;
+    font-size: 0.9rem;
+    text-transform: none;
+  }
+
+  .hamd-wedding-ops-controls__state {
+    font-size: 0.78rem;
+    color: #aeb4bf;
+  }
+
+  .hamd-wedding-ops-controls__toggles,
+  .hamd-wedding-ops-controls__actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+    width: 100%;
+  }
+
+  .hamd-wedding-ops-controls__toggles button,
+  .hamd-wedding-ops-controls__actions button {
+    width: 100%;
+    min-width: 0;
+    min-height: 2.8rem;
+    white-space: normal;
+  }
+
+  .hamd-wedding-ops-controls__mobile-done {
+    display: block;
+    width: 100%;
+    min-height: 3rem;
+    margin-top: 0.85rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .hamd-wedding-studio__header {
+    padding-right: 3.85rem;
+  }
+
+  .hamd-wedding-ops-ready {
+    gap: 0.32rem;
+  }
+
+  .hamd-wedding-ops-ready > div {
+    padding: 0.5rem 0.4rem;
+  }
+
+  .hamd-wedding-ops-ready dd {
+    font-size: 0.66rem;
+  }
+
+  .hamd-wedding-ops-controls__toggles,
+  .hamd-wedding-ops-controls__actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ============================================================
+   Wedding Studio — viewport fit + modal containment refinement
+   ============================================================ */
+
+@media (max-width: 768px) {
+  /* Keep the whole primary broadcast experience inside one viewport. */
+  .hamd-wedding-studio-page,
+  .hamd-wedding-studio {
+    width: 100%;
+    max-width: 100vw;
+    height: 100dvh;
+    min-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .hamd-wedding-studio {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-live {
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 0.45rem 0.55rem 0.55rem;
+  }
+
+  /* Keep alerts compact so they do not push the preview/status cards below the fold. */
+  .hamd-wedding-studio .hamd-wedding-ops-live > .hamd-ops-alert {
+    flex: 0 0 auto;
+    padding: 0.45rem 0.6rem;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    border-radius: 0.55rem;
+  }
+
+  /* The grid owns all remaining height between alerts and status cards. */
+  .hamd-wedding-studio .hamd-wedding-ops-live__grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 0.38rem;
+    overflow: hidden;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-stage {
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-stage__frame {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-height: none;
+    aspect-ratio: auto;
+    border-radius: 0.9rem;
+    overflow: hidden;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-stage__frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Action rail stays directly under the preview and remains inside the same viewport. */
+  .hamd-wedding-mobile-actions {
+    padding: 0.3rem 0.15rem 0;
+    gap: 0.55rem;
+  }
+
+  .hamd-wedding-mobile-actions__button > span:first-child {
+    width: 2.45rem;
+    height: 2.45rem;
+    font-size: 1rem;
+  }
+
+  .hamd-wedding-mobile-actions__primary-dot {
+    width: 3.85rem;
+    height: 3.85rem;
+  }
+
+  .hamd-wedding-mobile-actions__button,
+  .hamd-wedding-mobile-actions__primary {
+    font-size: 0.68rem;
+  }
+
+  /* Camera / Connection / Microphone must remain visible without scrolling. */
+  .hamd-wedding-studio .hamd-wedding-ops-ready {
+    flex: 0 0 auto;
+    width: 100%;
+    margin: 0;
+    gap: 0.36rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-ready > div {
+    padding: 0.45rem 0.42rem;
+    min-height: 3.55rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 0.7rem;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-ready dt {
+    order: 1;
+    margin: 0;
+    font-size: 0.52rem;
+    line-height: 1.1;
+    letter-spacing: 0.065em;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-ready dd {
+    order: 2;
+    margin: 0.28rem 0 0;
+    font-size: 0.68rem;
+    line-height: 1.15;
+    font-weight: 700;
+  }
+
+  /* Secondary studio content belongs outside the primary one-screen experience. */
+  .hamd-wedding-studio .hamd-wedding-ops-feeds,
+  .hamd-wedding-studio .hamd-wedding-ops-diag,
+  .hamd-wedding-studio .hamd-wedding-ops-live__meta {
+    display: none;
+  }
+
+  /* Fully contain the setup sheet inside the viewport.
+     The earlier width:100% + padding could visually spill to the right
+     under content-box sizing. */
+  .hamd-wedding-ops-controls {
+    box-sizing: border-box;
+    left: max(0.55rem, env(safe-area-inset-left, 0px));
+    right: max(0.55rem, env(safe-area-inset-right, 0px));
+    bottom: max(0.55rem, env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-width: none;
+    max-height: calc(100dvh - 1.1rem);
+    padding: 1rem;
+    border: 1px solid #30333c;
+    border-radius: 1.25rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .hamd-wedding-ops-controls *,
+  .hamd-wedding-ops-controls *::before,
+  .hamd-wedding-ops-controls *::after {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  .hamd-wedding-ops-controls select,
+  .hamd-wedding-ops-controls button,
+  .hamd-wedding-ops-controls input {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+/* Extra-tight phones: preserve the same one-screen hierarchy. */
+@media (max-width: 390px) and (max-height: 760px) {
+  .hamd-wedding-studio__header {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .hamd-wedding-studio__header h1 {
+    font-size: 0.88rem;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-live {
+    gap: 0.32rem;
+    padding-top: 0.35rem;
+  }
+
+  .hamd-wedding-mobile-actions__primary-dot {
+    width: 3.35rem;
+    height: 3.35rem;
+  }
+
+  .hamd-wedding-studio .hamd-wedding-ops-ready > div {
+    min-height: 3.2rem;
+    padding: 0.38rem 0.34rem;
+  }
+}
+

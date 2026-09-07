@@ -696,13 +696,30 @@ export function WeddingLivePage() {
           />
         </div>
         {currentWaiting?.src ? (
+          // <audio
+          //   ref={waitingAudioRef}
+          //   src={currentWaiting.src}
+          //   preload="metadata"
+          //   onEnded={() => advanceWaitingTrack(false)}
+          //   onError={() => {
+          //     if (currentWaiting) failedWaitingIdsRef.current.add(currentWaiting.id);
+          //     advanceWaitingTrack(true);
+          //   }}
+          // />
+
           <audio
             ref={waitingAudioRef}
             src={currentWaiting.src}
             preload="metadata"
+            loop={
+              campaign.waitingMusicLoop !== false &&
+              playableWaiting.length === 1
+            }
             onEnded={() => advanceWaitingTrack(false)}
             onError={() => {
-              if (currentWaiting) failedWaitingIdsRef.current.add(currentWaiting.id);
+              if (currentWaiting) {
+                failedWaitingIdsRef.current.add(currentWaiting.id);
+              }
               advanceWaitingTrack(true);
             }}
           />

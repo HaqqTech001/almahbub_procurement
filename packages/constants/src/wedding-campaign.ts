@@ -6,6 +6,7 @@
 
 export const ROWDOTUL_HAMD_IDENTITY = "Rowdotul HAMD'26" as const;
 export const WEDDING_CAMPAIGN_ID = "founder-wedding-september-2026" as const;
+export const WEDDING_MEDIA_STORAGE_ID = "9c7f5d2e-8a61-4c95-b1d7-2f8a6e3c4b90" as const;
 export const WEDDING_CAMPAIGN_SLUG = "rowdotul-hamd-26" as const;
 
 export type WeddingStreamStatus =

@@ -6,6 +6,7 @@ import { join } from "node:path";
 import {
   DEFAULT_WEDDING_CAMPAIGN,
   WEDDING_CAMPAIGN_ID,
+  WEDDING_MEDIA_STORAGE_ID,
   WEDDING_CAMPAIGN_SLUG,
   WEDDING_COMMENT_MAX_CHARS,
   WEDDING_GALLERY_MAX_BYTES,
@@ -79,6 +80,12 @@ const waitingTracks: WeddingWaitingTrack[] = [];
 let waitingHydrated = false;
 let waitingHydratePromise: Promise<void> | null = null;
 const CANONICAL_WEDDING_EVENT_DATE = "2026-09-29";
+
+/**
+ * The catalog media store requires a UUID-shaped productId for its object-key namespace.
+ * Keep this separate from WEDDING_CAMPAIGN_ID, which is the logical/database campaign id.
+ */
+// const WEDDING_MEDIA_STORAGE_ID = "9c7f5d2e-8a61-4c95-b1d7-2f8a6e3c4b90";
 
 function canonicalizeWeddingEventDate(campaign: WeddingCampaignRecord): WeddingCampaignRecord {
   if (!String(campaign.eventAt).includes("2026-09-30")) return campaign;
@@ -542,7 +549,7 @@ export class WeddingCampaignService {
       });
     }
     const stored = await this.media.put({
-      productId: WEDDING_CAMPAIGN_ID,
+      productId: WEDDING_MEDIA_STORAGE_ID,
       originalFilename: file.originalFilename,
       bytes: file.buffer,
     });
@@ -609,7 +616,7 @@ export class WeddingCampaignService {
     }
     const [removed] = waitingTracks.splice(index, 1);
     if (removed?.storageKey) {
-      await this.media.remove({ productId: WEDDING_CAMPAIGN_ID, filename: removed.storageKey });
+      await this.media.remove({ productId: WEDDING_MEDIA_STORAGE_ID, filename: removed.storageKey });
     }
     waitingTracks.forEach((row, position) => {
       row.position = position;
@@ -720,7 +727,7 @@ export class WeddingCampaignService {
       });
     }
     const stored = await this.media.put({
-      productId: WEDDING_CAMPAIGN_ID,
+      productId: WEDDING_MEDIA_STORAGE_ID,
       originalFilename: file.originalFilename,
       bytes: file.buffer,
     });

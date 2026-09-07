@@ -89,6 +89,7 @@ export function WeddingBroadcastPanel({
   const [connection, setConnection] = useState<"Excellent" | "Good" | "Poor" | "Unknown">("Unknown");
   const [qualityWarn, setQualityWarn] = useState(false);
   const [viewersOpen, setViewersOpen] = useState(false);
+  const [setupOpen, setSetupOpen] = useState(false);
   const [guests, setGuests] = useState<WeddingGuestRow[]>([]);
   const live = campaign.streamStatus === "live";
   const testLive = live && campaign.liveMode === "test";
@@ -326,6 +327,18 @@ export function WeddingBroadcastPanel({
   const minutes = String(Math.floor(elapsed / 60)).padStart(2, "0");
   const seconds = String(elapsed % 60).padStart(2, "0");
 
+  const openViewers = () => {
+    setViewersOpen(true);
+    void accessToken()
+      .then((token) =>
+        opsFetch<{ viewerCount: number; guests?: WeddingGuestRow[] }>("/wedding/live/viewers", {
+          accessToken: token,
+        }),
+      )
+      .then((row) => setGuests(row.guests ?? []))
+      .catch(() => setGuests([]));
+  };
+
   return (
     <div className={studio ? "hamd-wedding-studio" : undefined}>
       {studio ? (
@@ -341,17 +354,7 @@ export function WeddingBroadcastPanel({
             <button
               type="button"
               className="hamd-btn hamd-btn--ghost"
-              onClick={() => {
-                setViewersOpen(true);
-                void accessToken()
-                  .then((token) =>
-                    opsFetch<{ viewerCount: number; guests?: WeddingGuestRow[] }>("/wedding/live/viewers", {
-                      accessToken: token,
-                    }),
-                  )
-                  .then((row) => setGuests(row.guests ?? []))
-                  .catch(() => setGuests([]));
-              }}
+              onClick={openViewers}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M16 11a3 3 0 1 0-2-5.2A4 4 0 1 0 8 11c.7 0 1.4-.2 2-.5A4 4 0 0 0 16 11zM4 19c.4-3 3.2-5 8-5s7.6 2 8 5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
@@ -410,8 +413,73 @@ export function WeddingBroadcastPanel({
             </div>
           </div>
         </section>
-        <aside className="hamd-wedding-ops-controls">
-          <h2>Broadcast controls</h2>
+
+        <div className="hamd-wedding-mobile-actions" aria-label="Mobile broadcast actions">
+          <button
+            type="button"
+            className="hamd-wedding-mobile-actions__button"
+            onClick={() => setSetupOpen(true)}
+          >
+            <span aria-hidden="true">⚙</span>
+            <span>Setup</span>
+          </button>
+
+          <button
+            type="button"
+            className="hamd-wedding-mobile-actions__primary"
+            disabled={!configured || busy}
+            onClick={() => {
+              if (live) {
+                setConfirmEnd(true);
+                return;
+              }
+              void startLive("production");
+            }}
+          >
+            <span className="hamd-wedding-mobile-actions__primary-dot" aria-hidden="true" />
+            <span>{live ? "End Live" : "Start Live"}</span>
+          </button>
+
+          <button
+            type="button"
+            className="hamd-wedding-mobile-actions__button"
+            onClick={openViewers}
+          >
+            <span aria-hidden="true">◉</span>
+            <span>{viewers} {viewers === 1 ? "Viewer" : "Viewers"}</span>
+          </button>
+        </div>
+
+        {setupOpen ? (
+          <button
+            type="button"
+            className="hamd-wedding-ops-controls__backdrop"
+            aria-label="Close broadcast setup"
+            onClick={() => setSetupOpen(false)}
+          />
+        ) : null}
+
+        <aside
+          className={`hamd-wedding-ops-controls${setupOpen ? " is-mobile-open" : ""}`}
+          aria-label="Broadcast setup"
+        >
+          <div className="hamd-wedding-ops-controls__mobile-head">
+            <div>
+              <p className="hamd-wedding-ops-controls__mobile-kicker">Broadcast Studio</p>
+              <h2>Broadcast Setup</h2>
+              <p>Configure the camera, microphone, broadcast view and video quality.</p>
+            </div>
+            <button
+              type="button"
+              className="hamd-wedding-ops-controls__mobile-close"
+              aria-label="Close broadcast setup"
+              onClick={() => setSetupOpen(false)}
+            >
+              ×
+            </button>
+          </div>
+
+          <h2 className="hamd-wedding-ops-controls__desktop-title">Broadcast controls</h2>
           <p className="hamd-wedding-ops-controls__state">
             Stream: {live ? (testLive ? "Test live" : "Live") : configured ? "Ready" : "Not configured"}
           </p>
@@ -548,6 +616,13 @@ export function WeddingBroadcastPanel({
               </>
             )}
           </div>
+          <button
+            type="button"
+            className="hamd-btn hamd-btn--primary hamd-wedding-ops-controls__mobile-done"
+            onClick={() => setSetupOpen(false)}
+          >
+            Done
+          </button>
         </aside>
       </div>
       {feeds.length > 0 ? (
