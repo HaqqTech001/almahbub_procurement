@@ -379,7 +379,7 @@ async function main(): Promise<void> {
       name: true,
       status: true,
       category: { select: { slug: true } },
-      images: { select: { id: true, isPrimary: true, url: true, position: true } },
+      images: { select: { id: true, url: true, position: true } },
     },
     orderBy: { slug: "asc" },
   })) as Array<{
@@ -388,7 +388,7 @@ async function main(): Promise<void> {
     name: string;
     status: string;
     category: { slug: string } | null;
-    images: Array<{ id: string; isPrimary: boolean; url: string; position: number }>;
+    images: Array<{ id: string; url: string; position: number }>;
   }>;
 
   const rows: ProductRow[] = products.map((product) => ({
@@ -397,7 +397,7 @@ async function main(): Promise<void> {
     name: product.name,
     status: product.status,
     categorySlug: product.category?.slug ?? null,
-    hasPrimary: product.images.some((image) => image.isPrimary),
+    hasPrimary: product.images.some((image) => image.position === 0),
     hasAnyImage: product.images.length > 0,
   }));
 
