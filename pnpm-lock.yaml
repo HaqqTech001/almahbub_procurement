@@ -11,6 +11,9 @@ importers:
 
   .:
     devDependencies:
+      '@types/dom-mediacapture-record':
+        specifier: ^1.0.22
+        version: 1.0.22
       prettier:
         specifier: ^3.6.2
         version: 3.9.6
@@ -152,7 +155,7 @@ importers:
         version: 13.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       livekit-client:
         specifier: ^2.15.8
-        version: 2.15.8
+        version: 2.15.8(@types/dom-mediacapture-record@1.0.22)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -237,7 +240,7 @@ importers:
         version: 13.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       livekit-client:
         specifier: ^2.15.8
-        version: 2.15.8
+        version: 2.15.8(@types/dom-mediacapture-record@1.0.22)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -321,9 +324,6 @@ importers:
       '@hamd/config-eslint':
         specifier: workspace:*
         version: link:../packages/config-eslint
-      '@types/node':
-        specifier: ^22.20.1
-        version: 22.20.1
       '@types/pg':
         specifier: ^8.20.4
         version: 8.20.4
@@ -2019,6 +2019,9 @@ packages:
 
   '@types/doctrine@0.0.9':
     resolution: {integrity: sha512-eOIHzCUSH7SMfonMG1LsC2f8vxBFtho6NGBznK41R84YzPuvSBzrhEps33IsQiOW9+VL6NQ9DbjQJznk/S4uRA==}
+
+  '@types/dom-mediacapture-record@1.0.22':
+    resolution: {integrity: sha512-mUMZLK3NvwRLcAAT9qmcK+9p7tpU2FHdDsntR3YI4+GY88XrgG4XiE7u1Q2LAN2/FZOz/tdMDC3GQCR4T8nFuw==}
 
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
@@ -6171,6 +6174,8 @@ snapshots:
 
   '@types/doctrine@0.0.9': {}
 
+  '@types/dom-mediacapture-record@1.0.22': {}
+
   '@types/estree@1.0.9': {}
 
   '@types/express-serve-static-core@5.1.2':
@@ -7810,10 +7815,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  livekit-client@2.15.8:
+  livekit-client@2.15.8(@types/dom-mediacapture-record@1.0.22):
     dependencies:
       '@livekit/mutex': 1.1.1
       '@livekit/protocol': 1.42.0
+      '@types/dom-mediacapture-record': 1.0.22
       events: 3.3.0
       jose: 6.2.4
       loglevel: 1.9.2

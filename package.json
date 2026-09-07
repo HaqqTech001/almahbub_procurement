@@ -27,6 +27,7 @@
     "db:studio": "corepack pnpm --filter @hamd/database studio"
   },
   "devDependencies": {
+    "@types/dom-mediacapture-record": "^1.0.22",
     "prettier": "^3.6.2",
     "turbo": "^2.6.3",
     "typescript": "^5.9.2"
