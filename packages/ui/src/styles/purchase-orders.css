@@ -1,0 +1,475 @@
+/* HAMD Genesis - Purchase Orders */
+
+.hamd-po {
+  --po-canvas: var(--hamd-color-canvas, #f9fafb);
+  --po-surface: var(--hamd-color-surface, #ffffff);
+  --po-subtle: var(--hamd-color-surface-subtle, #f2f4f7);
+  --po-text: var(--hamd-color-text, #101828);
+  --po-muted: var(--hamd-color-text-secondary, #344054);
+  --po-tertiary: var(--hamd-color-text-tertiary, #667085);
+  --po-border: var(--hamd-color-border, #d0d5dd);
+  --po-border-subtle: var(--hamd-color-border-subtle, #eaecf0);
+  --po-action: var(--hamd-color-action, #155aaf);
+  --po-danger: var(--hamd-color-danger, #b42318);
+  --po-success: var(--hamd-color-success, #067647);
+  --po-warning: var(--hamd-color-warning, #9a6700);
+  --po-radius: var(--hamd-radius-lg, 0.5rem);
+  --po-font: var(--hamd-font-sans, "Segoe UI", system-ui, sans-serif);
+
+  background: var(--po-canvas);
+  color: var(--po-text);
+  font-family: var(--po-font);
+  padding: 1.25rem clamp(1rem, 2.5vw, 1.75rem) 2rem;
+  min-height: 100%;
+  position: relative;
+}
+
+@media (prefers-color-scheme: dark) {
+  .hamd-po {
+    --po-canvas: #101828;
+    --po-surface: #182230;
+    --po-subtle: #1d2939;
+    --po-text: #f9fafb;
+    --po-muted: #d0d5dd;
+    --po-tertiary: #98a2b3;
+    --po-border: #344054;
+    --po-border-subtle: #1d2939;
+    --po-action: #53b1fd;
+  }
+}
+
+[data-theme="dark"] .hamd-po,
+.hamd-po[data-theme="dark"] {
+  --po-canvas: #101828;
+  --po-surface: #182230;
+  --po-subtle: #1d2939;
+  --po-text: #f9fafb;
+  --po-muted: #d0d5dd;
+  --po-tertiary: #98a2b3;
+  --po-border: #344054;
+  --po-border-subtle: #1d2939;
+  --po-action: #53b1fd;
+}
+
+.hamd-po__skip {
+  position: absolute;
+  left: -9999px;
+  z-index: 40;
+  padding: 0.65rem 1rem;
+  background: var(--po-action);
+  color: #fff;
+}
+
+.hamd-po__skip:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+.hamd-po__title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 650;
+}
+
+.hamd-po__subtitle {
+  margin: 0.25rem 0 1.1rem;
+  color: var(--po-tertiary);
+}
+
+.hamd-po__layout {
+  display: grid;
+  grid-template-columns: minmax(250px, 320px) minmax(0, 1fr);
+  gap: 1rem;
+  min-height: min(640px, 75vh);
+}
+
+.hamd-po__directory,
+.hamd-po__detail {
+  background: var(--po-surface);
+  border: 1px solid var(--po-border-subtle);
+  border-radius: var(--po-radius);
+}
+
+.hamd-po__directory {
+  display: flex;
+  flex-direction: column;
+}
+
+.hamd-po-filters {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.85rem;
+  border-bottom: 1px solid var(--po-border-subtle);
+}
+
+.hamd-po-filters input,
+.hamd-po-filters select,
+.hamd-po-reason input,
+.hamd-po-create input {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  background: var(--po-canvas);
+  border: 1px solid var(--po-border);
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.6rem;
+}
+
+.hamd-po-filters label,
+.hamd-po-reason,
+.hamd-po-create label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--po-muted);
+}
+
+.hamd-po-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+  overflow: auto;
+  flex: 1;
+  content-visibility: auto;
+}
+
+.hamd-po-row {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: 0.7rem 0.75rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.hamd-po-row:hover,
+.hamd-po-row.is-active {
+  background: var(--po-subtle);
+}
+
+.hamd-po-row__code {
+  font-size: 0.72rem;
+  color: var(--po-action);
+  font-weight: 650;
+}
+
+.hamd-po-row__title {
+  font-weight: 600;
+}
+
+.hamd-po-row__meta {
+  color: var(--po-tertiary);
+  font-size: 0.75rem;
+}
+
+.hamd-po-pager {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem;
+  border-top: 1px solid var(--po-border-subtle);
+  color: var(--po-tertiary);
+  font-size: 0.82rem;
+}
+
+.hamd-po-pager button,
+.hamd-po-btn {
+  border: 1px solid var(--po-border);
+  background: var(--po-surface);
+  color: inherit;
+  font: inherit;
+  border-radius: 0.35rem;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+}
+
+.hamd-po-btn--primary {
+  background: var(--po-action);
+  border-color: var(--po-action);
+  color: #fff;
+  font-weight: 600;
+}
+
+.hamd-po-btn--danger {
+  color: var(--po-danger);
+}
+
+.hamd-po-detail__head {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem 0.5rem;
+}
+
+.hamd-po-detail__code {
+  margin: 0;
+  color: var(--po-action);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.hamd-po-detail__title {
+  margin: 0.15rem 0 0;
+  font-size: 1.15rem;
+}
+
+.hamd-po-detail__sub {
+  margin: 0.4rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.hamd-po-back {
+  display: none;
+  border: 1px solid var(--po-border);
+  background: var(--po-canvas);
+  color: inherit;
+  border-radius: 0.35rem;
+  padding: 0.35rem 0.55rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.hamd-po-pill {
+  display: inline-flex;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  text-transform: capitalize;
+  background: var(--po-subtle);
+  color: var(--po-muted);
+}
+
+.hamd-po-pill[data-status="issued"],
+.hamd-po-pill[data-status="fulfilled"],
+.hamd-po-pill[data-status="closed"],
+.hamd-po-pill[data-acceptance="accepted"] {
+  background: color-mix(in srgb, var(--po-success) 16%, transparent);
+  color: var(--po-success);
+}
+
+.hamd-po-pill[data-status="cancelled"],
+.hamd-po-pill[data-acceptance="rejected"] {
+  background: color-mix(in srgb, var(--po-danger) 14%, transparent);
+  color: var(--po-danger);
+}
+
+.hamd-po-pill[data-status="partially_fulfilled"],
+.hamd-po-pill[data-acceptance="pending"] {
+  background: color-mix(in srgb, var(--po-warning) 16%, transparent);
+  color: var(--po-warning);
+}
+
+.hamd-po-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: end;
+  padding: 0.5rem 1.1rem 0.75rem;
+  border-bottom: 1px solid var(--po-border-subtle);
+}
+
+.hamd-po-reason {
+  flex: 1 1 12rem;
+}
+
+.hamd-po-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--po-border-subtle);
+}
+
+.hamd-po-tab {
+  border: 0;
+  background: transparent;
+  color: var(--po-muted);
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.55rem 0.6rem;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+
+.hamd-po-tab.is-active {
+  color: var(--po-action);
+  border-bottom-color: var(--po-action);
+  font-weight: 600;
+}
+
+.hamd-po-panel {
+  padding: 1rem 1.1rem 1.35rem;
+}
+
+.hamd-po-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.65rem;
+  margin: 0 0 1rem;
+}
+
+.hamd-po-facts div {
+  background: var(--po-canvas);
+  border: 1px solid var(--po-border-subtle);
+  border-radius: 0.45rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.hamd-po-facts dt {
+  font-size: 0.72rem;
+  color: var(--po-tertiary);
+  text-transform: uppercase;
+}
+
+.hamd-po-facts dd {
+  margin: 0.25rem 0 0;
+  font-weight: 600;
+}
+
+.hamd-po-items,
+.hamd-po-feed,
+.hamd-po-versions,
+.hamd-po-history,
+.hamd-po-deliveries,
+.hamd-po-milestones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.hamd-po-items li,
+.hamd-po-feed li,
+.hamd-po-versions li,
+.hamd-po-deliveries li {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--po-border-subtle);
+  border-radius: 0.45rem;
+  background: var(--po-canvas);
+}
+
+.hamd-po-versions li.is-current {
+  border-color: var(--po-action);
+}
+
+.hamd-po-history li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--po-border-subtle);
+}
+
+.hamd-po-feed span,
+.hamd-po-items span,
+.hamd-po-versions span,
+.hamd-po-history span,
+.hamd-po-history time,
+.hamd-po-versions time,
+.hamd-po-milestones span {
+  color: var(--po-tertiary);
+  font-size: 0.8rem;
+}
+
+.hamd-po-linkish {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+}
+
+.hamd-po-milestones {
+  margin-top: 0.45rem;
+  padding-left: 0.25rem;
+  border-left: 2px solid var(--po-border-subtle);
+}
+
+.hamd-po-milestones li {
+  padding: 0.25rem 0 0.25rem 0.65rem;
+  border: 0;
+  background: transparent;
+}
+
+.hamd-po-create {
+  display: grid;
+  gap: 0.65rem;
+  max-width: 36rem;
+}
+
+.hamd-po-empty {
+  color: var(--po-tertiary);
+}
+
+.hamd-po-toast {
+  margin-top: 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.4rem;
+  background: color-mix(in srgb, var(--po-danger) 12%, var(--po-surface));
+  color: var(--po-danger);
+}
+
+.hamd-po--skeleton {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1rem;
+  min-height: 420px;
+}
+
+.hamd-po-skel {
+  border-radius: var(--po-radius);
+  background: linear-gradient(
+    90deg,
+    var(--po-subtle) 25%,
+    var(--po-border-subtle) 50%,
+    var(--po-subtle) 75%
+  );
+  background-size: 200% 100%;
+  animation: hamd-po-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes hamd-po-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-po-skel {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .hamd-po__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .hamd-po__detail {
+    display: none;
+  }
+
+  .hamd-po--detail-open .hamd-po__directory {
+    display: none;
+  }
+
+  .hamd-po--detail-open .hamd-po__detail {
+    display: block;
+  }
+
+  .hamd-po-back {
+    display: inline-flex;
+  }
+}

@@ -20,7 +20,7 @@ export const PROCUREMENT_REQUEST_STATUSES = [
 export type ProcurementRequestStatus =
   (typeof PROCUREMENT_REQUEST_STATUSES)[number];
 
-/** Mission UX labels — display only; never replace API status codes. */
+/** Mission UX labels - display only; never replace API status codes. */
 export const MISSION_STATUS_ALIASES: Record<
   string,
   ProcurementRequestStatus | ProcurementRequestStatus[]
@@ -142,6 +142,8 @@ export type ProcurementRequestRecord = {
   publicCode: string;
   title: string;
   status: ProcurementRequestStatus | string;
+  /** Line of business; defaults to international when absent from older payloads. */
+  lob?: "international" | "integrated_export" | string | undefined;
   priority: ProcurementPriority | string;
   currencyCode: string;
   notes?: string | null | undefined;
@@ -152,7 +154,10 @@ export type ProcurementRequestRecord = {
   restrictedGoodsDeclared?: boolean | undefined;
   rowVersion: number;
   requesterName: string;
+  requesterEmail?: string | null | undefined;
+  organizationName?: string | null | undefined;
   assigneeName?: string | null | undefined;
+  assigneeMembershipId?: string | null | undefined;
   createdAt: string;
   updatedAt: string;
   items: ProcurementLineItem[];
@@ -164,6 +169,43 @@ export type ProcurementRequestRecord = {
   approvals: ProcurementApproval[];
   notifications: ProcurementNotificationHint[];
   activity: ProcurementActivityItem[];
+  related?: {
+    quotations?: Array<{
+      id: string;
+      publicCode: string;
+      status: string;
+      totalAmount?: string | null;
+      currencyCode?: string | null;
+      expiresAt?: string | null;
+      rowVersion?: number | null;
+    }>;
+    purchaseOrders?: Array<{
+      id: string;
+      publicCode: string;
+      status: string;
+      totalAmount?: string | null;
+      currencyCode?: string | null;
+    }>;
+    shipments?: Array<{
+      id: string;
+      publicCode: string;
+      status: string;
+      carrierName?: string | null;
+      trackingNumber?: string | null;
+    }>;
+    invoices?: Array<{
+      id: string;
+      invoiceNumber: string;
+      status: string;
+      totalAmount?: string | null;
+      currencyCode?: string | null;
+    }>;
+    payments?: Array<{
+      id: string;
+      status: string;
+      amount?: string | null;
+    }>;
+  } | null | undefined;
 };
 
 export type ProcurementDraftPatch = {
@@ -201,20 +243,40 @@ export function procurementStatusLabel(status: string): string {
   const labels: Record<string, string> = {
     draft: "Draft",
     submitted: "Submitted",
-    needs_clarification: "Needs clarification",
-    accepted_for_sourcing: "Accepted for sourcing",
-    sourcing: "Pending supplier",
-    quote_issued: "Quoted",
+    needs_clarification: "Clarification required",
+    accepted_for_sourcing: "Reviewing",
+    sourcing: "Sourcing",
+    quote_issued: "Quotation available",
     revision_requested: "Revision requested",
     approved: "Approved",
     declined: "Rejected",
     expired: "Expired",
     purchase_in_progress: "Purchase in progress",
-    fulfilled: "Fulfilled",
+    fulfilled: "Completed",
     cancelled: "Cancelled",
-    closed: "Closed",
+    closed: "Completed",
   };
   return labels[status] ?? status.replaceAll("_", " ");
+}
+
+/** Compact buyer/ops action copy. Not a second lifecycle status. */
+export function procurementActionRequiredCopy(status: string): string | null {
+  if (status === "draft") return "Finish this draft";
+  if (status === "needs_clarification") return "Provide clarification";
+  if (status === "quote_issued") return "Review quotation";
+  if (status === "revision_requested") return "Review revision";
+  return null;
+}
+
+export function procurementLobLabel(lob: string | null | undefined): string {
+  if (lob === "integrated_export") return "Integrated Export";
+  if (lob === "international") return "International";
+  return lob?.trim() ? lob.replaceAll("_", " ") : "International";
+}
+
+export function procurementPriorityLabel(priority: string | null | undefined): string {
+  if (!priority) return "Normal";
+  return priority.charAt(0).toUpperCase() + priority.slice(1);
 }
 
 export function missionPhaseForStatus(status: string): string {
@@ -313,5 +375,18 @@ export function paginateProcurementRows<T>(
 }
 
 export function commandLabel(command: string): string {
-  return command.replaceAll("_", " ");
+  const labels: Record<string, string> = {
+    submit: "Submit",
+    request_clarification: "Request clarification",
+    accept_for_sourcing: "Approve for sourcing",
+    start_sourcing: "Start sourcing",
+    request_revision: "Request revision",
+    approve: "Approve quote",
+    decline: "Reject",
+    start_purchase: "Start purchase",
+    fulfill: "Mark fulfilled",
+    close: "Close",
+    cancel: "Cancel Request",
+  };
+  return labels[command] ?? command.replaceAll("_", " ");
 }

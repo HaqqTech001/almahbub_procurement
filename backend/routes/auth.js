@@ -5,13 +5,14 @@ const { body, validationResult } = require('express-validator');
 const { v4: uuidv4 } = require('uuid');
 const { pool } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
+const { getJwtSecret } = require('../config/security');
 const emailService = require('../services/emailService');
 
 const router = express.Router();
 
 // Generate JWT token
 const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET || 'fallback_secret_key', {
+  return jwt.sign({ userId }, getJwtSecret(), {
     expiresIn: '7d'
   });
 };

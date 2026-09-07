@@ -1,0 +1,842 @@
+.hamd-wedding-modal {
+  border: 0;
+  padding: 0;
+  margin: auto;
+  background: transparent;
+  width: min(50vw, 680px);
+  max-width: 680px;
+  max-height: 70dvh;
+  color: #3b1538;
+  --hamd-btn-primary-bg: #6b1d4a;
+  --hamd-btn-primary-text: #fdfbf9;
+  --hamd-btn-primary-hover-bg: #4e1536;
+  --hamd-btn-primary-hover-text: #fdfbf9;
+  --hamd-btn-secondary-bg: #fdfbf9;
+  --hamd-btn-secondary-text: #3b1538;
+  --hamd-btn-secondary-border: #d4c3d0;
+  --hamd-btn-secondary-hover-bg: #efe4f0;
+  --hamd-btn-secondary-hover-text: #3b1538;
+  --hamd-btn-ghost-text: #6b1d4a;
+  --hamd-btn-ghost-hover-bg: color-mix(in srgb, #6b1d4a 12%, transparent);
+  --hamd-btn-ghost-hover-text: #4e1536;
+}
+
+.hamd-wedding-modal::backdrop {
+  background: rgb(42 22 40 / 0.42);
+  backdrop-filter: blur(8px);
+}
+
+.hamd-wedding-modal__card,
+.hamd-wedding-invite {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 1.85rem 1.6rem 1.5rem;
+  border: 1px solid color-mix(in srgb, #6b1d4a 22%, #f4eef8);
+  border-radius: 1rem;
+  background:
+    radial-gradient(circle at 12% 8%, #fbf7fc 0%, transparent 42%),
+    radial-gradient(circle at 92% 100%, #f3e6ef 0%, transparent 46%),
+    linear-gradient(180deg, #fdfbf9 0%, #f6eef6 100%);
+  box-shadow:
+    0 24px 48px -28px rgb(58 18 52 / 0.55),
+    0 0 0 1px rgb(255 255 255 / 0.55) inset;
+  text-align: center;
+  max-height: 70dvh;
+  overflow-y: auto;
+}
+
+.hamd-wedding-modal__ornament,
+.hamd-wedding-invite__ornament {
+  pointer-events: none;
+}
+
+.hamd-wedding-modal__flora {
+  position: absolute;
+  width: 5.5rem;
+  height: 5.5rem;
+  color: #6b1d4a;
+  opacity: 0.38;
+  z-index: 0;
+}
+
+.hamd-wedding-modal__flora--tl {
+  top: 0.15rem;
+  left: 0.1rem;
+}
+
+.hamd-wedding-modal__flora--tr {
+  top: 0.15rem;
+  right: 0.1rem;
+  transform: scaleX(-1);
+}
+
+.hamd-wedding-modal__flora--bl {
+  bottom: 0.1rem;
+  left: 0.1rem;
+  transform: scaleY(-1);
+}
+
+.hamd-wedding-modal__flora--br {
+  bottom: 0.1rem;
+  right: 0.1rem;
+  transform: scale(-1);
+}
+
+.hamd-wedding-modal__ribbon {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 4.5rem;
+  height: 0.35rem;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, #7e224f, transparent);
+  opacity: 0.55;
+}
+
+.hamd-wedding-modal__close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.65rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.72);
+  color: #4a1942;
+  cursor: pointer;
+}
+
+.hamd-wedding-modal__close:hover {
+  background: rgb(255 255 255 / 0.92);
+  color: #3b1538;
+}
+
+.hamd-wedding-modal__close:focus-visible {
+  outline: 2px solid #6b1d4a;
+  outline-offset: 2px;
+}
+
+.hamd-wedding-modal__chrome {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+.hamd-wedding-modal__back {
+  margin: 0.35rem 0 0 0.35rem;
+}
+
+.hamd-wedding-modal--preview {
+  width: min(92vw, 720px);
+  max-height: 92dvh;
+}
+
+@media (max-width: 768px) {
+  .hamd-wedding-modal--preview {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+  }
+
+  .hamd-wedding-modal--preview .hamd-wedding-modal__card {
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+}
+
+.hamd-wedding-modal__campaign,
+.hamd-wedding-modal__meta-label {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 650;
+  color: #6b1d4a;
+}
+
+.hamd-wedding-modal__blessing {
+  margin: 0.85rem 0 0;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: #5c3a58;
+}
+
+.hamd-wedding-modal__family,
+.hamd-wedding-modal__invite {
+  margin: 0.55rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: #4d354c;
+}
+
+.hamd-wedding-modal__names,
+.hamd-wedding-invite__names {
+  position: relative;
+  z-index: 1;
+  margin: 0.75rem 0 0;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-weight: 600;
+  font-size: clamp(1.55rem, 2.4vw, 2.15rem);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: #3b1538;
+}
+
+.hamd-wedding-modal__meta {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0.85rem 0 0;
+  font-size: 0.92rem;
+  color: #3b1538;
+}
+
+.hamd-wedding-modal__actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 1.15rem;
+}
+
+.hamd-wedding-modal__actions .hamd-btn {
+  min-height: 2.5rem;
+}
+
+.hamd-wedding-page {
+  min-width: 0;
+  background:
+    radial-gradient(circle at 8% 0%, #fbf7fc 0%, transparent 36%),
+    linear-gradient(180deg, #f7f1f6 0%, #fff 28%, #f7f1f6 100%);
+  color: #3b1538;
+  --hamd-btn-primary-bg: #6b1d4a;
+  --hamd-btn-primary-text: #fdfbf9;
+  --hamd-btn-primary-hover-bg: #4e1536;
+  --hamd-btn-primary-hover-text: #fdfbf9;
+  --hamd-btn-secondary-bg: #fdfbf9;
+  --hamd-btn-secondary-text: #3b1538;
+  --hamd-btn-secondary-border: #d4c3d0;
+  --hamd-btn-secondary-hover-bg: #efe4f0;
+  --hamd-btn-secondary-hover-text: #3b1538;
+  --hamd-btn-ghost-text: #6b1d4a;
+  --hamd-btn-ghost-hover-bg: color-mix(in srgb, #6b1d4a 12%, transparent);
+  --hamd-btn-ghost-hover-text: #4e1536;
+}
+
+.hamd-wedding-page__hero,
+.hamd-wedding-page__section {
+  width: min(100% - 2rem, 52rem);
+  margin: 0 auto;
+  padding: 2.5rem 0;
+}
+
+.hamd-wedding-invite {
+  max-width: 40rem;
+  margin-inline: auto;
+  padding: 2.4rem 1.6rem 2rem;
+  max-height: none;
+}
+
+.hamd-wedding-invite__when,
+.hamd-wedding-invite__venue {
+  margin: 0.7rem 0 0;
+  font-size: 1rem;
+}
+
+.hamd-wedding-page__lede {
+  margin: 0.75rem auto 0;
+  max-width: 36rem;
+  text-align: center;
+  color: #4d354c;
+}
+
+.hamd-wedding-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 1.25rem;
+}
+
+.hamd-wedding-countdown {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 1.25rem 0 0;
+}
+
+.hamd-wedding-countdown__cell {
+  min-width: 4.5rem;
+  padding: 0.65rem 0.5rem;
+  border: 1px solid color-mix(in srgb, #6b1d4a 18%, transparent);
+  border-radius: 0.6rem;
+  background: rgb(255 255 255 / 0.7);
+}
+
+.hamd-wedding-countdown__cell strong {
+  display: block;
+  font-size: 1.35rem;
+}
+
+.hamd-wedding-countdown__cell span {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b1d4a;
+}
+
+.hamd-wedding-live {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .hamd-wedding-live--watching {
+    grid-template-columns: minmax(0, 1.7fr) minmax(16rem, 0.9fr);
+    align-items: start;
+  }
+}
+
+.hamd-wedding-live__stage {
+  position: relative;
+  min-height: 16rem;
+  border-radius: 0.85rem;
+  overflow: hidden;
+  background: #1c101c;
+  color: #fdfbf9;
+}
+
+.hamd-wedding-live__stage video {
+  display: block;
+  width: 100%;
+  height: min(62dvh, 40rem);
+  object-fit: contain;
+  background: #120a12;
+}
+
+.hamd-wedding-live-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: #6b1d4a;
+  color: #fdfbf9;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hamd-wedding-live__badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: #6b1d4a;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hamd-wedding-live__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  padding: 0.75rem;
+}
+
+.hamd-wedding-comments {
+  display: flex;
+  flex-direction: column;
+  min-height: 18rem;
+  max-height: 62dvh;
+  border: 1px solid #eadfec;
+  border-radius: 0.85rem;
+  background: #fff;
+}
+
+.hamd-wedding-comments__list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.75rem;
+  list-style: none;
+}
+
+.hamd-wedding-comments__item {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.45rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid #f2eaf1;
+}
+
+.hamd-wedding-comments__avatar {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: #efe4f0;
+  color: #6b1d4a;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.hamd-wedding-comments__composer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.4rem;
+  padding: 0.65rem;
+  border-top: 1px solid #eadfec;
+}
+
+.hamd-wedding-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hamd-wedding-gallery__tile {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  padding: 0;
+  border: 0;
+  border-radius: 0.55rem;
+  overflow: hidden;
+  background: #efe4f0;
+  cursor: zoom-in;
+}
+
+.hamd-wedding-gallery__tile img,
+.hamd-wedding-gallery__tile video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hamd-wedding-waiting {
+  text-align: center;
+  padding: 2.5rem 1rem 3rem;
+}
+
+@media (max-width: 1024px) {
+  .hamd-wedding-modal {
+    width: 92vw;
+    max-width: 92vw;
+    max-height: 86dvh;
+  }
+
+  .hamd-wedding-modal__card {
+    max-height: 86dvh;
+  }
+}
+
+@media (max-width: 430px) {
+  .hamd-wedding-modal__card,
+  .hamd-wedding-invite {
+    padding: 1.5rem 1.05rem 1.2rem;
+  }
+
+  .hamd-wedding-modal__flora {
+    width: 4.2rem;
+    height: 4.2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-wedding-modal,
+  .hamd-wedding-invite {
+    scroll-behavior: auto;
+  }
+}
+
+.hamd-wedding-portal {
+  --hamd-btn-primary-bg: #6b1d4a;
+  --hamd-btn-primary-text: #fdfbf9;
+  --hamd-btn-primary-hover-bg: #4e1536;
+  --hamd-btn-primary-hover-text: #fdfbf9;
+  --hamd-btn-secondary-bg: color-mix(in srgb, #efe4f0 18%, transparent);
+  --hamd-btn-secondary-text: #f6eef4;
+  --hamd-btn-secondary-border: color-mix(in srgb, #d4c3d0 35%, transparent);
+  --hamd-btn-secondary-hover-bg: color-mix(in srgb, #efe4f0 28%, transparent);
+  --hamd-btn-secondary-hover-text: #fdfbf9;
+  --hamd-btn-ghost-text: #eadfec;
+  --hamd-btn-ghost-hover-bg: color-mix(in srgb, #fdfbf9 10%, transparent);
+  --hamd-btn-ghost-hover-text: #fdfbf9;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: 3.5rem minmax(0, 1fr);
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: #f4eef6;
+  color: #3b1538;
+}
+
+[data-theme="dark"] .hamd-wedding-portal,
+html.dark .hamd-wedding-portal {
+  background: #140d14;
+  color: #f6eef4;
+}
+
+.hamd-wedding-portal__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 3.5rem;
+  padding: 0.4rem 0.85rem;
+  border-bottom: 1px solid color-mix(in srgb, #6b1d4a 22%, transparent);
+  background: color-mix(in srgb, #efe4f0 72%, #fff);
+}
+
+[data-theme="dark"] .hamd-wedding-portal__header,
+html.dark .hamd-wedding-portal__header {
+  background: #1c101c;
+  border-bottom-color: color-mix(in srgb, #eadfec 12%, transparent);
+}
+
+.hamd-wedding-portal__brand {
+  margin: 0;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.hamd-wedding-portal__status {
+  margin: 0;
+  justify-self: center;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #6b1d4a 12%, transparent);
+  color: #6b1d4a;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hamd-wedding-portal__status--live {
+  background: #6b1d4a;
+  color: #fdfbf9;
+}
+
+.hamd-wedding-portal__status--test {
+  background: #4e1536;
+  color: #f6eef4;
+}
+
+[data-theme="dark"] .hamd-wedding-portal__status:not(.hamd-wedding-portal__status--live),
+html.dark .hamd-wedding-portal__status:not(.hamd-wedding-portal__status--live) {
+  color: #eadfec;
+  background: color-mix(in srgb, #eadfec 12%, transparent);
+}
+
+.hamd-wedding-portal__header-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.hamd-wedding-portal__viewers {
+  font-size: 0.75rem;
+  color: inherit;
+  opacity: 0.78;
+}
+
+.hamd-wedding-portal__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+  min-height: 0;
+}
+
+.hamd-wedding-portal__media {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-width: 0;
+  min-height: 0;
+  padding: 0.75rem 0.85rem 0.85rem;
+  background: #120a12;
+}
+
+.hamd-wedding-portal__stage {
+  position: relative;
+  width: 100%;
+  max-width: min(100%, 92rem);
+  margin: auto;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  overflow: hidden;
+  border-radius: 0.55rem;
+  background: #0c070c;
+}
+
+.hamd-wedding-portal__stage video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #0c070c;
+}
+
+.hamd-wedding-portal__overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  text-align: center;
+  color: #f6eef4;
+  background: rgb(12 7 12 / 0.72);
+}
+
+.hamd-wedding-portal__overlay h1 {
+  margin: 0;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+}
+
+.hamd-wedding-portal__overlay p {
+  margin: 0.45rem 0 0;
+  max-width: 28rem;
+}
+
+.hamd-wedding-portal__overlay-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.hamd-wedding-portal__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 0 0;
+  color: #eadfec;
+}
+
+.hamd-wedding-portal__controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.hamd-wedding-portal__comments {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
+  border-left: 1px solid color-mix(in srgb, #6b1d4a 18%, transparent);
+  background: color-mix(in srgb, #fbf7fc 88%, #fff);
+}
+
+[data-theme="dark"] .hamd-wedding-portal__comments,
+html.dark .hamd-wedding-portal__comments {
+  background: #1a1018;
+  border-left-color: color-mix(in srgb, #eadfec 10%, transparent);
+}
+
+.hamd-wedding-portal__comments-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.7rem 0.85rem 0.45rem;
+}
+
+.hamd-wedding-portal__comments-head h2 {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.hamd-wedding-portal__comments-list {
+  min-height: 0;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0.35rem 0.85rem 0.75rem;
+  list-style: none;
+}
+
+.hamd-wedding-portal__comments-signin {
+  padding: 0.65rem 0.85rem 1rem;
+}
+
+.hamd-wedding-portal__messages-btn {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  html:has(.hamd-wedding-portal),
+  body:has(.hamd-wedding-portal) {
+    overflow: hidden;
+    height: 100dvh;
+  }
+
+  .hamd-wedding-portal__comments,
+  .hamd-wedding-portal__comments.is-open {
+    display: grid;
+    position: static;
+    inset: auto;
+  }
+
+  .hamd-wedding-portal__comments-head button {
+    display: none;
+  }
+}
+
+.hamd-wedding-portal .hamd-wedding-comments__composer {
+  border-top-color: color-mix(in srgb, #6b1d4a 16%, transparent);
+}
+
+@media (max-width: 1023px) {
+  .hamd-wedding-portal {
+    height: auto;
+    min-height: 100dvh;
+    overflow: auto;
+    grid-template-rows: 3.5rem auto;
+  }
+
+  .hamd-wedding-portal__header {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    min-height: 3.5rem;
+  }
+
+  .hamd-wedding-portal__brand {
+    font-size: 0.82rem;
+  }
+
+  .hamd-wedding-portal__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hamd-wedding-portal__media {
+    padding: 0.5rem 0.65rem 0.75rem;
+  }
+
+  .hamd-wedding-portal__comments {
+    display: none;
+    border-left: 0;
+  }
+
+  .hamd-wedding-portal__comments.is-open {
+    display: grid;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: #fbf7fc;
+  }
+
+  .hamd-wedding-portal__messages-btn {
+    display: inline-flex;
+  }
+
+  [data-theme="dark"] .hamd-wedding-portal__comments.is-open,
+  html.dark .hamd-wedding-portal__comments.is-open {
+    background: #140d14;
+  }
+}
+
+.hamd-wedding-waiting {
+  display: grid;
+  justify-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem;
+}
+
+.hamd-wedding-waiting .hamd-wedding-invite {
+  width: min(100%, 36rem);
+  max-height: none;
+}
+
+.hamd-wedding-waiting__audio {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem 0.7rem;
+  font-size: 0.85rem;
+  max-width: 100%;
+}
+
+.hamd-wedding-waiting__audio-title {
+  overflow-wrap: anywhere;
+}
+
+.hamd-wedding-waiting__audio label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.hamd-wedding-feeds__desktop {
+  display: none;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.hamd-wedding-feeds__chip {
+  display: inline-flex;
+  gap: 0.4rem;
+  align-items: center;
+  border: 1px solid color-mix(in srgb, #eadfec 28%, transparent);
+  background: rgb(20 10 18 / 0.55);
+  color: #f6eef4;
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+}
+
+.hamd-wedding-feeds__chip.is-active {
+  background: #6b1d4a;
+}
+
+.hamd-wedding-feeds__mobile-trigger {
+  display: inline-flex;
+}
+
+.hamd-wedding-feeds__sheet {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 50;
+  background: #140d14;
+  color: #f6eef4;
+  padding: 1rem;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .hamd-wedding-feeds__desktop {
+    display: flex;
+  }
+
+  .hamd-wedding-feeds__mobile-trigger,
+  .hamd-wedding-feeds__sheet {
+    display: none;
+  }
+}

@@ -42,7 +42,15 @@ router.post('/', authenticateToken, requireVerified, upload.array('files', 5), [
   body('title').trim().isLength({ min: 1, max: 255 }),
   body('description').optional().trim(),
   body('productId').optional().isInt(),
-  body('quantity').optional().isInt({ min: 1 })
+  body('quantity').optional().isInt({ min: 1 }),
+  body('priority').optional().isIn(['low', 'medium', 'high', 'urgent']),
+  body('deliveryStreet').optional().trim(),
+  body('deliveryCity').optional().trim(),
+  body('deliveryState').optional().trim(),
+  body('deliveryZipCode').optional().trim(),
+  body('deliveryCountry').optional().trim(),
+  body('budgetCurrency').optional().trim(),
+  body('budgetAmount').optional().isFloat({ min: 0 })
 ], async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -71,9 +79,9 @@ router.post('/', authenticateToken, requireVerified, upload.array('files', 5), [
 
     // Create order with user-specific request number
     const [result] = await pool.execute(
-      `INSERT INTO orders (user_id, request_number, product_id, title, description, quantity, files) 
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [req.user.id, requestNumber, productId || null, title, description, quantity, JSON.stringify(fileUrls)]
+      `INSERT INTO orders (user_id, request_number, product_id, title, description, quantity, files, delivery_street, delivery_city, delivery_state, delivery_zipcode, delivery_country, budget_currency, budget_amount, priority) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [req.user.id, requestNumber, productId || null, title, description, quantity, JSON.stringify(fileUrls), req.body.deliveryStreet || '', req.body.deliveryCity || '', req.body.deliveryState || '', req.body.deliveryZipCode || '', req.body.deliveryCountry || '', req.body.budgetCurrency || 'NGN', req.body.budgetAmount || null, req.body.priority || 'medium']
     );
 
     const orderId = result.insertId;
@@ -280,7 +288,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
         street: order.delivery_street || order.street_address || 'Address to be provided',
         city: order.delivery_city || order.city || 'City',
         state: order.delivery_state || order.state || 'State',
-        zipCode: order.delivery_zip_code || order.zip_code || '00000',
+        zipCode: order.delivery_zipcode || order.zip_code || '00000',
         country: order.delivery_country || order.country || 'Country',
         phone: order.phone || ''
       },

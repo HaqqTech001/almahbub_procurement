@@ -1,0 +1,1496 @@
+/* Campaign banner - calm navy, gold as accent only */
+
+.hamd-campaign-banner {
+  position: relative;
+  overflow: hidden;
+  background: #0b1f3a;
+  color: #f9fafb;
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+}
+
+.hamd-campaign-banner::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #8a6415 20%,
+    #fbf3dd 50%,
+    #8a6415 80%,
+    transparent 100%
+  );
+  opacity: 0.85;
+}
+
+.hamd-campaign-banner__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 0.75rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--hamd-max-default, 72rem);
+  width: min(100% - 1.5rem, var(--hamd-max-default, 72rem));
+  margin: 0 auto;
+  padding: 0.65rem 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 479px) {
+  .hamd-campaign-banner__inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    padding: 0.75rem 0;
+  }
+
+  .hamd-campaign-banner__actions {
+    width: 100%;
+  }
+
+  .hamd-campaign-banner__cta,
+  .hamd-campaign-banner__dismiss {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  .hamd-campaign-banner__message {
+    font-size: 0.875rem;
+  }
+}
+
+.hamd-campaign-banner__copy {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.hamd-campaign-banner__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.15rem;
+}
+
+.hamd-campaign-banner--compact {
+  background: #0f2744;
+}
+
+.hamd-campaign-banner__inner--compact {
+  padding-block: 0.4rem;
+}
+
+.hamd-campaign-banner__restore-copy {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, #f9fafb 88%, transparent);
+}
+
+.hamd-campaign-banner__restore-sep {
+  opacity: 0.55;
+}
+
+.hamd-campaign-banner__restore {
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  color: #fbf3dd;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  min-height: 2.25rem;
+  padding: 0.25rem 0.35rem;
+}
+
+.hamd-campaign-banner__restore:focus-visible {
+  outline: 2px solid #53b1fd;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.hamd-campaign-banner__eyebrow {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fbf3dd;
+}
+
+.hamd-campaign-banner__message {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, #f9fafb 94%, transparent);
+  max-width: 52rem;
+  text-wrap: pretty;
+}
+
+.hamd-campaign-banner__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  background: #fbf3dd;
+  color: #0b1f3a;
+  font-weight: 650;
+  font-size: 0.8125rem;
+  text-decoration: none;
+  transition: opacity 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.hamd-campaign-banner__cta:hover {
+  opacity: 0.92;
+}
+
+.hamd-campaign-banner__dismiss {
+  flex-shrink: 0;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  background: color-mix(in srgb, #fff 6%, transparent);
+  color: inherit;
+  border-radius: 6px;
+  padding: 0.4rem 0.85rem;
+  min-height: 2.25rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 120ms cubic-bezier(0.2, 0, 0, 1),
+    border-color 120ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.hamd-campaign-banner__dismiss:hover {
+  background: color-mix(in srgb, #fff 12%, transparent);
+  border-color: rgb(255 255 255 / 0.45);
+}
+
+.hamd-campaign-banner__dismiss:focus-visible {
+  outline: 2px solid #53b1fd;
+  outline-offset: 2px;
+}
+
+.hamd-campaign-banner__confetti {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.55;
+}
+
+.hamd-campaign-banner__spark {
+  position: absolute;
+  border-radius: 9999px;
+  background: #f9db8b;
+  opacity: 0.45;
+  animation-name: hamd-confetti-drift;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes hamd-confetti-drift {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  40% {
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate3d(4px, 6px, 0) rotate(12deg);
+  }
+}
+
+.hamd-campaign-banner__balloon {
+  position: absolute;
+  border-radius: 50% 50% 45% 45% / 55% 55% 45% 45%;
+  background: var(--hamd-balloon-color, #155aaf);
+  opacity: 0.55;
+  animation-name: hamd-balloon-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  box-shadow:
+    inset -2px -3px 0 rgb(0 0 0 / 0.14),
+    0 2px 6px rgb(0 0 0 / 0.18);
+  will-change: transform;
+}
+
+.hamd-campaign-banner__balloon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.45rem;
+  width: 1px;
+  height: 0.55rem;
+  background: color-mix(in srgb, var(--hamd-balloon-color, #155aaf) 50%, #98a2b3);
+  transform: translateX(-50%);
+}
+
+@keyframes hamd-balloon-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(3px, -7px, 0);
+  }
+}
+
+@media (max-width: 640px) {
+  .hamd-campaign-banner__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hamd-campaign-banner__dismiss {
+    align-self: stretch;
+    text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-campaign-banner__confetti,
+  .hamd-announcement-slider__confetti {
+    display: none !important;
+  }
+}
+
+/* -- Reusable announcement slider (RC-POLISH-06) -- */
+
+.hamd-announcement-slider {
+  --ann-pad-x: clamp(0.75rem, 3vw, 1.25rem);
+  --ann-strip-h: clamp(2.35rem, 3.6vh, 2.85rem);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 70% 160% at 50% -20%, #4c1d95 0%, transparent 58%),
+    linear-gradient(180deg, #12082a 0%, #1d0b3f 52%, #2a1258 100%);
+  color: #f9fafb;
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+  min-height: 0;
+}
+
+.hamd-announcement-slider--strip {
+  min-height: var(--ann-strip-h);
+  max-height: var(--ann-strip-h);
+}
+
+.hamd-announcement-slider--strip:has(.hamd-announcement-slider__message) {
+  --ann-strip-h: clamp(2.65rem, 4vh, 3.15rem);
+}
+
+.hamd-announcement-slider--strip .hamd-announcement-slider__inner {
+  min-height: var(--ann-strip-h);
+  max-height: var(--ann-strip-h);
+  padding: 0;
+  align-items: center;
+  gap: 0;
+}
+
+.hamd-announcement-slider--strip .hamd-announcement-slider__slide {
+  align-items: center;
+  width: 100%;
+  animation: hamd-ann-fade 420ms var(--hamd-ease, ease) both;
+}
+
+.hamd-announcement-slider--strip .hamd-announcement-slider__copy {
+  gap: 0.1rem;
+  text-align: center;
+  align-items: center;
+  justify-items: center;
+  width: 100%;
+}
+
+.hamd-announcement-slider--strip .hamd-announcement-slider__eyebrow {
+  font-size: clamp(0.72rem, 2.1vw, 0.88rem);
+  letter-spacing: 0.04em;
+  text-transform: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  line-height: 1.2;
+}
+
+.hamd-announcement-slider--strip .hamd-announcement-slider__message {
+  font-size: clamp(0.62rem, 1.7vw, 0.72rem);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  opacity: 0.9;
+}
+
+.hamd-announcement-slider--strip .hamd-announcement-slider__media,
+.hamd-announcement-slider--strip .hamd-announcement-slider__actions {
+  display: none;
+}
+
+.hamd-announcement-slider__eyebrow--hamd,
+.hamd-announcement-slider--hamd .hamd-announcement-slider__eyebrow {
+  background: linear-gradient(
+    105deg,
+    #fbf3dd 0%,
+    #f9db8b 28%,
+    #fff 48%,
+    #f9db8b 68%,
+    #fbf3dd 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: hamd-ann-shimmer 2.8s ease-in-out infinite;
+  text-shadow: none;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.hamd-announcement-slider--hamd .hamd-announcement-slider__decor,
+.hamd-announcement-slider--hamd .hamd-announcement-slider__effects {
+  opacity: 1;
+}
+
+.hamd-announcement-slider--hamd .hamd-celebration-fx__glow {
+  opacity: 0.8;
+}
+
+.hamd-announcement-slider--accent-glow {
+  box-shadow: inset 0 0 18px color-mix(in srgb, #f9db8b 18%, transparent);
+}
+
+@keyframes hamd-ann-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hamd-ann-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-announcement-slider--strip .hamd-announcement-slider__slide,
+  .hamd-announcement-slider__eyebrow--hamd,
+  .hamd-announcement-slider--hamd .hamd-announcement-slider__eyebrow {
+    animation: none !important;
+  }
+
+  .hamd-announcement-slider__eyebrow--hamd,
+  .hamd-announcement-slider--hamd .hamd-announcement-slider__eyebrow {
+    color: #fbf3dd;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+  }
+}
+
+.hamd-announcement-slider::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #8a6415 20%,
+    #fbf3dd 50%,
+    #8a6415 80%,
+    transparent 100%
+  );
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.hamd-announcement-slider--celebration {
+  background:
+    radial-gradient(ellipse 48% 140% at 8% 110%, color-mix(in srgb, #e11d74 34%, transparent), transparent 58%),
+    radial-gradient(ellipse 48% 140% at 92% 110%, color-mix(in srgb, #7c3aed 32%, transparent), transparent 58%),
+    radial-gradient(ellipse 70% 160% at 50% -30%, color-mix(in srgb, #c9a227 16%, transparent), transparent 55%),
+    linear-gradient(180deg, #12082a 0%, #1d0b3f 48%, #32145e 100%);
+}
+
+.hamd-announcement-slider--hamd {
+  background:
+    radial-gradient(ellipse 42% 150% at 6% 120%, color-mix(in srgb, #fb7185 28%, transparent), transparent 60%),
+    radial-gradient(ellipse 42% 150% at 94% 120%, color-mix(in srgb, #a78bfa 30%, transparent), transparent 60%),
+    radial-gradient(ellipse 80% 180% at 50% -40%, color-mix(in srgb, #f9db8b 14%, transparent), transparent 58%),
+    linear-gradient(180deg, #100726 0%, #1c0a3c 50%, #3b1768 100%);
+}
+
+/* Soft wedding accents - contained, non-interactive */
+.hamd-announcement-slider--celebration::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 92% 30%, color-mix(in srgb, #f9db8b 18%, transparent) 0 1.1rem, transparent 1.35rem),
+    radial-gradient(circle at 4% 70%, color-mix(in srgb, #fce7f3 14%, transparent) 0 0.85rem, transparent 1.1rem),
+    radial-gradient(circle at 78% 78%, color-mix(in srgb, #c9a227 12%, transparent) 0 0.55rem, transparent 0.75rem);
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-campaign-banner__spark,
+  .hamd-campaign-banner__balloon,
+  .hamd-announcement-slider__decor,
+  .hamd-announcement-slider__confetti {
+    animation: none !important;
+    display: none !important;
+  }
+}
+
+.hamd-announcement-slider--alert {
+  background: #3f1d1d;
+}
+
+.hamd-announcement-slider--compact {
+  background: #0f2744;
+}
+
+.hamd-announcement-slider__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.hamd-announcement-slider__decor,
+.hamd-announcement-slider__confetti,
+.hamd-announcement-slider__effects {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 1;
+  z-index: 0;
+}
+
+/* Keep celebration particles clear of primary copy on narrow screens */
+@media (max-width: 639px) {
+  .hamd-announcement-slider--celebration .hamd-campaign-banner__balloon {
+    opacity: 0.4;
+  }
+
+  .hamd-announcement-slider--celebration .hamd-campaign-banner__balloon:nth-child(n + 12) {
+    display: none;
+  }
+
+  .hamd-announcement-slider--strip .hamd-celebration-fx__balloon:nth-child(n + 4) {
+    display: none;
+  }
+}
+
+.hamd-announcement-slider__inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 0.65rem;
+  max-width: var(--hamd-max-default, 72rem);
+  width: min(100% - 1.5rem, var(--hamd-max-default, 72rem));
+  margin: 0 auto;
+  padding: 0.75rem 0;
+  box-sizing: border-box;
+}
+
+.hamd-announcement-slider__inner--compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-block: 0.4rem;
+}
+
+.hamd-announcement-slider__slide {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.hamd-announcement-slider__media {
+  flex: 0 0 auto;
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.18);
+}
+
+.hamd-announcement-slider__copy {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.hamd-announcement-slider--celebration .hamd-announcement-slider__eyebrow {
+  font-family: var(--hamd-font-display, var(--hamd-font-serif, Georgia, serif));
+  font-size: clamp(0.78rem, 1.8vw, 0.9rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #fbf3dd;
+  text-shadow: 0 1px 0 rgb(0 0 0 / 0.25);
+}
+
+.hamd-announcement-slider__eyebrow {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fbf3dd;
+}
+
+.hamd-announcement-slider__message {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: color-mix(in srgb, #f9fafb 94%, transparent);
+  max-width: 52rem;
+  text-wrap: pretty;
+}
+
+.hamd-announcement-slider--celebration .hamd-announcement-slider__message {
+  font-size: clamp(0.9rem, 2.2vw, 1.02rem);
+  line-height: 1.55;
+}
+
+.hamd-announcement-slider__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+
+.hamd-announcement-slider__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.25rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 6px;
+  background: #fbf3dd;
+  color: #0b1f3a;
+  font-weight: 650;
+  font-size: 0.8125rem;
+  text-decoration: none;
+}
+
+.hamd-announcement-slider__cta:hover {
+  opacity: 0.92;
+}
+
+.hamd-announcement-slider__cta:focus-visible,
+.hamd-announcement-slider__dismiss:focus-visible,
+.hamd-announcement-slider__nav:focus-visible,
+.hamd-announcement-slider__dot:focus-visible,
+.hamd-announcement-slider__restore:focus-visible {
+  outline: 2px solid #53b1fd;
+  outline-offset: 2px;
+}
+
+.hamd-announcement-slider__dismiss {
+  border: 1px solid rgb(255 255 255 / 0.28);
+  background: color-mix(in srgb, #fff 6%, transparent);
+  color: inherit;
+  border-radius: 6px;
+  padding: 0.4rem 0.85rem;
+  min-height: 2.25rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.hamd-announcement-slider__dismiss:hover {
+  background: color-mix(in srgb, #fff 12%, transparent);
+}
+
+.hamd-announcement-slider__controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+}
+
+.hamd-announcement-slider__nav {
+  appearance: none;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  background: color-mix(in srgb, #fff 8%, transparent);
+  color: inherit;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hamd-announcement-slider__nav:hover {
+  background: color-mix(in srgb, #fff 14%, transparent);
+}
+
+.hamd-announcement-slider__dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding-inline: 0.25rem;
+}
+
+.hamd-announcement-slider__dot {
+  appearance: none;
+  border: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.35);
+  padding: 0;
+  cursor: pointer;
+}
+
+.hamd-announcement-slider__dot.is-active {
+  background: #fbf3dd;
+  width: 1rem;
+}
+
+.hamd-announcement-slider__restore-copy {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, #f9fafb 88%, transparent);
+}
+
+.hamd-announcement-slider__restore {
+  border: 0;
+  background: transparent;
+  color: #fbf3dd;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  min-height: 2.25rem;
+}
+
+@media (max-width: 479px) {
+  .hamd-announcement-slider__inner {
+    width: min(100% - 1.25rem, var(--hamd-max-default, 72rem));
+    padding: 0.85rem 0;
+  }
+
+  .hamd-announcement-slider__actions {
+    width: 100%;
+  }
+
+  .hamd-announcement-slider__cta,
+  .hamd-announcement-slider__dismiss {
+    flex: 1 1 auto;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .hamd-announcement-slider__controls {
+    justify-content: center;
+  }
+
+  .hamd-announcement-slider__message {
+    font-size: 0.875rem;
+  }
+
+  .hamd-announcement-slider__media {
+    display: none;
+  }
+}
+
+/* ============================================================
+   Premium wedding celebration layers (compact strip overlay)
+   Layout height stays on --ann-strip-h; particles are decorative.
+   ============================================================ */
+
+.hamd-celebration-fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.hamd-celebration-fx__stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hamd-celebration-fx__ribbons {
+  transform-origin: 48px 44px;
+  animation: hamd-fx-ribbon-sway 7.5s ease-in-out infinite;
+}
+
+.hamd-celebration-fx__ribbons--right {
+  transform-origin: 1152px 44px;
+  animation-duration: 8.4s;
+  animation-delay: -2.2s;
+}
+
+.hamd-celebration-fx__popper--left {
+  transform-origin: 28px 40px;
+  animation: hamd-fx-popper-pulse 5.6s ease-in-out infinite;
+}
+
+.hamd-celebration-fx__popper--right {
+  transform-origin: 1172px 40px;
+  animation: hamd-fx-popper-pulse 6.2s ease-in-out infinite;
+  animation-delay: -1.8s;
+}
+
+.hamd-celebration-fx__wave {
+  animation: hamd-fx-wave-drift 9s ease-in-out infinite;
+}
+
+.hamd-celebration-fx__wave--slow {
+  animation-duration: 13s;
+  animation-delay: -4s;
+}
+
+.hamd-celebration-fx__glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 28% 90% at 6% 100%, color-mix(in srgb, #e11d74 28%, transparent), transparent 70%),
+    radial-gradient(ellipse 28% 90% at 94% 100%, color-mix(in srgb, #7c3aed 26%, transparent), transparent 70%),
+    radial-gradient(ellipse 50% 80% at 50% 50%, color-mix(in srgb, #12082a 42%, transparent), transparent 72%);
+  opacity: 0.85;
+  animation: hamd-fx-glow-breathe 8s ease-in-out infinite;
+}
+
+.hamd-celebration-fx--hamd .hamd-celebration-fx__glow {
+  opacity: 0.92;
+}
+
+.hamd-celebration-fx__veil {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 46% 120% at 50% 50%,
+    rgb(12 6 32 / 0.42),
+    transparent 74%
+  );
+  z-index: 2;
+}
+
+.hamd-celebration-fx__rain,
+.hamd-celebration-fx__sprinkles,
+.hamd-celebration-fx__balloons,
+.hamd-celebration-fx__stars,
+.hamd-celebration-fx__sparkles,
+.hamd-celebration-fx__bokeh {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.hamd-celebration-fx__rain-particle {
+  position: absolute;
+  top: -18%;
+  border-radius: 9999px;
+  opacity: 0;
+  box-shadow: 0 0 4px color-mix(in srgb, #f9db8b 40%, transparent);
+  animation-name: hamd-fx-sparkle-rain;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+.hamd-celebration-fx__rain-particle--star {
+  border-radius: 1px;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  box-shadow: 0 0 5px #fbf3dd;
+}
+
+.hamd-celebration-fx__rain-particle--confetti {
+  border-radius: 1px;
+  box-shadow: none;
+}
+
+.hamd-celebration-fx__rain-particle--dot {
+  border-radius: 9999px;
+}
+
+.hamd-celebration-fx__star {
+  position: absolute;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  opacity: 0.55;
+  animation-name: hamd-fx-star-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+.hamd-celebration-fx__sparkle {
+  position: absolute;
+  clip-path: polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
+  opacity: 0;
+  animation-name: hamd-fx-sparkle-glint;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+.hamd-celebration-fx__bokeh-dot {
+  position: absolute;
+  border-radius: 9999px;
+  opacity: 0.2;
+  filter: blur(0.6px);
+  animation-name: hamd-fx-bokeh-drift;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+.hamd-celebration-fx__sprinkle {
+  position: absolute;
+  border-radius: 1px;
+  opacity: 0;
+  animation-name: hamd-fx-sprinkle-float;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.hamd-celebration-fx__balloon {
+  position: absolute;
+  bottom: -40%;
+  z-index: 1;
+  border-radius: 50% 50% 45% 45% / 55% 55% 45% 45%;
+  background:
+    radial-gradient(circle at 32% 28%, rgb(255 255 255 / 0.45), transparent 42%),
+    var(--hamd-balloon-color, #c9a227);
+  opacity: 0;
+  box-shadow:
+    inset -2px -3px 0 rgb(0 0 0 / 0.16),
+    0 2px 6px rgb(0 0 0 / 0.2);
+  animation-name: hamd-fx-balloon-rise;
+  animation-timing-function: cubic-bezier(0.33, 0.12, 0.25, 1);
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+.hamd-celebration-fx__balloon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.42rem;
+  width: 1px;
+  height: 0.5rem;
+  background: color-mix(in srgb, var(--hamd-balloon-color, #c9a227) 45%, #98a2b3);
+  transform: translateX(-50%);
+}
+
+.hamd-celebration-fx__balloon--pops {
+  animation-name: hamd-fx-balloon-rise-pop;
+}
+
+.hamd-celebration-fx__burst {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.hamd-celebration-fx__burst-bit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 9999px;
+  opacity: 0;
+  box-shadow: 0 0 3px #fbf3dd;
+  animation-name: hamd-fx-pop-burst;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.25, 1);
+  animation-iteration-count: infinite;
+}
+
+.hamd-celebration-fx__slide-shimmer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    color-mix(in srgb, #fbf3dd 22%, transparent) 48%,
+    transparent 66%
+  );
+  opacity: 0;
+  transform: translate3d(-18%, 0, 0);
+}
+
+.hamd-celebration-fx.is-slide-pulse .hamd-celebration-fx__slide-shimmer {
+  animation: hamd-fx-slide-shimmer 880ms ease-out 1;
+}
+
+.hamd-announcement-slider--strip .hamd-announcement-slider__message {
+  text-shadow: 0 1px 8px rgb(10 4 28 / 0.55);
+}
+
+@keyframes hamd-fx-glow-breathe {
+  0%,
+  100% {
+    opacity: 0.78;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes hamd-fx-ribbon-sway {
+  0%,
+  100% {
+    transform: rotate(-2.4deg);
+  }
+  50% {
+    transform: rotate(2.1deg);
+  }
+}
+
+@keyframes hamd-fx-popper-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes hamd-fx-wave-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translate3d(12px, -1px, 0);
+    opacity: 0.7;
+  }
+}
+
+@keyframes hamd-fx-sparkle-rain {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(var(--hamd-fx-rotate, 0deg)) scale(0.7);
+  }
+  10% {
+    opacity: 0.7;
+  }
+  70% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--hamd-fx-drift, 0px), 190%, 0) rotate(calc(var(--hamd-fx-rotate, 0deg) + 40deg)) scale(0.85);
+  }
+}
+
+@keyframes hamd-fx-star-twinkle {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: translate3d(0, 0, 0) rotate(0deg) scale(0.86);
+  }
+  40% {
+    opacity: 0.85;
+    transform: translate3d(var(--hamd-fx-drift, 2px), -3px, 0) rotate(18deg) scale(1.08);
+  }
+  70% {
+    opacity: 0.4;
+    transform: translate3d(calc(var(--hamd-fx-drift, 2px) * -0.4), 2px, 0) rotate(-8deg) scale(0.94);
+  }
+}
+
+@keyframes hamd-fx-sparkle-glint {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4) rotate(0deg);
+  }
+  35% {
+    opacity: 0.95;
+    transform: scale(1.15) rotate(20deg);
+  }
+  60% {
+    opacity: 0.2;
+    transform: scale(0.7) rotate(40deg);
+  }
+}
+
+@keyframes hamd-fx-bokeh-drift {
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: translate3d(0, 0, 0) scale(0.9);
+  }
+  50% {
+    opacity: 0.38;
+    transform: translate3d(var(--hamd-fx-drift, 6px), -5px, 0) scale(1.08);
+  }
+}
+
+@keyframes hamd-fx-sprinkle-float {
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: translate3d(0, 0, 0) rotate(var(--hamd-fx-rotate, 0deg)) scale(0.8);
+  }
+  40% {
+    opacity: 0.65;
+    transform: translate3d(var(--hamd-fx-drift, 4px), -5px, 0) rotate(calc(var(--hamd-fx-rotate, 0deg) + 16deg)) scale(1.08);
+  }
+  70% {
+    opacity: 0.28;
+    transform: translate3d(calc(var(--hamd-fx-drift, 4px) * -0.5), 3px, 0) scale(0.92);
+  }
+}
+
+@keyframes hamd-fx-balloon-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 20%, 0) rotate(-8deg) scale(0.88);
+  }
+  12% {
+    opacity: 0.55;
+  }
+  45% {
+    transform: translate3d(calc(var(--hamd-fx-drift, 8px) * 0.45), -35%, 0) rotate(5deg) scale(1);
+    opacity: 0.6;
+  }
+  75% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--hamd-fx-drift, 8px), -130%, 0) rotate(12deg) scale(0.92);
+  }
+}
+
+@keyframes hamd-fx-balloon-rise-pop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 25%, 0) rotate(-6deg) scale(0.9);
+  }
+  8% {
+    opacity: 0.55;
+  }
+  55% {
+    transform: translate3d(calc(var(--hamd-fx-drift, 8px) * 0.4), -20%, 0) rotate(4deg) scale(1);
+    opacity: 0.62;
+  }
+  78% {
+    transform: translate3d(calc(var(--hamd-fx-drift, 8px) * 0.7), -58%, 0) rotate(-2deg) scale(1.02);
+    opacity: 0.68;
+  }
+  84% {
+    transform: translate3d(calc(var(--hamd-fx-drift, 8px) * 0.75), -64%, 0) scale(1.18);
+    opacity: 0.85;
+  }
+  86.5% {
+    transform: translate3d(calc(var(--hamd-fx-drift, 8px) * 0.75), -64%, 0) scale(0.08);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 25%, 0) scale(0.9);
+  }
+}
+
+@keyframes hamd-fx-pop-burst {
+  0%,
+  83.5% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.2) rotate(0deg);
+  }
+  85% {
+    opacity: 0.95;
+    transform: translate3d(
+        calc(var(--hamd-fx-dx, 8px) * 0.25),
+        calc(var(--hamd-fx-dy, -8px) * 0.25),
+        0
+      )
+      scale(1) rotate(20deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--hamd-fx-dx, 12px), calc(var(--hamd-fx-dy, -10px) + 8px), 0)
+      scale(0.35) rotate(80deg);
+  }
+}
+
+@keyframes hamd-fx-slide-shimmer {
+  0% {
+    opacity: 0;
+    transform: translate3d(-22%, 0, 0);
+  }
+  35% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(22%, 0, 0);
+  }
+}
+
+@media (max-width: 639px) {
+  .hamd-celebration-fx__balloon:nth-child(n + 3),
+  .hamd-celebration-fx__rain-particle:nth-child(n + 8),
+  .hamd-celebration-fx__sprinkle:nth-child(n + 5),
+  .hamd-celebration-fx__star:nth-child(n + 5),
+  .hamd-celebration-fx__sparkle:nth-child(n + 5),
+  .hamd-celebration-fx__bokeh-dot:nth-child(n + 5) {
+    display: none;
+  }
+
+  .hamd-celebration-fx__burst-bit:nth-child(n + 7) {
+    display: none;
+  }
+
+  .hamd-celebration-fx__ribbons path:nth-child(n + 3) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-celebration-fx__rain,
+  .hamd-celebration-fx__balloons,
+  .hamd-celebration-fx__sparkles,
+  .hamd-celebration-fx__slide-shimmer {
+    display: none;
+  }
+
+  .hamd-celebration-fx,
+  .hamd-celebration-fx * {
+    animation: none !important;
+  }
+
+  .hamd-celebration-fx__star,
+  .hamd-celebration-fx__bokeh-dot,
+  .hamd-celebration-fx__sprinkle {
+    opacity: 0.45;
+  }
+}
+
+.hamd-celebration-modal {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  width: min(92vw, 1050px);
+  max-width: min(92vw, 1050px);
+  height: min(86dvh, 760px);
+  max-height: min(86dvh, 760px);
+}
+
+@media (max-width: 720px) {
+  .hamd-celebration-modal {
+    width: 94vw;
+    max-width: 94vw;
+    height: auto;
+    max-height: 88dvh;
+  }
+}
+
+.hamd-celebration-modal::backdrop {
+  background: rgb(48 24 64 / 0.46);
+}
+
+.hamd-celebration-modal__scene {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.1rem;
+  height: 100%;
+  min-height: 28rem;
+  isolation: isolate;
+}
+
+.hamd-celebration-modal__foundation {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 12% 18%, #f3e8ff 0%, transparent 42%),
+    radial-gradient(circle at 88% 82%, #e9d5ff 0%, transparent 38%),
+    linear-gradient(180deg, #f6f0fb 0%, #efe4f6 52%, #e7d7ef 100%);
+}
+
+.hamd-celebration-modal__pattern {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 8% 12%, rgb(88 28 70 / 0.18) 0 18%, transparent 20%),
+    radial-gradient(circle at 92% 8%, rgb(88 28 70 / 0.16) 0 16%, transparent 18%),
+    radial-gradient(circle at 10% 88%, rgb(126 34 79 / 0.14) 0 14%, transparent 16%),
+    radial-gradient(circle at 90% 90%, rgb(88 28 70 / 0.16) 0 16%, transparent 18%);
+}
+
+.hamd-celebration-modal__close {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.72);
+  color: #4a1942;
+  cursor: pointer;
+}
+
+.hamd-celebration-modal__identity,
+.hamd-celebration-modal__kicker,
+.hamd-celebration-modal__company {
+  color: #6b1d4a;
+}
+
+.hamd-celebration-modal__nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgb(107 29 74 / 0.28);
+  background: rgb(255 255 255 / 0.78);
+  color: #4a1942;
+}
+
+.hamd-celebration-modal::backdrop {
+  background: rgb(12 8 24 / 0.62);
+}
+
+.hamd-celebration-modal__scene {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.1rem;
+  min-height: 22rem;
+  isolation: isolate;
+}
+
+.hamd-celebration-modal__foundation {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 20% 15%, #5b21b6 0%, transparent 42%),
+    radial-gradient(circle at 88% 80%, #9d174d 0%, transparent 40%),
+    linear-gradient(180deg, #1e1145 0%, #2a1658 55%, #3b1768 100%);
+}
+
+.hamd-celebration-modal__pattern {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 12% 22%, rgb(249 219 139 / 0.22) 0 1.2px, transparent 1.4px),
+    radial-gradient(circle at 78% 18%, rgb(244 114 182 / 0.18) 0 1px, transparent 1.2px),
+    repeating-linear-gradient(
+      118deg,
+      transparent 0 18px,
+      rgb(249 219 139 / 0.07) 18px 19px
+    );
+}
+
+.hamd-celebration-modal__fx {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hamd-celebration-modal__panel {
+  position: relative;
+  z-index: 2;
+  margin: 2.4rem 1.25rem 1.4rem;
+  padding: 1.35rem 1.25rem 1.4rem;
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, #14082c 72%, transparent);
+  border: 1px solid color-mix(in srgb, #f9db8b 38%, transparent);
+  color: #fefce8;
+  display: grid;
+  gap: 0.85rem;
+  text-align: center;
+}
+
+.hamd-celebration-modal__close {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  z-index: 3;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.14);
+  color: #fff;
+  cursor: pointer;
+}
+
+.hamd-celebration-modal__kicker,
+.hamd-celebration-modal__company {
+  margin: 0;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  color: #f9db8b;
+}
+
+.hamd-celebration-modal__whisper {
+  margin: 0;
+  color: #fce7f3;
+  font-size: 0.95rem;
+}
+
+.hamd-celebration-modal__controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.hamd-celebration-modal__nav,
+.hamd-celebration-modal__dot {
+  border: 1px solid color-mix(in srgb, #f9db8b 45%, transparent);
+  background: rgb(20 8 44 / 0.45);
+  color: #fefce8;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.hamd-celebration-modal__nav {
+  min-height: 2.25rem;
+  padding: 0 0.85rem;
+  font: inherit;
+}
+
+.hamd-celebration-modal__dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.hamd-celebration-modal__dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  padding: 0;
+}
+
+.hamd-celebration-modal__dot.is-active {
+  background: #f9db8b;
+}
+
+@media (max-width: 430px) {
+  .hamd-celebration-modal__scene {
+    min-height: 18rem;
+  }
+
+  .hamd-celebration-modal__fx .hamd-celebration-fx__balloon,
+  .hamd-celebration-modal__fx .hamd-celebration-fx__sprinkle {
+    display: none;
+  }
+}
+
+.hamd-celebration-modal__identity {
+  margin: 0;
+  font-size: clamp(1.45rem, 3vw, 1.9rem);
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
+
+.hamd-celebration-modal__message {
+  margin: 0;
+  line-height: 1.55;
+  color: #fde68a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-celebration-modal__fx .hamd-celebration-fx__balloon,
+  .hamd-celebration-modal__fx .hamd-celebration-fx__sprinkle,
+  .hamd-celebration-modal__fx .hamd-celebration-fx__rain,
+  .hamd-celebration-modal__fx .hamd-celebration-fx__star {
+    animation: none !important;
+  }
+}
+
+.hamd-celebration-modal__panel {
+  background: rgb(255 255 255 / 0.64);
+  color: #4a1942;
+  border-color: rgb(107 29 74 / 0.16);
+}
+
+.hamd-celebration-modal__close {
+  top: 0.85rem;
+  left: 0.85rem;
+  right: auto;
+  background: rgb(255 255 255 / 0.8);
+  color: #4a1942;
+}
+
+.hamd-celebration-modal__kicker,
+.hamd-celebration-modal__company,
+.hamd-celebration-modal__identity,
+.hamd-celebration-modal__message,
+.hamd-celebration-modal__whisper {
+  color: #6b1d4a;
+}
+
+.hamd-celebration-modal__nav,
+.hamd-celebration-modal__dot {
+  background: rgb(255 255 255 / 0.82);
+  color: #4a1942;
+  border-color: rgb(107 29 74 / 0.28);
+}
+

@@ -1,0 +1,429 @@
+{
+  "imported": 0,
+  "unmatched": 0,
+  "rejected": 0,
+  "failed": 0,
+  "eligible": 60,
+  "rows": [
+    {
+      "filename": "iphones-gadgets-smartphone-primary.png",
+      "relativePath": "iphones-gadgets-smartphone\\iphones-gadgets-smartphone-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-000000000001"
+    },
+    {
+      "filename": "iphones-gadgets-smartphone-detail.png",
+      "relativePath": "iphones-gadgets-smartphone\\iphones-gadgets-smartphone-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-000000000001"
+    },
+    {
+      "filename": "iphones-gadgets-smartphone-application.png",
+      "relativePath": "iphones-gadgets-smartphone\\iphones-gadgets-smartphone-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-000000000001"
+    },
+    {
+      "filename": "iphones-gadgets-business-laptop-primary.png",
+      "relativePath": "iphones-gadgets-business-laptop\\iphones-gadgets-business-laptop-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "c7d3060c-86fe-42fb-adf0-2c36f3070599"
+    },
+    {
+      "filename": "iphones-gadgets-business-laptop-detail.png",
+      "relativePath": "iphones-gadgets-business-laptop\\iphones-gadgets-business-laptop-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "c7d3060c-86fe-42fb-adf0-2c36f3070599"
+    },
+    {
+      "filename": "iphones-gadgets-business-laptop-application.png",
+      "relativePath": "iphones-gadgets-business-laptop\\iphones-gadgets-business-laptop-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "c7d3060c-86fe-42fb-adf0-2c36f3070599"
+    },
+    {
+      "filename": "medical-equipments-bedside-patient-monitor-primary.png",
+      "relativePath": "medical-equipments-bedside-patient-monitor\\medical-equipments-bedside-patient-monitor-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "9c055d36-7733-4788-a65c-aa0adb9a64d7"
+    },
+    {
+      "filename": "medical-equipments-bedside-patient-monitor-detail.png",
+      "relativePath": "medical-equipments-bedside-patient-monitor\\medical-equipments-bedside-patient-monitor-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "9c055d36-7733-4788-a65c-aa0adb9a64d7"
+    },
+    {
+      "filename": "medical-equipments-bedside-patient-monitor-application.png",
+      "relativePath": "medical-equipments-bedside-patient-monitor\\medical-equipments-bedside-patient-monitor-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "9c055d36-7733-4788-a65c-aa0adb9a64d7"
+    },
+    {
+      "filename": "medical-equipments-binocular-microscope-primary.png",
+      "relativePath": "medical-equipments-binocular-microscope\\medical-equipments-binocular-microscope-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "7b817320-221d-4462-b206-9c203b635599"
+    },
+    {
+      "filename": "medical-equipments-binocular-microscope-detail.png",
+      "relativePath": "medical-equipments-binocular-microscope\\medical-equipments-binocular-microscope-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "7b817320-221d-4462-b206-9c203b635599"
+    },
+    {
+      "filename": "medical-equipments-binocular-microscope-application.png",
+      "relativePath": "medical-equipments-binocular-microscope\\medical-equipments-binocular-microscope-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "7b817320-221d-4462-b206-9c203b635599"
+    },
+    {
+      "filename": "home-garden-wares-electric-pressure-washer-primary.png",
+      "relativePath": "home-garden-wares-electric-pressure-washer\\home-garden-wares-electric-pressure-washer-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "31e00a69-e4a8-468a-9a13-df5318a74b89"
+    },
+    {
+      "filename": "home-garden-wares-electric-pressure-washer-detail.png",
+      "relativePath": "home-garden-wares-electric-pressure-washer\\home-garden-wares-electric-pressure-washer-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "31e00a69-e4a8-468a-9a13-df5318a74b89"
+    },
+    {
+      "filename": "home-garden-wares-electric-pressure-washer-application.png",
+      "relativePath": "home-garden-wares-electric-pressure-washer\\home-garden-wares-electric-pressure-washer-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "31e00a69-e4a8-468a-9a13-df5318a74b89"
+    },
+    {
+      "filename": "home-garden-wares-metal-storage-cabinet-primary.png",
+      "relativePath": "home-garden-wares-metal-storage-cabinet\\home-garden-wares-metal-storage-cabinet-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "47b42b00-ec2b-441b-b6e2-59b78e29d864"
+    },
+    {
+      "filename": "home-garden-wares-metal-storage-cabinet-detail.png",
+      "relativePath": "home-garden-wares-metal-storage-cabinet\\home-garden-wares-metal-storage-cabinet-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "47b42b00-ec2b-441b-b6e2-59b78e29d864"
+    },
+    {
+      "filename": "home-garden-wares-metal-storage-cabinet-application.png",
+      "relativePath": "home-garden-wares-metal-storage-cabinet\\home-garden-wares-metal-storage-cabinet-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "47b42b00-ec2b-441b-b6e2-59b78e29d864"
+    },
+    {
+      "filename": "machineries-silent-diesel-generator-primary.png",
+      "relativePath": "machineries-silent-diesel-generator\\machineries-silent-diesel-generator-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "5dbc1066-8974-4103-81ee-c6787ce60cfe"
+    },
+    {
+      "filename": "machineries-silent-diesel-generator-detail.png",
+      "relativePath": "machineries-silent-diesel-generator\\machineries-silent-diesel-generator-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "5dbc1066-8974-4103-81ee-c6787ce60cfe"
+    },
+    {
+      "filename": "machineries-silent-diesel-generator-application.png",
+      "relativePath": "machineries-silent-diesel-generator\\machineries-silent-diesel-generator-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "5dbc1066-8974-4103-81ee-c6787ce60cfe"
+    },
+    {
+      "filename": "machineries-mig-welding-machine-primary.png",
+      "relativePath": "machineries-mig-welding-machine\\machineries-mig-welding-machine-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "7b636192-7e75-458c-b0db-cfc58dd7f189"
+    },
+    {
+      "filename": "machineries-mig-welding-machine-detail.png",
+      "relativePath": "machineries-mig-welding-machine\\machineries-mig-welding-machine-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "7b636192-7e75-458c-b0db-cfc58dd7f189"
+    },
+    {
+      "filename": "machineries-mig-welding-machine-application.png",
+      "relativePath": "machineries-mig-welding-machine\\machineries-mig-welding-machine-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "7b636192-7e75-458c-b0db-cfc58dd7f189"
+    },
+    {
+      "filename": "general-procurement-industrial-personal-protective-equipment-kit-primary.png",
+      "relativePath": "general-procurement-industrial-personal-protective-equipment-kit\\general-procurement-industrial-personal-protective-equipment-kit-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "c6381533-1994-4323-8f5c-af3eaa59ed5a"
+    },
+    {
+      "filename": "general-procurement-industrial-personal-protective-equipment-kit-detail.png",
+      "relativePath": "general-procurement-industrial-personal-protective-equipment-kit\\general-procurement-industrial-personal-protective-equipment-kit-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "c6381533-1994-4323-8f5c-af3eaa59ed5a"
+    },
+    {
+      "filename": "general-procurement-industrial-personal-protective-equipment-kit-application.png",
+      "relativePath": "general-procurement-industrial-personal-protective-equipment-kit\\general-procurement-industrial-personal-protective-equipment-kit-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "c6381533-1994-4323-8f5c-af3eaa59ed5a"
+    },
+    {
+      "filename": "general-procurement-industrial-packaging-materials-lot-primary.png",
+      "relativePath": "general-procurement-industrial-packaging-materials-lot\\general-procurement-industrial-packaging-materials-lot-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "ca61ab25-0b9e-4647-8a49-6cd5bcce7a5a"
+    },
+    {
+      "filename": "general-procurement-industrial-packaging-materials-lot-detail.png",
+      "relativePath": "general-procurement-industrial-packaging-materials-lot\\general-procurement-industrial-packaging-materials-lot-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "ca61ab25-0b9e-4647-8a49-6cd5bcce7a5a"
+    },
+    {
+      "filename": "general-procurement-industrial-packaging-materials-lot-application.png",
+      "relativePath": "general-procurement-industrial-packaging-materials-lot\\general-procurement-industrial-packaging-materials-lot-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "ca61ab25-0b9e-4647-8a49-6cd5bcce7a5a"
+    },
+    {
+      "filename": "home-appliances-commercial-chest-freezer-primary.png",
+      "relativePath": "home-appliances-commercial-chest-freezer\\home-appliances-commercial-chest-freezer-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-000000000011"
+    },
+    {
+      "filename": "home-appliances-commercial-chest-freezer-detail.png",
+      "relativePath": "home-appliances-commercial-chest-freezer\\home-appliances-commercial-chest-freezer-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-000000000011"
+    },
+    {
+      "filename": "home-appliances-commercial-chest-freezer-application.png",
+      "relativePath": "home-appliances-commercial-chest-freezer\\home-appliances-commercial-chest-freezer-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-000000000011"
+    },
+    {
+      "filename": "home-appliances-split-air-conditioner-primary.png",
+      "relativePath": "home-appliances-split-air-conditioner\\home-appliances-split-air-conditioner-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-000000000014"
+    },
+    {
+      "filename": "home-appliances-split-air-conditioner-detail.png",
+      "relativePath": "home-appliances-split-air-conditioner\\home-appliances-split-air-conditioner-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-000000000014"
+    },
+    {
+      "filename": "home-appliances-split-air-conditioner-application.png",
+      "relativePath": "home-appliances-split-air-conditioner\\home-appliances-split-air-conditioner-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-000000000014"
+    },
+    {
+      "filename": "office-business-ergonomic-office-chair-primary.png",
+      "relativePath": "office-business-ergonomic-office-chair\\office-business-ergonomic-office-chair-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-00000000002c"
+    },
+    {
+      "filename": "office-business-ergonomic-office-chair-detail.png",
+      "relativePath": "office-business-ergonomic-office-chair\\office-business-ergonomic-office-chair-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-00000000002c"
+    },
+    {
+      "filename": "office-business-ergonomic-office-chair-application.png",
+      "relativePath": "office-business-ergonomic-office-chair\\office-business-ergonomic-office-chair-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-00000000002c"
+    },
+    {
+      "filename": "office-business-touchscreen-point-of-sale-terminal-primary.png",
+      "relativePath": "office-business-touchscreen-point-of-sale-terminal\\office-business-touchscreen-point-of-sale-terminal-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "2701b8d0-77c8-4dae-8c99-8adb99408aa3"
+    },
+    {
+      "filename": "office-business-touchscreen-point-of-sale-terminal-detail.png",
+      "relativePath": "office-business-touchscreen-point-of-sale-terminal\\office-business-touchscreen-point-of-sale-terminal-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "2701b8d0-77c8-4dae-8c99-8adb99408aa3"
+    },
+    {
+      "filename": "office-business-touchscreen-point-of-sale-terminal-application.png",
+      "relativePath": "office-business-touchscreen-point-of-sale-terminal\\office-business-touchscreen-point-of-sale-terminal-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "2701b8d0-77c8-4dae-8c99-8adb99408aa3"
+    },
+    {
+      "filename": "fashion-textiles-cotton-fabric-roll-primary.png",
+      "relativePath": "fashion-textiles-cotton-fabric-roll\\fashion-textiles-cotton-fabric-roll-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-000000000039"
+    },
+    {
+      "filename": "fashion-textiles-cotton-fabric-roll-detail.png",
+      "relativePath": "fashion-textiles-cotton-fabric-roll\\fashion-textiles-cotton-fabric-roll-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-000000000039"
+    },
+    {
+      "filename": "fashion-textiles-cotton-fabric-roll-application.png",
+      "relativePath": "fashion-textiles-cotton-fabric-roll\\fashion-textiles-cotton-fabric-roll-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "0190c8d0-1000-7000-8000-000000000039"
+    },
+    {
+      "filename": "fashion-textiles-office-corporate-uniform-set-primary.png",
+      "relativePath": "fashion-textiles-office-corporate-uniform-set\\fashion-textiles-office-corporate-uniform-set-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "b4dac1b8-ff91-4447-8358-4fb7ee30d5b9"
+    },
+    {
+      "filename": "fashion-textiles-office-corporate-uniform-set-detail.png",
+      "relativePath": "fashion-textiles-office-corporate-uniform-set\\fashion-textiles-office-corporate-uniform-set-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "b4dac1b8-ff91-4447-8358-4fb7ee30d5b9"
+    },
+    {
+      "filename": "fashion-textiles-office-corporate-uniform-set-application.png",
+      "relativePath": "fashion-textiles-office-corporate-uniform-set\\fashion-textiles-office-corporate-uniform-set-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "b4dac1b8-ff91-4447-8358-4fb7ee30d5b9"
+    },
+    {
+      "filename": "beauty-spa-salon-hydraulic-salon-styling-chair-primary.png",
+      "relativePath": "beauty-spa-salon-hydraulic-salon-styling-chair\\beauty-spa-salon-hydraulic-salon-styling-chair-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "41088858-0c6b-463f-b46e-b5dde61573f2"
+    },
+    {
+      "filename": "beauty-spa-salon-hydraulic-salon-styling-chair-detail.png",
+      "relativePath": "beauty-spa-salon-hydraulic-salon-styling-chair\\beauty-spa-salon-hydraulic-salon-styling-chair-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "41088858-0c6b-463f-b46e-b5dde61573f2"
+    },
+    {
+      "filename": "beauty-spa-salon-hydraulic-salon-styling-chair-application.png",
+      "relativePath": "beauty-spa-salon-hydraulic-salon-styling-chair\\beauty-spa-salon-hydraulic-salon-styling-chair-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "41088858-0c6b-463f-b46e-b5dde61573f2"
+    },
+    {
+      "filename": "beauty-spa-salon-complete-shampoo-station-primary.png",
+      "relativePath": "beauty-spa-salon-complete-shampoo-station\\beauty-spa-salon-complete-shampoo-station-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "7ce17a62-ac56-444d-8643-7d25949db2d0"
+    },
+    {
+      "filename": "beauty-spa-salon-complete-shampoo-station-detail.png",
+      "relativePath": "beauty-spa-salon-complete-shampoo-station\\beauty-spa-salon-complete-shampoo-station-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "7ce17a62-ac56-444d-8643-7d25949db2d0"
+    },
+    {
+      "filename": "beauty-spa-salon-complete-shampoo-station-application.png",
+      "relativePath": "beauty-spa-salon-complete-shampoo-station\\beauty-spa-salon-complete-shampoo-station-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "7ce17a62-ac56-444d-8643-7d25949db2d0"
+    },
+    {
+      "filename": "retail-store-setup-double-sided-gondola-shelving-primary.png",
+      "relativePath": "retail-store-setup-double-sided-gondola-shelving\\retail-store-setup-double-sided-gondola-shelving-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "f0170c55-299f-40ed-a906-5cd3717f94fc"
+    },
+    {
+      "filename": "retail-store-setup-double-sided-gondola-shelving-detail.png",
+      "relativePath": "retail-store-setup-double-sided-gondola-shelving\\retail-store-setup-double-sided-gondola-shelving-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "f0170c55-299f-40ed-a906-5cd3717f94fc"
+    },
+    {
+      "filename": "retail-store-setup-double-sided-gondola-shelving-application.png",
+      "relativePath": "retail-store-setup-double-sided-gondola-shelving\\retail-store-setup-double-sided-gondola-shelving-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "f0170c55-299f-40ed-a906-5cd3717f94fc"
+    },
+    {
+      "filename": "retail-store-setup-upright-refrigerated-display-case-primary.png",
+      "relativePath": "retail-store-setup-upright-refrigerated-display-case\\retail-store-setup-upright-refrigerated-display-case-primary.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "95c2ea23-0e85-4a56-b4ea-e04410ecc27a"
+    },
+    {
+      "filename": "retail-store-setup-upright-refrigerated-display-case-detail.png",
+      "relativePath": "retail-store-setup-upright-refrigerated-display-case\\retail-store-setup-upright-refrigerated-display-case-detail.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "95c2ea23-0e85-4a56-b4ea-e04410ecc27a"
+    },
+    {
+      "filename": "retail-store-setup-upright-refrigerated-display-case-application.png",
+      "relativePath": "retail-store-setup-upright-refrigerated-display-case\\retail-store-setup-upright-refrigerated-display-case-application.png",
+      "status": "ELIGIBLE",
+      "reason": "Approved mapping present; ready for execute upload.",
+      "productId": "95c2ea23-0e85-4a56-b4ea-e04410ecc27a"
+    }
+  ]
+}

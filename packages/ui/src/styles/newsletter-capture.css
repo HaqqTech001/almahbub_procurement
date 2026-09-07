@@ -1,0 +1,135 @@
+/* Shared newsletter capture - Homepage + Footer */
+
+.hamd-newsletter {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 36rem;
+}
+
+.hamd-newsletter__help,
+.hamd-newsletter__legal {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--hamd-color-text-secondary, #475467);
+}
+
+.hamd-newsletter__label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--hamd-color-text, #101828);
+}
+
+.hamd-newsletter__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hamd-newsletter__input {
+  flex: 1 1 12rem;
+  min-height: 44px;
+  border-radius: var(--hamd-radius-md, 0.5rem);
+  border: 1px solid var(--hamd-color-border, #d0d5dd);
+  background: var(--hamd-color-surface, #fff);
+  color: var(--hamd-color-text, #101828);
+  padding: 0.625rem 0.875rem;
+  font: inherit;
+}
+
+.hamd-newsletter__input:focus-visible {
+  outline: 2px solid var(--hamd-color-action, #1570ef);
+  outline-offset: 1px;
+}
+
+.hamd-newsletter__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.625rem 1.125rem;
+  border-radius: var(--hamd-radius-md, 0.5rem);
+  border: 1px solid var(--hamd-color-border, #d0d5dd);
+  background: transparent;
+  color: var(--hamd-color-text, #101828);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.hamd-newsletter__submit:hover {
+  background: color-mix(in srgb, var(--hamd-color-text, #101828) 6%, transparent);
+}
+
+.hamd-newsletter__submit:focus-visible {
+  outline: 2px solid var(--hamd-color-action, #1570ef);
+  outline-offset: 2px;
+}
+
+.hamd-newsletter__submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.hamd-newsletter__status {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--hamd-color-text-secondary, #475467);
+}
+
+.hamd-newsletter__status:empty {
+  display: none;
+}
+
+.hamd-newsletter__status.is-error {
+  color: #b42318;
+}
+
+.hamd-newsletter__status.is-success {
+  color: #067647;
+}
+
+.hamd-newsletter--inverse {
+  max-width: none;
+}
+
+.hamd-newsletter--inverse .hamd-newsletter__help,
+.hamd-newsletter--inverse .hamd-newsletter__legal,
+.hamd-newsletter--inverse .hamd-newsletter__label {
+  color: color-mix(in srgb, #fff 82%, transparent);
+}
+
+.hamd-newsletter--inverse .hamd-newsletter__input {
+  border-color: color-mix(in srgb, #fff 22%, transparent);
+  background: color-mix(in srgb, #000 25%, transparent);
+  color: #fff;
+}
+
+.hamd-newsletter--inverse .hamd-newsletter__submit {
+  border-color: color-mix(in srgb, #fff 28%, transparent);
+  background: color-mix(in srgb, #fff 8%, transparent);
+  color: #fff;
+}
+
+.hamd-newsletter--inverse .hamd-newsletter__submit:hover {
+  background: color-mix(in srgb, #fff 14%, transparent);
+}
+
+.hamd-newsletter--inverse .hamd-newsletter__status.is-error {
+  color: #fecaca;
+}
+
+.hamd-newsletter--inverse .hamd-newsletter__status.is-success {
+  color: #a7f3d0;
+}
+
+.hamd-newsletter--inverse a {
+  color: color-mix(in srgb, #fff 92%, transparent);
+}
+
+[data-theme="dark"] .hamd-newsletter:not(.hamd-newsletter--inverse) .hamd-newsletter__input {
+  background: color-mix(in srgb, #fff 4%, transparent);
+  border-color: color-mix(in srgb, #fff 16%, transparent);
+  color: var(--hamd-color-text, #f8fafc);
+}

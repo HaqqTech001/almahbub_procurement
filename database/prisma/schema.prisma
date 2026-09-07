@@ -91,6 +91,13 @@ enum ProcurementRequestPriority {
   urgent
 }
 
+/// Authoritative line-of-business for procurement requests.
+/// Existing historical rows migrate to `international`.
+enum ProcurementRequestLob {
+  international
+  integrated_export
+}
+
 enum QuotationStatus {
   draft
   internally_reviewed
@@ -307,6 +314,10 @@ model User {
   knowledgeArticlesAuthored   KnowledgeArticle[]              @relation("KnowledgeArticleAuthor")
   marketingInquiries          MarketingInquiry[]
   uploadedDocuments           StoredDocument[]                @relation("DocumentUploader")
+  announcementReplies         AnnouncementReply[]             @relation("AnnouncementReplyAuthor")
+  hiddenAnnouncementReplies   AnnouncementReply[]             @relation("AnnouncementReplyModerator")
+  announcementReactions       AnnouncementReaction[]
+  weddingComments             WeddingComment[]
 
   @@index([status, createdAt(sort: Desc)])
   @@map("users")
@@ -381,13 +392,19 @@ model Organization {
 }
 
 model ProductCategory {
-  id        String            @id @default(uuid(7)) @db.Uuid
-  parentId  String?           @map("parent_id") @db.Uuid
-  name      String
-  slug      String            @unique @db.Citext
-  status    ProductStatus     @default(draft)
-  createdAt DateTime          @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime          @updatedAt @map("updated_at") @db.Timestamptz
+  id              String            @id @default(uuid(7)) @db.Uuid
+  parentId        String?           @map("parent_id") @db.Uuid
+  name            String
+  slug            String            @unique @db.Citext
+  status          ProductStatus     @default(draft)
+  description     String?
+  imageUrl        String?           @map("image_url")
+  imageAlt        String?           @map("image_alt")
+  imageStorageKey String?           @map("image_storage_key")
+  imageMimeType   String?           @map("image_mime_type")
+  imageBytes      Int?              @map("image_bytes")
+  createdAt       DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime          @updatedAt @map("updated_at") @db.Timestamptz
   parent    ProductCategory?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: Restrict)
   children  ProductCategory[] @relation("CategoryTree")
   products  Product[]
@@ -412,6 +429,7 @@ model Product {
   manufacturer   Manufacturer?     @relation(fields: [manufacturerId], references: [id], onDelete: Restrict)
   variants       ProductVariant[]
   images         ProductImage[]
+  videos         ProductVideo[]
   downloads      ProductDownload[]
 
   @@index([categoryId, status])
@@ -444,16 +462,37 @@ model Manufacturer {
 }
 
 model ProductImage {
-  id        String   @id @default(uuid(7)) @db.Uuid
-  productId String   @map("product_id") @db.Uuid
-  url       String
-  altText   String?  @map("alt_text")
-  position  Int      @default(0)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  id         String   @id @default(uuid(7)) @db.Uuid
+  productId  String   @map("product_id") @db.Uuid
+  url        String
+  storageKey String?  @map("storage_key")
+  mimeType   String?  @map("mime_type")
+  fileSize   Int?     @map("file_size")
+  altText    String?  @map("alt_text")
+  caption    String?
+  position   Int      @default(0)
+  isPrimary  Boolean  @default(false) @map("is_primary")
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
 
   @@unique([productId, position])
   @@map("product_images")
+}
+
+model ProductVideo {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  productId String   @map("product_id") @db.Uuid
+  url       String
+  title     String?
+  caption   String?
+  position  Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@unique([productId, position])
+  @@index([productId])
+  @@map("product_videos")
 }
 
 model ProductDownload {
@@ -520,6 +559,8 @@ model ProcurementRequest {
   requesterId             String                          @map("requester_id") @db.Uuid
   publicCode              String                          @map("public_code")
   status                  ProcurementRequestStatus        @default(draft)
+  /// Line of business. Defaults to international for backward compatibility.
+  lob                     ProcurementRequestLob           @default(international)
   title                   String
   currencyCode            String                          @default("USD") @map("currency_code") @db.Char(3)
   notes                   String?
@@ -553,6 +594,7 @@ model ProcurementRequest {
   @@index([organizationId, status, createdAt(sort: Desc)])
   @@index([organizationId, requesterId, createdAt(sort: Desc)])
   @@index([organizationId, deletedAt, status, createdAt(sort: Desc)])
+  @@index([organizationId, lob, createdAt(sort: Desc)])
   @@map("procurement_requests")
 }
 
@@ -607,6 +649,7 @@ model StoredDocument {
   organization     Organization                 @relation(fields: [organizationId], references: [id], onDelete: Restrict)
   uploadedBy       User                         @relation("DocumentUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
   procurementLinks ProcurementRequestDocument[]
+  announcementLinks AnnouncementMedia[]
 
   @@index([organizationId, createdAt(sort: Desc)])
   @@index([uploadedById, createdAt(sort: Desc)])
@@ -1617,26 +1660,82 @@ model GuidanceTipDismissal {
   @@map("guidance_tip_dismissals")
 }
 
-/// Platform announcements — V1 announcements parity (RC7).
+/// Platform announcements - V1 announcements parity (RC7).
 model Announcement {
-  id             String       @id @default(uuid(7)) @db.Uuid
-  organizationId String?      @map("organization_id") @db.Uuid
+  id             String             @id @default(uuid(7)) @db.Uuid
+  organizationId String?            @map("organization_id") @db.Uuid
   title          String
-  slug           String       @unique @db.Citext
+  slug           String             @unique @db.Citext
   summary        String?
   body           String
-  status         String       @default("published")
-  publishedAt    DateTime?    @map("published_at") @db.Timestamptz
-  viewCount      Int          @default(0) @map("view_count")
-  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz
-  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  status         String             @default("published")
+  publishedAt    DateTime?          @map("published_at") @db.Timestamptz
+  pinned         Boolean            @default(false)
+  scheduledFor   DateTime?          @map("scheduled_for") @db.Timestamptz
+  expiresAt      DateTime?          @map("expires_at") @db.Timestamptz
+  viewCount      Int                @default(0) @map("view_count")
+  createdAt      DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+  organization   Organization?      @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  media          AnnouncementMedia[]
+  replies        AnnouncementReply[]
+  reactions      AnnouncementReaction[]
 
   @@index([status, publishedAt(sort: Desc)])
+  @@index([pinned, publishedAt(sort: Desc)])
   @@map("announcements")
 }
 
-/// Buyer ↔ ops support messaging — V1 chat/support parity (REST + poll).
+/// V1 announcement media_files join: images, video, and documents via StoredDocument.
+model AnnouncementMedia {
+  id             String         @id @default(uuid(7)) @db.Uuid
+  announcementId String         @map("announcement_id") @db.Uuid
+  documentId     String         @map("document_id") @db.Uuid
+  sortOrder      Int            @default(0) @map("sort_order")
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  announcement   Announcement   @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  document       StoredDocument @relation(fields: [documentId], references: [id], onDelete: Restrict)
+
+  @@unique([announcementId, documentId])
+  @@index([documentId])
+  @@index([announcementId, sortOrder])
+  @@map("announcement_media")
+}
+
+model AnnouncementReply {
+  id             String       @id @default(uuid(7)) @db.Uuid
+  announcementId String       @map("announcement_id") @db.Uuid
+  authorUserId   String       @map("author_user_id") @db.Uuid
+  body           String
+  hiddenAt       DateTime?    @map("hidden_at") @db.Timestamptz
+  hiddenByUserId String?      @map("hidden_by_user_id") @db.Uuid
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime     @updatedAt @map("updated_at") @db.Timestamptz
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  author         User         @relation("AnnouncementReplyAuthor", fields: [authorUserId], references: [id], onDelete: Restrict)
+  hiddenBy       User?        @relation("AnnouncementReplyModerator", fields: [hiddenByUserId], references: [id], onDelete: SetNull)
+
+  @@index([announcementId, createdAt])
+  @@index([authorUserId])
+  @@map("announcement_replies")
+}
+
+model AnnouncementReaction {
+  id             String       @id @default(uuid(7)) @db.Uuid
+  announcementId String       @map("announcement_id") @db.Uuid
+  userId         String       @map("user_id") @db.Uuid
+  emoji          String
+  createdAt      DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@unique([announcementId, userId, emoji])
+  @@index([announcementId])
+  @@index([userId])
+  @@map("announcement_reactions")
+}
+
+/// Buyer ↔ ops support messaging - V1 chat/support parity (REST + poll).
 model SupportThread {
   id             String           @id @default(uuid(7)) @db.Uuid
   organizationId String           @map("organization_id") @db.Uuid
@@ -1669,7 +1768,7 @@ model SupportMessage {
   @@map("support_messages")
 }
 
-/// Rule/keyword knowledge base — V1 /ai parity.
+/// Rule/keyword knowledge base - V1 /ai parity.
 model KnowledgeArticle {
   id             String        @id @default(uuid(7)) @db.Uuid
   organizationId String?       @map("organization_id") @db.Uuid
@@ -1721,4 +1820,132 @@ model PlatformService {
 
   @@index([status, sortOrder])
   @@map("platform_services")
+}
+
+/// Almahbub Integrated Export commodity catalogue (IE-11A).
+/// Isolated from International Product / ProductCategory.
+/// Category is optional free-text until an approved IE category taxonomy exists — do not reuse ProductCategory.
+/// Media fields store path/alt references only (no binary duplication). Soft-archive via archivedAt.
+model IntegratedExportCommodity {
+  id                 String    @id @default(uuid(7)) @db.Uuid
+  slug               String    @unique @db.Citext
+  name               String
+  /// Public catalogue gate. Defaults to draft (false).
+  published          Boolean   @default(false)
+  /// Optional free-text category label — not a ProductCategory FK.
+  category           String?
+  shortDescription   String?   @map("short_description")
+  description        String?
+  /// { src, alt, caption, stage } - admin-uploaded or verified media references.
+  heroMedia          Json?     @map("hero_media") @db.JsonB
+  /// [{ src, alt, caption, stage, sortOrder }]
+  gallery            Json?     @db.JsonB
+  /// [{ label, value }]
+  specifications     Json?     @db.JsonB
+  packaging          String?
+  qualityInformation String?   @map("quality_information")
+  /// string[]
+  applications       Json?     @db.JsonB
+  markets            String?
+  sortOrder          Int       @default(0) @map("sort_order")
+  archivedAt         DateTime? @map("archived_at") @db.Timestamptz
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime  @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([published, sortOrder])
+  @@index([archivedAt])
+  @@map("integrated_export_commodities")
+}
+
+enum WeddingStreamStatus {
+  draft
+  upcoming
+  live
+  ended
+  archived
+}
+
+/// Single-event Rowdotul HAMD'26 campaign. Overlay JSON holds invitation copy.
+model WeddingCampaign {
+  id           String              @id
+  slug         String              @unique
+  streamStatus WeddingStreamStatus @default(upcoming) @map("stream_status")
+  overlay      Json                @db.JsonB
+  createdAt DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+  comments      WeddingComment[]
+  gallery       WeddingGalleryItem[]
+  recording     WeddingRecording?
+  waitingTracks WeddingWaitingTrack[]
+
+  @@map("wedding_campaigns")
+}
+
+model WeddingWaitingTrack {
+  id                String          @id @default(uuid(7)) @db.Uuid
+  weddingCampaignId String          @map("wedding_campaign_id")
+  campaign          WeddingCampaign @relation(fields: [weddingCampaignId], references: [id], onDelete: Cascade)
+  title             String
+  caption           String          @default("")
+  storageKey        String          @map("storage_key")
+  src               String
+  mimeType          String          @map("mime_type")
+  fileSize          Int             @map("file_size")
+  durationSeconds   Float?          @map("duration_seconds")
+  position          Int             @default(0)
+  isEnabled         Boolean         @default(true) @map("is_enabled")
+  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime        @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@index([weddingCampaignId, position])
+  @@map("wedding_waiting_tracks")
+}
+
+model WeddingComment {
+  id          String          @id @default(uuid(7)) @db.Uuid
+  campaignId  String          @map("campaign_id")
+  campaign    WeddingCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  userId      String          @map("user_id") @db.Uuid
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message     String
+  hidden      Boolean         @default(false)
+  createdAt   DateTime        @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([campaignId, createdAt])
+  @@map("wedding_comments")
+}
+
+model WeddingGalleryItem {
+  id           String          @id @default(uuid(7)) @db.Uuid
+  campaignId   String          @map("campaign_id")
+  campaign     WeddingCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  kind         String
+  src          String
+  storageKey   String          @map("storage_key")
+  title        String
+  caption      String          @default("")
+  featured     Boolean         @default(false)
+  downloadable Boolean         @default(false)
+  sortOrder    Int             @default(0) @map("sort_order")
+  createdAt    DateTime        @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([campaignId, sortOrder])
+  @@map("wedding_gallery_items")
+}
+
+model WeddingRecording {
+  id            String              @id @default(uuid(7)) @db.Uuid
+  campaignId    String              @unique @map("campaign_id")
+  campaign      WeddingCampaign     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  storageKey    String              @map("storage_key")
+  publicUrl     String?             @map("public_url")
+  durationSeconds Int?              @map("duration_seconds")
+  sizeBytes     Int?                @map("size_bytes")
+  mimeType      String              @map("mime_type")
+  status        String
+  downloadable  Boolean             @default(false)
+  createdAt     DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime            @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("wedding_recordings")
 }

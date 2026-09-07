@@ -285,7 +285,7 @@ const RequestDetailPage: React.FC = () => {
 
   const handleCancelRequest = async () => {
     try {
-      await apiClient.updateOrder(Number(id), { status: 'cancelled' });
+      await apiClient.cancelOrder(Number(id));
       toast({
         title: 'Request Cancelled',
         description: 'Your procurement request has been cancelled successfully.',
@@ -294,7 +294,7 @@ const RequestDetailPage: React.FC = () => {
     } catch (error: any) {
       toast({
         title: 'Error',
-        description: 'Failed to cancel request',
+        description: error?.message || 'Failed to cancel request',
         variant: 'destructive',
       });
     }

@@ -11,18 +11,124 @@ import type {
   ListProcurementRequestsInput,
   UpdateProcurementRequestInput,
 } from "../api/procurement-request-schemas.js";
+import {
+  procurementRequestLobWhere,
+  type ProcurementRequestLobValue,
+} from "../domain/procurement-request-lob.js";
 import type { DatabaseClient } from "../../../shared/database/database-client.js";
+
+const relatedInclude = {
+  quotations: {
+    select: {
+      id: true,
+      publicCode: true,
+      status: true,
+      versionNumber: true,
+      rowVersion: true,
+      totalAmount: true,
+      currencyCode: true,
+      expiresAt: true,
+      updatedAt: true,
+    },
+    orderBy: { updatedAt: "desc" as const },
+    take: 12,
+  },
+  purchaseOrders: {
+    select: {
+      id: true,
+      publicCode: true,
+      status: true,
+      totalAmount: true,
+      currencyCode: true,
+      updatedAt: true,
+      shipments: {
+        select: {
+          id: true,
+          publicCode: true,
+          status: true,
+          carrierName: true,
+          trackingNumber: true,
+          estimatedArrivalAt: true,
+          updatedAt: true,
+        },
+        orderBy: { updatedAt: "desc" as const },
+        take: 12,
+      },
+      invoices: {
+        select: {
+          id: true,
+          invoiceNumber: true,
+          status: true,
+          totalAmount: true,
+          currencyCode: true,
+          dueAt: true,
+          updatedAt: true,
+          allocations: {
+            select: {
+              payment: {
+                select: {
+                  id: true,
+                  status: true,
+                  amount: true,
+                  updatedAt: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: { updatedAt: "desc" as const },
+        take: 12,
+      },
+    },
+    orderBy: { updatedAt: "desc" as const },
+    take: 12,
+  },
+} as const;
 
 const requestInclude = {
   items: true,
+  requester: {
+    select: {
+      id: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+    },
+  },
+  organization: {
+    select: {
+      id: true,
+      displayName: true,
+      legalName: true,
+    },
+  },
   assignments: {
     where: { unassignedAt: null },
-    include: { membership: { select: { userId: true } } },
+    include: {
+      membership: {
+        select: {
+          userId: true,
+          user: {
+            select: { firstName: true, lastName: true, email: true },
+          },
+        },
+      },
+    },
   },
   documents: {
     include: { document: true },
     orderBy: { createdAt: "asc" as const },
   },
+  statusEvents: {
+    orderBy: { createdAt: "asc" as const },
+    take: 40,
+    include: {
+      actor: {
+        select: { firstName: true, lastName: true, email: true },
+      },
+    },
+  },
+  ...relatedInclude,
 } as const satisfies Prisma.ProcurementRequestInclude;
 
 export type ProcurementRequestRecord = Prisma.ProcurementRequestGetPayload<{
@@ -44,6 +150,7 @@ export class ProcurementRequestRepository {
         organizationId,
         requesterId,
         publicCode,
+        lob: input.lob,
         title: input.title,
         currencyCode: input.currencyCode,
         notes: input.notes ?? null,
@@ -75,38 +182,48 @@ export class ProcurementRequestRepository {
   }
 
   public async findById(
-    organizationId: string,
+    organizationId: string | null,
     id: string,
     includeArchived = false,
+    lob?: ProcurementRequestLobValue,
   ): Promise<ProcurementRequestRecord | null> {
     return this.database.procurementRequest.findFirst({
       where: {
         id,
-        organizationId,
+        ...(organizationId ? { organizationId } : {}),
         ...(includeArchived ? {} : { deletedAt: null }),
+        ...(lob ? { lob } : {}),
       },
       include: requestInclude,
     });
   }
 
   public async list(
-    organizationId: string,
-    input: ListProcurementRequestsInput,
+    organizationId: string | null,
+    input: ListProcurementRequestsInput & {
+      retainCancelledAfterBuyerHide?: boolean;
+    },
   ): Promise<readonly ProcurementRequestRecord[]> {
+    const visibility: Prisma.ProcurementRequestWhereInput = input.includeArchived
+      ? {}
+      : input.retainCancelledAfterBuyerHide
+        ? { OR: [{ deletedAt: null }, { status: "cancelled" }] }
+        : { deletedAt: null };
+    const search: Prisma.ProcurementRequestWhereInput | undefined = input.q
+      ? {
+          OR: [
+            { title: { contains: input.q, mode: "insensitive" } },
+            { publicCode: { contains: input.q, mode: "insensitive" } },
+          ],
+        }
+      : undefined;
     const where: Prisma.ProcurementRequestWhereInput = {
-      organizationId,
-      ...(input.includeArchived ? {} : { deletedAt: null }),
+      ...(organizationId ? { organizationId } : {}),
+      ...procurementRequestLobWhere(input.lob),
       ...(input.status ? { status: input.status } : {}),
       ...(input.ownerId ? { requesterId: input.ownerId } : {}),
       ...(input.priority ? { priority: input.priority } : {}),
-      ...(input.q
-        ? {
-            OR: [
-              { title: { contains: input.q, mode: "insensitive" } },
-              { publicCode: { contains: input.q, mode: "insensitive" } },
-            ],
-          }
-        : {}),
+      AND: [visibility, ...(search ? [search] : [])],
     };
 
     return this.database.procurementRequest.findMany({
@@ -132,7 +249,7 @@ export class ProcurementRequestRepository {
       where: {
         id: request.id,
         organizationId: request.organizationId,
-        status: "draft",
+        status: request.status,
         deletedAt: null,
         rowVersion: input.rowVersion,
       },

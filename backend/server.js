@@ -8,6 +8,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 require('dotenv').config();
 
+const { assertLegacyRuntimeConfiguration } = require('./config/security');
 const authRoutes = require('./routes/auth');
 const requestRoutes = require('./routes/requests');
 const orderRoutes = require('./routes/orders');
@@ -21,12 +22,16 @@ const userRoutes = require('./routes/users');
 const aiRoutes = require('./routes/ai');
 
 const { initializeDatabase } = require('./config/database');
-const { authenticateToken } = require('./middleware/auth');
+const { authenticateToken, requireAdmin } = require('./middleware/auth');
 const { setupSocketHandlers } = require('./socket/chat');
 const { errorHandler } = require('./middleware/errorHandler');
+const emailService = require('./services/emailService');
 
 const app = express();
 const server = http.createServer(app);
+const allowedOrigins = assertLegacyRuntimeConfiguration();
+
+const isAllowedOrigin = (origin) => !origin || allowedOrigins.has(origin);
 
 // Trust proxy for accurate IP detection behind load balancers/proxies (e.g., Render.com)
 app.set('trust proxy', 1);
@@ -35,8 +40,11 @@ app.set('trust proxy', 1);
 const io = socketIo(server, {
   cors: {
     origin: function(origin, callback) {
-      // Allow all origins for Socket.IO
-      return callback(null, true);
+      if (isAllowedOrigin(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error('Socket.IO origin is not allowed'));
     },
     methods: ["GET", "POST"],
     credentials: true
@@ -60,12 +68,12 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// CORS configuration - Allow all origins for development
+// CORS configuration
 app.use(cors({
   origin: function(origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    return callback(null, true);
+    if (isAllowedOrigin(origin)) return callback(null, true);
+    return callback(new Error('CORS origin is not allowed'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -73,17 +81,6 @@ app.use(cors({
   exposedHeaders: ['Content-Length', 'X-Requested-With'],
   maxAge: 86400 // 24 hours
 }));
-
-// Handle OPTIONS preflight requests with proper CORS headers
-app.options('*', (req, res) => {
-  const origin = req.headers.origin;
-  res.setHeader('Access-Control-Allow-Origin', origin || '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-Session-ID');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Max-Age', '86400');
-  res.status(204).end();
-});
 
 // Logging
 app.use(morgan('combined'));
@@ -145,8 +142,9 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Email test endpoint (for debugging email issues)
-app.get('/api/test-email', async (req, res) => {
+// Debug email routes are disabled by default and require an authenticated admin.
+if (process.env.ENABLE_DEBUG_EMAIL_ROUTES === 'true') {
+app.get('/api/test-email', authenticateToken, requireAdmin, async (req, res) => {
   try {
     await emailService.verifyConnection();
     res.json({
@@ -165,7 +163,7 @@ app.get('/api/test-email', async (req, res) => {
 });
 
 // Email test endpoint that actually sends an email
-app.get('/api/test-email-send', async (req, res) => {
+app.get('/api/test-email-send', authenticateToken, requireAdmin, async (req, res) => {
   try {
     res.setHeader('Content-Type', 'text/html');
     res.write('<html><head><title>Email Test</title>');
@@ -240,6 +238,7 @@ app.get('/api/test-email-send', async (req, res) => {
     res.status(500).end();
   }
 });
+}
 
 // API routes
 app.use('/api/v1/auth', authRoutes);
@@ -280,10 +279,6 @@ async function startServer() {
       console.log(`📡 Socket.IO enabled for real-time chat`);
       console.log(`🔗 Admin Dashboard: http://localhost:5174`);
       console.log(`👤 Client Frontend: http://localhost:5173`);
-      console.log('');
-      console.log('🔑 Admin Credentials:');
-      console.log('   Email: admin@almahbub.com');
-      console.log('   Password: admin123456');
     });
   } catch (error) {
     console.error('❌ Failed to start server:', error);

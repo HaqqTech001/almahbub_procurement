@@ -1,0 +1,47 @@
+{
+  "name": "@hamd/database",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "lint": "eslint index.ts",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "test": "vitest run",
+    "generate": "prisma generate",
+    "migrate:dev": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
+    "seed": "prisma db seed",
+    "seed:ie-drafts": "tsx --env-file=.env prisma/seed/ie-owner-approved-commodity-drafts.ts",
+    "seed:ie-publish": "tsx --env-file=.env prisma/seed/ie-publish-commodities.ts",
+    "studio": "prisma studio",
+    "validate": "prisma validate",
+    "format": "prisma format"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed/development.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/client": "^7.9.1",
+    "pg": "^8.22.0"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^10.5.0",
+    "@hamd/config-eslint": "workspace:*",
+    "@types/pg": "^8.20.4",
+    "eslint": "^9.35.0",
+    "prisma": "^7.9.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tsx": "^4.23.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

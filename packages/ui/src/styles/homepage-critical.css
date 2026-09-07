@@ -1,0 +1,68 @@
+/* Critical homepage surface - keep small; host may inline for FCP.
+   Pair with system font stack - do not block on webfonts. */
+
+:root {
+  --hamd-font-sans:
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  --hamd-color-canvas: #f9fafb;
+  --hamd-color-text: #101828;
+  --hamd-color-action: #155aaf;
+  --hamd-color-inverse: #101828;
+  --hamd-color-on-inverse: #f9fafb;
+  --hamd-max-default: 72rem;
+}
+
+/* Optional self-hosted face - only if host preloads the file */
+@font-face {
+  font-family: "Hamd Sans";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: local("Segoe UI"), local("Helvetica Neue"), local("Arial");
+}
+
+.hamd-homepage {
+  font-family: var(--hamd-font-sans);
+  text-rendering: optimizeLegibility;
+}
+
+.hamd-homepage__defer-sentinel {
+  position: relative;
+  height: 1px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.hamd-homepage__defer-spacer {
+  min-height: 48rem;
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 48rem;
+}
+
+.hamd-homepage__below-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 3200px;
+}
+
+.hamd-img {
+  max-width: 100%;
+  height: auto;
+  content-visibility: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-homepage *,
+  .hamd-homepage *::before,
+  .hamd-homepage *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

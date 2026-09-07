@@ -1,0 +1,602 @@
+[
+    {
+        "filename":  "iphones-gadgets-smartphone-primary.png",
+        "sourcePath":  "iphones-gadgets-smartphone/iphones-gadgets-smartphone-primary.png",
+        "productSlug":  "iphones-gadgets-smartphone",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Unbranded modern smartphone on a studio backdrop for procurement illustration",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "iphones-gadgets-smartphone-detail.png",
+        "sourcePath":  "iphones-gadgets-smartphone/iphones-gadgets-smartphone-detail.png",
+        "productSlug":  "iphones-gadgets-smartphone",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of smartphone camera module and side controls",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "iphones-gadgets-smartphone-application.png",
+        "sourcePath":  "iphones-gadgets-smartphone/iphones-gadgets-smartphone-application.png",
+        "productSlug":  "iphones-gadgets-smartphone",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Smartphone on an office desk illustrating business procurement",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "iphones-gadgets-business-laptop-primary.png",
+        "sourcePath":  "iphones-gadgets-business-laptop/iphones-gadgets-business-laptop-primary.png",
+        "productSlug":  "iphones-gadgets-business-laptop",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Closed unbranded business laptop in a studio catalogue setting",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "iphones-gadgets-business-laptop-detail.png",
+        "sourcePath":  "iphones-gadgets-business-laptop/iphones-gadgets-business-laptop-detail.png",
+        "productSlug":  "iphones-gadgets-business-laptop",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of business laptop ports and keyboard",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "iphones-gadgets-business-laptop-application.png",
+        "sourcePath":  "iphones-gadgets-business-laptop/iphones-gadgets-business-laptop-application.png",
+        "productSlug":  "iphones-gadgets-business-laptop",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Open laptop on a conference table for office procurement",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "medical-equipments-bedside-patient-monitor-primary.png",
+        "sourcePath":  "medical-equipments-bedside-patient-monitor/medical-equipments-bedside-patient-monitor-primary.png",
+        "productSlug":  "medical-equipments-bedside-patient-monitor",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Bedside patient monitor on a studio floor for healthcare procurement",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "medical-equipments-bedside-patient-monitor-detail.png",
+        "sourcePath":  "medical-equipments-bedside-patient-monitor/medical-equipments-bedside-patient-monitor-detail.png",
+        "productSlug":  "medical-equipments-bedside-patient-monitor",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of patient monitor ports and controls",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "medical-equipments-bedside-patient-monitor-application.png",
+        "sourcePath":  "medical-equipments-bedside-patient-monitor/medical-equipments-bedside-patient-monitor-application.png",
+        "productSlug":  "medical-equipments-bedside-patient-monitor",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Patient monitor on a medical trolley in an empty clinic",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "medical-equipments-binocular-microscope-primary.png",
+        "sourcePath":  "medical-equipments-binocular-microscope/medical-equipments-binocular-microscope-primary.png",
+        "productSlug":  "medical-equipments-binocular-microscope",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Binocular laboratory microscope in a studio catalogue setting",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "medical-equipments-binocular-microscope-detail.png",
+        "sourcePath":  "medical-equipments-binocular-microscope/medical-equipments-binocular-microscope-detail.png",
+        "productSlug":  "medical-equipments-binocular-microscope",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of microscope eyepieces and stage",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "medical-equipments-binocular-microscope-application.png",
+        "sourcePath":  "medical-equipments-binocular-microscope/medical-equipments-binocular-microscope-application.png",
+        "productSlug":  "medical-equipments-binocular-microscope",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Microscope on a laboratory bench with slides",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "home-garden-wares-electric-pressure-washer-primary.png",
+        "sourcePath":  "home-garden-wares-electric-pressure-washer/home-garden-wares-electric-pressure-washer-primary.png",
+        "productSlug":  "home-garden-wares-electric-pressure-washer",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Electric pressure washer with hose and lance in studio lighting",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "home-garden-wares-electric-pressure-washer-detail.png",
+        "sourcePath":  "home-garden-wares-electric-pressure-washer/home-garden-wares-electric-pressure-washer-detail.png",
+        "productSlug":  "home-garden-wares-electric-pressure-washer",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of pressure washer pump and spray nozzle",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "home-garden-wares-electric-pressure-washer-application.png",
+        "sourcePath":  "home-garden-wares-electric-pressure-washer/home-garden-wares-electric-pressure-washer-application.png",
+        "productSlug":  "home-garden-wares-electric-pressure-washer",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Pressure washer on an outdoor courtyard for facility cleaning",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "home-garden-wares-metal-storage-cabinet-primary.png",
+        "sourcePath":  "home-garden-wares-metal-storage-cabinet/home-garden-wares-metal-storage-cabinet-primary.png",
+        "productSlug":  "home-garden-wares-metal-storage-cabinet",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Tall metal storage cabinet with closed doors in a studio",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "home-garden-wares-metal-storage-cabinet-detail.png",
+        "sourcePath":  "home-garden-wares-metal-storage-cabinet/home-garden-wares-metal-storage-cabinet-detail.png",
+        "productSlug":  "home-garden-wares-metal-storage-cabinet",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of cabinet lock, handle and shelf edge",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "home-garden-wares-metal-storage-cabinet-application.png",
+        "sourcePath":  "home-garden-wares-metal-storage-cabinet/home-garden-wares-metal-storage-cabinet-application.png",
+        "productSlug":  "home-garden-wares-metal-storage-cabinet",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Metal storage cabinet in a facility corridor",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "machineries-silent-diesel-generator-primary.png",
+        "sourcePath":  "machineries-silent-diesel-generator/machineries-silent-diesel-generator-primary.png",
+        "productSlug":  "machineries-silent-diesel-generator",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Silent diesel generator with acoustic canopy in studio lighting",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "machineries-silent-diesel-generator-detail.png",
+        "sourcePath":  "machineries-silent-diesel-generator/machineries-silent-diesel-generator-detail.png",
+        "productSlug":  "machineries-silent-diesel-generator",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of generator control panel and canopy latch",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "machineries-silent-diesel-generator-application.png",
+        "sourcePath":  "machineries-silent-diesel-generator/machineries-silent-diesel-generator-application.png",
+        "productSlug":  "machineries-silent-diesel-generator",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Silent diesel generator beside a commercial service area",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "machineries-mig-welding-machine-primary.png",
+        "sourcePath":  "machineries-mig-welding-machine/machineries-mig-welding-machine-primary.png",
+        "productSlug":  "machineries-mig-welding-machine",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "MIG welding machine with torch in a studio catalogue setting",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "machineries-mig-welding-machine-detail.png",
+        "sourcePath":  "machineries-mig-welding-machine/machineries-mig-welding-machine-detail.png",
+        "productSlug":  "machineries-mig-welding-machine",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of welder wire feeder and torch connector",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "machineries-mig-welding-machine-application.png",
+        "sourcePath":  "machineries-mig-welding-machine/machineries-mig-welding-machine-application.png",
+        "productSlug":  "machineries-mig-welding-machine",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Welding machine on a trolley in an empty fabrication bay",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "general-procurement-industrial-personal-protective-equipment-kit-primary.png",
+        "sourcePath":  "general-procurement-industrial-personal-protective-equipment-kit/general-procurement-industrial-personal-protective-equipment-kit-primary.png",
+        "productSlug":  "general-procurement-industrial-personal-protective-equipment-kit",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Industrial PPE kit with helmet, gloves, goggles and vest",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "general-procurement-industrial-personal-protective-equipment-kit-detail.png",
+        "sourcePath":  "general-procurement-industrial-personal-protective-equipment-kit/general-procurement-industrial-personal-protective-equipment-kit-detail.png",
+        "productSlug":  "general-procurement-industrial-personal-protective-equipment-kit",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of helmet, glove stitching and goggle lens",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "general-procurement-industrial-personal-protective-equipment-kit-application.png",
+        "sourcePath":  "general-procurement-industrial-personal-protective-equipment-kit/general-procurement-industrial-personal-protective-equipment-kit-application.png",
+        "productSlug":  "general-procurement-industrial-personal-protective-equipment-kit",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "PPE kit organised on a facility locker shelf",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "general-procurement-industrial-packaging-materials-lot-primary.png",
+        "sourcePath":  "general-procurement-industrial-packaging-materials-lot/general-procurement-industrial-packaging-materials-lot-primary.png",
+        "productSlug":  "general-procurement-industrial-packaging-materials-lot",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Corrugated cartons, stretch wrap and packing tape for industrial packaging",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "general-procurement-industrial-packaging-materials-lot-detail.png",
+        "sourcePath":  "general-procurement-industrial-packaging-materials-lot/general-procurement-industrial-packaging-materials-lot-detail.png",
+        "productSlug":  "general-procurement-industrial-packaging-materials-lot",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of carton flute, tape dispenser and wrap",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "general-procurement-industrial-packaging-materials-lot-application.png",
+        "sourcePath":  "general-procurement-industrial-packaging-materials-lot/general-procurement-industrial-packaging-materials-lot-application.png",
+        "productSlug":  "general-procurement-industrial-packaging-materials-lot",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Unmarked cartons on a packing table in an empty stockroom",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "home-appliances-commercial-chest-freezer-primary.png",
+        "sourcePath":  "home-appliances-commercial-chest-freezer/home-appliances-commercial-chest-freezer-primary.png",
+        "productSlug":  "home-appliances-commercial-chest-freezer",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Commercial chest freezer with closed lid in studio lighting",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "home-appliances-commercial-chest-freezer-detail.png",
+        "sourcePath":  "home-appliances-commercial-chest-freezer/home-appliances-commercial-chest-freezer-detail.png",
+        "productSlug":  "home-appliances-commercial-chest-freezer",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of chest freezer handle and thermostat",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "home-appliances-commercial-chest-freezer-application.png",
+        "sourcePath":  "home-appliances-commercial-chest-freezer/home-appliances-commercial-chest-freezer-application.png",
+        "productSlug":  "home-appliances-commercial-chest-freezer",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Chest freezer in a clean kitchen prep room",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "home-appliances-split-air-conditioner-primary.png",
+        "sourcePath":  "home-appliances-split-air-conditioner/home-appliances-split-air-conditioner-primary.png",
+        "productSlug":  "home-appliances-split-air-conditioner",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Split air conditioner indoor wall unit in a studio",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "home-appliances-split-air-conditioner-detail.png",
+        "sourcePath":  "home-appliances-split-air-conditioner/home-appliances-split-air-conditioner-detail.png",
+        "productSlug":  "home-appliances-split-air-conditioner",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of air conditioner vents and louvers",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "home-appliances-split-air-conditioner-application.png",
+        "sourcePath":  "home-appliances-split-air-conditioner/home-appliances-split-air-conditioner-application.png",
+        "productSlug":  "home-appliances-split-air-conditioner",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Indoor split air conditioner mounted on an office wall",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "office-business-ergonomic-office-chair-primary.png",
+        "sourcePath":  "office-business-ergonomic-office-chair/office-business-ergonomic-office-chair-primary.png",
+        "productSlug":  "office-business-ergonomic-office-chair",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Black ergonomic mesh office chair in studio lighting",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "office-business-ergonomic-office-chair-detail.png",
+        "sourcePath":  "office-business-ergonomic-office-chair/office-business-ergonomic-office-chair-detail.png",
+        "productSlug":  "office-business-ergonomic-office-chair",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of office chair armrest, lumbar support and caster",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "office-business-ergonomic-office-chair-application.png",
+        "sourcePath":  "office-business-ergonomic-office-chair/office-business-ergonomic-office-chair-application.png",
+        "productSlug":  "office-business-ergonomic-office-chair",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Ergonomic chair at an empty desk workstation",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "office-business-touchscreen-point-of-sale-terminal-primary.png",
+        "sourcePath":  "office-business-touchscreen-point-of-sale-terminal/office-business-touchscreen-point-of-sale-terminal-primary.png",
+        "productSlug":  "office-business-touchscreen-point-of-sale-terminal",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Touchscreen POS terminal on a stand in studio lighting",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "office-business-touchscreen-point-of-sale-terminal-detail.png",
+        "sourcePath":  "office-business-touchscreen-point-of-sale-terminal/office-business-touchscreen-point-of-sale-terminal-detail.png",
+        "productSlug":  "office-business-touchscreen-point-of-sale-terminal",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of POS card reader slot and stand hinge",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "office-business-touchscreen-point-of-sale-terminal-application.png",
+        "sourcePath":  "office-business-touchscreen-point-of-sale-terminal/office-business-touchscreen-point-of-sale-terminal-application.png",
+        "productSlug":  "office-business-touchscreen-point-of-sale-terminal",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "POS terminal on a checkout counter with receipt printer",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "fashion-textiles-cotton-fabric-roll-primary.png",
+        "sourcePath":  "fashion-textiles-cotton-fabric-roll/fashion-textiles-cotton-fabric-roll-primary.png",
+        "productSlug":  "fashion-textiles-cotton-fabric-roll",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Cotton fabric roll standing in a studio catalogue setting",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "fashion-textiles-cotton-fabric-roll-detail.png",
+        "sourcePath":  "fashion-textiles-cotton-fabric-roll/fashion-textiles-cotton-fabric-roll-detail.png",
+        "productSlug":  "fashion-textiles-cotton-fabric-roll",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of cotton weave and roll core",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "fashion-textiles-cotton-fabric-roll-application.png",
+        "sourcePath":  "fashion-textiles-cotton-fabric-roll/fashion-textiles-cotton-fabric-roll-application.png",
+        "productSlug":  "fashion-textiles-cotton-fabric-roll",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Cotton fabric rolls on a textile showroom rack",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "fashion-textiles-office-corporate-uniform-set-primary.png",
+        "sourcePath":  "fashion-textiles-office-corporate-uniform-set/fashion-textiles-office-corporate-uniform-set-primary.png",
+        "productSlug":  "fashion-textiles-office-corporate-uniform-set",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Folded office corporate uniform set in navy fabric",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "fashion-textiles-office-corporate-uniform-set-detail.png",
+        "sourcePath":  "fashion-textiles-office-corporate-uniform-set/fashion-textiles-office-corporate-uniform-set-detail.png",
+        "productSlug":  "fashion-textiles-office-corporate-uniform-set",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of uniform collar stitching and button",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "fashion-textiles-office-corporate-uniform-set-application.png",
+        "sourcePath":  "fashion-textiles-office-corporate-uniform-set/fashion-textiles-office-corporate-uniform-set-application.png",
+        "productSlug":  "fashion-textiles-office-corporate-uniform-set",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Folded corporate uniforms on a housekeeping shelf",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "beauty-spa-salon-hydraulic-salon-styling-chair-primary.png",
+        "sourcePath":  "beauty-spa-salon-hydraulic-salon-styling-chair/beauty-spa-salon-hydraulic-salon-styling-chair-primary.png",
+        "productSlug":  "beauty-spa-salon-hydraulic-salon-styling-chair",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Hydraulic salon styling chair with chrome base in a studio",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "beauty-spa-salon-hydraulic-salon-styling-chair-detail.png",
+        "sourcePath":  "beauty-spa-salon-hydraulic-salon-styling-chair/beauty-spa-salon-hydraulic-salon-styling-chair-detail.png",
+        "productSlug":  "beauty-spa-salon-hydraulic-salon-styling-chair",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of salon chair hydraulic pedal and chrome base",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "beauty-spa-salon-hydraulic-salon-styling-chair-application.png",
+        "sourcePath":  "beauty-spa-salon-hydraulic-salon-styling-chair/beauty-spa-salon-hydraulic-salon-styling-chair-application.png",
+        "productSlug":  "beauty-spa-salon-hydraulic-salon-styling-chair",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Salon styling chair in front of an illuminated mirror",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "beauty-spa-salon-complete-shampoo-station-primary.png",
+        "sourcePath":  "beauty-spa-salon-complete-shampoo-station/beauty-spa-salon-complete-shampoo-station-primary.png",
+        "productSlug":  "beauty-spa-salon-complete-shampoo-station",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Complete shampoo station with ceramic basin and reclining chair",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "beauty-spa-salon-complete-shampoo-station-detail.png",
+        "sourcePath":  "beauty-spa-salon-complete-shampoo-station/beauty-spa-salon-complete-shampoo-station-detail.png",
+        "productSlug":  "beauty-spa-salon-complete-shampoo-station",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of shampoo basin mixer tap and neck rest",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "beauty-spa-salon-complete-shampoo-station-application.png",
+        "sourcePath":  "beauty-spa-salon-complete-shampoo-station/beauty-spa-salon-complete-shampoo-station-application.png",
+        "productSlug":  "beauty-spa-salon-complete-shampoo-station",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Shampoo station in an empty salon wet area",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "retail-store-setup-double-sided-gondola-shelving-primary.png",
+        "sourcePath":  "retail-store-setup-double-sided-gondola-shelving/retail-store-setup-double-sided-gondola-shelving-primary.png",
+        "productSlug":  "retail-store-setup-double-sided-gondola-shelving",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Empty double-sided gondola shelving bay in studio lighting",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "retail-store-setup-double-sided-gondola-shelving-detail.png",
+        "sourcePath":  "retail-store-setup-double-sided-gondola-shelving/retail-store-setup-double-sided-gondola-shelving-detail.png",
+        "productSlug":  "retail-store-setup-double-sided-gondola-shelving",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of gondola upright, bracket and shelf edge",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "retail-store-setup-double-sided-gondola-shelving-application.png",
+        "sourcePath":  "retail-store-setup-double-sided-gondola-shelving/retail-store-setup-double-sided-gondola-shelving-application.png",
+        "productSlug":  "retail-store-setup-double-sided-gondola-shelving",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Gondola shelving in an empty retail aisle",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "retail-store-setup-upright-refrigerated-display-case-primary.png",
+        "sourcePath":  "retail-store-setup-upright-refrigerated-display-case/retail-store-setup-upright-refrigerated-display-case-primary.png",
+        "productSlug":  "retail-store-setup-upright-refrigerated-display-case",
+        "kind":  "image",
+        "position":  0,
+        "altText":  "Upright refrigerated display case with closed glass doors",
+        "caption":  "Primary catalogue view illustrating the procurement type. Not a photograph of warehouse stock.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "retail-store-setup-upright-refrigerated-display-case-detail.png",
+        "sourcePath":  "retail-store-setup-upright-refrigerated-display-case/retail-store-setup-upright-refrigerated-display-case-detail.png",
+        "productSlug":  "retail-store-setup-upright-refrigerated-display-case",
+        "kind":  "image",
+        "position":  1,
+        "altText":  "Close-up of refrigerated case door handle and gasket",
+        "caption":  "Detail view of form and procurement features. Catalogue illustration only.",
+        "confidence":  "HIGH"
+    },
+    {
+        "filename":  "retail-store-setup-upright-refrigerated-display-case-application.png",
+        "sourcePath":  "retail-store-setup-upright-refrigerated-display-case/retail-store-setup-upright-refrigerated-display-case-application.png",
+        "productSlug":  "retail-store-setup-upright-refrigerated-display-case",
+        "kind":  "image",
+        "position":  2,
+        "altText":  "Upright refrigerated display case at the end of an empty aisle",
+        "caption":  "Typical application context for specification-led procurement. Not a stock claim.",
+        "confidence":  "HIGH"
+    }
+]

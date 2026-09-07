@@ -1,9 +1,9 @@
 /**
- * Request create / edit wizard — V1 parity + V2 improvements.
+ * Request create / edit wizard - V1 parity + V2 improvements.
  * Drafts, autosave, templates, multi-product, validation, review.
  */
 
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { cx } from "../utils/cx.js";
 import type {
   ProcurementAttachment,
@@ -13,12 +13,71 @@ import type {
   ProcurementRequestRecord,
 } from "./types.js";
 import { PROCUREMENT_PRIORITIES } from "./types.js";
+import { ProcurementProgress } from "./ProcurementProgress.js";
+import { AttachmentBoard } from "../primitives/AuthenticatedMedia.js";
+
+const QUANTITY_UNITS = [
+  "pcs",
+  "units",
+  "cartons",
+  "boxes",
+  "kg",
+  "tonnes",
+  "litres",
+  "sets",
+] as const;
+
+function QuantityStepper({
+  value,
+  invalid,
+  fieldKey,
+  onChange,
+}: {
+  value: number;
+  invalid: boolean;
+  fieldKey: WizardFieldKey;
+  onChange: (next: number) => void;
+}) {
+  return (
+    <div className="hamd-qty">
+      <button
+        type="button"
+        className="hamd-qty__btn"
+        aria-label="Decrease quantity"
+        onClick={() => onChange(Math.max(1, value - 1))}
+      >
+        −
+      </button>
+      <input
+        className="hamd-qty__input"
+        inputMode="numeric"
+        value={Number.isFinite(value) ? String(value) : "1"}
+        onChange={(e) => {
+          const next = Number.parseInt(e.target.value.replace(/[^\d]/g, ""), 10);
+          onChange(Number.isFinite(next) && next > 0 ? next : 1);
+        }}
+        data-wizard-field={fieldKey}
+        aria-required="true"
+        required
+        aria-invalid={invalid || undefined}
+      />
+      <button
+        type="button"
+        className="hamd-qty__btn"
+        aria-label="Increase quantity"
+        onClick={() => onChange(value + 1)}
+      >
+        +
+      </button>
+    </div>
+  );
+}
 
 export const REQUEST_WIZARD_STEPS = [
-  { id: "basics", label: "Basics" },
   { id: "products", label: "Products" },
+  { id: "basics", label: "Requirements" },
   { id: "delivery", label: "Delivery" },
-  { id: "documents", label: "Documents" },
+  { id: "documents", label: "Media" },
   { id: "review", label: "Review" },
 ] as const;
 
@@ -30,6 +89,25 @@ export type CatalogProductOption = {
   category: string;
   unit?: string | undefined;
   sku?: string | undefined;
+  description?: string | undefined;
+  imageSrc?: string | undefined;
+  imageAlt?: string | undefined;
+  manufacturer?: string | undefined;
+};
+
+export type WizardFieldKey =
+  | "title"
+  | "items"
+  | `item:${string}:description`
+  | `item:${string}:quantity`
+  | `item:${string}:unit`
+  | `item:${string}:category`
+  | "destinationAddress"
+  | "destinationCountryCode";
+
+export type WizardValidationResult = {
+  messages: string[];
+  fields: WizardFieldKey[];
 };
 
 export type RequestTemplate = {
@@ -61,6 +139,8 @@ export type RequestWizardDraft = {
     name: string;
     sizeLabel: string;
     file?: File | undefined;
+    previewUrl?: string | undefined;
+    kind?: "image" | "file" | undefined;
   }>;
   rowVersion: number;
 };
@@ -85,6 +165,14 @@ export type RequestCreateWizardProps = {
   onSubmit?: ((payload: RequestWizardSubmitPayload) => void | Promise<void>) | undefined;
   onSaveDraft?: ((payload: RequestWizardSubmitPayload) => void | Promise<void>) | undefined;
   onCancel?: (() => void) | undefined;
+  onCatalogSearch?: ((query: string) => Promise<readonly CatalogProductOption[]>) | undefined;
+  onNotify?:
+    | ((toast: {
+        tone: "success" | "warning" | "danger" | "info";
+        title: string;
+        description?: string;
+      }) => void)
+    | undefined;
 };
 
 const emptyItem = (): RequestWizardDraft["items"][number] => ({
@@ -117,15 +205,15 @@ export function emptyRequestWizardDraft(): RequestWizardDraft {
 
 export const defaultRequestTemplates: RequestTemplate[] = [
   {
-    id: "tpl-industrial",
-    name: "Industrial components",
-    description: "Valves, fittings, and plant spare parts.",
+    id: "tpl-restock",
+    name: "Business restocking",
+    description: "Repeat supply of known catalogue items for an operating site.",
     draft: {
-      title: "Industrial components order",
+      title: "Business restocking",
       priority: "normal",
       currencyCode: "USD",
       budgetAmount: null,
-      notes: "Prefer ISO-certified suppliers.",
+      notes: "Please match previous supply quality. Confirm packing and lead time.",
       internalNotes: "",
       destinationCountryCode: "NG",
       destinationAddress: "",
@@ -133,26 +221,26 @@ export const defaultRequestTemplates: RequestTemplate[] = [
       restrictedGoodsDeclared: false,
       items: [
         {
-          id: "tpl-i1",
+          id: "tpl-restock-1",
           description: "",
-          quantity: 1,
+          quantity: 10,
           unit: "pcs",
-          category: "Industrial",
-          specifications: "",
+          category: "",
+          specifications: "Same specification as the last fulfilled order where possible.",
         },
       ],
     },
   },
   {
-    id: "tpl-electrical",
-    name: "Electrical supply",
-    description: "Panels, breakers, and cable assemblies.",
+    id: "tpl-equipment",
+    name: "Equipment procurement",
+    description: "Capital equipment with installation and specification notes.",
     draft: {
-      title: "Electrical supply request",
+      title: "Equipment procurement",
       priority: "high",
       currencyCode: "USD",
       budgetAmount: null,
-      notes: "",
+      notes: "Include brand options, warranty, and commissioning requirements.",
       internalNotes: "",
       destinationCountryCode: "NG",
       destinationAddress: "",
@@ -160,55 +248,100 @@ export const defaultRequestTemplates: RequestTemplate[] = [
       restrictedGoodsDeclared: false,
       items: [
         {
-          id: "tpl-e1",
+          id: "tpl-equip-1",
           description: "",
           quantity: 1,
+          unit: "set",
+          category: "",
+          specifications: "Include voltage, capacity, and installation constraints.",
+        },
+      ],
+    },
+  },
+  {
+    id: "tpl-office",
+    name: "Office setup",
+    description: "Furniture, IT, and workplace supplies for a new or expanded office.",
+    draft: {
+      title: "Office setup",
+      priority: "normal",
+      currencyCode: "USD",
+      budgetAmount: null,
+      notes: "Deliver as a coordinated set. Confirm access hours for the site.",
+      internalNotes: "",
+      destinationCountryCode: "NG",
+      destinationAddress: "",
+      requiredByDate: "",
+      restrictedGoodsDeclared: false,
+      items: [
+        {
+          id: "tpl-office-1",
+          description: "Workplace furniture and supplies",
+          quantity: 1,
+          unit: "lot",
+          category: "",
+          specifications: "List desks, seating, and storage needed.",
+        },
+      ],
+    },
+  },
+  {
+    id: "tpl-bulk",
+    name: "Bulk product sourcing",
+    description: "Volume purchase with packing, unit, and delivery constraints.",
+    draft: {
+      title: "Bulk product sourcing",
+      priority: "normal",
+      currencyCode: "USD",
+      budgetAmount: null,
+      notes: "Quote by carton or tonne as appropriate. Confirm origin and packing.",
+      internalNotes: "",
+      destinationCountryCode: "NG",
+      destinationAddress: "",
+      requiredByDate: "",
+      restrictedGoodsDeclared: false,
+      items: [
+        {
+          id: "tpl-bulk-1",
+          description: "",
+          quantity: 20,
+          unit: "cartons",
+          category: "",
+          specifications: "Confirm pack size, net weight, and labelling.",
+        },
+      ],
+    },
+  },
+  {
+    id: "tpl-custom",
+    name: "Custom requirement",
+    description: "A specification-led request when the catalogue item is not yet known.",
+    draft: {
+      title: "Custom procurement requirement",
+      priority: "normal",
+      currencyCode: "USD",
+      budgetAmount: null,
+      notes: "Our team will source options from your specification.",
+      internalNotes: "",
+      destinationCountryCode: "NG",
+      destinationAddress: "",
+      requiredByDate: "",
+      restrictedGoodsDeclared: false,
+      items: [
+        {
+          id: "tpl-custom-1",
+          description: "Custom sourced item",
+          quantity: 1,
           unit: "pcs",
-          category: "Electrical",
-          specifications: "",
+          category: "",
+          specifications: "Describe the performance, size, material, and standards required.",
         },
       ],
     },
   },
 ];
 
-export const defaultCatalogProducts: CatalogProductOption[] = [
-  {
-    id: "cat-valve-dn50",
-    name: "Gate valve DN50 PN16",
-    category: "Industrial",
-    unit: "pcs",
-    sku: "VLV-DN50",
-  },
-  {
-    id: "cat-valve-dn80",
-    name: "Ball valve DN80",
-    category: "Industrial",
-    unit: "pcs",
-    sku: "VLV-DN80",
-  },
-  {
-    id: "cat-breaker-63",
-    name: "MCCB 63A 3P",
-    category: "Electrical",
-    unit: "pcs",
-    sku: "BRK-63",
-  },
-  {
-    id: "cat-cable-4c",
-    name: "Armoured cable 4×25mm²",
-    category: "Electrical",
-    unit: "m",
-    sku: "CBL-4C25",
-  },
-  {
-    id: "cat-ppe-helmet",
-    name: "Safety helmet (EN 397)",
-    category: "Safety",
-    unit: "pcs",
-    sku: "PPE-HLM",
-  },
-];
+export const defaultCatalogProducts: CatalogProductOption[] = [];
 
 function draftFromRecord(record: ProcurementRequestRecord): RequestWizardDraft {
   return {
@@ -242,34 +375,109 @@ function draftFromRecord(record: ProcurementRequestRecord): RequestWizardDraft {
   };
 }
 
+function isBlankLine(item: RequestWizardDraft["items"][number]): boolean {
+  return (
+    !item.description.trim() &&
+    !item.category?.trim() &&
+    !item.specifications?.trim() &&
+    !(item.quantity > 1) &&
+    (!item.unit.trim() || item.unit.trim() === "pcs")
+  );
+}
+
 function validateStep(
   step: RequestWizardStepId,
   draft: RequestWizardDraft,
-): string[] {
-  const errors: string[] = [];
+): WizardValidationResult {
+  const messages: string[] = [];
+  const fields: WizardFieldKey[] = [];
+
   if (step === "basics" || step === "review") {
-    if (!draft.title.trim()) errors.push("Enter a request title.");
+    if (!draft.title.trim()) {
+      messages.push("Request title is required.");
+      fields.push("title");
+    } else if (draft.title.trim().length < 3) {
+      messages.push("Request title must be at least 3 characters.");
+      fields.push("title");
+    }
   }
+
   if (step === "products" || step === "review") {
-    if (draft.items.length === 0) errors.push("Add at least one product line.");
-    draft.items.forEach((item, index) => {
-      if (!item.description.trim()) {
-        errors.push(`Line ${index + 1}: product description is required.`);
+    const active = draft.items.filter((item) => !isBlankLine(item));
+    const rows = active.length > 0 ? active : draft.items.slice(0, 1);
+    if (active.length === 0) {
+      messages.push(
+        "Add at least one product with a description, or select catalog products and click Add selected.",
+      );
+      fields.push("items");
+    }
+    rows.forEach((item) => {
+      const index = Math.max(0, draft.items.findIndex((row) => row.id === item.id));
+      const label = `Line ${index + 1}`;
+      if (item.description.trim().length < 2) {
+        messages.push(`${label}: product description must be at least 2 characters.`);
+        fields.push(`item:${item.id}:description`);
       }
       if (!(item.quantity > 0)) {
-        errors.push(`Line ${index + 1}: quantity must be greater than zero.`);
+        messages.push(`${label}: quantity must be greater than zero.`);
+        fields.push(`item:${item.id}:quantity`);
+      }
+      if (!item.unit.trim()) {
+        messages.push(`${label}: unit is required.`);
+        fields.push(`item:${item.id}:unit`);
       }
     });
   }
+
   if (step === "delivery" || step === "review") {
-    if (!draft.destinationAddress.trim()) {
-      errors.push("Enter a delivery location.");
+    const address = draft.destinationAddress.trim();
+    const country = draft.destinationCountryCode.trim().toUpperCase();
+    if (!country) {
+      messages.push("Select a destination country.");
+      fields.push("destinationCountryCode");
+    } else if (!/^[A-Z]{2}$/.test(country)) {
+      messages.push("Enter a valid two-letter country code.");
+      fields.push("destinationCountryCode");
     }
-    if (!draft.destinationCountryCode.trim()) {
-      errors.push("Select a destination country.");
+    if (!address) {
+      messages.push("Delivery location is required.");
+      fields.push("destinationAddress");
+    } else if (address.length < 5) {
+      messages.push("Delivery location must be at least 5 characters.");
+      fields.push("destinationAddress");
     }
   }
-  return errors;
+
+  return { messages, fields };
+}
+
+function mergeItemsFromCatalog(
+  prevItems: RequestWizardDraft["items"],
+  chosen: readonly CatalogProductOption[],
+): RequestWizardDraft["items"] {
+  return [
+    ...prevItems.filter((item) => item.description.trim()),
+    ...chosen.map((product) => ({
+      id: `li-${crypto.randomUUID?.() ?? product.id}`,
+      description: product.name,
+      quantity: 1,
+      unit: product.unit ?? "pcs",
+      category: product.category,
+      specifications: [
+        product.description?.trim(),
+        product.sku ? `SKU ${product.sku}` : "",
+        product.manufacturer ? `Maker ${product.manufacturer}` : "",
+      ]
+        .filter(Boolean)
+        .join(" · "),
+      productVariantId: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        product.id,
+      )
+        ? product.id
+        : undefined,
+      targetUnitAmount: null,
+    })),
+  ];
 }
 
 /**
@@ -279,7 +487,7 @@ export function RequestCreateWizard({
   className,
   initial,
   duplicateFrom,
-  catalogProducts = defaultCatalogProducts,
+  catalogProducts = [],
   templates = defaultRequestTemplates,
   categories = ["Industrial", "Electrical", "Construction", "Healthcare", "Safety", "Other"],
   recentRequests = [],
@@ -288,6 +496,8 @@ export function RequestCreateWizard({
   onSubmit,
   onSaveDraft,
   onCancel,
+  onCatalogSearch,
+  onNotify,
 }: RequestCreateWizardProps) {
   const formId = useId();
   const [stepIndex, setStepIndex] = useState(0);
@@ -296,30 +506,97 @@ export function RequestCreateWizard({
     return { ...emptyRequestWizardDraft(), ...initial };
   });
   const [errors, setErrors] = useState<string[]>([]);
+  const [invalidFields, setInvalidFields] = useState<Set<WizardFieldKey>>(
+    () => new Set(),
+  );
   const [status, setStatus] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [productQuery, setProductQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [selectedCatalogIds, setSelectedCatalogIds] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
+  const [remoteCatalog, setRemoteCatalog] = useState<readonly CatalogProductOption[] | null>(
+    null,
+  );
+  const searchSeq = useRef(0);
+  const errorRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const attachmentsRef = useRef(draft.attachments);
+  attachmentsRef.current = draft.attachments;
 
   const step = REQUEST_WIZARD_STEPS[stepIndex]!;
-  const progress = Math.round(((stepIndex + 1) / REQUEST_WIZARD_STEPS.length) * 100);
+
+  const fieldInvalid = (key: WizardFieldKey) => invalidFields.has(key);
+
+  useEffect(() => {
+    if (!onCatalogSearch) {
+      setRemoteCatalog(null);
+      return;
+    }
+    const q = productQuery.trim();
+    const seq = ++searchSeq.current;
+    const handle = window.setTimeout(() => {
+      void onCatalogSearch(q)
+        .then((rows) => {
+          if (seq !== searchSeq.current) return;
+          setRemoteCatalog(rows);
+        })
+        .catch(() => {
+          if (seq !== searchSeq.current) return;
+          setRemoteCatalog([]);
+        });
+    }, 280);
+    return () => window.clearTimeout(handle);
+  }, [onCatalogSearch, productQuery]);
+
+  useEffect(() => {
+    const footer = footerRef.current;
+    if (!footer || typeof ResizeObserver === "undefined") return;
+    const found = footer.closest(".hamd-web-procurement");
+    const host = found instanceof HTMLElement ? found : document.documentElement;
+    const apply = () => {
+      const height = Math.ceil(footer.getBoundingClientRect().height);
+      host.style.setProperty("--request-action-footer-height", `${height}px`);
+    };
+    const observer = new ResizeObserver(apply);
+    observer.observe(footer);
+    apply();
+    return () => {
+      observer.disconnect();
+      host.style.removeProperty("--request-action-footer-height");
+    };
+  }, [stepIndex, onCancel, busy]);
 
   const filteredCatalog = useMemo(() => {
+    const source = remoteCatalog ?? catalogProducts;
     const q = productQuery.trim().toLowerCase();
-    return catalogProducts.filter((product) => {
+    return source.filter((product) => {
       if (categoryFilter !== "all" && product.category !== categoryFilter) {
         return false;
       }
-      if (!q) return true;
+      if (remoteCatalog || !q) return true;
       return (
         product.name.toLowerCase().includes(q) ||
         product.category.toLowerCase().includes(q) ||
-        (product.sku?.toLowerCase().includes(q) ?? false)
+        (product.sku?.toLowerCase().includes(q) ?? false) ||
+        (product.description?.toLowerCase().includes(q) ?? false) ||
+        (product.manufacturer?.toLowerCase().includes(q) ?? false)
       );
     });
-  }, [catalogProducts, categoryFilter, productQuery]);
+  }, [catalogProducts, categoryFilter, productQuery, remoteCatalog]);
+
+  useEffect(() => {
+    if (errors.length === 0) return;
+    errorRef.current?.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
+  }, [errors]);
+
+  useEffect(() => {
+    return () => {
+      attachmentsRef.current.forEach((item) => {
+        if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+      });
+    };
+  }, []);
 
   /* Autosave */
   useEffect(() => {
@@ -334,10 +611,43 @@ export function RequestCreateWizard({
     return () => window.clearTimeout(timer);
   }, [autosaveMs, draft, onAutosave]);
 
-  const patch = useCallback((partial: Partial<RequestWizardDraft>) => {
-    setDraft((prev) => ({ ...prev, ...partial }));
+  const clearValidation = useCallback(() => {
     setErrors([]);
+    setInvalidFields(new Set());
   }, []);
+
+  const applyValidation = useCallback((result: WizardValidationResult) => {
+    setErrors(result.messages);
+    setInvalidFields(new Set(result.fields));
+    queueMicrotask(() => {
+      const key = result.fields[0];
+      const node = key
+        ? document.querySelector<HTMLElement>(
+            `[data-wizard-field="${key.replaceAll('"', '\\"')}"]`,
+          )
+        : null;
+      if (node instanceof HTMLElement && typeof node.scrollIntoView === "function") {
+        node.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+      if (
+        node instanceof HTMLInputElement ||
+        node instanceof HTMLSelectElement ||
+        node instanceof HTMLTextAreaElement
+      ) {
+        node.focus();
+      } else {
+        (node ?? errorRef.current)?.focus();
+      }
+    });
+  }, []);
+
+  const patch = useCallback(
+    (partial: Partial<RequestWizardDraft>) => {
+      setDraft((prev) => ({ ...prev, ...partial }));
+      clearValidation();
+    },
+    [clearValidation],
+  );
 
   const updateItem = (
     id: string,
@@ -349,7 +659,7 @@ export function RequestCreateWizard({
         item.id === id ? { ...item, ...partial } : item,
       ),
     }));
-    setErrors([]);
+    clearValidation();
   };
 
   const addItem = () => {
@@ -369,18 +679,28 @@ export function RequestCreateWizard({
   const applyTemplate = (templateId: string) => {
     const template = templates.find((item) => item.id === templateId);
     if (!template) return;
-    setDraft((prev) => ({
-      ...emptyRequestWizardDraft(),
-      ...template.draft,
-      items: template.draft.items.map((item) => ({
-        ...item,
-        id: `li-${crypto.randomUUID?.() ?? String(Date.now())}`,
-      })),
-      attachments: [],
-      rowVersion: prev.rowVersion,
-    }));
+    setDraft((prev) => {
+      prev.attachments.forEach((item) => {
+        if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
+      });
+      return {
+        ...emptyRequestWizardDraft(),
+        ...template.draft,
+        items: template.draft.items.map((item) => ({
+          ...item,
+          id: `li-${crypto.randomUUID?.() ?? String(Date.now())}`,
+        })),
+        destinationAddress:
+          template.draft.destinationAddress.trim() || prev.destinationAddress,
+        destinationCountryCode:
+          template.draft.destinationCountryCode || prev.destinationCountryCode,
+        attachments: [],
+        rowVersion: prev.rowVersion,
+      };
+    });
     setStatus(`Template “${template.name}” applied`);
     setStepIndex(0);
+    clearValidation();
   };
 
   const applyRecent = (requestId: string) => {
@@ -389,12 +709,14 @@ export function RequestCreateWizard({
     setDraft(draftFromRecord(row));
     setStatus(`Copied from ${row.publicCode}`);
     setStepIndex(0);
+    clearValidation();
   };
 
   const toggleCatalog = (id: string) => {
     setSelectedCatalogIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
+    clearValidation();
   };
 
   const addSelectedProducts = () => {
@@ -404,36 +726,46 @@ export function RequestCreateWizard({
     if (chosen.length === 0) return;
     setDraft((prev) => ({
       ...prev,
-      items: [
-        ...prev.items.filter((item) => item.description.trim()),
-        ...chosen.map((product) => ({
-          id: `li-${crypto.randomUUID?.() ?? product.id}`,
-          description: product.name,
-          quantity: 1,
-          unit: product.unit ?? "pcs",
-          category: product.category,
-          specifications: product.sku ? `SKU ${product.sku}` : "",
-          productVariantId: product.id,
-          targetUnitAmount: null,
-        })),
-      ],
+      items: mergeItemsFromCatalog(prev.items, chosen),
     }));
     setSelectedCatalogIds([]);
     setStatus(`${chosen.length} product(s) added`);
+    clearValidation();
   };
 
   const goNext = () => {
+    if (step.id === "products" && selectedCatalogIds.length > 0) {
+      const active = draft.items.filter((item) => !isBlankLine(item));
+      if (active.length === 0) {
+        applyValidation({
+          messages: [
+            "Click Add selected to add catalog products, or complete a custom line item before continuing.",
+          ],
+          fields: ["items"],
+        });
+        onNotify?.({
+          tone: "warning",
+          title: "Please complete the required fields.",
+        });
+        return;
+      }
+    }
+
     const stepErrors = validateStep(step.id, draft);
-    if (stepErrors.length) {
-      setErrors(stepErrors);
+    if (stepErrors.messages.length) {
+      applyValidation(stepErrors);
+      onNotify?.({
+        tone: "warning",
+        title: "Please complete the required fields.",
+      });
       return;
     }
-    setErrors([]);
+    clearValidation();
     setStepIndex((i) => Math.min(i + 1, REQUEST_WIZARD_STEPS.length - 1));
   };
 
   const goPrev = () => {
-    setErrors([]);
+    clearValidation();
     setStepIndex((i) => Math.max(i - 1, 0));
   };
 
@@ -447,13 +779,15 @@ export function RequestCreateWizard({
     priority: draft.priority,
     currencyCode: draft.currencyCode,
     restrictedGoodsDeclared: draft.restrictedGoodsDeclared,
-    items: draft.items.map((row) => {
-      const { category: _category, specifications: _specifications, ...item } =
-        row;
-      void _category;
-      void _specifications;
-      return item;
-    }),
+    items: draft.items
+      .filter((row) => row.description.trim())
+      .map((row) => {
+        const { category: _category, specifications: _specifications, ...item } =
+          row;
+        void _category;
+        void _specifications;
+        return item;
+      }),
     rowVersion: draft.rowVersion,
     submit,
     internalNotes: draft.internalNotes.trim() || undefined,
@@ -464,57 +798,107 @@ export function RequestCreateWizard({
 
   const saveLater = async () => {
     const stepErrors = validateStep("basics", draft);
-    if (stepErrors.length) {
-      setErrors(stepErrors);
+    if (stepErrors.messages.length) {
+      applyValidation(stepErrors);
       return;
     }
     setBusy(true);
-    setErrors([]);
+    clearValidation();
     try {
       await onSaveDraft?.(toPayload(false));
       setStatus("Saved. You can continue later from Drafts.");
     } catch (err) {
-      setErrors([err instanceof Error ? err.message : "Could not save draft."]);
+      applyValidation({
+        messages: [
+          err instanceof Error ? err.message : "Could not save draft.",
+        ],
+        fields: [],
+      });
     } finally {
       setBusy(false);
     }
   };
 
   const submit = async () => {
-    const allErrors = REQUEST_WIZARD_STEPS.flatMap((s) =>
-      validateStep(s.id, draft),
+    const allMessages = REQUEST_WIZARD_STEPS.flatMap(
+      (s) => validateStep(s.id, draft).messages,
     );
-    const unique = [...new Set(allErrors)];
+    const allFields = REQUEST_WIZARD_STEPS.flatMap(
+      (s) => validateStep(s.id, draft).fields,
+    );
+    const unique = [...new Set(allMessages)];
     if (unique.length) {
-      setErrors(unique);
+      applyValidation({ messages: unique, fields: allFields });
+      const firstIncomplete = REQUEST_WIZARD_STEPS.findIndex(
+        (s) => validateStep(s.id, draft).messages.length > 0,
+      );
+      if (firstIncomplete >= 0) setStepIndex(firstIncomplete);
       return;
     }
     setBusy(true);
-    setErrors([]);
+    clearValidation();
     try {
       await onSubmit?.(toPayload(true));
       setStatus("Request submitted for review.");
     } catch (err) {
-      setErrors([
-        err instanceof Error ? err.message : "Could not submit request.",
-      ]);
+      applyValidation({
+        messages: [
+          err instanceof Error ? err.message : "Could not submit request.",
+        ],
+        fields: [],
+      });
     } finally {
       setBusy(false);
     }
   };
 
+  const revokePreview = (url: string | undefined) => {
+    if (url) URL.revokeObjectURL(url);
+  };
+
+  const removeAttachment = (id: string) => {
+    setDraft((prev) => {
+      const item = prev.attachments.find((row) => row.id === id);
+      revokePreview(item?.previewUrl);
+      return {
+        ...prev,
+        attachments: prev.attachments.filter((row) => row.id !== id),
+      };
+    });
+  };
+
   const onFiles = (fileList: FileList | null) => {
     if (!fileList?.length) return;
     const maxBytes = 10 * 1024 * 1024;
-    const incoming = Array.from(fileList).filter((file) => file.size <= maxBytes);
+    const incoming = Array.from(fileList).filter(
+      (file) =>
+        file instanceof File &&
+        typeof file.name === "string" &&
+        file.name.length > 0 &&
+        file.size > 0 &&
+        file.size <= maxBytes,
+    );
+    if (incoming.length === 0) {
+      onNotify?.({
+        tone: "warning",
+        title: "Some attachments could not be uploaded.",
+        description: "Please remove invalid files and try again.",
+      });
+      return;
+    }
     setDraft((prev) => {
       const room = Math.max(0, 5 - prev.attachments.length);
-      const next = incoming.slice(0, room).map((file) => ({
-        id: `att-${crypto.randomUUID?.() ?? file.name}`,
-        name: file.name,
-        sizeLabel: `${Math.max(1, Math.round(file.size / 1024))} KB`,
-        file,
-      }));
+      const next = incoming.slice(0, room).map((file) => {
+        const isImage = file.type.startsWith("image/");
+        return {
+          id: `att-${crypto.randomUUID?.() ?? `${file.name}-${file.size}`}`,
+          name: file.name,
+          sizeLabel: `${Math.max(1, Math.round(file.size / 1024))} KB`,
+          file,
+          kind: isImage ? ("image" as const) : ("file" as const),
+          previewUrl: isImage ? URL.createObjectURL(file) : undefined,
+        };
+      });
       return {
         ...prev,
         attachments: [...prev.attachments, ...next],
@@ -523,12 +907,12 @@ export function RequestCreateWizard({
   };
 
   return (
-    <div className={cx("hamd-pr-wizard", className)}>
+    <div className={cx("hamd-pr", "hamd-pr-wizard", className)}>
       <header className="hamd-pr-wizard__header">
         <div>
           <h1 className="hamd-pr-wizard__title">New procurement request</h1>
           <p className="hamd-pr-wizard__subtitle">
-            Build a clear request your sourcing team can act on — save a draft
+            Build a clear request your sourcing team can act on - save a draft
             any time and submit when the line items are complete.
           </p>
         </div>
@@ -537,40 +921,18 @@ export function RequestCreateWizard({
         </div>
       </header>
 
-      <nav className="hamd-pr-wizard__steps" aria-label="Request progress">
-        <ol>
-          {REQUEST_WIZARD_STEPS.map((item, index) => (
-            <li
-              key={item.id}
-              className={cx(
-                index === stepIndex && "is-current",
-                index < stepIndex && "is-done",
-              )}
-            >
-              <button
-                type="button"
-                onClick={() => {
-                  if (index <= stepIndex) setStepIndex(index);
-                }}
-                aria-current={index === stepIndex ? "step" : undefined}
-              >
-                <span className="hamd-pr-wizard__step-index">{index + 1}</span>
-                {item.label}
-              </button>
-            </li>
-          ))}
-        </ol>
-        <div
-          className="hamd-pr-wizard__progress"
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={progress}
-          aria-label="Form completion"
-        >
-          <span style={{ width: `${progress}%` }} />
-        </div>
-      </nav>
+      <div className="hamd-pr-wizard__steps" data-tour="wizard-steps" data-guide="wizard-steps">
+        <ProcurementProgress
+          variant="wizard"
+          wizardSteps={REQUEST_WIZARD_STEPS}
+          wizardIndex={stepIndex}
+          onWizardStepSelect={(index) => {
+            if (index >= stepIndex) return;
+            clearValidation();
+            setStepIndex(index);
+          }}
+        />
+      </div>
 
       <div className="hamd-pr-wizard__toolbar">
         <label>
@@ -603,7 +965,7 @@ export function RequestCreateWizard({
               <option value="">Choose request…</option>
               {recentRequests.slice(0, 8).map((row) => (
                 <option key={row.id} value={row.id}>
-                  {row.publicCode} — {row.title}
+                  {row.publicCode} - {row.title}
                 </option>
               ))}
             </select>
@@ -611,35 +973,63 @@ export function RequestCreateWizard({
         ) : null}
       </div>
 
-      {errors.length > 0 ? (
-        <div className="hamd-pr-wizard__errors" role="alert">
-          <ul>
-            {errors.map((error) => (
-              <li key={error}>{error}</li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-
       <form
         id={formId}
         className="hamd-pr-wizard__panel"
+        noValidate
         onSubmit={(e) => {
           e.preventDefault();
           if (step.id === "review") void submit();
           else goNext();
         }}
       >
+        {errors.length > 0 ? (
+          <div
+            ref={errorRef}
+            className="hamd-pr-wizard__errors"
+            role="alert"
+            tabIndex={-1}
+          >
+            <p className="hamd-pr-wizard__errors-title">
+              Please complete the required fields before continuing.
+            </p>
+            <ul>
+              {errors.map((error) => (
+                <li key={error}>{error}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         {step.id === "basics" ? (
           <fieldset className="hamd-pr-wizard__fieldset">
             <legend>Request basics</legend>
             <label>
-              Title
+              Request title *
               <input
                 value={draft.title}
                 onChange={(e) => patch({ title: e.target.value })}
                 placeholder="e.g. Valves for Lagos warehouse expansion"
+                data-wizard-field="title"
+                aria-label="title"
                 aria-required="true"
+                aria-invalid={fieldInvalid("title") || undefined}
+                required
+              />
+              {fieldInvalid("title") ? (
+                <span className="hamd-pr-wizard__field-error">
+                  {draft.title.trim().length > 0 && draft.title.trim().length < 3
+                    ? "Request title must be at least 3 characters."
+                    : "Request title is required."}
+                </span>
+              ) : null}
+            </label>
+            <label>
+              Description
+              <textarea
+                rows={4}
+                value={draft.notes}
+                onChange={(e) => patch({ notes: e.target.value })}
+                placeholder="Optional commercial context for sourcing"
               />
             </label>
             <div className="hamd-pr-wizard__grid">
@@ -707,8 +1097,19 @@ export function RequestCreateWizard({
 
         {step.id === "products" ? (
           <div className="hamd-pr-wizard__products">
-            <fieldset className="hamd-pr-wizard__fieldset">
+            <fieldset
+              className={cx(
+                "hamd-pr-wizard__fieldset",
+                fieldInvalid("items") && "is-invalid",
+              )}
+              data-wizard-field="items"
+              tabIndex={fieldInvalid("items") ? -1 : undefined}
+            >
               <legend>Product search & bulk add</legend>
+              <p className="hamd-pr-wizard__help">
+                Select catalog products below, then add them to your line items.
+                Required fields must be complete before you can continue.
+              </p>
               <div className="hamd-pr-wizard__grid">
                 <label>
                   Search catalog
@@ -716,6 +1117,9 @@ export function RequestCreateWizard({
                     type="search"
                     value={productQuery}
                     onChange={(e) => setProductQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") e.preventDefault();
+                    }}
                     placeholder="Name, SKU, or category"
                   />
                 </label>
@@ -734,26 +1138,70 @@ export function RequestCreateWizard({
                   </select>
                 </label>
               </div>
-              <ul className="hamd-pr-wizard__catalog" role="list">
-                {filteredCatalog.map((product) => (
-                  <li key={product.id}>
-                    <label className="hamd-pr-wizard__check">
-                      <input
-                        type="checkbox"
-                        checked={selectedCatalogIds.includes(product.id)}
-                        onChange={() => toggleCatalog(product.id)}
-                      />
-                      <span>
-                        <strong>{product.name}</strong>
-                        <small>
-                          {product.category}
-                          {product.sku ? ` · ${product.sku}` : ""}
-                        </small>
-                      </span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
+              {filteredCatalog.length === 0 ? (
+                <p className="hamd-pr-wizard__help" role="status">
+                  No products match this search. Adjust filters or add a custom
+                  line item below.
+                </p>
+              ) : (
+                <ul className="hamd-pr-wizard__catalog" role="list">
+                  {filteredCatalog.map((product) => {
+                    const selected = selectedCatalogIds.includes(product.id);
+                    return (
+                      <li key={product.id}>
+                        <label
+                          className={cx(
+                            "hamd-pr-wizard__product-card",
+                            selected && "is-selected",
+                          )}
+                        >
+                          <input
+                            type="checkbox"
+                            className="hamd-pr-wizard__product-card-check"
+                            checked={selected}
+                            onChange={() => toggleCatalog(product.id)}
+                            aria-label={`Select ${product.name}`}
+                          />
+                          <span
+                            className="hamd-pr-wizard__product-card-media"
+                            aria-hidden="true"
+                          >
+                            {product.imageSrc ? (
+                              <img
+                                src={product.imageSrc}
+                                alt=""
+                                loading="lazy"
+                                decoding="async"
+                              />
+                            ) : (
+                              <span className="hamd-pr-wizard__product-card-ph">
+                                Catalogue placeholder
+                              </span>
+                            )}
+                          </span>
+                          <span className="hamd-pr-wizard__product-card-body">
+                            <span className="hamd-pr-wizard__product-card-eyebrow">
+                              {product.category}
+                              {product.sku ? ` · ${product.sku}` : ""}
+                            </span>
+                            <strong className="hamd-pr-wizard__product-card-title">
+                              {product.name}
+                            </strong>
+                            {product.manufacturer ? (
+                              <span className="hamd-pr-wizard__product-card-maker">
+                                {product.manufacturer}
+                              </span>
+                            ) : null}
+                            <span className="hamd-pr-wizard__product-card-meta">
+                              Select to add this product
+                            </span>
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
               <button
                 type="button"
                 className="hamd-btn hamd-btn--secondary"
@@ -778,6 +1226,13 @@ export function RequestCreateWizard({
                           updateItem(item.id, { description: e.target.value })
                         }
                         placeholder="Product or specification"
+                        data-wizard-field={`item:${item.id}:description`}
+                        aria-required="true"
+                        required
+                        aria-invalid={
+                          fieldInvalid(`item:${item.id}:description`) ||
+                          undefined
+                        }
                       />
                     </label>
                     <label>
@@ -786,6 +1241,12 @@ export function RequestCreateWizard({
                         value={item.category ?? ""}
                         onChange={(e) =>
                           updateItem(item.id, { category: e.target.value })
+                        }
+                        data-wizard-field={`item:${item.id}:category`}
+                        aria-required="true"
+                        required
+                        aria-invalid={
+                          fieldInvalid(`item:${item.id}:category`) || undefined
                         }
                       >
                         <option value="">Select…</option>
@@ -797,26 +1258,50 @@ export function RequestCreateWizard({
                       </select>
                     </label>
                     <label>
-                      Qty
-                      <input
-                        type="number"
-                        min={1}
+                      Quantity
+                      <QuantityStepper
                         value={item.quantity}
-                        onChange={(e) =>
-                          updateItem(item.id, {
-                            quantity: Number(e.target.value) || 1,
-                          })
-                        }
+                        invalid={fieldInvalid(`item:${item.id}:quantity`)}
+                        fieldKey={`item:${item.id}:quantity`}
+                        onChange={(quantity) => updateItem(item.id, { quantity })}
                       />
                     </label>
                     <label>
                       Unit
-                      <input
-                        value={item.unit}
+                      <select
+                        value={
+                          QUANTITY_UNITS.includes(
+                            item.unit as (typeof QUANTITY_UNITS)[number],
+                          )
+                            ? item.unit
+                            : item.unit || "pcs"
+                        }
                         onChange={(e) =>
                           updateItem(item.id, { unit: e.target.value })
                         }
-                      />
+                        data-wizard-field={`item:${item.id}:unit`}
+                        aria-required="true"
+                        required
+                        aria-invalid={
+                          fieldInvalid(`item:${item.id}:unit`) || undefined
+                        }
+                      >
+                        {item.unit &&
+                        !QUANTITY_UNITS.includes(
+                          item.unit as (typeof QUANTITY_UNITS)[number],
+                        ) ? (
+                          <option value={item.unit}>{item.unit}</option>
+                        ) : null}
+                        {QUANTITY_UNITS.map((unit) => (
+                          <option key={unit} value={unit}>
+                            {unit === "pcs"
+                              ? "Pieces"
+                              : unit === "kg"
+                                ? "Kilograms"
+                                : unit.charAt(0).toUpperCase() + unit.slice(1)}
+                          </option>
+                        ))}
+                      </select>
                     </label>
                     <label className="hamd-pr-wizard__span-2">
                       Specifications
@@ -868,6 +1353,12 @@ export function RequestCreateWizard({
                   }
                   maxLength={2}
                   placeholder="NG"
+                  data-wizard-field="destinationCountryCode"
+                  aria-required="true"
+                  required
+                  aria-invalid={
+                    fieldInvalid("destinationCountryCode") || undefined
+                  }
                 />
               </label>
               <label>
@@ -887,7 +1378,19 @@ export function RequestCreateWizard({
                     patch({ destinationAddress: e.target.value })
                   }
                   placeholder="Site address, warehouse, or receiving contact"
+                  data-wizard-field="destinationAddress"
+                  aria-required="true"
+                  required
+                  minLength={5}
+                  aria-invalid={
+                    fieldInvalid("destinationAddress") || undefined
+                  }
                 />
+                {fieldInvalid("destinationAddress") ? (
+                  <span className="hamd-pr-wizard__field-error">
+                    Enter a delivery location of at least 5 characters.
+                  </span>
+                ) : null}
               </label>
               <label className="hamd-pr-wizard__span-2">
                 Notes for sourcing
@@ -898,15 +1401,6 @@ export function RequestCreateWizard({
                   placeholder="Commercial constraints, preferred brands, inspection needs"
                 />
               </label>
-              <label className="hamd-pr-wizard__span-2">
-                Internal notes
-                <textarea
-                  rows={2}
-                  value={draft.internalNotes}
-                  onChange={(e) => patch({ internalNotes: e.target.value })}
-                  placeholder="Visible to your team only"
-                />
-              </label>
             </div>
           </fieldset>
         ) : null}
@@ -915,15 +1409,40 @@ export function RequestCreateWizard({
           <fieldset className="hamd-pr-wizard__fieldset">
             <legend>Attachments</legend>
             <p className="hamd-pr-wizard__help">
-              Attach drawings, packing lists, or RFQ references. Files stay with
-              this draft until you submit.
+              Add photos, drawings, packing lists, or RFQ references. You can
+              select several files at once.
             </p>
-            <label className="hamd-pr-wizard__file">
-              <span>Upload files</span>
+            <label
+              className={cx(
+                "hamd-pr-wizard__dropzone",
+                draft.attachments.length >= 5 && "is-full",
+              )}
+              onDragOver={(event) => {
+                event.preventDefault();
+              }}
+              onDrop={(event) => {
+                event.preventDefault();
+                if (draft.attachments.length >= 5) return;
+                onFiles(event.dataTransfer.files);
+              }}
+            >
+              <span className="hamd-pr-wizard__dropzone-title">
+                {draft.attachments.length >= 5
+                  ? "Maximum of 5 files reached"
+                  : "Drop files here or browse"}
+              </span>
+              <span className="hamd-pr-wizard__dropzone-copy">
+                Images show a preview. PDF, Word, and text are listed by name.
+              </span>
+              <span className="hamd-pr-wizard__dropzone-btn">
+                {draft.attachments.length >= 5 ? "Limit reached" : "Select images & files"}
+              </span>
               <input
                 type="file"
                 multiple
+                disabled={draft.attachments.length >= 5}
                 accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp,application/pdf,image/*"
+                aria-label="Select images and files"
                 aria-describedby="hamd-pr-wizard-file-help"
                 onChange={(e) => {
                   onFiles(e.target.files);
@@ -932,35 +1451,22 @@ export function RequestCreateWizard({
               />
             </label>
             <p id="hamd-pr-wizard-file-help" className="hamd-pr-wizard__help">
-              Up to 5 files, 10&nbsp;MB each. PDF, Word, text, and images.
+              {draft.attachments.length}/5 files · 10&nbsp;MB each · PDF, Word,
+              text, and images.
             </p>
-            <ul className="hamd-pr-wizard__attachments" role="list">
-              {draft.attachments.length === 0 ? (
-                <li>No attachments yet.</li>
-              ) : (
-                draft.attachments.map((file) => (
-                  <li key={file.id}>
-                    <span>
-                      {file.name} · {file.sizeLabel}
-                    </span>
-                    <button
-                      type="button"
-                      className="hamd-btn hamd-btn--ghost"
-                      onClick={() =>
-                        setDraft((prev) => ({
-                          ...prev,
-                          attachments: prev.attachments.filter(
-                            (item) => item.id !== file.id,
-                          ),
-                        }))
-                      }
-                    >
-                      Remove
-                    </button>
-                  </li>
-                ))
-              )}
-            </ul>
+            <AttachmentBoard
+              files={draft.attachments.map((file) => ({
+                id: file.id,
+                name: file.name,
+                previewUrl: file.previewUrl,
+                kind: file.kind,
+                sizeLabel: file.sizeLabel,
+              }))}
+              mediaTitle="Media"
+              documentsTitle="Documents"
+              emptyLabel="No attachments yet. Add one or more photos or documents."
+              onRemove={removeAttachment}
+            />
           </fieldset>
         ) : null}
 
@@ -974,7 +1480,7 @@ export function RequestCreateWizard({
             <dl className="hamd-pr-wizard__summary">
               <div>
                 <dt>Title</dt>
-                <dd>{draft.title || "—"}</dd>
+                <dd>{draft.title || "-"}</dd>
               </div>
               <div>
                 <dt>Priority</dt>
@@ -991,7 +1497,7 @@ export function RequestCreateWizard({
               <div>
                 <dt>Delivery</dt>
                 <dd>
-                  {draft.destinationAddress || "—"}
+                  {draft.destinationAddress || "-"}
                   {draft.destinationCountryCode
                     ? ` (${draft.destinationCountryCode})`
                     : ""}
@@ -1010,13 +1516,8 @@ export function RequestCreateWizard({
                 <dd>{draft.attachments.length}</dd>
               </div>
             </dl>
-            <h3>Approval preview</h3>
-            <ol className="hamd-pr-wizard__approval">
-              <li>Buyer submits request (you)</li>
-              <li>Ops reviews scope and accepts for sourcing</li>
-              <li>Quote issued for commercial approval</li>
-              <li>Approved request moves to purchase and delivery</li>
-            </ol>
+            <h3>What happens after you submit</h3>
+            <ProcurementProgress variant="preview" status="draft" />
             <ul className="hamd-pr-wizard__line-preview">
               {draft.items.map((item) => (
                 <li key={item.id}>
@@ -1031,45 +1532,59 @@ export function RequestCreateWizard({
           </div>
         ) : null}
 
-        <div className="hamd-pr-wizard__actions">
-          {onCancel ? (
-            <button
-              type="button"
-              className="hamd-btn hamd-btn--ghost"
-              onClick={onCancel}
-            >
-              Cancel
-            </button>
-          ) : null}
-          <button
-            type="button"
-            className="hamd-btn hamd-btn--secondary"
-            onClick={() => void saveLater()}
-            disabled={busy}
-          >
-            Save and continue later
-          </button>
-          <button
-            type="button"
-            className="hamd-btn hamd-btn--secondary"
-            onClick={goPrev}
-            disabled={stepIndex === 0 || busy}
-          >
-            Previous
-          </button>
-          {step.id === "review" ? (
-            <button
-              type="submit"
-              className="hamd-btn hamd-btn--primary"
-              disabled={busy}
-            >
-              {busy ? "Submitting…" : "Submit request"}
-            </button>
-          ) : (
-            <button type="submit" className="hamd-btn hamd-btn--primary">
-              Next
-            </button>
-          )}
+        <div className="hamd-pr-wizard__footer" ref={footerRef}>
+          <div className="hamd-pr-wizard__actions">
+            <div className="hamd-pr-wizard__actions-secondary">
+              {onCancel ? (
+                <button
+                  type="button"
+                  className="hamd-btn hamd-btn--ghost"
+                  onClick={onCancel}
+                >
+                  Cancel
+                </button>
+              ) : null}
+              <button
+                type="button"
+                className="hamd-btn hamd-btn--outline"
+                data-tour="save-draft"
+                data-guide="save-draft"
+                onClick={() => void saveLater()}
+                disabled={busy}
+              >
+                Save for later
+              </button>
+            </div>
+            <div className="hamd-pr-wizard__actions-nav">
+              <button
+                type="button"
+                className="hamd-btn hamd-btn--secondary"
+                onClick={goPrev}
+                disabled={stepIndex === 0 || busy}
+              >
+                Previous
+              </button>
+              {step.id === "review" ? (
+                <button
+                  type="submit"
+                  className="hamd-btn hamd-btn--primary"
+                  data-tour="submit-request"
+                  data-guide="submit-request"
+                  disabled={busy}
+                >
+                  {busy ? "Submitting…" : "Submit request"}
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="hamd-btn hamd-btn--primary"
+                  disabled={busy}
+                >
+                  {busy ? "Checking…" : "Next"}
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </form>
     </div>

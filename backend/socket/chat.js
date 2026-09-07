@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const { pool } = require('../config/database');
 const aiService = require('../services/aiService');
 const emailService = require('../services/emailService');
+const { getJwtSecret } = require('../config/security');
 
 // Store connected users
 const connectedUsers = new Map();
@@ -15,7 +16,7 @@ function setupSocketHandlers(io) {
         return next(new Error('Authentication error'));
       }
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret_key');
+      const decoded = jwt.verify(token, getJwtSecret());
       const [users] = await pool.execute(
         'SELECT id, email, first_name, last_name, role FROM users WHERE id = ?',
         [decoded.userId]

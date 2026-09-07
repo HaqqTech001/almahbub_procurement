@@ -5,14 +5,69 @@ import type {
   RequestWizardSubmitPayload,
 } from "@hamd/ui/procurement";
 
+import {
+  readResponseBody,
+  toCancelledRequestError,
+  unwrapEnvelopeData,
+} from "@hamd/ui/auth";
+
 import { getAccessToken } from "../auth/session/token-store.js";
+import { browserApiBase } from "../lib/api-origin.js";
+import { sessionFetch } from "../auth/session/session-http.js";
 
 type Envelope<T> = { data: T; error?: { code?: string; message?: string } };
+
+export type ApiRequestRelated = {
+  quotations?: Array<{
+    id: string;
+    publicCode: string;
+    status: string;
+    totalAmount?: string | null;
+    currencyCode?: string | null;
+    expiresAt?: string | null;
+    updatedAt?: string | null;
+    rowVersion?: number | null;
+  }>;
+  purchaseOrders?: Array<{
+    id: string;
+    publicCode: string;
+    status: string;
+    totalAmount?: string | null;
+    currencyCode?: string | null;
+    updatedAt?: string | null;
+  }>;
+  shipments?: Array<{
+    id: string;
+    publicCode: string;
+    status: string;
+    carrierName?: string | null;
+    trackingNumber?: string | null;
+    purchaseOrderId?: string;
+    updatedAt?: string | null;
+  }>;
+  invoices?: Array<{
+    id: string;
+    invoiceNumber: string;
+    status: string;
+    totalAmount?: string | null;
+    currencyCode?: string | null;
+    purchaseOrderId?: string;
+    updatedAt?: string | null;
+  }>;
+  payments?: Array<{
+    id: string;
+    status: string;
+    amount?: string | null;
+    invoiceId?: string | null;
+    updatedAt?: string | null;
+  }>;
+};
 
 export type ApiProcurementRequest = {
   id: string;
   publicCode: string;
   status: string;
+  lob?: "international" | "integrated_export" | string;
   title: string;
   currencyCode: string;
   notes?: string | null;
@@ -22,10 +77,26 @@ export type ApiProcurementRequest = {
   budgetAmount?: string | null;
   priority: string;
   restrictedGoodsDeclared: boolean;
+  requesterId?: string | null;
+  requesterEmail?: string | null;
+  requesterName?: string | null;
+  organizationId?: string | null;
+  organizationName?: string | null;
+  assigneeName?: string | null;
   rowVersion: number;
   createdAt: string | Date;
   updatedAt: string | Date;
   archivedAt?: string | Date | null;
+  related?: ApiRequestRelated | null;
+  history?: Array<{
+    id: string;
+    fromStatus?: string | null;
+    toStatus: string;
+    command?: string | null;
+    reason?: string | null;
+    actorName?: string | null;
+    createdAt: string | Date;
+  }>;
   items: Array<{
     id: string;
     productVariantId?: string | null;
@@ -37,21 +108,18 @@ export type ApiProcurementRequest = {
   attachments?: Array<{
     id: string;
     name: string;
-    href: string;
-    kind: string;
+    mimeType?: string;
+    sizeBytes?: number;
     sizeLabel?: string;
+    href: string;
+    kind?: string;
     uploadedAt: string | Date;
   }>;
   documentIds?: string[];
 };
 
 function apiBase(): string {
-  const base = (
-    typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL
-      ? String(import.meta.env.VITE_API_URL)
-      : ""
-  ).replace(/\/$/, "");
-  return base;
+  return browserApiBase();
 }
 
 function procurementUrl(path = ""): string {
@@ -59,16 +127,6 @@ function procurementUrl(path = ""): string {
   const normalized = path.startsWith("/") ? path : path ? `/${path}` : "";
   if (!base) return `/api/v1/procurement-requests${normalized}`;
   return `${base}/api/v1/procurement-requests${normalized}`;
-}
-
-async function parseJson(response: Response): Promise<unknown> {
-  const text = await response.text();
-  if (!text) return null;
-  try {
-    return JSON.parse(text) as unknown;
-  } catch {
-    return null;
-  }
 }
 
 export class ProcurementApiError extends Error {
@@ -110,31 +168,49 @@ async function procurementFetch<T>(
     if (qs) url += `?${qs}`;
   }
 
-  const response = await fetch(url, {
-    method: options.method ?? (options.body !== undefined ? "POST" : "GET"),
-    headers,
-    body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
-    credentials: "include",
-  });
+  let response: Response;
+  try {
+    response = await sessionFetch(url, {
+      method: options.method ?? (options.body !== undefined ? "POST" : "GET"),
+      headers,
+      body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+      credentials: "include",
+    });
+  } catch (error) {
+    const cancelled = toCancelledRequestError(error);
+    if (cancelled) throw cancelled;
+    throw error;
+  }
 
-  const body = await parseJson(response);
+  const body = await readResponseBody(response);
   if (!response.ok) {
     const envelope = body as {
-      error?: { code?: string; message?: string };
+      error?: {
+        code?: string;
+        message?: string;
+        details?: Array<{ field?: string; message?: string }>;
+      };
       message?: string;
+      errors?: Array<{ field?: string; message?: string }>;
     } | null;
-    throw new ProcurementApiError(
+    const detail =
+      envelope?.error?.details?.[0]?.message ??
+      envelope?.errors?.[0]?.message;
+    const base =
       envelope?.error?.message ??
-        envelope?.message ??
-        "Procurement request failed.",
+      envelope?.message ??
+      "We couldn't complete this request.";
+    throw new ProcurementApiError(
+      detail && detail !== base ? `${base} (${detail})` : base,
       response.status,
       envelope?.error?.code ?? "PROCUREMENT_ERROR",
     );
   }
 
-  const envelope = body as Envelope<T> | null;
-  if (envelope && "data" in envelope) return envelope.data;
-  return body as T;
+  if (response.status === 204 || response.status === 205 || body == null) {
+    return undefined as T;
+  }
+  return unwrapEnvelopeData<T>(body);
 }
 
 function isoDate(value: string | Date | null | undefined): string | null {
@@ -148,6 +224,13 @@ function isoDate(value: string | Date | null | undefined): string | null {
 export function mapApiProcurementToRecord(
   row: ApiProcurementRequest,
 ): ProcurementRequestRecord {
+  if (!row || typeof row !== "object" || !row.id) {
+    throw new ProcurementApiError(
+      "We couldn't load this request.",
+      502,
+      "INVALID_RESPONSE",
+    );
+  }
   const createdAt =
     typeof row.createdAt === "string"
       ? row.createdAt
@@ -162,6 +245,7 @@ export function mapApiProcurementToRecord(
     publicCode: row.publicCode,
     title: row.title,
     status: row.status,
+    lob: row.lob ?? "international",
     priority: row.priority,
     currencyCode: row.currencyCode,
     notes: row.notes ?? null,
@@ -174,7 +258,9 @@ export function mapApiProcurementToRecord(
         : null,
     restrictedGoodsDeclared: row.restrictedGoodsDeclared,
     rowVersion: row.rowVersion,
-    requesterName: "You",
+    requesterName: row.requesterName?.trim() || row.requesterEmail || "You",
+    requesterEmail: row.requesterEmail ?? null,
+    organizationName: row.organizationName ?? null,
     assigneeName: null,
     createdAt,
     updatedAt,
@@ -189,7 +275,18 @@ export function mapApiProcurementToRecord(
           : null,
       productVariantId: item.productVariantId ?? null,
     })),
-    timeline: [],
+    timeline: (row.history ?? []).map((event) => ({
+      id: event.id,
+      fromStatus: event.fromStatus,
+      toStatus: event.toStatus,
+      command: event.command,
+      reason: event.reason,
+      actorName: event.actorName,
+      createdAt:
+        typeof event.createdAt === "string"
+          ? event.createdAt
+          : new Date(event.createdAt).toISOString(),
+    })),
     comments: [],
     attachments: (row.attachments ?? []).map((attachment) => ({
       id: attachment.id,
@@ -197,7 +294,7 @@ export function mapApiProcurementToRecord(
       href: attachment.href.startsWith("http")
         ? attachment.href
         : `${apiBase()}${attachment.href}`,
-      kind: attachment.kind,
+      kind: attachment.kind || "file",
       sizeLabel: attachment.sizeLabel,
       uploadedAt:
         typeof attachment.uploadedAt === "string"
@@ -205,23 +302,23 @@ export function mapApiProcurementToRecord(
           : new Date(attachment.uploadedAt).toISOString(),
     })),
     internalNotes: [],
-    history: [],
+    history: (row.history ?? []).map((event) => ({
+      id: event.id,
+      fromStatus: event.fromStatus,
+      toStatus: event.toStatus,
+      command: event.command,
+      reason: event.reason,
+      actorName: event.actorName,
+      createdAt:
+        typeof event.createdAt === "string"
+          ? event.createdAt
+          : new Date(event.createdAt).toISOString(),
+    })),
     approvals: [],
     notifications: [],
     activity: [],
+    related: row.related ?? null,
   };
-}
-
-function mergeNotes(
-  notes: string | null | undefined,
-  internalNotes: string | undefined,
-): string | undefined {
-  const primary = notes?.trim() || "";
-  const internal = internalNotes?.trim() || "";
-  if (!primary && !internal) return undefined;
-  if (!internal) return primary || undefined;
-  if (!primary) return `[Internal]\n${internal}`;
-  return `${primary}\n\n[Internal]\n${internal}`;
 }
 
 function documentsUrl(): string {
@@ -239,16 +336,48 @@ export type UploadedDocument = {
   uploadedAt: string | Date;
 };
 
+export function sanitizeUploadFiles(files: unknown): File[] {
+  const candidates: unknown[] =
+    Array.isArray(files)
+      ? files
+      : typeof files === "object" && files && "length" in files
+        ? Array.from(files as ArrayLike<unknown>)
+        : [];
+
+  return candidates.filter((value): value is File => {
+    if (value == null || typeof value === "string") return false;
+    if (typeof value === "object" && "name" in value && "size" in value) {
+      const maybeFile = value as Partial<File>;
+      return (
+        typeof File !== "undefined" &&
+        value instanceof File &&
+        typeof maybeFile.name === "string" &&
+        maybeFile.name.length > 0 &&
+        typeof maybeFile.size === "number" &&
+        Number.isFinite(maybeFile.size) &&
+        maybeFile.size >= 0 &&
+        !maybeFile.name.startsWith("blob:")
+      );
+    }
+    return false;
+  });
+}
+
+function isValidUploadFile(value: unknown): value is File {
+  return sanitizeUploadFiles([value]).length > 0;
+}
+
 export async function uploadProcurementFiles(
   accessToken: string,
   files: File[],
 ): Promise<UploadedDocument[]> {
-  if (files.length === 0) return [];
+  const validFiles = sanitizeUploadFiles(files).slice(0, 5);
+  if (validFiles.length === 0) return [];
   const form = new FormData();
-  for (const file of files.slice(0, 5)) {
+  for (const file of validFiles) {
     form.append("files", file, file.name);
   }
-  const response = await fetch(documentsUrl(), {
+  const response = await sessionFetch(documentsUrl(), {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -280,7 +409,7 @@ export async function downloadProcurementDocument(
   documentId: string,
   filename: string,
 ): Promise<void> {
-  const response = await fetch(`${documentsUrl()}/${documentId}`, {
+  const response = await sessionFetch(`${documentsUrl()}/${documentId}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -319,6 +448,8 @@ export async function downloadProcurementDocument(
 type CreateSource = ProcurementDraftPatch & {
   internalNotes?: string | undefined;
   documentIds?: string[] | undefined;
+  lob?: "international" | "integrated_export";
+  submit?: boolean | undefined;
 };
 
 export function toCreateBody(payload: CreateSource) {
@@ -344,10 +475,11 @@ export function toCreateBody(payload: CreateSource) {
   const country = payload.destinationCountryCode?.trim().toUpperCase();
   const address = payload.destinationAddress?.trim();
   const requiredBy = payload.requiredByDate?.trim();
-  const notes = mergeNotes(payload.notes, payload.internalNotes);
+  const notes = payload.notes?.trim() || undefined;
 
   return {
     title,
+    ...(payload.lob ? { lob: payload.lob } : {}),
     currencyCode: (payload.currencyCode ?? "USD").toUpperCase(),
     ...(notes ? { notes } : {}),
     ...(country && /^[A-Z]{2}$/.test(country)
@@ -375,6 +507,7 @@ export function toCreateBody(payload: CreateSource) {
         ? { targetUnitAmount: item.targetUnitAmount }
         : {}),
     })),
+    ...(payload.submit ? { submit: true } : {}),
   };
 }
 
@@ -435,6 +568,7 @@ export async function listProcurementRequests(
     q?: string;
     priority?: string;
     includeArchived?: boolean;
+    lob?: "international" | "integrated_export" | "all";
   },
 ): Promise<ProcurementRequestRecord[]> {
   const rows = await procurementFetch<ApiProcurementRequest[]>("", {
@@ -446,6 +580,7 @@ export async function listProcurementRequests(
       q: query?.q,
       priority: query?.priority,
       includeArchived: query?.includeArchived,
+      lob: query?.lob,
       sort: "-createdAt",
     },
   });
@@ -494,7 +629,7 @@ export async function transitionProcurementRequest(
   command: ProcurementCommand,
   meta: { rowVersion: number; reason?: string },
 ): Promise<ProcurementRequestRecord> {
-  const row = await procurementFetch<ApiProcurementRequest>(
+  const row = await procurementFetch<ApiProcurementRequest | undefined>(
     `/${requestId}/transitions`,
     {
       method: "POST",
@@ -504,6 +639,37 @@ export async function transitionProcurementRequest(
         rowVersion: meta.rowVersion,
         ...(meta.reason ? { reason: meta.reason } : {}),
       },
+    },
+  );
+  if (!row) {
+    return getProcurementRequest(accessToken, requestId);
+  }
+  return mapApiProcurementToRecord(row);
+}
+
+export async function deleteCancelledProcurementRequest(
+  accessToken: string,
+  requestId: string,
+  rowVersion: number,
+): Promise<void> {
+  await procurementFetch<null>(`/${requestId}`, {
+    method: "DELETE",
+    accessToken,
+    body: { rowVersion },
+  });
+}
+
+export async function archiveProcurementRequest(
+  accessToken: string,
+  requestId: string,
+  rowVersion: number,
+): Promise<ProcurementRequestRecord> {
+  const row = await procurementFetch<ApiProcurementRequest>(
+    `/${requestId}/archive`,
+    {
+      method: "POST",
+      accessToken,
+      body: { rowVersion },
     },
   );
   return mapApiProcurementToRecord(row);
@@ -528,17 +694,29 @@ export async function createAndMaybeSubmit(
   accessToken: string,
   payload: RequestWizardSubmitPayload,
 ): Promise<ProcurementRequestRecord> {
-  const files = payload.attachmentFiles ?? [];
+  const files = (payload.attachmentFiles ?? []).filter(isValidUploadFile);
   const uploaded =
     files.length > 0
       ? await uploadProcurementFiles(accessToken, files)
       : [];
   const documentIds = uploaded.map((doc) => doc.id);
+  if (payload.submit) {
+    const country = payload.destinationCountryCode?.trim().toUpperCase() ?? "";
+    const address = payload.destinationAddress?.trim() ?? "";
+    if (!/^[A-Z]{2}$/.test(country) || address.length < 5) {
+      throw new ProcurementApiError(
+        "A destination country and address are required before submission.",
+        422,
+        "VALIDATION_ERROR",
+      );
+    }
+  }
   let record = await createProcurementRequest(accessToken, {
     ...payload,
     documentIds,
+    submit: payload.submit,
   });
-  if (payload.submit) {
+  if (payload.submit && record.status === "draft") {
     record = await transitionProcurementRequest(
       accessToken,
       record.id,

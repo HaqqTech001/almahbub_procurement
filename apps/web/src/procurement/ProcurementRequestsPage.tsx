@@ -1,232 +1,334 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import {
-  ProcurementWorkspace,
-  type ProcurementCommand,
-  type ProcurementDraftPatch,
+  createFetchGate,
+  isCancelledRequest,
+  userFacingRequestError,
+} from "@hamd/ui/auth";
+import {
+  BuyerRequestsWorkspace,
+  type BuyerRequestRecord,
   type ProcurementRequestRecord,
 } from "@hamd/ui/procurement";
 
+import { useToast } from "../app/providers/ToastProvider.js";
 import { useAuth } from "../auth/session/AuthProvider.js";
-import { getAccessToken } from "../auth/session/token-store.js";
-import { HostAlert, HostLoading, HostPage } from "../components/HostChrome.js";
-import { CopilotPanel } from "../copilot/CopilotPanel.js";
-import { guideRequest } from "../copilot/copilot-api.js";
+import { HostPage } from "../components/HostChrome.js";
 import {
+  archiveProcurementRequest,
+  deleteCancelledProcurementRequest,
   duplicateProcurementRequest,
-  downloadProcurementDocument,
   listProcurementRequests,
   ProcurementApiError,
   requireProcurementToken,
   transitionProcurementRequest,
-  updateProcurementRequest,
-  uploadProcurementFiles,
 } from "./procurement-api.js";
 
-/**
- * Hosted procurement directory — production API (RC5.2).
- */
+function isImageAttachment(kind: string, href: string): boolean {
+  const value = `${kind} ${href}`.toLowerCase();
+  return (
+    value.includes("image") ||
+    /\.(jpe?g|png|gif|webp|avif)(\?|$)/i.test(href)
+  );
+}
+
+function toBuyerRow(row: ProcurementRequestRecord): BuyerRequestRecord {
+  const extra = Math.max(0, row.items.length - 1);
+  const image = row.attachments.find((item) => isImageAttachment(item.kind, item.href));
+  return {
+    id: row.id,
+    publicCode: row.publicCode,
+    title: row.title,
+    status: row.status,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+    organizationName: row.organizationName,
+    requesterName: row.requesterName,
+    categoryLabel: row.items[0]?.description?.slice(0, 80) ?? null,
+    related: row.related ?? null,
+    itemSummary: row.items[0]?.description?.slice(0, 90) ?? row.title,
+    extraItemCount: extra,
+    thumbnailUrl: image?.href ?? null,
+    thumbnailAlt: image?.name ?? null,
+    rowVersion: row.rowVersion,
+  };
+}
+
+type ListLocationState = {
+  flash?: string;
+  removedId?: string;
+};
+
 export function ProcurementRequestsPage() {
   const auth = useAuth();
   const navigate = useNavigate();
-  const [params] = useSearchParams();
-  const focusId = params.get("focus");
+  const location = useLocation();
+  const { push: pushToast } = useToast();
+  const [params, setParams] = useSearchParams();
   const [rows, setRows] = useState<ProcurementRequestRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const query = params.get("q") ?? "";
+  const status = params.get("status") ?? "all";
+  const sort = params.get("sort") ?? "updated";
+  const focusId = params.get("focus") ?? "";
+  const [searchDraft, setSearchDraft] = useState(query);
+  const gate = useMemo(() => createFetchGate(), []);
+  const rowsRef = useRef(rows);
+  rowsRef.current = rows;
+  const flashConsumed = useRef(false);
 
-  const refresh = useCallback(async () => {
-    setError(null);
+  const refresh = useCallback(async (mode: "load" | "background" = "load") => {
+    const generation = gate.next();
+    if (mode === "load") setError(null);
     try {
       const token = await requireProcurementToken(auth.ensureSession);
-      setRows(await listProcurementRequests(token, { pageSize: 100 }));
+      const next = await listProcurementRequests(token, {
+        pageSize: 100,
+        q: query.trim() || undefined,
+        status: status === "all" ? undefined : status,
+      });
+      if (!gate.isCurrent(generation)) return;
+      setRows(next);
+      if (mode === "load") setError(null);
     } catch (err) {
-      setError(
+      if (!gate.isCurrent(generation)) return;
+      if (isCancelledRequest(err)) return;
+      const message =
         err instanceof ProcurementApiError
           ? err.message
-          : "Unable to load procurement requests.",
-      );
+          : "Unable to load procurement requests.";
+      if (mode === "background" || rowsRef.current.length > 0) {
+        pushToast({
+          title: "Couldn’t refresh the list",
+          description:
+            userFacingRequestError(
+              err,
+              "Showing the last loaded requests.",
+            ) ?? "Showing the last loaded requests.",
+          tone: "warning",
+        });
+        return;
+      }
+      setError(message);
     } finally {
-      setLoading(false);
+      if (gate.isCurrent(generation)) setLoading(false);
     }
-  }, [auth.ensureSession]);
+  }, [auth.ensureSession, gate, pushToast, query, status]);
 
   useEffect(() => {
     void refresh();
   }, [refresh]);
 
-  const withToken = async <T,>(fn: (token: string) => Promise<T>): Promise<T> => {
-    const token = await requireProcurementToken(auth.ensureSession);
-    return fn(token);
+  useEffect(() => {
+    const state = (location.state ?? null) as ListLocationState | null;
+    if (flashConsumed.current) return;
+    if (state?.removedId) {
+      setRows((current) => current.filter((row) => row.id !== state.removedId));
+    }
+    if (state?.flash) {
+      flashConsumed.current = true;
+      pushToast({ title: state.flash, tone: "success" });
+      navigate(location.pathname + location.search, { replace: true, state: null });
+    }
+  }, [location.pathname, location.search, location.state, navigate, pushToast]);
+
+  useEffect(() => {
+    if (!focusId || loading) return;
+    const node = document.querySelector(`[data-request-id="${focusId}"]`);
+    if (node instanceof HTMLElement) {
+      node.scrollIntoView({ block: "nearest" });
+    }
+  }, [focusId, loading, rows]);
+
+  const hubRows = useMemo(() => {
+    const mapped = rows.map(toBuyerRow);
+    return [...mapped].sort((a, b) => {
+      if (sort === "created") {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      }
+      if (sort === "code") {
+        return a.publicCode.localeCompare(b.publicCode);
+      }
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    });
+  }, [rows, sort]);
+
+  const summary = useMemo(() => {
+    const total = rows.length;
+    const completed = rows.filter((row) =>
+      ["fulfilled", "closed"].includes(row.status),
+    ).length;
+    const actionRequired = rows.filter((row) =>
+      ["draft", "needs_clarification", "quote_issued"].includes(row.status),
+    ).length;
+    const active = rows.filter(
+      (row) =>
+        !["fulfilled", "closed", "cancelled", "declined", "expired"].includes(row.status),
+    ).length;
+    return [
+      { id: "total", label: "Total requests", value: total },
+      { id: "active", label: "Active", value: active },
+      { id: "action", label: "Action required", value: actionRequired },
+      { id: "done", label: "Completed", value: completed },
+    ];
+  }, [rows]);
+
+  const statusOptions = [
+    { value: "all", label: "All statuses" },
+    { value: "draft", label: "Draft" },
+    { value: "submitted", label: "Submitted" },
+    { value: "needs_clarification", label: "Clarification required" },
+    { value: "sourcing", label: "Sourcing" },
+    { value: "quote_issued", label: "Quoted" },
+    { value: "purchase_in_progress", label: "Fulfilment" },
+    { value: "fulfilled", label: "Fulfilled" },
+    { value: "closed", label: "Closed" },
+    { value: "cancelled", label: "Cancelled" },
+  ];
+
+  const sortOptions = [
+    { value: "updated", label: "Updated" },
+    { value: "created", label: "Submitted" },
+    { value: "code", label: "Reference" },
+  ];
+
+  const patchParams = (mutate: (next: URLSearchParams) => void) => {
+    const next = new URLSearchParams(params);
+    mutate(next);
+    setParams(next);
   };
 
-  const recent = useMemo(() => rows.slice(0, 5), [rows]);
-  const focused = useMemo(
-    () => rows.find((row) => row.id === focusId) ?? rows[0],
-    [rows, focusId],
-  );
+  useEffect(() => {
+    setSearchDraft(query);
+  }, [query]);
+
+  useEffect(() => {
+    if (searchDraft === query) return;
+    const timer = window.setTimeout(() => {
+      setParams((prev) => {
+        const next = new URLSearchParams(prev);
+        if (searchDraft) next.set("q", searchDraft);
+        else next.delete("q");
+        return next;
+      });
+    }, 350);
+    return () => window.clearTimeout(timer);
+  }, [searchDraft, query, setParams]);
+
+  const mutationMessage = (err: unknown, fallback: string) =>
+    err instanceof ProcurementApiError ? err.message : fallback;
 
   return (
-    <HostPage className="hamd-web-procurement">
-      {error ? <HostAlert>{error}</HostAlert> : null}
-      {loading ? <HostLoading label="Loading requests…" /> : null}
-
-      {!loading && focused ? (
-        <CopilotPanel
-          title={`Request copilot · ${focused.publicCode}`}
-          description="Detect gaps, recommend suppliers, suggest quantities, and improve line descriptions for the focused request."
-          actions={[
-            {
-              id: "missing",
-              label: "Detect missing information",
-              run: async () => {
-                const token = getAccessToken() ?? (await auth.ensureSession());
-                if (!token) throw new Error("Sign in required.");
-                return guideRequest(token, focused.id, {
-                  mode: "assist",
-                  focus: "missing_information",
-                });
-              },
-            },
-            {
-              id: "suppliers",
-              label: "Recommend suppliers",
-              run: async () => {
-                const token = getAccessToken() ?? (await auth.ensureSession());
-                if (!token) throw new Error("Sign in required.");
-                return guideRequest(token, focused.id, {
-                  mode: "recommend",
-                  focus: "suppliers",
-                });
-              },
-            },
-            {
-              id: "quantities",
-              label: "Suggest quantities",
-              run: async () => {
-                const token = getAccessToken() ?? (await auth.ensureSession());
-                if (!token) throw new Error("Sign in required.");
-                return guideRequest(token, focused.id, {
-                  mode: "assist",
-                  focus: "quantities",
-                });
-              },
-            },
-            {
-              id: "descriptions",
-              label: "Improve descriptions",
-              run: async () => {
-                const token = getAccessToken() ?? (await auth.ensureSession());
-                if (!token) throw new Error("Sign in required.");
-                return guideRequest(token, focused.id, {
-                  mode: "assist",
-                  focus: "descriptions",
-                });
-              },
-            },
-          ]}
-        />
-      ) : null}
-
-      {!loading && recent.length > 0 ? (
-        <section
-          className="hamd-web-procurement__recent"
-          aria-labelledby="recent-requests-title"
-        >
-          <h2 id="recent-requests-title">Recent requests</h2>
-          <ul>
-            {recent.map((row) => (
-              <li key={row.id}>
-                <button
-                  type="button"
-                  className="hamd-btn hamd-btn--ghost"
-                  onClick={() => navigate(`/app/requests?focus=${row.id}`)}
-                >
-                  {row.publicCode} · {row.title}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-
-      <ProcurementWorkspace
-        requests={rows}
+    <HostPage className="hamd-web-procurement hamd-list-queue">
+      <BuyerRequestsWorkspace
+        rows={hubRows}
         loading={loading}
-        createHref="/app/requests/new"
-        canTransition={
-          auth.permissions.includes("request:submit") ||
-          auth.permissions.includes("request:cancel") ||
-          auth.permissions.includes("request:manage") ||
-          auth.permissions.includes("request:update")
+        error={error}
+        onRetry={() => {
+          setLoading(true);
+          void refresh();
+        }}
+        onRequestIdCopied={() =>
+          pushToast({ title: "Request ID copied.", tone: "success" })
         }
-        onDuplicate={async (request) => {
+        summary={summary}
+        query={searchDraft}
+        onQueryChange={setSearchDraft}
+        status={status}
+        onStatusChange={(value) =>
+          patchParams((next) => {
+            if (value === "all") next.delete("status");
+            else next.set("status", value);
+          })
+        }
+        statusOptions={statusOptions}
+        sort={sort}
+        onSortChange={(value) =>
+          patchParams((next) => {
+            if (value === "updated") next.delete("sort");
+            else next.set("sort", value);
+          })
+        }
+        sortOptions={sortOptions}
+        onOpen={(row) => navigate(`/app/requests/${row.id}`)}
+        onDuplicate={async (row) => {
           try {
-            const copy = await withToken((token) =>
-              duplicateProcurementRequest(token, request.id),
-            );
-            await refresh();
-            navigate(`/app/requests?focus=${copy.id}`);
+            const token = await requireProcurementToken(auth.ensureSession);
+            const copy = await duplicateProcurementRequest(token, row.id);
+            navigate(`/app/requests/new?duplicate=${copy.id}`);
           } catch (err) {
-            setError(
-              err instanceof ProcurementApiError
-                ? err.message
-                : "Unable to duplicate request.",
-            );
-          }
-        }}
-        onAutosave={async (requestId, patch: ProcurementDraftPatch) => {
-          await withToken((token) =>
-            updateProcurementRequest(token, requestId, patch),
-          );
-          await refresh();
-        }}
-        onTransition={async (
-          requestId,
-          command: ProcurementCommand,
-          meta,
-        ) => {
-          await withToken((token) =>
-            transitionProcurementRequest(token, requestId, command, meta),
-          );
-          await refresh();
-        }}
-        onAddComment={async () => {
-          throw new Error(
-            "Comments are not yet available on the procurement API.",
-          );
-        }}
-        onOpenAttachment={async (attachment) => {
-          await withToken((token) =>
-            downloadProcurementDocument(token, attachment.id, attachment.name),
-          );
-        }}
-        onUploadAttachment={async (requestId, file) => {
-          const current = rows.find((row) => row.id === requestId);
-          if (!current) {
-            throw new Error("Request not found.");
-          }
-          if (current.status !== "draft") {
-            throw new Error(
-              "Attachments can only be added while the request is still a draft.",
-            );
-          }
-          if (current.attachments.length >= 5) {
-            throw new Error("At most 5 attachments are allowed.");
-          }
-          await withToken(async (token) => {
-            const uploaded = await uploadProcurementFiles(token, [file]);
-            const documentIds = [
-              ...current.attachments.map((attachment) => attachment.id),
-              ...uploaded.map((doc) => doc.id),
-            ].slice(0, 5);
-            await updateProcurementRequest(token, requestId, {
-              rowVersion: current.rowVersion,
-              documentIds,
+            if (isCancelledRequest(err)) return;
+            pushToast({
+              title: mutationMessage(err, "Unable to duplicate this request."),
+              tone: "danger",
             });
-          });
-          await refresh();
+          }
         }}
+        onCancelRequest={async (row) => {
+          try {
+            const token = await requireProcurementToken(auth.ensureSession);
+            const updated = await transitionProcurementRequest(token, row.id, "cancel", {
+              rowVersion: row.rowVersion ?? 1,
+              reason: "Cancelled from My Requests.",
+            });
+            setRows((current) =>
+              current.map((item) => (item.id === updated.id ? updated : item)),
+            );
+            setError(null);
+            pushToast({ title: "Request cancelled.", tone: "success" });
+          } catch (err) {
+            if (isCancelledRequest(err)) return;
+            pushToast({
+              title: mutationMessage(err, "Unable to cancel this request."),
+              tone: "danger",
+            });
+            throw err;
+          }
+        }}
+        onDeleteDraft={async (row) => {
+          try {
+            const token = await requireProcurementToken(auth.ensureSession);
+            await archiveProcurementRequest(token, row.id, row.rowVersion ?? 1);
+            setRows((current) => current.filter((item) => item.id !== row.id));
+            setError(null);
+            pushToast({ title: "Request deleted.", tone: "success" });
+          } catch (err) {
+            if (isCancelledRequest(err)) return;
+            pushToast({
+              title: mutationMessage(err, "Unable to delete this request."),
+              tone: "danger",
+            });
+            throw err;
+          }
+        }}
+        onRemoveCancelled={async (row) => {
+          try {
+            const token = await requireProcurementToken(auth.ensureSession);
+            await deleteCancelledProcurementRequest(token, row.id, row.rowVersion ?? 1);
+            setRows((current) => current.filter((item) => item.id !== row.id));
+            setError(null);
+            pushToast({ title: "Request deleted.", tone: "success" });
+          } catch (err) {
+            if (isCancelledRequest(err)) return;
+            pushToast({
+              title: mutationMessage(err, "Unable to delete this request."),
+              tone: "danger",
+            });
+            throw err;
+          }
+        }}
+        newAction={
+          <Link className="hamd-btn hamd-btn--primary hamd-buyer-requests__new" to="/app/requests/new">
+            <span className="hamd-buyer-requests__new-full">New Request</span>
+            <span className="hamd-buyer-requests__new-short">New</span>
+          </Link>
+        }
+        emptyAction={
+          <Link className="hamd-btn hamd-btn--primary" to="/app/requests/new">
+            Create Request
+          </Link>
+        }
       />
     </HostPage>
   );

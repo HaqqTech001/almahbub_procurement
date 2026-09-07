@@ -1,0 +1,5 @@
+/* Layout shell tokens - homepage sections import homepage-sections.css.
+   Kept so @hamd/ui/styles.css export remains valid for app shells. */
+@import "./homepage-sections.css";
+@import "./global-header.css";
+@import "./global-footer.css";

@@ -1,0 +1,113 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Quality gates
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Validate database schema
+        run: pnpm --filter @hamd/database validate
+        env:
+          MIGRATION_DATABASE_URL: postgresql://hamd:hamd@127.0.0.1:5432/hamd
+          SHADOW_DATABASE_URL: postgresql://hamd:hamd@127.0.0.1:5432/hamd_shadow
+      - name: Check formatting
+        run: pnpm format:check
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Test
+        run: pnpm test
+      - name: Build
+        run: pnpm build
+      - name: Dependency audit
+        run: pnpm audit:deps
+        continue-on-error: false
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  web-quality:
+    name: Web a11y / SEO / browser
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build UI + web
+        run: pnpm --filter @hamd/ui build && pnpm --filter @hamd/web build
+      - name: Install Playwright browser
+        run: pnpm --filter @hamd/web exec playwright install --with-deps chromium
+      - name: End-to-end + axe
+        run: pnpm --filter @hamd/web test:e2e -- --project=chromium-desktop
+        env:
+          CI: "true"
+
+  container:
+    name: Container scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.14.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build API image
+        run: docker build --file apps/api/Dockerfile --tag hamd-api:ci .
+      - name: Scan API image
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: hamd-api:ci
+          format: table
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH

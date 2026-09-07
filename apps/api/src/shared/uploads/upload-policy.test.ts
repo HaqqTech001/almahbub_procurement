@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   sanitizeUploadFilename,
   uploadSecurityPolicy,
+  announcementUploadPolicy,
   validateUploadCandidate,
 } from "./upload-policy.js";
 
@@ -46,5 +47,31 @@ describe("uploadSecurityPolicy (V1 create-request parity)", () => {
 
   it("sanitizes unsafe filenames", () => {
     expect(sanitizeUploadFilename("../../evil name.pdf")).toBe("evil_name.pdf");
+  });
+});
+
+describe("announcementUploadPolicy", () => {
+  it("allows three image or video files and rejects documents", () => {
+    expect(announcementUploadPolicy.maxFilesPerRequest).toBe(3);
+    expect(
+      validateUploadCandidate(
+        { filename: "notice.jpg", mimeType: "image/jpeg", sizeBytes: 1024 },
+        announcementUploadPolicy,
+      ),
+    ).toEqual([]);
+    expect(
+      validateUploadCandidate(
+        { filename: "clip.mp4", mimeType: "video/mp4", sizeBytes: 1024 },
+        announcementUploadPolicy,
+      ),
+    ).toEqual([]);
+    expect(
+      validateUploadCandidate(
+        { filename: "brief.pdf", mimeType: "application/pdf", sizeBytes: 1024 },
+        announcementUploadPolicy,
+      ),
+    ).toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: "UPLOAD_MIME" })]),
+    );
   });
 });

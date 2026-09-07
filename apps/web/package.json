@@ -1,0 +1,52 @@
+{
+  "name": "@hamd/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --project tsconfig.json && vite build",
+    "preview": "vite preview",
+    "lint": "eslint src",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "quality:homepage": "node ./scripts/homepage-quality.mjs",
+    "quality:lighthouse": "node ./scripts/run-lighthouse-gate.mjs",
+    "quality:lighthouse:raw": "node ./scripts/homepage-lighthouse.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/source-sans-3": "^5.2.8",
+    "@fontsource-variable/source-serif-4": "^5.2.8",
+    "@hamd/constants": "workspace:*",
+    "@hamd/contracts": "workspace:*",
+    "@hamd/design-tokens": "workspace:*",
+    "@hamd/types": "workspace:*",
+    "@hamd/ui": "workspace:*",
+    "framer-motion": "^13.0.0",
+    "livekit-client": "^2.15.8",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@hamd/config-eslint": "workspace:*",
+    "@hamd/config-typescript": "workspace:*",
+    "@playwright/test": "^1.54.2",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.5.2",
+    "chrome-launcher": "^1.2.0",
+    "eslint": "^9.35.0",
+    "jsdom": "^26.1.0",
+    "lighthouse": "^12.8.2",
+    "playwright": "^1.54.2",
+    "typescript": "^5.9.2",
+    "vite": "^6.3.5",
+    "vitest": "^3.2.4"
+  }
+}

@@ -1,0 +1,34 @@
+/** Inline tour control (workspace topbar) - never reserves floating layout space. */
+.hamd-product-tour-control--inline,
+.hamd-client-shell__topbar-actions .hamd-guide-control,
+.hamd-client-shell__topbar-actions .hamd-product-tour-control {
+  position: static;
+  inset: auto;
+}
+
+/**
+ * Request-wizard Guide FAB: lower-right, above the sticky action footer.
+ * Never overlap Cancel / Save for later / Previous / Next.
+ */
+.hamd-product-tour-control--fab {
+  position: fixed;
+  right: max(0.75rem, env(safe-area-inset-right, 0px));
+  bottom: calc(
+    var(--request-action-footer-height, 7.5rem) + 12px +
+      env(safe-area-inset-bottom, 0px)
+  );
+  z-index: 36;
+  display: block;
+}
+
+.hamd-product-tour-control--fab .hamd-guide-control__menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.5rem);
+  top: auto;
+}
+
+/** Public / leftover floating class - keep neutralized so it cannot obstruct hero/nav. */
+.hamd-product-tour-control:not(.hamd-product-tour-control--inline):not(.hamd-product-tour-control--fab) {
+  display: none;
+}

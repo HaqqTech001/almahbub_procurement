@@ -1,0 +1,508 @@
+{
+  "phase": "IE-IMAGE-02",
+  "downloadDate": "2026-08-17",
+  "acquired": 58,
+  "skipped": 27,
+  "rejected": 0,
+  "notFound": 0,
+  "details": {
+    "acquired": [
+      {
+        "filename": "ie-portal-home-hero-01.webp",
+        "path": "apps/web/public/media/ie/portal/hero/ie-portal-home-hero-01.webp",
+        "bytes": 464258,
+        "reused": true
+      },
+      {
+        "filename": "ie-portal-home-hero-02.webp",
+        "path": "apps/web/public/media/ie/portal/hero/ie-portal-home-hero-02.webp",
+        "bytes": 299438,
+        "reused": true
+      },
+      {
+        "filename": "ie-portal-capability-commodities-01.webp",
+        "path": "apps/web/public/media/ie/portal/capabilities/ie-portal-capability-commodities-01.webp",
+        "bytes": 649402
+      },
+      {
+        "filename": "ie-portal-capability-bulk-01.webp",
+        "path": "apps/web/public/media/ie/portal/capabilities/ie-portal-capability-bulk-01.webp",
+        "bytes": 294062,
+        "reused": true
+      },
+      {
+        "filename": "ie-portal-capability-export-01.webp",
+        "path": "apps/web/public/media/ie/portal/capabilities/ie-portal-capability-export-01.webp",
+        "bytes": 491666,
+        "reused": true
+      },
+      {
+        "filename": "ie-portal-process-enquiry-01.webp",
+        "path": "apps/web/public/media/ie/portal/process/ie-portal-process-enquiry-01.webp",
+        "bytes": 139170,
+        "reused": true
+      },
+      {
+        "filename": "ie-portal-quality-detail-01.webp",
+        "path": "apps/web/public/media/ie/portal/quality/ie-portal-quality-detail-01.webp",
+        "bytes": 471322,
+        "reused": true
+      },
+      {
+        "filename": "ie-portal-markets-reach-01.webp",
+        "path": "apps/web/public/media/ie/portal/markets/ie-portal-markets-reach-01.webp",
+        "bytes": 610492
+      },
+      {
+        "filename": "ie-portal-about-01.webp",
+        "path": "apps/web/public/media/ie/portal/about/ie-portal-about-01.webp",
+        "bytes": 690490,
+        "reused": true
+      },
+      {
+        "filename": "ie-portal-contact-01.webp",
+        "path": "apps/web/public/media/ie/portal/contact/ie-portal-contact-01.webp",
+        "bytes": 81992,
+        "reused": true
+      },
+      {
+        "filename": "intl-iphones-gadgets-hero-01.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/hero/intl-iphones-gadgets-hero-01.webp",
+        "bytes": 400808,
+        "reused": true
+      },
+      {
+        "filename": "intl-iphones-gadgets-hero-02.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/hero/intl-iphones-gadgets-hero-02.webp",
+        "bytes": 51160
+      },
+      {
+        "filename": "intl-iphones-gadgets-hero-03.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/hero/intl-iphones-gadgets-hero-03.webp",
+        "bytes": 523328
+      },
+      {
+        "filename": "intl-iphones-gadgets-product-01.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-product-01.webp",
+        "bytes": 70536,
+        "reused": true
+      },
+      {
+        "filename": "intl-iphones-gadgets-product-02.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-product-02.webp",
+        "bytes": 126122,
+        "reused": true
+      },
+      {
+        "filename": "intl-iphones-gadgets-product-03.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-product-03.webp",
+        "bytes": 210562
+      },
+      {
+        "filename": "intl-iphones-gadgets-product-04.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-product-04.webp",
+        "bytes": 25392,
+        "reused": true
+      },
+      {
+        "filename": "intl-iphones-gadgets-closeup-01.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-closeup-01.webp",
+        "bytes": 166262,
+        "reused": true
+      },
+      {
+        "filename": "intl-iphones-gadgets-closeup-02.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-closeup-02.webp",
+        "bytes": 198834
+      },
+      {
+        "filename": "intl-iphones-gadgets-closeup-03.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-closeup-03.webp",
+        "bytes": 84804,
+        "reused": true
+      },
+      {
+        "filename": "intl-iphones-gadgets-alt-01.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-alt-01.webp",
+        "bytes": 37088,
+        "reused": true
+      },
+      {
+        "filename": "intl-iphones-gadgets-alt-02.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-alt-02.webp",
+        "bytes": 94486
+      },
+      {
+        "filename": "intl-iphones-gadgets-alt-03.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-alt-03.webp",
+        "bytes": 32458,
+        "reused": true
+      },
+      {
+        "filename": "intl-iphones-gadgets-context-01.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/context/intl-iphones-gadgets-context-01.webp",
+        "bytes": 103462,
+        "reused": true
+      },
+      {
+        "filename": "intl-iphones-gadgets-context-02.webp",
+        "path": "apps/web/public/media/international/categories/iphones-gadgets/context/intl-iphones-gadgets-context-02.webp",
+        "bytes": 224468,
+        "reused": true
+      },
+      {
+        "filename": "intl-medical-equipments-hero-01.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/hero/intl-medical-equipments-hero-01.webp",
+        "bytes": 90650,
+        "reused": true
+      },
+      {
+        "filename": "intl-medical-equipments-hero-02.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/hero/intl-medical-equipments-hero-02.webp",
+        "bytes": 133134
+      },
+      {
+        "filename": "intl-medical-equipments-hero-03.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/hero/intl-medical-equipments-hero-03.webp",
+        "bytes": 220028,
+        "reused": true
+      },
+      {
+        "filename": "intl-medical-equipments-product-01.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-product-01.webp",
+        "bytes": 40506,
+        "reused": true
+      },
+      {
+        "filename": "intl-medical-equipments-product-02.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-product-02.webp",
+        "bytes": 283072,
+        "reused": true
+      },
+      {
+        "filename": "intl-medical-equipments-product-03.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-product-03.webp",
+        "bytes": 110024,
+        "reused": true
+      },
+      {
+        "filename": "intl-medical-equipments-product-04.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-product-04.webp",
+        "bytes": 198626,
+        "reused": true
+      },
+      {
+        "filename": "intl-medical-equipments-closeup-01.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-closeup-01.webp",
+        "bytes": 307808,
+        "reused": true
+      },
+      {
+        "filename": "intl-medical-equipments-closeup-02.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-closeup-02.webp",
+        "bytes": 401016
+      },
+      {
+        "filename": "intl-medical-equipments-closeup-03.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-closeup-03.webp",
+        "bytes": 145606
+      },
+      {
+        "filename": "intl-medical-equipments-alt-01.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-alt-01.webp",
+        "bytes": 196942,
+        "reused": true
+      },
+      {
+        "filename": "intl-medical-equipments-alt-02.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-alt-02.webp",
+        "bytes": 136294
+      },
+      {
+        "filename": "intl-medical-equipments-alt-03.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-alt-03.webp",
+        "bytes": 132848,
+        "reused": true
+      },
+      {
+        "filename": "intl-medical-equipments-context-01.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/context/intl-medical-equipments-context-01.webp",
+        "bytes": 127254,
+        "reused": true
+      },
+      {
+        "filename": "intl-medical-equipments-context-02.webp",
+        "path": "apps/web/public/media/international/categories/medical-equipments/context/intl-medical-equipments-context-02.webp",
+        "bytes": 192810,
+        "reused": true
+      },
+      {
+        "filename": "intl-home-garden-wares-hero-01.webp",
+        "path": "apps/web/public/media/international/categories/home-garden-wares/hero/intl-home-garden-wares-hero-01.webp",
+        "bytes": 335288
+      },
+      {
+        "filename": "intl-home-garden-wares-hero-02.webp",
+        "path": "apps/web/public/media/international/categories/home-garden-wares/hero/intl-home-garden-wares-hero-02.webp",
+        "bytes": 305760
+      },
+      {
+        "filename": "intl-home-garden-wares-hero-03.webp",
+        "path": "apps/web/public/media/international/categories/home-garden-wares/hero/intl-home-garden-wares-hero-03.webp",
+        "bytes": 283518,
+        "reused": true
+      },
+      {
+        "filename": "intl-home-garden-wares-product-01.webp",
+        "path": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-product-01.webp",
+        "bytes": 159616
+      },
+      {
+        "filename": "intl-home-garden-wares-product-02.webp",
+        "path": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-product-02.webp",
+        "bytes": 198886
+      },
+      {
+        "filename": "intl-home-garden-wares-product-03.webp",
+        "path": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-product-03.webp",
+        "bytes": 66118,
+        "reused": true
+      },
+      {
+        "filename": "intl-home-garden-wares-product-04.webp",
+        "path": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-product-04.webp",
+        "bytes": 28286,
+        "reused": true
+      },
+      {
+        "filename": "intl-home-garden-wares-closeup-01.webp",
+        "path": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-closeup-01.webp",
+        "bytes": 198764
+      },
+      {
+        "filename": "intl-home-garden-wares-closeup-02.webp",
+        "path": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-closeup-02.webp",
+        "bytes": 283686
+      },
+      {
+        "filename": "intl-home-garden-wares-closeup-03.webp",
+        "path": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-closeup-03.webp",
+        "bytes": 641804
+      },
+      {
+        "filename": "intl-machineries-hero-01.webp",
+        "path": "apps/web/public/media/international/categories/machineries/hero/intl-machineries-hero-01.webp",
+        "bytes": 443310,
+        "reused": true
+      },
+      {
+        "filename": "intl-machineries-hero-03.webp",
+        "path": "apps/web/public/media/international/categories/machineries/hero/intl-machineries-hero-03.webp",
+        "bytes": 239242,
+        "reused": true
+      },
+      {
+        "filename": "intl-machineries-product-01.webp",
+        "path": "apps/web/public/media/international/categories/machineries/gallery/intl-machineries-product-01.webp",
+        "bytes": 134102,
+        "reused": true
+      },
+      {
+        "filename": "intl-machineries-product-02.webp",
+        "path": "apps/web/public/media/international/categories/machineries/gallery/intl-machineries-product-02.webp",
+        "bytes": 79720,
+        "reused": true
+      },
+      {
+        "filename": "intl-general-procurement-hero-01.webp",
+        "path": "apps/web/public/media/international/categories/general-procurement/hero/intl-general-procurement-hero-01.webp",
+        "bytes": 529540,
+        "reused": true
+      },
+      {
+        "filename": "intl-general-procurement-hero-02.webp",
+        "path": "apps/web/public/media/international/categories/general-procurement/hero/intl-general-procurement-hero-02.webp",
+        "bytes": 722832,
+        "reused": true
+      },
+      {
+        "filename": "intl-general-procurement-hero-03.webp",
+        "path": "apps/web/public/media/international/categories/general-procurement/hero/intl-general-procurement-hero-03.webp",
+        "bytes": 124318,
+        "reused": true
+      },
+      {
+        "filename": "intl-general-procurement-closeup-01.webp",
+        "path": "apps/web/public/media/international/categories/general-procurement/gallery/intl-general-procurement-closeup-01.webp",
+        "bytes": 78046,
+        "reused": true
+      }
+    ],
+    "skipped": [
+      {
+        "filename": "intl-home-garden-wares-alt-01.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/home-garden-wares/hero/intl-home-garden-wares-hero-03.webp",
+        "photoId": "1416879595882-3373a0480b5b"
+      },
+      {
+        "filename": "intl-home-garden-wares-alt-02.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-product-03.webp",
+        "photoId": "1501004318641-b39e6451bec6"
+      },
+      {
+        "filename": "intl-home-garden-wares-alt-03.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-closeup-01.webp",
+        "photoId": "1567620905732-2d1ec7ab7445"
+      },
+      {
+        "filename": "intl-home-garden-wares-context-01.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-closeup-02.webp",
+        "photoId": "1512621776951-a57141f2eefd"
+      },
+      {
+        "filename": "intl-home-garden-wares-context-02.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-closeup-03.webp",
+        "photoId": "1540420773420-3366772f4999"
+      },
+      {
+        "filename": "intl-machineries-hero-02.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/ie/portal/capabilities/ie-portal-capability-commodities-01.webp",
+        "photoId": "1546069901-ba9599a7e63c"
+      },
+      {
+        "filename": "intl-machineries-product-03.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/iphones-gadgets/hero/intl-iphones-gadgets-hero-02.webp",
+        "photoId": "1557800636-894a64c1696f"
+      },
+      {
+        "filename": "intl-machineries-product-04.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/machineries/hero/intl-machineries-hero-01.webp",
+        "photoId": "1565043666747-69f6646db940"
+      },
+      {
+        "filename": "intl-machineries-closeup-01.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/machineries/hero/intl-machineries-hero-03.webp",
+        "photoId": "1581091226825-a6a2a5aee158"
+      },
+      {
+        "filename": "intl-machineries-closeup-02.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/machineries/gallery/intl-machineries-product-02.webp",
+        "photoId": "1581092918056-0c4c3acd3789"
+      },
+      {
+        "filename": "intl-machineries-closeup-03.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/iphones-gadgets/hero/intl-iphones-gadgets-hero-03.webp",
+        "photoId": "1504674900247-0877df9cc836"
+      },
+      {
+        "filename": "intl-machineries-alt-01.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/machineries/gallery/intl-machineries-product-01.webp",
+        "photoId": "1581092160562-40aa08e78837"
+      },
+      {
+        "filename": "intl-machineries-alt-02.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-product-03.webp",
+        "photoId": "1441986300917-64674bd600d8"
+      },
+      {
+        "filename": "intl-machineries-alt-03.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/machineries/hero/intl-machineries-hero-01.webp",
+        "photoId": "1565043666747-69f6646db940"
+      },
+      {
+        "filename": "intl-machineries-context-01.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-closeup-02.webp",
+        "photoId": "1556740738-b6a63e27c4df"
+      },
+      {
+        "filename": "intl-machineries-context-02.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/machineries/hero/intl-machineries-hero-03.webp",
+        "photoId": "1581091226825-a6a2a5aee158"
+      },
+      {
+        "filename": "intl-general-procurement-product-01.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/general-procurement/hero/intl-general-procurement-hero-02.webp",
+        "photoId": "1553413077-190dd305871c"
+      },
+      {
+        "filename": "intl-general-procurement-product-02.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/general-procurement/hero/intl-general-procurement-hero-01.webp",
+        "photoId": "1586528116311-ad8dd3c8310d"
+      },
+      {
+        "filename": "intl-general-procurement-product-03.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/ie/portal/hero/ie-portal-home-hero-02.webp",
+        "photoId": "1578575437130-527eed3abbec"
+      },
+      {
+        "filename": "intl-general-procurement-product-04.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/general-procurement/hero/intl-general-procurement-hero-03.webp",
+        "photoId": "1566576912321-d58ddd7a6088"
+      },
+      {
+        "filename": "intl-general-procurement-closeup-02.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/general-procurement/hero/intl-general-procurement-hero-02.webp",
+        "photoId": "1553413077-190dd305871c"
+      },
+      {
+        "filename": "intl-general-procurement-closeup-03.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/general-procurement/hero/intl-general-procurement-hero-01.webp",
+        "photoId": "1586528116311-ad8dd3c8310d"
+      },
+      {
+        "filename": "intl-general-procurement-alt-01.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/ie/portal/capabilities/ie-portal-capability-export-01.webp",
+        "photoId": "1494412574643-ff11b0a5c1c3"
+      },
+      {
+        "filename": "intl-general-procurement-alt-02.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/general-procurement/gallery/intl-general-procurement-closeup-01.webp",
+        "photoId": "1566576721346-d4a3b4eaeb55"
+      },
+      {
+        "filename": "intl-general-procurement-alt-03.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/general-procurement/hero/intl-general-procurement-hero-03.webp",
+        "photoId": "1566576912321-d58ddd7a6088"
+      },
+      {
+        "filename": "intl-general-procurement-context-01.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/international/categories/general-procurement/hero/intl-general-procurement-hero-01.webp",
+        "photoId": "1586528116311-ad8dd3c8310d"
+      },
+      {
+        "filename": "intl-general-procurement-context-02.webp",
+        "reason": "duplicate_source_photo",
+        "aliasesTo": "apps/web/public/media/ie/portal/hero/ie-portal-home-hero-02.webp",
+        "photoId": "1578575437130-527eed3abbec"
+      }
+    ],
+    "rejected": [],
+    "notFound": []
+  }
+}

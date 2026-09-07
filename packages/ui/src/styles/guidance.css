@@ -1,0 +1,976 @@
+/* Enterprise Guidance System - authenticated surfaces only */
+
+.hamd-guide-welcome,
+.hamd-guide-tour,
+.hamd-guide-learning {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+}
+
+.hamd-guide-welcome__backdrop,
+.hamd-guide-tour__scrim,
+.hamd-guide-learning__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgb(12 18 28 / 0.48);
+  pointer-events: auto;
+  border: 0;
+  cursor: default;
+}
+
+.hamd-guide-welcome__dialog,
+.hamd-guide-tour__panel,
+.hamd-guide-learning__panel {
+  pointer-events: auto;
+  background: #f7f5f1;
+  color: #142033;
+  border: 1px solid rgb(20 32 51 / 0.12);
+  box-shadow: 0 24px 60px rgb(10 16 28 / 0.22);
+  max-width: min(28rem, calc(100vw - 2rem));
+}
+
+.hamd-guide-welcome__dialog {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  width: min(28rem, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+  padding: 1.75rem 1.5rem 1.5rem;
+  border-radius: 0.35rem;
+  animation: hamd-guide-enter 220ms ease-out;
+}
+
+.hamd-guide-welcome__eyebrow,
+.hamd-guide-tip__eyebrow {
+  margin: 0 0 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5b6b7c;
+}
+
+.hamd-guide-welcome__title {
+  margin: 0;
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  font-size: clamp(1.5rem, 2.4vw, 1.85rem);
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.hamd-guide-welcome__powered {
+  margin: 0.35rem 0 0.85rem;
+  color: #3d4f63;
+  font-size: 0.9rem;
+}
+
+.hamd-guide-welcome__body,
+.hamd-guide-welcome__meta,
+.hamd-guide-tour__body,
+.hamd-guide-tour__meta {
+  margin: 0 0 0.75rem;
+  color: #2a3a4d;
+  line-height: 1.5;
+}
+
+.hamd-guide-welcome__learn {
+  margin: 0 0 1rem;
+  padding-left: 1.1rem;
+  color: #2a3a4d;
+}
+
+.hamd-guide-welcome__actions,
+.hamd-guide-tour__actions,
+.hamd-guide-admin__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hamd-guide-admin__actions {
+  align-items: end;
+}
+
+.hamd-guide-admin__detail label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.82rem;
+  color: var(--ga-muted);
+  min-width: 0;
+}
+
+.hamd-guide-btn {
+  appearance: none;
+  border: 1px solid rgb(20 32 51 / 0.18);
+  background: #fff;
+  color: #142033;
+  padding: 0.45rem 0.8rem;
+  font: inherit;
+  font-size: 0.875rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.hamd-guide-btn:disabled,
+.hamd-guide-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.hamd-guide-btn--primary {
+  background: #16324f;
+  border-color: #16324f;
+  color: #f7f5f1;
+}
+
+.hamd-guide-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.hamd-guide-control {
+  position: relative;
+}
+
+.hamd-guide-control__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+  background: transparent;
+  color: inherit;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  font: inherit;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.hamd-guide-control__trigger.is-active {
+  border-color: color-mix(in srgb, var(--hamd-color-action, #155aaf) 45%, transparent);
+}
+
+.hamd-guide-control__dot {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.45rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: var(--hamd-color-action, #155aaf);
+}
+
+.hamd-guide-control__mode {
+  display: none;
+}
+
+.hamd-guide-control__menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.35rem);
+  min-width: 14rem;
+  background: #fff;
+  border: 1px solid rgb(20 32 51 / 0.12);
+  box-shadow: 0 12px 28px rgb(10 16 28 / 0.14);
+  border-radius: 0.3rem;
+  padding: 0.4rem;
+  z-index: 90;
+}
+
+.hamd-guide-control__heading,
+.hamd-guide-control__shortcut {
+  margin: 0.25rem 0.45rem;
+  font-size: 0.72rem;
+  color: #5b6b7c;
+}
+
+.hamd-guide-control__item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 0.45rem 0.55rem;
+  font: inherit;
+  font-size: 0.85rem;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  color: #142033;
+}
+
+.hamd-guide-control__item.is-active,
+.hamd-guide-control__item:hover {
+  background: #eef2f6;
+}
+
+.hamd-guide-control__rule {
+  border: 0;
+  border-top: 1px solid rgb(20 32 51 / 0.1);
+  margin: 0.35rem 0;
+}
+
+.hamd-guide-spotlight {
+  position: fixed;
+  border-radius: 0.5rem;
+  box-shadow:
+    0 0 0 9999px rgb(12 18 28 / 0.5),
+    0 0 0 1px rgb(255 255 255 / 0.28);
+  z-index: 81;
+  pointer-events: none;
+  transition:
+    top 180ms ease,
+    left 180ms ease,
+    width 180ms ease,
+    height 180ms ease;
+}
+
+.hamd-guide-spotlight--pulse {
+  animation: hamd-guide-pulse 1.8s ease-in-out infinite;
+}
+
+.hamd-guide-tour__panel {
+  z-index: 82;
+  padding: 1rem 1rem 0.85rem;
+  border-radius: 0.35rem;
+  max-width: min(24rem, calc(100vw - 1.5rem));
+  animation: hamd-guide-enter 180ms ease-out;
+}
+
+.hamd-guide-tour__panel--pending {
+  visibility: hidden;
+}
+
+.hamd-guide-tour__arrow {
+  position: absolute;
+  width: 0.7rem;
+  height: 0.7rem;
+  background: #f7f5f1;
+  border: 1px solid rgb(20 32 51 / 0.12);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.hamd-guide-tour__arrow[data-placement="bottom"] {
+  top: -0.38rem;
+  left: 1.25rem;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.hamd-guide-tour__arrow[data-placement="top"] {
+  bottom: -0.38rem;
+  left: 1.25rem;
+  border-left: 0;
+  border-top: 0;
+}
+
+.hamd-guide-tour__arrow[data-placement="left"] {
+  right: -0.38rem;
+  top: 1.1rem;
+  border-left: 0;
+  border-bottom: 0;
+}
+
+.hamd-guide-tour__arrow[data-placement="right"] {
+  left: -0.38rem;
+  top: 1.1rem;
+  border-right: 0;
+  border-top: 0;
+}
+
+.hamd-guide-tour__progress {
+  height: 3px;
+  background: rgb(20 32 51 / 0.1);
+  border-radius: 99px;
+  margin-bottom: 0.65rem;
+  overflow: hidden;
+}
+
+.hamd-guide-tour__progress-bar {
+  display: block;
+  height: 100%;
+  background: #c9a227;
+  transition: width 200ms ease;
+}
+
+.hamd-guide-tour__title {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+}
+
+.hamd-guide-tour__action-hint {
+  margin: 0 0 0.75rem;
+  padding: 0.5rem 0.65rem;
+  background: #eef2f6;
+  border-radius: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.hamd-guide-tour__image {
+  display: block;
+  width: 100%;
+  max-height: 8rem;
+  object-fit: cover;
+  margin-bottom: 0.75rem;
+  border-radius: 0.25rem;
+}
+
+.hamd-guide-helper {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 83;
+  pointer-events: none;
+  background: #16324f;
+  color: #f7f5f1;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  opacity: 0.92;
+}
+
+.hamd-guide-learning__panel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(40rem, calc(100vw - 1.5rem));
+  max-height: min(85vh, 40rem);
+  overflow: auto;
+  padding: 1.25rem;
+  border-radius: 0.35rem;
+  animation: hamd-guide-enter 200ms ease-out;
+}
+
+.hamd-guide-learning__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.hamd-guide-learning__header h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.25rem;
+}
+
+.hamd-guide-learning__header p {
+  margin: 0;
+  color: #3d4f63;
+}
+
+.hamd-guide-learning__progress {
+  margin: 1rem 0;
+}
+
+.hamd-guide-learning__meter {
+  margin-top: 0.35rem;
+  height: 0.4rem;
+  background: rgb(20 32 51 / 0.1);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.hamd-guide-learning__meter > span {
+  display: block;
+  height: 100%;
+  background: #16324f;
+}
+
+.hamd-guide-learning__search input,
+.hamd-guide-admin input,
+.hamd-guide-admin select,
+.hamd-guide-admin textarea {
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--ga-border, rgb(20 32 51 / 0.16));
+  border-radius: 0.55rem;
+  font: inherit;
+  background: var(--ga-canvas, #fff);
+  color: var(--ga-text, #142033);
+  box-sizing: border-box;
+}
+
+.hamd-guide-admin input:focus-visible,
+.hamd-guide-admin select:focus-visible,
+.hamd-guide-admin textarea:focus-visible,
+.hamd-guide-learning__search input:focus-visible {
+  outline: none;
+  border-color: var(--ga-action, #155aaf);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ga-action, #155aaf) 22%, transparent);
+}
+
+.hamd-guide-learning__list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.hamd-guide-learning__list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-top: 1px solid rgb(20 32 51 / 0.1);
+}
+
+.hamd-guide-learning__list h3 {
+  margin: 0 0 0.2rem;
+  font-size: 0.95rem;
+}
+
+.hamd-guide-learning__list p {
+  margin: 0;
+  color: #3d4f63;
+  font-size: 0.85rem;
+}
+
+.hamd-guide-learning__meta {
+  margin-top: 0.3rem !important;
+  font-size: 0.75rem !important;
+  text-transform: capitalize;
+}
+
+.hamd-guide-tip {
+  position: fixed;
+  right: 1rem;
+  bottom: 4rem;
+  z-index: 70;
+  max-width: 20rem;
+  background: #fff;
+  border: 1px solid rgb(20 32 51 / 0.14);
+  box-shadow: 0 10px 28px rgb(10 16 28 / 0.14);
+  border-radius: 0.3rem;
+  padding: 0.85rem;
+  display: grid;
+  gap: 0.65rem;
+  animation: hamd-guide-enter 180ms ease-out;
+}
+
+.hamd-guide-tip h3 {
+  margin: 0 0 0.25rem;
+  font-size: 0.95rem;
+}
+
+.hamd-guide-tip p {
+  margin: 0;
+  color: #2a3a4d;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.hamd-guide-smart {
+  position: fixed;
+  z-index: 75;
+  transform: translateX(-50%);
+  max-width: 16rem;
+  background: #142033;
+  color: #f4f1ea;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.3rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  pointer-events: none;
+  box-shadow: 0 8px 20px rgb(10 16 28 / 0.28);
+}
+
+.hamd-guide-smart strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.82rem;
+}
+
+.hamd-guide-smart p {
+  margin: 0.2rem 0 0;
+}
+
+.hamd-guide-smart span {
+  display: inline-block;
+  min-width: 3.6rem;
+  color: #c9a227;
+  font-weight: 600;
+}
+
+.hamd-guide-admin {
+  --ga-canvas: var(--hamd-color-canvas, #eef3f8);
+  --ga-surface: var(--hamd-color-surface, #ffffff);
+  --ga-subtle: var(--hamd-color-surface-subtle, #e7eef6);
+  --ga-text: var(--hamd-color-text, #101828);
+  --ga-muted: var(--hamd-color-text-secondary, #344054);
+  --ga-tertiary: var(--hamd-color-text-tertiary, #667085);
+  --ga-border: var(--hamd-color-border, color-mix(in srgb, #155aaf 14%, #d0d5dd));
+  --ga-border-subtle: var(--hamd-color-border-subtle, color-mix(in srgb, #155aaf 10%, #eaecf0));
+  --ga-action: var(--hamd-color-action, #155aaf);
+  --ga-action-hover: var(--hamd-color-action-hover, #123b66);
+
+  display: grid;
+  gap: 1.15rem;
+  color: var(--ga-text);
+  min-width: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]):not([data-theme="dark"]) .hamd-guide-admin {
+    --ga-canvas: #101828;
+    --ga-surface: #182230;
+    --ga-subtle: #1d2939;
+    --ga-text: #f9fafb;
+    --ga-muted: #d0d5dd;
+    --ga-tertiary: #98a2b3;
+    --ga-border: #344054;
+    --ga-border-subtle: #1d2939;
+    --ga-action: #53b1fd;
+    --ga-action-hover: #84caff;
+  }
+}
+
+[data-theme="dark"] .hamd-guide-admin,
+.hamd-guide-admin[data-theme="dark"] {
+  --ga-canvas: #101828;
+  --ga-surface: #182230;
+  --ga-subtle: #1d2939;
+  --ga-text: #f9fafb;
+  --ga-muted: #d0d5dd;
+  --ga-tertiary: #98a2b3;
+  --ga-border: #344054;
+  --ga-border-subtle: #1d2939;
+  --ga-action: #53b1fd;
+  --ga-action-hover: #84caff;
+  color-scheme: dark;
+}
+
+.hamd-guide-admin__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.hamd-guide-admin__header h1 {
+  margin: 0 0 0.25rem;
+  font-size: 1.35rem;
+  letter-spacing: -0.02em;
+}
+
+.hamd-guide-admin__header p,
+.hamd-guide-admin__detail > p {
+  margin: 0;
+  color: var(--ga-tertiary);
+}
+
+.hamd-guide-admin__analytics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: 0.65rem;
+}
+
+.hamd-guide-admin__analytics article {
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--ga-surface) 92%, var(--ga-action)) 0%,
+      var(--ga-surface) 100%
+    );
+  border: 1px solid var(--ga-border);
+  padding: 0.85rem 0.9rem;
+  border-radius: 0.7rem;
+  display: grid;
+  gap: 0.2rem;
+  box-shadow: 0 10px 24px -18px rgb(16 58 120 / 0.28);
+}
+
+.hamd-guide-admin__analytics strong {
+  font-size: 1.15rem;
+  color: var(--ga-text);
+  letter-spacing: -0.02em;
+}
+
+.hamd-guide-admin__analytics span {
+  font-size: 0.75rem;
+  color: var(--ga-tertiary);
+}
+
+.hamd-guide-admin__board {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  min-height: 18rem;
+}
+
+.hamd-guide-admin__search input {
+  width: min(100%, 24rem);
+}
+
+.hamd-guide-admin__records {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.hamd-guide-admin__record {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) auto auto;
+  gap: 0.65rem;
+  align-items: center;
+  text-align: start;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--ga-border);
+  border-radius: 0.5rem;
+  background: var(--ga-surface);
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.hamd-guide-admin__record:hover,
+.hamd-guide-admin__record:focus-visible {
+  border-color: var(--ga-action);
+}
+
+.hamd-guide-admin__record-title {
+  font-weight: 650;
+}
+
+.hamd-guide-admin__empty {
+  margin: 0;
+  color: var(--ga-tertiary);
+}
+
+@media (max-width: 720px) {
+  .hamd-guide-admin__record {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.hamd-guide-admin__layout {
+  display: grid;
+  grid-template-columns: minmax(13rem, 17rem) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  min-width: 0;
+}
+
+.hamd-guide-admin__list {
+  background: var(--ga-surface);
+  border: 1px solid var(--ga-border);
+  border-radius: 0.85rem;
+  padding: 0.85rem;
+  min-width: 0;
+  box-shadow: 0 10px 24px -18px rgb(16 58 120 / 0.25);
+}
+
+.hamd-guide-admin__list > label,
+.hamd-guide-admin__list > .hamd-guide-admin__list-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ga-tertiary);
+  margin-bottom: 0.35rem;
+}
+
+.hamd-guide-admin__list ul {
+  list-style: none;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.3rem;
+  max-height: min(28rem, 55vh);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.hamd-guide-admin__list button {
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ga-text);
+  padding: 0.65rem 0.7rem;
+  border-radius: 0.55rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.15rem;
+  font: inherit;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.hamd-guide-admin__list button:hover {
+  background: color-mix(in srgb, var(--ga-action) 8%, var(--ga-subtle));
+  border-color: color-mix(in srgb, var(--ga-action) 14%, transparent);
+}
+
+.hamd-guide-admin__list button.is-active {
+  border-color: color-mix(in srgb, var(--ga-action) 35%, var(--ga-border));
+  background: color-mix(in srgb, var(--ga-action) 14%, var(--ga-subtle));
+  box-shadow: inset 3px 0 0 var(--ga-action);
+}
+
+.hamd-guide-admin__list button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--ga-action) 55%, transparent);
+  outline-offset: 1px;
+}
+
+.hamd-guide-admin__status {
+  font-size: 0.72rem;
+  color: var(--ga-tertiary);
+  text-transform: capitalize;
+}
+
+.hamd-guide-admin__detail,
+.hamd-guide-admin__create,
+.hamd-guide-admin__reset {
+  background: var(--ga-surface);
+  border: 1px solid var(--ga-border);
+  border-radius: 0.85rem;
+  padding: 1rem 1.05rem;
+  box-shadow: 0 10px 24px -18px rgb(16 58 120 / 0.25);
+  min-width: 0;
+}
+
+.hamd-guide-admin__detail h2,
+.hamd-guide-admin__create h2,
+.hamd-guide-admin__reset h2 {
+  margin: 0 0 0.35rem;
+  color: var(--ga-text);
+  letter-spacing: -0.015em;
+}
+
+.hamd-guide-admin__create,
+.hamd-guide-admin__reset {
+  margin-top: 1rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.hamd-guide-admin__create label,
+.hamd-guide-admin__reset label {
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.82rem;
+  color: var(--ga-muted);
+  min-width: 0;
+}
+
+.hamd-guide-admin__steps {
+  margin: 0.75rem 0 1rem;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.55rem;
+  color: var(--ga-text);
+}
+
+.hamd-guide-admin__steps li {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.hamd-guide-admin__steps em {
+  font-size: 0.8rem;
+  color: var(--ga-tertiary);
+}
+
+.hamd-guide-admin__check {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--ga-muted);
+}
+
+.hamd-guide-admin .hamd-guide-btn {
+  border: 1px solid var(--ga-border);
+  background: var(--ga-subtle);
+  color: var(--ga-text);
+  border-radius: 0.55rem;
+  padding: 0.5rem 0.85rem;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.hamd-guide-admin .hamd-guide-btn:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--ga-action) 35%, var(--ga-border));
+  background: color-mix(in srgb, var(--ga-action) 10%, var(--ga-subtle));
+}
+
+.hamd-guide-admin .hamd-guide-btn--primary {
+  background: var(--ga-action);
+  border-color: var(--ga-action);
+  color: #fff;
+  font-weight: 650;
+  box-shadow: 0 8px 18px -12px color-mix(in srgb, var(--ga-action) 70%, transparent);
+}
+
+.hamd-guide-admin .hamd-guide-btn--primary:hover:not(:disabled) {
+  background: var(--ga-action-hover);
+  border-color: var(--ga-action-hover);
+}
+
+.hamd-guide-admin .hamd-guide-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ga-action);
+  text-decoration: none;
+}
+
+.hamd-guide-admin .hamd-guide-btn--ghost:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ga-action) 10%, transparent);
+}
+
+.hamd-guide-admin code {
+  font-size: 0.85em;
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.3rem;
+  background: var(--ga-subtle);
+  border: 1px solid var(--ga-border-subtle);
+  color: var(--ga-text);
+}
+
+[data-theme="dark"] .hamd-guide-admin__analytics article,
+[data-theme="dark"] .hamd-guide-admin__list,
+[data-theme="dark"] .hamd-guide-admin__detail,
+[data-theme="dark"] .hamd-guide-admin__create,
+[data-theme="dark"] .hamd-guide-admin__reset {
+  box-shadow: 0 12px 28px -20px rgb(0 0 0 / 0.55);
+}
+
+[data-theme="dark"] .hamd-guide-admin .hamd-guide-btn--primary {
+  color: #0b1f38;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes hamd-guide-enter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes hamd-guide-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 9999px rgb(12 18 28 / 0.5),
+      0 0 0 1px rgb(255 255 255 / 0.28);
+  }
+  50% {
+    box-shadow:
+      0 0 0 9999px rgb(12 18 28 / 0.42),
+      0 0 0 1px rgb(255 255 255 / 0.4);
+  }
+}
+
+@media (max-width: 720px) {
+  .hamd-guide-admin__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .hamd-guide-tour__panel--sheet {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    top: auto;
+    width: auto;
+    max-width: none;
+    transform: none;
+  }
+
+  .hamd-guide-tour__panel--sheet .hamd-guide-tour__arrow[data-placement="bottom"],
+  .hamd-guide-tour__panel--sheet .hamd-guide-tour__arrow[data-placement="top"] {
+    left: 1.5rem;
+  }
+
+  .hamd-guide-tip {
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
+  }
+}
+
+.hamd-guide-tour__kbd-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.72rem;
+  color: #5b6b7c;
+  line-height: 1.4;
+}
+
+.hamd-guide-tour--paused {
+  pointer-events: none;
+  z-index: 80;
+}
+
+.hamd-guide-tour__resume-chip {
+  pointer-events: auto;
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #f7f5f1;
+  color: #142033;
+  border: 1px solid rgb(20 32 51 / 0.14);
+  box-shadow: 0 12px 32px rgb(10 16 28 / 0.18);
+  border-radius: 0.35rem;
+  max-width: min(24rem, calc(100vw - 2rem));
+  animation: hamd-guide-enter 180ms ease-out;
+}
+
+.hamd-guide-tour__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-guide-welcome__dialog,
+  .hamd-guide-tour__panel,
+  .hamd-guide-learning__panel,
+  .hamd-guide-tip,
+  .hamd-guide-spotlight,
+  .hamd-guide-spotlight--pulse,
+  .hamd-guide-tour__progress-bar,
+  .hamd-guide-tour__resume-chip {
+    animation: none !important;
+    transition: none !important;
+  }
+}

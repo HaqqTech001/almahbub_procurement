@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+.turbo/
+pnpm-lock.yaml
+
+# Legacy applications retain their current formatting until migration modules.
+admin-dashboard/
+backend/
+client-frontend/
+
+# Architecture material is maintained separately from executable foundation code.
+docs/
+canvases/

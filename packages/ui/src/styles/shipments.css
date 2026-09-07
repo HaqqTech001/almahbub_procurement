@@ -1,0 +1,540 @@
+/* HAMD Genesis - Logistics / Shipments */
+
+.hamd-sh {
+  --sh-canvas: var(--hamd-color-canvas, #f9fafb);
+  --sh-surface: var(--hamd-color-surface, #ffffff);
+  --sh-subtle: var(--hamd-color-surface-subtle, #f2f4f7);
+  --sh-text: var(--hamd-color-text, #101828);
+  --sh-muted: var(--hamd-color-text-secondary, #344054);
+  --sh-tertiary: var(--hamd-color-text-tertiary, #667085);
+  --sh-border: var(--hamd-color-border, #d0d5dd);
+  --sh-border-subtle: var(--hamd-color-border-subtle, #eaecf0);
+  --sh-action: var(--hamd-color-action, #155aaf);
+  --sh-danger: var(--hamd-color-danger, #b42318);
+  --sh-success: var(--hamd-color-success, #067647);
+  --sh-warning: var(--hamd-color-warning, #9a6700);
+  --sh-radius: var(--hamd-radius-lg, 0.5rem);
+  --sh-font: var(--hamd-font-sans, "Segoe UI", system-ui, sans-serif);
+
+  background: var(--sh-canvas);
+  color: var(--sh-text);
+  font-family: var(--sh-font);
+  padding: 1.25rem clamp(1rem, 2.5vw, 1.75rem) 2rem;
+  min-height: 100%;
+  position: relative;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]):not([data-theme="dark"]) .hamd-sh {
+    --sh-canvas: #101828;
+    --sh-surface: #182230;
+    --sh-subtle: #1d2939;
+    --sh-text: #f9fafb;
+    --sh-muted: #d0d5dd;
+    --sh-tertiary: #98a2b3;
+    --sh-border: #344054;
+    --sh-border-subtle: #1d2939;
+    --sh-action: #53b1fd;
+  }
+}
+
+[data-theme="light"] .hamd-sh,
+.hamd-sh[data-theme="light"] {
+  --sh-canvas: #f9fafb;
+  --sh-surface: #ffffff;
+  --sh-subtle: #f2f4f7;
+  --sh-text: #101828;
+  --sh-muted: #344054;
+  --sh-tertiary: #667085;
+  --sh-border: #d0d5dd;
+  --sh-border-subtle: #eaecf0;
+  --sh-action: #155aaf;
+}
+
+[data-theme="dark"] .hamd-sh,
+.hamd-sh[data-theme="dark"] {
+  --sh-canvas: #101828;
+  --sh-surface: #182230;
+  --sh-subtle: #1d2939;
+  --sh-text: #f9fafb;
+  --sh-muted: #d0d5dd;
+  --sh-tertiary: #98a2b3;
+  --sh-border: #344054;
+  --sh-border-subtle: #1d2939;
+  --sh-action: #53b1fd;
+}
+
+.hamd-sh__skip {
+  position: absolute;
+  left: -9999px;
+  z-index: 40;
+  padding: 0.65rem 1rem;
+  background: var(--sh-action);
+  color: #fff;
+}
+
+.hamd-sh__skip:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+.hamd-sh__title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 650;
+}
+
+.hamd-sh__subtitle {
+  margin: 0.25rem 0 1.1rem;
+  color: var(--sh-tertiary);
+}
+
+.hamd-sh__layout {
+  display: grid;
+  grid-template-columns: minmax(250px, 320px) minmax(0, 1fr);
+  gap: 1rem;
+  min-height: min(640px, 75vh);
+}
+
+.hamd-sh__directory,
+.hamd-sh__detail {
+  background: var(--sh-surface);
+  border: 1px solid var(--sh-border-subtle);
+  border-radius: var(--sh-radius);
+}
+
+.hamd-sh__directory {
+  display: flex;
+  flex-direction: column;
+}
+
+.hamd-sh-filters {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.85rem;
+  border-bottom: 1px solid var(--sh-border-subtle);
+}
+
+.hamd-sh-filters input,
+.hamd-sh-filters select,
+.hamd-sh-reason input,
+.hamd-sh-create input {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  background: var(--sh-canvas);
+  border: 1px solid var(--sh-border);
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.6rem;
+}
+
+.hamd-sh-filters label,
+.hamd-sh-reason,
+.hamd-sh-create label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--sh-muted);
+}
+
+.hamd-sh-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+  overflow: auto;
+  flex: 1;
+  content-visibility: auto;
+}
+
+.hamd-sh-row {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: 0.7rem 0.75rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.hamd-sh-row:hover,
+.hamd-sh-row.is-active {
+  background: var(--sh-subtle);
+}
+
+.hamd-sh-row__code {
+  font-size: 0.72rem;
+  color: var(--sh-action);
+  font-weight: 650;
+}
+
+.hamd-sh-row__title {
+  font-weight: 600;
+}
+
+.hamd-sh-row__meta {
+  color: var(--sh-tertiary);
+  font-size: 0.75rem;
+}
+
+.hamd-sh-pager {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem;
+  border-top: 1px solid var(--sh-border-subtle);
+  color: var(--sh-tertiary);
+  font-size: 0.82rem;
+}
+
+.hamd-sh-pager button,
+.hamd-sh-btn {
+  border: 1px solid var(--sh-border);
+  background: var(--sh-surface);
+  color: inherit;
+  font: inherit;
+  border-radius: 0.35rem;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+}
+
+.hamd-sh-btn--primary {
+  background: var(--sh-action);
+  border-color: var(--sh-action);
+  color: #fff;
+  font-weight: 600;
+}
+
+.hamd-sh-btn--danger {
+  color: var(--sh-danger);
+}
+
+.hamd-sh-detail__head {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem 0.5rem;
+}
+
+.hamd-sh-detail__code {
+  margin: 0;
+  color: var(--sh-action);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.hamd-sh-detail__title {
+  margin: 0.15rem 0 0;
+  font-size: 1.15rem;
+}
+
+.hamd-sh-detail__sub {
+  margin: 0.4rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.hamd-sh-back {
+  display: none;
+  border: 1px solid var(--sh-border);
+  background: var(--sh-canvas);
+  color: inherit;
+  border-radius: 0.35rem;
+  padding: 0.35rem 0.55rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.hamd-sh-pill {
+  display: inline-flex;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  text-transform: capitalize;
+  background: var(--sh-subtle);
+  color: var(--sh-muted);
+}
+
+.hamd-sh-pill[data-status="delivered"],
+.hamd-sh-pill[data-status="completed"],
+.hamd-sh-pill[data-status="arrived"] {
+  background: color-mix(in srgb, var(--sh-success) 16%, transparent);
+  color: var(--sh-success);
+}
+
+.hamd-sh-pill[data-status="cancelled"],
+.hamd-sh-pill[data-status="lost"],
+.hamd-sh-pill[data-status="returned"] {
+  background: color-mix(in srgb, var(--sh-danger) 14%, transparent);
+  color: var(--sh-danger);
+}
+
+.hamd-sh-pill[data-status="held"],
+.hamd-sh-pill[data-status="out_for_delivery"],
+.hamd-sh-pill[data-status="transshipment"] {
+  background: color-mix(in srgb, var(--sh-warning) 16%, transparent);
+  color: var(--sh-warning);
+}
+
+.hamd-sh-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: end;
+  padding: 0.5rem 1.1rem 0.75rem;
+  border-bottom: 1px solid var(--sh-border-subtle);
+}
+
+.hamd-sh-reason {
+  flex: 1 1 12rem;
+}
+
+.hamd-sh-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--sh-border-subtle);
+}
+
+.hamd-sh-tab {
+  border: 0;
+  background: transparent;
+  color: var(--sh-muted);
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.55rem 0.6rem;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+
+.hamd-sh-tab.is-active {
+  color: var(--sh-action);
+  border-bottom-color: var(--sh-action);
+  font-weight: 600;
+}
+
+.hamd-sh-panel {
+  padding: 1rem 1.1rem 1.35rem;
+}
+
+.hamd-sh-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.65rem;
+  margin: 0 0 1rem;
+}
+
+.hamd-sh-facts div {
+  background: var(--sh-canvas);
+  border: 1px solid var(--sh-border-subtle);
+  border-radius: 0.45rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.hamd-sh-facts dt {
+  font-size: 0.72rem;
+  color: var(--sh-tertiary);
+  text-transform: uppercase;
+}
+
+.hamd-sh-facts dd {
+  margin: 0.25rem 0 0;
+  font-weight: 600;
+}
+
+.hamd-sh-feed,
+.hamd-sh-milestones,
+.hamd-sh-timeline {
+  list-style: none;
+  margin: 0 0 0.85rem;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.hamd-sh-feed li {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--sh-border-subtle);
+  border-radius: 0.45rem;
+  background: var(--sh-canvas);
+}
+
+.hamd-sh-milestones {
+  border-left: 2px solid var(--sh-border-subtle);
+  padding-left: 0.25rem;
+}
+
+.hamd-sh-milestones li,
+.hamd-sh-timeline li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.35rem 0 0.35rem 0.65rem;
+}
+
+.hamd-sh-timeline li {
+  border-bottom: 1px solid var(--sh-border-subtle);
+  padding-left: 0;
+}
+
+.hamd-sh-feed span,
+.hamd-sh-milestones span,
+.hamd-sh-timeline span,
+.hamd-sh-timeline time {
+  color: var(--sh-tertiary);
+  font-size: 0.8rem;
+}
+
+.hamd-sh-map__canvas {
+  min-height: 220px;
+  border-radius: var(--sh-radius);
+  border: 1px dashed var(--sh-border);
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--sh-action) 8%, var(--sh-canvas)) 0%,
+      var(--sh-subtle) 55%,
+      var(--sh-canvas) 100%
+    );
+  display: grid;
+  place-content: center;
+  gap: 0.35rem;
+  text-align: center;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.hamd-sh-map__pin {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  background: var(--sh-action);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--sh-action) 22%, transparent);
+  margin: 0 auto 0.35rem;
+}
+
+.hamd-sh-map__label {
+  margin: 0;
+  font-weight: 650;
+}
+
+.hamd-sh-map__meta,
+.hamd-sh-map__hint {
+  margin: 0;
+  color: var(--sh-tertiary);
+  font-size: 0.82rem;
+}
+
+.hamd-sh-map__slot {
+  min-height: 220px;
+}
+
+.hamd-sh-evidence {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.hamd-sh-evidence legend {
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.hamd-sh-check-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.hamd-sh-create {
+  display: grid;
+  gap: 0.65rem;
+  max-width: 36rem;
+}
+
+.hamd-sh-empty {
+  color: var(--sh-tertiary);
+}
+
+.hamd-sh-toast {
+  margin-top: 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.4rem;
+  background: color-mix(in srgb, var(--sh-danger) 12%, var(--sh-surface));
+  color: var(--sh-danger);
+}
+
+.hamd-sh--skeleton {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1rem;
+  min-height: 420px;
+}
+
+.hamd-sh-skel {
+  border-radius: var(--sh-radius);
+  background: linear-gradient(
+    90deg,
+    var(--sh-subtle) 25%,
+    var(--sh-border-subtle) 50%,
+    var(--sh-subtle) 75%
+  );
+  background-size: 200% 100%;
+  animation: hamd-sh-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes hamd-sh-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-sh-skel {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .hamd-sh__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .hamd-sh__detail {
+    display: none;
+  }
+
+  .hamd-sh--detail-open .hamd-sh__directory {
+    display: none;
+  }
+
+  .hamd-sh--detail-open .hamd-sh__detail {
+    display: block;
+  }
+
+  .hamd-sh-back {
+    display: inline-flex;
+  }
+}
+
+.hamd-sh .hamd-sr-only,
+.hamd-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

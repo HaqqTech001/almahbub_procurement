@@ -1,0 +1,607 @@
+/* HAMD Genesis - Quotation Management */
+
+.hamd-qt {
+  --qt-canvas: var(--hamd-color-canvas, #f9fafb);
+  --qt-surface: var(--hamd-color-surface, #ffffff);
+  --qt-subtle: var(--hamd-color-surface-subtle, #f2f4f7);
+  --qt-text: var(--hamd-color-text, #101828);
+  --qt-muted: var(--hamd-color-text-secondary, #344054);
+  --qt-tertiary: var(--hamd-color-text-tertiary, #667085);
+  --qt-border: var(--hamd-color-border, #d0d5dd);
+  --qt-border-subtle: var(--hamd-color-border-subtle, #eaecf0);
+  --qt-action: var(--hamd-color-action, #155aaf);
+  --qt-danger: var(--hamd-color-danger, #b42318);
+  --qt-warning: var(--hamd-color-warning, #9a6700);
+  --qt-success: var(--hamd-color-success, #067647);
+  --qt-radius: var(--hamd-radius-lg, 0.5rem);
+  --qt-font: var(--hamd-font-sans, "Segoe UI", system-ui, sans-serif);
+
+  background: var(--qt-canvas);
+  color: var(--qt-text);
+  font-family: var(--qt-font);
+  padding: 1.25rem clamp(1rem, 2.5vw, 1.75rem) 2rem;
+  min-height: 100%;
+  position: relative;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]):not([data-theme="dark"]) .hamd-qt {
+    --qt-canvas: #101828;
+    --qt-surface: #182230;
+    --qt-subtle: #1d2939;
+    --qt-text: #f9fafb;
+    --qt-muted: #d0d5dd;
+    --qt-tertiary: #98a2b3;
+    --qt-border: #344054;
+    --qt-border-subtle: #1d2939;
+    --qt-action: #53b1fd;
+  }
+}
+
+[data-theme="light"] .hamd-qt,
+.hamd-qt[data-theme="light"] {
+  --qt-canvas: #f9fafb;
+  --qt-surface: #ffffff;
+  --qt-subtle: #f2f4f7;
+  --qt-text: #101828;
+  --qt-muted: #344054;
+  --qt-tertiary: #667085;
+  --qt-border: #d0d5dd;
+  --qt-border-subtle: #eaecf0;
+  --qt-action: #155aaf;
+}
+
+[data-theme="dark"] .hamd-qt,
+.hamd-qt[data-theme="dark"] {
+  --qt-canvas: #101828;
+  --qt-surface: #182230;
+  --qt-subtle: #1d2939;
+  --qt-text: #f9fafb;
+  --qt-muted: #d0d5dd;
+  --qt-tertiary: #98a2b3;
+  --qt-border: #344054;
+  --qt-border-subtle: #1d2939;
+  --qt-action: #53b1fd;
+}
+
+.hamd-qt__skip {
+  position: absolute;
+  left: -9999px;
+  z-index: 40;
+  padding: 0.65rem 1rem;
+  background: var(--qt-action);
+  color: #fff;
+}
+
+.hamd-qt__skip:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+.hamd-qt__title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 650;
+}
+
+.hamd-qt__subtitle {
+  margin: 0.25rem 0 1.1rem;
+  color: var(--qt-tertiary);
+}
+
+.hamd-qt__layout {
+  display: grid;
+  grid-template-columns: minmax(250px, 320px) minmax(0, 1fr);
+  gap: 1rem;
+  min-height: min(640px, 75vh);
+}
+
+.hamd-qt__directory,
+.hamd-qt__detail {
+  background: var(--qt-surface);
+  border: 1px solid var(--qt-border-subtle);
+  border-radius: var(--qt-radius);
+}
+
+.hamd-qt__directory {
+  display: flex;
+  flex-direction: column;
+}
+
+.hamd-qt-filters {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.85rem;
+  border-bottom: 1px solid var(--qt-border-subtle);
+}
+
+.hamd-qt-filters input,
+.hamd-qt-filters select,
+.hamd-qt-reason input,
+.hamd-qt-compose textarea,
+.hamd-qt-create input,
+.hamd-qt-create textarea {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  background: var(--qt-canvas);
+  border: 1px solid var(--qt-border);
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.6rem;
+}
+
+.hamd-qt-filters label,
+.hamd-qt-reason,
+.hamd-qt-compose label,
+.hamd-qt-create label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--qt-muted);
+}
+
+.hamd-qt-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem;
+  overflow: auto;
+  flex: 1;
+  content-visibility: auto;
+}
+
+.hamd-qt-row {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: 0.7rem 0.75rem;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.hamd-qt-row:hover,
+.hamd-qt-row.is-active {
+  background: var(--qt-subtle);
+}
+
+.hamd-qt-row__code {
+  font-size: 0.72rem;
+  color: var(--qt-action);
+  font-weight: 650;
+}
+
+.hamd-qt-row__title {
+  font-weight: 600;
+}
+
+.hamd-qt-row__meta {
+  color: var(--qt-tertiary);
+  font-size: 0.75rem;
+}
+
+.hamd-qt-pager {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem;
+  border-top: 1px solid var(--qt-border-subtle);
+  color: var(--qt-tertiary);
+  font-size: 0.82rem;
+}
+
+.hamd-qt-pager button,
+.hamd-qt-btn {
+  border: 1px solid var(--qt-border);
+  background: var(--qt-surface);
+  color: inherit;
+  font: inherit;
+  border-radius: 0.35rem;
+  padding: 0.4rem 0.7rem;
+  cursor: pointer;
+}
+
+.hamd-qt-btn--primary {
+  background: var(--qt-action);
+  border-color: var(--qt-action);
+  color: #fff;
+  font-weight: 600;
+}
+
+.hamd-qt-btn--danger {
+  color: var(--qt-danger);
+}
+
+.hamd-qt-detail__head {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem 0.5rem;
+}
+
+.hamd-qt-detail__code {
+  margin: 0;
+  color: var(--qt-action);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.hamd-qt-detail__title {
+  margin: 0.15rem 0 0;
+  font-size: 1.15rem;
+}
+
+.hamd-qt-detail__sub {
+  margin: 0.4rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.hamd-qt-back {
+  display: none;
+  border: 1px solid var(--qt-border);
+  background: var(--qt-canvas);
+  color: inherit;
+  border-radius: 0.35rem;
+  padding: 0.35rem 0.55rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.hamd-qt-pill {
+  display: inline-flex;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  text-transform: capitalize;
+  background: var(--qt-subtle);
+  color: var(--qt-muted);
+}
+
+.hamd-qt-pill[data-status="accepted"],
+.hamd-qt-pill[data-status="issued"] {
+  background: color-mix(in srgb, var(--qt-success) 16%, transparent);
+  color: var(--qt-success);
+}
+
+.hamd-qt-pill[data-status="declined"],
+.hamd-qt-pill[data-status="expired"] {
+  background: color-mix(in srgb, var(--qt-danger) 14%, transparent);
+  color: var(--qt-danger);
+}
+
+.hamd-qt-pill[data-status="draft"],
+.hamd-qt-pill[data-status="superseded"] {
+  color: var(--qt-tertiary);
+}
+
+.hamd-qt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: end;
+  padding: 0.5rem 1.1rem 0.75rem;
+  border-bottom: 1px solid var(--qt-border-subtle);
+}
+
+.hamd-qt-reason {
+  flex: 1 1 12rem;
+}
+
+.hamd-qt-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+  padding: 0 1rem;
+  border-bottom: 1px solid var(--qt-border-subtle);
+}
+
+.hamd-qt-tab {
+  border: 0;
+  background: transparent;
+  color: var(--qt-muted);
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.55rem 0.6rem;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+
+.hamd-qt-tab.is-active {
+  color: var(--qt-action);
+  border-bottom-color: var(--qt-action);
+  font-weight: 600;
+}
+
+.hamd-qt-panel {
+  padding: 1rem 1.1rem 1.35rem;
+}
+
+.hamd-qt-money {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+
+.hamd-qt-money div {
+  background: var(--qt-canvas);
+  border: 1px solid var(--qt-border-subtle);
+  border-radius: 0.45rem;
+  padding: 0.65rem 0.75rem;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.hamd-qt-money span {
+  font-size: 0.72rem;
+  color: var(--qt-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.hamd-qt-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.65rem;
+  margin: 0 0 1rem;
+}
+
+.hamd-qt-facts div {
+  background: var(--qt-canvas);
+  border: 1px solid var(--qt-border-subtle);
+  border-radius: 0.45rem;
+  padding: 0.65rem 0.75rem;
+}
+
+.hamd-qt-facts dt {
+  font-size: 0.72rem;
+  color: var(--qt-tertiary);
+  text-transform: uppercase;
+}
+
+.hamd-qt-facts dd {
+  margin: 0.25rem 0 0;
+  font-weight: 600;
+}
+
+.hamd-qt-items,
+.hamd-qt-feed,
+.hamd-qt-versions,
+.hamd-qt-history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.hamd-qt-items li,
+.hamd-qt-feed li,
+.hamd-qt-versions li {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--qt-border-subtle);
+  border-radius: 0.45rem;
+  background: var(--qt-canvas);
+}
+
+.hamd-qt-versions li.is-current {
+  border-color: var(--qt-action);
+}
+
+.hamd-qt-feed span,
+.hamd-qt-items span,
+.hamd-qt-versions span,
+.hamd-qt-history span,
+.hamd-qt-history time,
+.hamd-qt-versions time,
+.hamd-qt-feed time {
+  color: var(--qt-tertiary);
+  font-size: 0.8rem;
+}
+
+.hamd-qt-history li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--qt-border-subtle);
+}
+
+.hamd-qt-compose,
+.hamd-qt-create {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.85rem;
+  max-width: 36rem;
+}
+
+.hamd-qt-empty {
+  color: var(--qt-tertiary);
+}
+
+.hamd-qt-toast {
+  margin-top: 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.4rem;
+  background: color-mix(in srgb, var(--qt-danger) 12%, var(--qt-surface));
+  color: var(--qt-danger);
+}
+
+.hamd-qt--skeleton {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1rem;
+  min-height: 420px;
+}
+
+.hamd-qt-skel {
+  border-radius: var(--qt-radius);
+  background: linear-gradient(
+    90deg,
+    var(--qt-subtle) 25%,
+    var(--qt-border-subtle) 50%,
+    var(--qt-subtle) 75%
+  );
+  background-size: 200% 100%;
+  animation: hamd-qt-shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes hamd-qt-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-qt-skel {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .hamd-qt__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .hamd-qt__detail {
+    display: none;
+  }
+
+  .hamd-qt--detail-open .hamd-qt__directory {
+    display: none;
+  }
+
+  .hamd-qt--detail-open .hamd-qt__detail {
+    display: block;
+  }
+
+  .hamd-qt-back {
+    display: inline-flex;
+  }
+}
+
+.hamd-qt__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.hamd-qt__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hamd-qt-row__wrap {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.hamd-qt-row__wrap > input {
+  margin-top: 0.85rem;
+}
+
+.hamd-qt-compare,
+.hamd-qt-history-board {
+  background: var(--qt-canvas, #f9fafb);
+  color: var(--qt-text, #101828);
+  font-family: var(--qt-font, "Segoe UI", system-ui, sans-serif);
+  padding: 1.25rem clamp(1rem, 2.5vw, 1.75rem) 2rem;
+}
+
+.hamd-qt-compare__header,
+.hamd-qt-history-board__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.hamd-qt-compare__picker ul,
+.hamd-qt-history-board__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.hamd-qt-compare__table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--qt-border, #d0d5dd);
+  border-radius: 0.5rem;
+  background: var(--qt-surface, #fff);
+}
+
+.hamd-qt-compare__table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 40rem;
+}
+
+.hamd-qt-compare__table th,
+.hamd-qt-compare__table td {
+  border-bottom: 1px solid var(--qt-border-subtle, #eaecf0);
+  padding: 0.75rem 0.9rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.hamd-qt-compare__ai,
+.hamd-qt-history-board__filters {
+  margin-top: 1.25rem;
+}
+
+.hamd-qt-history-board__list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--qt-border-subtle, #eaecf0);
+  border-radius: 0.5rem;
+  background: var(--qt-surface, #fff);
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]):not([data-theme="dark"]) .hamd-qt-compare,
+  html:not([data-theme="light"]):not([data-theme="dark"]) .hamd-qt-history-board {
+    --qt-canvas: #101828;
+    --qt-surface: #182230;
+    --qt-text: #f9fafb;
+    --qt-border: #344054;
+    --qt-border-subtle: #1d2939;
+  }
+}
+
+[data-theme="dark"] .hamd-qt-compare,
+[data-theme="dark"] .hamd-qt-history-board {
+  --qt-canvas: #101828;
+  --qt-surface: #182230;
+  --qt-text: #f9fafb;
+  --qt-border: #344054;
+  --qt-border-subtle: #1d2939;
+}
+
+@media print {
+  .hamd-qt__directory,
+  .hamd-qt__toolbar,
+  .hamd-qt-tabs,
+  .hamd-qt-actions {
+    display: none !important;
+  }
+
+  .hamd-qt__detail {
+    display: block !important;
+  }
+}

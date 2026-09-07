@@ -1,0 +1,489 @@
+{
+  "imported": 60,
+  "unmatched": 0,
+  "rejected": 0,
+  "failed": 0,
+  "eligible": 0,
+  "rows": [
+    {
+      "filename": "iphones-gadgets-smartphone-primary.png",
+      "relativePath": "iphones-gadgets-smartphone\\iphones-gadgets-smartphone-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-000000000001",
+      "mediaId": "01a070d2-e279-771f-9e83-abea86d1d543"
+    },
+    {
+      "filename": "iphones-gadgets-smartphone-detail.png",
+      "relativePath": "iphones-gadgets-smartphone\\iphones-gadgets-smartphone-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-000000000001",
+      "mediaId": "01a070d2-e49c-7557-9e52-d7d72bb400f0"
+    },
+    {
+      "filename": "iphones-gadgets-smartphone-application.png",
+      "relativePath": "iphones-gadgets-smartphone\\iphones-gadgets-smartphone-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-000000000001",
+      "mediaId": "01a070d2-e6d1-71ea-9131-77dbdd253f60"
+    },
+    {
+      "filename": "iphones-gadgets-business-laptop-primary.png",
+      "relativePath": "iphones-gadgets-business-laptop\\iphones-gadgets-business-laptop-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "c7d3060c-86fe-42fb-adf0-2c36f3070599",
+      "mediaId": "01a070d2-eb71-7108-9df6-162152ef9220"
+    },
+    {
+      "filename": "iphones-gadgets-business-laptop-detail.png",
+      "relativePath": "iphones-gadgets-business-laptop\\iphones-gadgets-business-laptop-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "c7d3060c-86fe-42fb-adf0-2c36f3070599",
+      "mediaId": "01a070d2-edd1-70dc-9557-42d81adfe7a4"
+    },
+    {
+      "filename": "iphones-gadgets-business-laptop-application.png",
+      "relativePath": "iphones-gadgets-business-laptop\\iphones-gadgets-business-laptop-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "c7d3060c-86fe-42fb-adf0-2c36f3070599",
+      "mediaId": "01a070d2-f00b-72f1-92dc-376cf43aaa9f"
+    },
+    {
+      "filename": "medical-equipments-bedside-patient-monitor-primary.png",
+      "relativePath": "medical-equipments-bedside-patient-monitor\\medical-equipments-bedside-patient-monitor-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "9c055d36-7733-4788-a65c-aa0adb9a64d7",
+      "mediaId": "01a070d2-f5a2-741a-beae-372717afd4dd"
+    },
+    {
+      "filename": "medical-equipments-bedside-patient-monitor-detail.png",
+      "relativePath": "medical-equipments-bedside-patient-monitor\\medical-equipments-bedside-patient-monitor-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "9c055d36-7733-4788-a65c-aa0adb9a64d7",
+      "mediaId": "01a070d2-f7fe-70b9-8cae-e05ad5bb5306"
+    },
+    {
+      "filename": "medical-equipments-bedside-patient-monitor-application.png",
+      "relativePath": "medical-equipments-bedside-patient-monitor\\medical-equipments-bedside-patient-monitor-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "9c055d36-7733-4788-a65c-aa0adb9a64d7",
+      "mediaId": "01a070d2-fb75-743d-af9d-9fc05f73dc7a"
+    },
+    {
+      "filename": "medical-equipments-binocular-microscope-primary.png",
+      "relativePath": "medical-equipments-binocular-microscope\\medical-equipments-binocular-microscope-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "7b817320-221d-4462-b206-9c203b635599",
+      "mediaId": "01a070d3-004b-762a-9b54-11113981448a"
+    },
+    {
+      "filename": "medical-equipments-binocular-microscope-detail.png",
+      "relativePath": "medical-equipments-binocular-microscope\\medical-equipments-binocular-microscope-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "7b817320-221d-4462-b206-9c203b635599",
+      "mediaId": "01a070d3-02c2-72fa-abac-cfb4ad0898f9"
+    },
+    {
+      "filename": "medical-equipments-binocular-microscope-application.png",
+      "relativePath": "medical-equipments-binocular-microscope\\medical-equipments-binocular-microscope-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "7b817320-221d-4462-b206-9c203b635599",
+      "mediaId": "01a070d3-04f1-720f-b2c3-348005ba8976"
+    },
+    {
+      "filename": "home-garden-wares-electric-pressure-washer-primary.png",
+      "relativePath": "home-garden-wares-electric-pressure-washer\\home-garden-wares-electric-pressure-washer-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "31e00a69-e4a8-468a-9a13-df5318a74b89",
+      "mediaId": "01a070d3-0929-775a-a7b5-acd519fd2dee"
+    },
+    {
+      "filename": "home-garden-wares-electric-pressure-washer-detail.png",
+      "relativePath": "home-garden-wares-electric-pressure-washer\\home-garden-wares-electric-pressure-washer-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "31e00a69-e4a8-468a-9a13-df5318a74b89",
+      "mediaId": "01a070d3-0bba-71a8-854e-36f853219030"
+    },
+    {
+      "filename": "home-garden-wares-electric-pressure-washer-application.png",
+      "relativePath": "home-garden-wares-electric-pressure-washer\\home-garden-wares-electric-pressure-washer-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "31e00a69-e4a8-468a-9a13-df5318a74b89",
+      "mediaId": "01a070d3-0df2-7708-a517-f03081b278ee"
+    },
+    {
+      "filename": "home-garden-wares-metal-storage-cabinet-primary.png",
+      "relativePath": "home-garden-wares-metal-storage-cabinet\\home-garden-wares-metal-storage-cabinet-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "47b42b00-ec2b-441b-b6e2-59b78e29d864",
+      "mediaId": "01a070d3-126e-772d-8507-7013102fa5f6"
+    },
+    {
+      "filename": "home-garden-wares-metal-storage-cabinet-detail.png",
+      "relativePath": "home-garden-wares-metal-storage-cabinet\\home-garden-wares-metal-storage-cabinet-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "47b42b00-ec2b-441b-b6e2-59b78e29d864",
+      "mediaId": "01a070d3-1526-7385-92dc-7e87d19c30e8"
+    },
+    {
+      "filename": "home-garden-wares-metal-storage-cabinet-application.png",
+      "relativePath": "home-garden-wares-metal-storage-cabinet\\home-garden-wares-metal-storage-cabinet-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "47b42b00-ec2b-441b-b6e2-59b78e29d864",
+      "mediaId": "01a070d3-174e-753e-af85-b2b819b06cee"
+    },
+    {
+      "filename": "machineries-silent-diesel-generator-primary.png",
+      "relativePath": "machineries-silent-diesel-generator\\machineries-silent-diesel-generator-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "5dbc1066-8974-4103-81ee-c6787ce60cfe",
+      "mediaId": "01a070d3-1c39-77b3-9070-a84afe7f8067"
+    },
+    {
+      "filename": "machineries-silent-diesel-generator-detail.png",
+      "relativePath": "machineries-silent-diesel-generator\\machineries-silent-diesel-generator-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "5dbc1066-8974-4103-81ee-c6787ce60cfe",
+      "mediaId": "01a070d3-1e69-75c8-a772-b9ff9568c0f8"
+    },
+    {
+      "filename": "machineries-silent-diesel-generator-application.png",
+      "relativePath": "machineries-silent-diesel-generator\\machineries-silent-diesel-generator-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "5dbc1066-8974-4103-81ee-c6787ce60cfe",
+      "mediaId": "01a070d3-207b-7559-8768-790e0f1046a7"
+    },
+    {
+      "filename": "machineries-mig-welding-machine-primary.png",
+      "relativePath": "machineries-mig-welding-machine\\machineries-mig-welding-machine-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "7b636192-7e75-458c-b0db-cfc58dd7f189",
+      "mediaId": "01a070d3-2549-77c8-b17b-afab58a30bf5"
+    },
+    {
+      "filename": "machineries-mig-welding-machine-detail.png",
+      "relativePath": "machineries-mig-welding-machine\\machineries-mig-welding-machine-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "7b636192-7e75-458c-b0db-cfc58dd7f189",
+      "mediaId": "01a070d3-2781-73ee-9c8d-9c5d577894e2"
+    },
+    {
+      "filename": "machineries-mig-welding-machine-application.png",
+      "relativePath": "machineries-mig-welding-machine\\machineries-mig-welding-machine-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "7b636192-7e75-458c-b0db-cfc58dd7f189",
+      "mediaId": "01a070d3-2981-737e-b00e-90399d8ee259"
+    },
+    {
+      "filename": "general-procurement-industrial-personal-protective-equipment-kit-primary.png",
+      "relativePath": "general-procurement-industrial-personal-protective-equipment-kit\\general-procurement-industrial-personal-protective-equipment-kit-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "c6381533-1994-4323-8f5c-af3eaa59ed5a",
+      "mediaId": "01a070d3-2dbb-703f-85a5-c7ec434b1ec5"
+    },
+    {
+      "filename": "general-procurement-industrial-personal-protective-equipment-kit-detail.png",
+      "relativePath": "general-procurement-industrial-personal-protective-equipment-kit\\general-procurement-industrial-personal-protective-equipment-kit-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "c6381533-1994-4323-8f5c-af3eaa59ed5a",
+      "mediaId": "01a070d3-2fea-713a-a80f-711c4e5f0ee2"
+    },
+    {
+      "filename": "general-procurement-industrial-personal-protective-equipment-kit-application.png",
+      "relativePath": "general-procurement-industrial-personal-protective-equipment-kit\\general-procurement-industrial-personal-protective-equipment-kit-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "c6381533-1994-4323-8f5c-af3eaa59ed5a",
+      "mediaId": "01a070d3-321f-705e-b5c1-75e47bb4e7b2"
+    },
+    {
+      "filename": "general-procurement-industrial-packaging-materials-lot-primary.png",
+      "relativePath": "general-procurement-industrial-packaging-materials-lot\\general-procurement-industrial-packaging-materials-lot-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "ca61ab25-0b9e-4647-8a49-6cd5bcce7a5a",
+      "mediaId": "01a070d3-36a1-720f-b664-e4fe4d5a0b02"
+    },
+    {
+      "filename": "general-procurement-industrial-packaging-materials-lot-detail.png",
+      "relativePath": "general-procurement-industrial-packaging-materials-lot\\general-procurement-industrial-packaging-materials-lot-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "ca61ab25-0b9e-4647-8a49-6cd5bcce7a5a",
+      "mediaId": "01a070d3-3906-70ab-b6b3-fea7d52ea230"
+    },
+    {
+      "filename": "general-procurement-industrial-packaging-materials-lot-application.png",
+      "relativePath": "general-procurement-industrial-packaging-materials-lot\\general-procurement-industrial-packaging-materials-lot-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "ca61ab25-0b9e-4647-8a49-6cd5bcce7a5a",
+      "mediaId": "01a070d3-3b79-7118-a788-4a165e730899"
+    },
+    {
+      "filename": "home-appliances-commercial-chest-freezer-primary.png",
+      "relativePath": "home-appliances-commercial-chest-freezer\\home-appliances-commercial-chest-freezer-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-000000000011",
+      "mediaId": "01a070d3-3f7a-7099-bc2a-4c61396bf06d"
+    },
+    {
+      "filename": "home-appliances-commercial-chest-freezer-detail.png",
+      "relativePath": "home-appliances-commercial-chest-freezer\\home-appliances-commercial-chest-freezer-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-000000000011",
+      "mediaId": "01a070d3-41b9-776b-8d5a-fd9af2350a18"
+    },
+    {
+      "filename": "home-appliances-commercial-chest-freezer-application.png",
+      "relativePath": "home-appliances-commercial-chest-freezer\\home-appliances-commercial-chest-freezer-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-000000000011",
+      "mediaId": "01a070d3-43f1-7009-ad31-ec190b6359bd"
+    },
+    {
+      "filename": "home-appliances-split-air-conditioner-primary.png",
+      "relativePath": "home-appliances-split-air-conditioner\\home-appliances-split-air-conditioner-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-000000000014",
+      "mediaId": "01a070d3-4807-700a-ac0c-117ae7cfcd52"
+    },
+    {
+      "filename": "home-appliances-split-air-conditioner-detail.png",
+      "relativePath": "home-appliances-split-air-conditioner\\home-appliances-split-air-conditioner-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-000000000014",
+      "mediaId": "01a070d3-4a83-724c-9f43-c97d214b3580"
+    },
+    {
+      "filename": "home-appliances-split-air-conditioner-application.png",
+      "relativePath": "home-appliances-split-air-conditioner\\home-appliances-split-air-conditioner-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-000000000014",
+      "mediaId": "01a070d3-4e07-70a2-84e8-d5086c88bafa"
+    },
+    {
+      "filename": "office-business-ergonomic-office-chair-primary.png",
+      "relativePath": "office-business-ergonomic-office-chair\\office-business-ergonomic-office-chair-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-00000000002c",
+      "mediaId": "01a070d3-52ee-77ea-ba14-c9bb1656c003"
+    },
+    {
+      "filename": "office-business-ergonomic-office-chair-detail.png",
+      "relativePath": "office-business-ergonomic-office-chair\\office-business-ergonomic-office-chair-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-00000000002c",
+      "mediaId": "01a070d3-5552-71ec-bb17-e1978bdd691a"
+    },
+    {
+      "filename": "office-business-ergonomic-office-chair-application.png",
+      "relativePath": "office-business-ergonomic-office-chair\\office-business-ergonomic-office-chair-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-00000000002c",
+      "mediaId": "01a070d3-581c-72bd-80eb-fcccd8604a2d"
+    },
+    {
+      "filename": "office-business-touchscreen-point-of-sale-terminal-primary.png",
+      "relativePath": "office-business-touchscreen-point-of-sale-terminal\\office-business-touchscreen-point-of-sale-terminal-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "2701b8d0-77c8-4dae-8c99-8adb99408aa3",
+      "mediaId": "01a070d3-5cdd-7648-b3f0-92eaa97f8c16"
+    },
+    {
+      "filename": "office-business-touchscreen-point-of-sale-terminal-detail.png",
+      "relativePath": "office-business-touchscreen-point-of-sale-terminal\\office-business-touchscreen-point-of-sale-terminal-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "2701b8d0-77c8-4dae-8c99-8adb99408aa3",
+      "mediaId": "01a070d3-5fa4-7288-a46d-20fa1edb5d30"
+    },
+    {
+      "filename": "office-business-touchscreen-point-of-sale-terminal-application.png",
+      "relativePath": "office-business-touchscreen-point-of-sale-terminal\\office-business-touchscreen-point-of-sale-terminal-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "2701b8d0-77c8-4dae-8c99-8adb99408aa3",
+      "mediaId": "01a070d3-61ec-71eb-8a4b-6067169529b6"
+    },
+    {
+      "filename": "fashion-textiles-cotton-fabric-roll-primary.png",
+      "relativePath": "fashion-textiles-cotton-fabric-roll\\fashion-textiles-cotton-fabric-roll-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-000000000039",
+      "mediaId": "01a070d3-664b-7358-9b3c-7489e9a23035"
+    },
+    {
+      "filename": "fashion-textiles-cotton-fabric-roll-detail.png",
+      "relativePath": "fashion-textiles-cotton-fabric-roll\\fashion-textiles-cotton-fabric-roll-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-000000000039",
+      "mediaId": "01a070d3-68d3-77cb-af6e-f6faea50ae55"
+    },
+    {
+      "filename": "fashion-textiles-cotton-fabric-roll-application.png",
+      "relativePath": "fashion-textiles-cotton-fabric-roll\\fashion-textiles-cotton-fabric-roll-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "0190c8d0-1000-7000-8000-000000000039",
+      "mediaId": "01a070d3-6bd3-77f3-9042-9bf179eaacf1"
+    },
+    {
+      "filename": "fashion-textiles-office-corporate-uniform-set-primary.png",
+      "relativePath": "fashion-textiles-office-corporate-uniform-set\\fashion-textiles-office-corporate-uniform-set-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "b4dac1b8-ff91-4447-8358-4fb7ee30d5b9",
+      "mediaId": "01a070d3-70c3-769f-b9ab-16335b4e0ba6"
+    },
+    {
+      "filename": "fashion-textiles-office-corporate-uniform-set-detail.png",
+      "relativePath": "fashion-textiles-office-corporate-uniform-set\\fashion-textiles-office-corporate-uniform-set-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "b4dac1b8-ff91-4447-8358-4fb7ee30d5b9",
+      "mediaId": "01a070d3-7351-72ae-bd4d-a669d59ebf78"
+    },
+    {
+      "filename": "fashion-textiles-office-corporate-uniform-set-application.png",
+      "relativePath": "fashion-textiles-office-corporate-uniform-set\\fashion-textiles-office-corporate-uniform-set-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "b4dac1b8-ff91-4447-8358-4fb7ee30d5b9",
+      "mediaId": "01a070d3-7672-716f-9f7b-14c38e33d2dd"
+    },
+    {
+      "filename": "beauty-spa-salon-hydraulic-salon-styling-chair-primary.png",
+      "relativePath": "beauty-spa-salon-hydraulic-salon-styling-chair\\beauty-spa-salon-hydraulic-salon-styling-chair-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "41088858-0c6b-463f-b46e-b5dde61573f2",
+      "mediaId": "01a070d3-7b11-77af-9046-7674e49a7d54"
+    },
+    {
+      "filename": "beauty-spa-salon-hydraulic-salon-styling-chair-detail.png",
+      "relativePath": "beauty-spa-salon-hydraulic-salon-styling-chair\\beauty-spa-salon-hydraulic-salon-styling-chair-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "41088858-0c6b-463f-b46e-b5dde61573f2",
+      "mediaId": "01a070d3-7d71-725b-96f3-55b700284a15"
+    },
+    {
+      "filename": "beauty-spa-salon-hydraulic-salon-styling-chair-application.png",
+      "relativePath": "beauty-spa-salon-hydraulic-salon-styling-chair\\beauty-spa-salon-hydraulic-salon-styling-chair-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "41088858-0c6b-463f-b46e-b5dde61573f2",
+      "mediaId": "01a070d3-7fe6-73f9-96ab-8f9bd0fc11f4"
+    },
+    {
+      "filename": "beauty-spa-salon-complete-shampoo-station-primary.png",
+      "relativePath": "beauty-spa-salon-complete-shampoo-station\\beauty-spa-salon-complete-shampoo-station-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "7ce17a62-ac56-444d-8643-7d25949db2d0",
+      "mediaId": "01a070d3-840b-740b-814a-cdf74fd0aa1f"
+    },
+    {
+      "filename": "beauty-spa-salon-complete-shampoo-station-detail.png",
+      "relativePath": "beauty-spa-salon-complete-shampoo-station\\beauty-spa-salon-complete-shampoo-station-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "7ce17a62-ac56-444d-8643-7d25949db2d0",
+      "mediaId": "01a070d3-862d-73bf-aa7e-fb5b75ff763e"
+    },
+    {
+      "filename": "beauty-spa-salon-complete-shampoo-station-application.png",
+      "relativePath": "beauty-spa-salon-complete-shampoo-station\\beauty-spa-salon-complete-shampoo-station-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "7ce17a62-ac56-444d-8643-7d25949db2d0",
+      "mediaId": "01a070d3-884b-74c0-bfde-7883003d0221"
+    },
+    {
+      "filename": "retail-store-setup-double-sided-gondola-shelving-primary.png",
+      "relativePath": "retail-store-setup-double-sided-gondola-shelving\\retail-store-setup-double-sided-gondola-shelving-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "f0170c55-299f-40ed-a906-5cd3717f94fc",
+      "mediaId": "01a070d3-8d11-774f-923d-b9d6f734be88"
+    },
+    {
+      "filename": "retail-store-setup-double-sided-gondola-shelving-detail.png",
+      "relativePath": "retail-store-setup-double-sided-gondola-shelving\\retail-store-setup-double-sided-gondola-shelving-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "f0170c55-299f-40ed-a906-5cd3717f94fc",
+      "mediaId": "01a070d3-8f3f-7212-ae2c-5f39bbe4761b"
+    },
+    {
+      "filename": "retail-store-setup-double-sided-gondola-shelving-application.png",
+      "relativePath": "retail-store-setup-double-sided-gondola-shelving\\retail-store-setup-double-sided-gondola-shelving-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "f0170c55-299f-40ed-a906-5cd3717f94fc",
+      "mediaId": "01a070d3-916e-70cc-a5a8-d9538e486a22"
+    },
+    {
+      "filename": "retail-store-setup-upright-refrigerated-display-case-primary.png",
+      "relativePath": "retail-store-setup-upright-refrigerated-display-case\\retail-store-setup-upright-refrigerated-display-case-primary.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "95c2ea23-0e85-4a56-b4ea-e04410ecc27a",
+      "mediaId": "01a070d3-9557-74cc-8e7b-7ecc3dd4618d"
+    },
+    {
+      "filename": "retail-store-setup-upright-refrigerated-display-case-detail.png",
+      "relativePath": "retail-store-setup-upright-refrigerated-display-case\\retail-store-setup-upright-refrigerated-display-case-detail.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "95c2ea23-0e85-4a56-b4ea-e04410ecc27a",
+      "mediaId": "01a070d3-9781-75fb-8fd0-9759df9700de"
+    },
+    {
+      "filename": "retail-store-setup-upright-refrigerated-display-case-application.png",
+      "relativePath": "retail-store-setup-upright-refrigerated-display-case\\retail-store-setup-upright-refrigerated-display-case-application.png",
+      "status": "IMPORTED",
+      "reason": "Uploaded and catalogue media record created.",
+      "productId": "95c2ea23-0e85-4a56-b4ea-e04410ecc27a",
+      "mediaId": "01a070d3-99b2-755c-aaa8-3e3a8159eadc"
+    }
+  ]
+}

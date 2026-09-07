@@ -1,0 +1,443 @@
+import { AUTH_BOOTSTRAP_TIMEOUT_MS, signalWithTimeout } from "@hamd/ui/auth";
+import { AuthApiError, readCookie } from "./auth-errors.js";
+import { getCsrfToken, setCsrfToken } from "../session/token-store.js";
+import { browserApiBase } from "../../lib/api-origin.js";
+
+function safeOAuthReturnTo(returnTo: string, fallback: string): string {
+  const trimmed = returnTo.trim();
+  if (!trimmed.startsWith("/") || trimmed.startsWith("//") || trimmed.startsWith("/\\")) {
+    return fallback;
+  }
+  if (trimmed === "/") return fallback;
+  if (trimmed.includes("://") || trimmed.includes("\\") || trimmed.includes("@")) {
+    return fallback;
+  }
+  return trimmed;
+}
+
+export type AuthUser = {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  displayName: string | null;
+  locale: string;
+  timeZone: string | null;
+  lastAuthenticatedAt?: string | null;
+  createdAt?: string | null;
+  emailVerifiedAt?: string | null;
+};
+
+export type AuthSessionPayload = {
+  accessToken: string;
+  expiresIn: number;
+  user: AuthUser;
+  organizationId: string;
+  /** Present for cross-origin API hosts where hamd_csrf is not readable. */
+  csrfToken?: string;
+};
+
+export type AuthMePayload = {
+  user: AuthUser;
+  organizationId: string;
+  organizationName?: string | null;
+  permissions: string[];
+};
+
+export type AuthSessionRow = {
+  id: string;
+  current: boolean;
+  authMethod: string;
+  rememberDevice: boolean;
+  userAgent: string | null;
+  createdAt: string;
+  lastUsedAt: string;
+  expiresAt: string;
+  device: {
+    id: string;
+    name: string | null;
+    platform: string | null;
+    trustedAt: string | null;
+    lastSeenAt: string;
+  } | null;
+};
+
+export type AuthDeviceRow = {
+  id: string;
+  name: string | null;
+  platform: string | null;
+  trustedAt: string | null;
+  lastSeenAt: string;
+  createdAt: string;
+};
+
+export type AuthLoginHistoryRow = {
+  id: string;
+  type: string;
+  outcome: string;
+  userAgent: string | null;
+  createdAt: string;
+};
+
+export type InvitationPreview = {
+  email: string;
+  organizationName: string;
+  inviterName: string | null;
+  expiresAt: string;
+};
+
+type Envelope<T> = { data: T; error?: { code?: string; message?: string } };
+
+function apiBase(): string {
+  return browserApiBase();
+}
+
+function authUrl(path: string): string {
+  const base = apiBase();
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  if (!base) {
+    return `/api/v1/auth${normalized}`;
+  }
+  return `${base}/api/v1/auth${normalized}`;
+}
+
+async function parseJson(response: Response): Promise<unknown> {
+  const text = await response.text();
+  if (!text) return null;
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return null;
+  }
+}
+
+function toAuthError(response: Response, body: unknown): AuthApiError {
+  const envelope = body as {
+    error?: { code?: string; message?: string; details?: unknown };
+    message?: string;
+  } | null;
+  const code =
+    envelope?.error?.code ??
+    (response.status === 429 ? "TOO_MANY_REQUESTS" : "AUTH_ERROR");
+  const message =
+    envelope?.error?.message ??
+    envelope?.message ??
+    (response.status === 429
+      ? "Too many attempts. Wait briefly and try again."
+      : response.status === 401
+        ? "Invalid email or password."
+        : "Authentication request failed.");
+  const retryAfterHeader = response.headers.get("Retry-After");
+  const retryAfterSeconds = retryAfterHeader
+    ? Number.parseInt(retryAfterHeader, 10)
+    : Number.NaN;
+  return new AuthApiError({
+    message,
+    status: response.status,
+    code,
+    details: envelope?.error?.details,
+    ...(Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+      ? { retryAfterSeconds }
+      : {}),
+  });
+}
+
+/**
+ * Production auth HTTP client.
+ * - Access JWT in memory (caller supplies Bearer)
+ * - Refresh via httpOnly cookie + readable CSRF cookie header
+ * - credentials: include for cookie path
+ */
+export async function authFetch<T>(
+  path: string,
+  options: {
+    method?: string;
+    body?: unknown;
+    accessToken?: string | null;
+    csrf?: boolean;
+    signal?: AbortSignal;
+  } = {},
+): Promise<T> {
+  const headers: Record<string, string> = {
+    Accept: "application/json",
+  };
+  if (options.body !== undefined) {
+    headers["Content-Type"] = "application/json";
+  }
+  if (options.accessToken) {
+    headers.Authorization = `Bearer ${options.accessToken}`;
+  }
+  if (options.csrf) {
+    const csrf = getCsrfToken() ?? readCookie("hamd_csrf");
+    if (csrf) headers["x-csrf-token"] = csrf;
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(authUrl(path), {
+      method: options.method ?? (options.body !== undefined ? "POST" : "GET"),
+      headers,
+      body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+      credentials: "include",
+      signal: signalWithTimeout(options.signal, AUTH_BOOTSTRAP_TIMEOUT_MS),
+    });
+  } catch {
+    throw new AuthApiError({
+      message: "Unable to reach the authentication service.",
+      status: 0,
+      code: "NETWORK_ERROR",
+    });
+  }
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  const body = await parseJson(response);
+  if (!response.ok) {
+    throw toAuthError(response, body);
+  }
+
+  const envelope = body as Envelope<T> | null;
+  if (envelope && "data" in envelope) {
+    const data = envelope.data as T & { csrfToken?: string };
+    if (data && typeof data === "object" && typeof data.csrfToken === "string") {
+      setCsrfToken(data.csrfToken);
+    }
+    return envelope.data;
+  }
+  return body as T;
+}
+
+export function loginRequest(input: {
+  email: string;
+  password: string;
+  organizationId?: string;
+  rememberMe?: boolean;
+  deviceFingerprint?: string;
+  deviceName?: string;
+  devicePlatform?: string;
+}): Promise<AuthSessionPayload> {
+  return authFetch<AuthSessionPayload>("/login", {
+    method: "POST",
+    body: {
+      email: input.email,
+      password: input.password,
+      ...(input.organizationId ? { organizationId: input.organizationId } : {}),
+      ...(input.rememberMe !== undefined ? { rememberMe: input.rememberMe } : {}),
+      ...(input.deviceFingerprint
+        ? { deviceFingerprint: input.deviceFingerprint }
+        : {}),
+      ...(input.deviceName ? { deviceName: input.deviceName } : {}),
+      ...(input.devicePlatform ? { devicePlatform: input.devicePlatform } : {}),
+    },
+  });
+}
+
+export function refreshRequest(accessToken?: string | null): Promise<AuthSessionPayload> {
+  const csrf = getCsrfToken() ?? readCookie("hamd_csrf") ?? undefined;
+  return authFetch<AuthSessionPayload>("/refresh", {
+    method: "POST",
+    body: csrf ? { csrfToken: csrf } : {},
+    csrf: true,
+    accessToken: accessToken ?? null,
+  });
+}
+
+export function logoutRequest(accessToken: string): Promise<void> {
+  return authFetch<void>("/logout", {
+    method: "POST",
+    accessToken,
+  });
+}
+
+export async function googleOAuthStatusRequest(): Promise<{ enabled: boolean }> {
+  return authFetch<{ enabled: boolean }>("/google/status", {
+    method: "GET",
+  });
+}
+
+export function googleSignInRequest(input: {
+  credential: string;
+  code?: string;
+  email?: string;
+}): Promise<AuthSessionPayload> {
+  return authFetch<AuthSessionPayload>("/google", {
+    method: "POST",
+    body: {
+      credential: input.credential,
+      ...(input.code ? { code: input.code } : {}),
+      ...(input.email ? { email: input.email } : {}),
+    },
+  });
+}
+
+/** Absolute URL that starts the real Google OAuth redirect flow. */
+export function googleOAuthStartUrl(returnTo = "/app"): string {
+  const target = safeOAuthReturnTo(returnTo, "/app");
+  return authUrl(`/google?returnTo=${encodeURIComponent(target)}`);
+}
+
+export function meRequest(accessToken: string): Promise<AuthMePayload> {
+  return authFetch<AuthMePayload>("/me", {
+    method: "GET",
+    accessToken,
+  });
+}
+
+export function validateRequest(accessToken: string): Promise<{
+  valid: boolean;
+  userId: string;
+  organizationId: string;
+  sessionId: string;
+}> {
+  return authFetch("/validate", { method: "GET", accessToken });
+}
+
+export async function registerRequest(
+  body: Record<string, unknown>,
+): Promise<{ status: string; email: string; message: string }> {
+  return authFetch("/register", { method: "POST", body });
+}
+
+export async function forgotPasswordRequest(
+  email: string,
+): Promise<{ message: string }> {
+  return authFetch("/forgot-password", { method: "POST", body: { email } });
+}
+
+export async function resetPasswordRequest(input: {
+  token: string;
+  password: string;
+}): Promise<{ message: string }> {
+  return authFetch("/reset-password", {
+    method: "POST",
+    body: input,
+  });
+}
+
+export async function verifyEmailRequest(
+  token: string,
+): Promise<{ email: string; status: string; message: string }> {
+  return authFetch(`/verify-email/${encodeURIComponent(token)}`, {
+    method: "POST",
+    body: {},
+  });
+}
+
+export async function verifyOtpRequest(input: {
+  code: string;
+  email?: string;
+}): Promise<{ email: string; status: string; message: string }> {
+  return authFetch("/otp/verify", { method: "POST", body: input });
+}
+
+export async function resendOtpRequest(
+  email: string,
+): Promise<{ message: string }> {
+  return authFetch("/otp/resend", { method: "POST", body: { email } });
+}
+
+export async function logoutEverywhereRequest(
+  accessToken: string,
+): Promise<void> {
+  await authFetch("/logout-everywhere", {
+    method: "POST",
+    accessToken,
+  });
+}
+
+export function listSessionsRequest(
+  accessToken: string,
+): Promise<AuthSessionRow[]> {
+  return authFetch("/sessions", { method: "GET", accessToken });
+}
+
+export function revokeSessionRequest(
+  accessToken: string,
+  sessionId: string,
+): Promise<void> {
+  return authFetch(`/sessions/${encodeURIComponent(sessionId)}`, {
+    method: "DELETE",
+    accessToken,
+  });
+}
+
+export function listDevicesRequest(
+  accessToken: string,
+): Promise<AuthDeviceRow[]> {
+  return authFetch("/devices", { method: "GET", accessToken });
+}
+
+export function revokeDeviceRequest(
+  accessToken: string,
+  deviceId: string,
+): Promise<void> {
+  return authFetch(`/devices/${encodeURIComponent(deviceId)}`, {
+    method: "DELETE",
+    accessToken,
+  });
+}
+
+export function loginHistoryRequest(
+  accessToken: string,
+): Promise<AuthLoginHistoryRow[]> {
+  return authFetch("/login-history", { method: "GET", accessToken });
+}
+
+export function getInvitationRequest(
+  token: string,
+): Promise<InvitationPreview> {
+  return authFetch(`/invitations/${encodeURIComponent(token)}`, {
+    method: "GET",
+  });
+}
+
+export function acceptInvitationRequest(input: {
+  token: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}): Promise<AuthSessionPayload> {
+  return authFetch(`/invitations/${encodeURIComponent(input.token)}/accept`, {
+    method: "POST",
+    body: {
+      password: input.password,
+      firstName: input.firstName,
+      lastName: input.lastName,
+    },
+  });
+}
+
+export function createInvitationRequest(
+  accessToken: string,
+  email: string,
+): Promise<{ id: string; email: string; expiresAt: string; message: string }> {
+  return authFetch("/invitations", {
+    method: "POST",
+    accessToken,
+    body: { email },
+  });
+}
+
+export function updateProfileRequest(
+  accessToken: string,
+  body: Record<string, unknown>,
+): Promise<AuthUser> {
+  return authFetch("/profile", {
+    method: "PATCH",
+    accessToken,
+    body,
+  });
+}
+
+export function changePasswordRequest(
+  accessToken: string,
+  input: { currentPassword: string; newPassword: string },
+): Promise<{ changed: true }> {
+  return authFetch("/password", {
+    method: "PATCH",
+    accessToken,
+    body: input,
+  });
+}

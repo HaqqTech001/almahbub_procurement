@@ -12,7 +12,24 @@ import { uploadSecurityPolicy } from "./upload-policy.js";
  */
 export async function parseMultipartFiles(
   request: Request,
+  options?: {
+    maxFileBytes?: number;
+    maxFiles?: number;
+  },
 ): Promise<UploadedFileInput[]> {
+  const parsed = await parseMultipartUpload(request, options);
+  return parsed.files;
+}
+
+export async function parseMultipartUpload(
+  request: Request,
+  options?: {
+    maxFileBytes?: number;
+    maxFiles?: number;
+  },
+): Promise<{ files: UploadedFileInput[]; fields: Record<string, string> }> {
+  const maxFileBytes = options?.maxFileBytes ?? uploadSecurityPolicy.maxBytes;
+  const maxFiles = options?.maxFiles ?? uploadSecurityPolicy.maxFilesPerRequest;
   const contentType = String(request.headers["content-type"] ?? "");
   if (!contentType.toLowerCase().includes("multipart/form-data")) {
     throw new AppError({
@@ -33,11 +50,11 @@ export async function parseMultipartFiles(
 
   const body = await readRequestBody(
     request,
-    uploadSecurityPolicy.maxBytes * uploadSecurityPolicy.maxFilesPerRequest +
-      1024 * 1024,
+    maxFileBytes * maxFiles + 1024 * 1024,
   );
   const parts = splitMultipart(body, boundary);
   const files: UploadedFileInput[] = [];
+  const fields: Record<string, string> = {};
 
   for (const part of parts) {
     const headerEnd = indexOfSequence(part, Buffer.from("\r\n\r\n"));
@@ -46,13 +63,27 @@ export async function parseMultipartFiles(
     const disposition = /content-disposition:\s*(.+)/i.exec(headerText)?.[1] ?? "";
     const nameMatch = /name="([^"]+)"/i.exec(disposition);
     const filenameMatch = /filename="([^"]*)"/i.exec(disposition);
-    if (nameMatch?.[1] !== "files" || !filenameMatch?.[1]) continue;
-    const mimeType =
-      /content-type:\s*([^\r\n]+)/i.exec(headerText)?.[1]?.trim() ??
-      "application/octet-stream";
+    const fieldName = nameMatch?.[1] ?? "";
     let content = part.subarray(headerEnd + 4);
     if (content.length >= 2 && content[content.length - 2] === 13 && content[content.length - 1] === 10) {
       content = content.subarray(0, content.length - 2);
+    }
+    if (!filenameMatch?.[1]) {
+      if (fieldName) fields[fieldName] = content.toString("utf8");
+      continue;
+    }
+    if (fieldName !== "files" && fieldName !== "media" && fieldName !== "file") {
+      continue;
+    }
+    const mimeType =
+      /content-type:\s*([^\r\n]+)/i.exec(headerText)?.[1]?.trim() ??
+      "application/octet-stream";
+    if (content.length > maxFileBytes) {
+      throw new AppError({
+        statusCode: 413,
+        code: "UPLOAD_SIZE",
+        message: `File must be between 1 byte and ${maxFileBytes} bytes.`,
+      });
     }
     files.push({
       originalFilename: filenameMatch[1] || `upload-${randomUUID()}`,
@@ -60,9 +91,16 @@ export async function parseMultipartFiles(
       sizeBytes: content.length,
       buffer: Buffer.from(content),
     });
+    if (files.length > maxFiles) {
+      throw new AppError({
+        statusCode: 422,
+        code: "UPLOAD_TOO_MANY",
+        message: `At most ${maxFiles} files may be uploaded at once.`,
+      });
+    }
   }
 
-  return files;
+  return { files, fields };
 }
 
 async function readRequestBody(request: Request, maxBytes: number): Promise<Buffer> {

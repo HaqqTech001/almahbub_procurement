@@ -1,4 +1,5 @@
 node_modules/
+scripts/node_modules/
 dist/
 build/
 .env
@@ -12,4 +13,9 @@ coverage/
 database/generated/
 /uploads/
 apps/api/uploads/
+apps/api/.email-previews/
 
+
+almahbub-product-media/
+
+almahbub-beta-media-runner/staging/

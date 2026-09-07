@@ -1,0 +1,176 @@
+{
+  "phase": "IE-11C-commodity-media",
+  "downloadDate": "2026-08-17",
+  "acquired": 19,
+  "skipped": 12,
+  "rejected": 0,
+  "notFound": 1,
+  "details": {
+    "acquired": [
+      {
+        "filename": "ie-sesame-seeds-hero-01.webp",
+        "path": "apps/web/public/media/ie/commodities/sesame-seeds/hero/ie-sesame-seeds-hero-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-sesame-seeds-whole-01.webp",
+        "path": "apps/web/public/media/ie/commodities/sesame-seeds/whole/ie-sesame-seeds-whole-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-sesame-seeds-sacks-01.webp",
+        "path": "apps/web/public/media/ie/commodities/sesame-seeds/sacks/ie-sesame-seeds-sacks-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-sesame-seeds-application-01.webp",
+        "path": "apps/web/public/media/ie/commodities/sesame-seeds/application/ie-sesame-seeds-application-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-cashew-hero-01.webp",
+        "path": "apps/web/public/media/ie/commodities/cashew/hero/ie-cashew-hero-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-cashew-whole-01.webp",
+        "path": "apps/web/public/media/ie/commodities/cashew/whole/ie-cashew-whole-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-cashew-bulk-01.webp",
+        "path": "apps/web/public/media/ie/commodities/cashew/bulk/ie-cashew-bulk-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-cashew-close-up-01.webp",
+        "path": "apps/web/public/media/ie/commodities/cashew/close-up/ie-cashew-close-up-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-ginger-hero-01.webp",
+        "path": "apps/web/public/media/ie/commodities/ginger/hero/ie-ginger-hero-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-ginger-whole-01.webp",
+        "path": "apps/web/public/media/ie/commodities/ginger/whole/ie-ginger-whole-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-ginger-close-up-01.webp",
+        "path": "apps/web/public/media/ie/commodities/ginger/close-up/ie-ginger-close-up-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-ginger-bulk-01.webp",
+        "path": "apps/web/public/media/ie/commodities/ginger/bulk/ie-ginger-bulk-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-hibiscus-hero-01.webp",
+        "path": "apps/web/public/media/ie/commodities/hibiscus/hero/ie-hibiscus-hero-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-hibiscus-whole-01.webp",
+        "path": "apps/web/public/media/ie/commodities/hibiscus/whole/ie-hibiscus-whole-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-shea-hero-01.webp",
+        "path": "apps/web/public/media/ie/commodities/shea/hero/ie-shea-hero-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-soybean-hero-01.webp",
+        "path": "apps/web/public/media/ie/commodities/soybean/hero/ie-soybean-hero-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-cocoa-hero-01.webp",
+        "path": "apps/web/public/media/ie/commodities/cocoa/hero/ie-cocoa-hero-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-cocoa-whole-01.webp",
+        "path": "apps/web/public/media/ie/commodities/cocoa/whole/ie-cocoa-whole-01.webp",
+        "reused": true
+      },
+      {
+        "filename": "ie-cocoa-sacks-01.webp",
+        "path": "apps/web/public/media/ie/commodities/cocoa/sacks/ie-cocoa-sacks-01.webp",
+        "reused": true
+      }
+    ],
+    "skipped": [
+      {
+        "filename": "ie-sesame-seeds-close-up-01.webp",
+        "reason": "duplicate_source",
+        "aliasesTo": "/media/ie/commodities/sesame-seeds/hero/ie-sesame-seeds-hero-01.webp"
+      },
+      {
+        "filename": "ie-sesame-seeds-gallery-01.webp",
+        "reason": "duplicate_source",
+        "aliasesTo": "/media/ie/commodities/sesame-seeds/whole/ie-sesame-seeds-whole-01.webp"
+      },
+      {
+        "filename": "ie-cashew-gallery-01.webp",
+        "reason": "duplicate_source",
+        "aliasesTo": "/media/ie/commodities/cashew/bulk/ie-cashew-bulk-01.webp"
+      },
+      {
+        "filename": "ie-ginger-gallery-01.webp",
+        "reason": "duplicate_source",
+        "aliasesTo": "/media/ie/commodities/ginger/whole/ie-ginger-whole-01.webp"
+      },
+      {
+        "filename": "ie-hibiscus-bulk-01.webp",
+        "reason": "duplicate_source",
+        "aliasesTo": "/media/ie/commodities/hibiscus/hero/ie-hibiscus-hero-01.webp"
+      },
+      {
+        "filename": "ie-hibiscus-gallery-01.webp",
+        "reason": "duplicate_source",
+        "aliasesTo": "/media/ie/commodities/hibiscus/whole/ie-hibiscus-whole-01.webp"
+      },
+      {
+        "filename": "ie-shea-whole-01.webp",
+        "reason": "duplicate_source",
+        "aliasesTo": "/media/ie/commodities/shea/hero/ie-shea-hero-01.webp"
+      },
+      {
+        "filename": "ie-shea-close-up-01.webp",
+        "reason": "duplicate_source",
+        "aliasesTo": "/media/ie/commodities/shea/hero/ie-shea-hero-01.webp"
+      },
+      {
+        "filename": "ie-shea-gallery-01.webp",
+        "reason": "duplicate_source",
+        "aliasesTo": "/media/ie/commodities/shea/hero/ie-shea-hero-01.webp"
+      },
+      {
+        "filename": "ie-soybean-close-up-01.webp",
+        "reason": "duplicate_source",
+        "aliasesTo": "/media/ie/commodities/soybean/hero/ie-soybean-hero-01.webp"
+      },
+      {
+        "filename": "ie-soybean-gallery-01.webp",
+        "reason": "duplicate_source",
+        "aliasesTo": "/media/ie/commodities/soybean/hero/ie-soybean-hero-01.webp"
+      },
+      {
+        "filename": "ie-cocoa-gallery-01.webp",
+        "reason": "duplicate_source",
+        "aliasesTo": "/media/ie/commodities/cocoa/sacks/ie-cocoa-sacks-01.webp"
+      }
+    ],
+    "rejected": [],
+    "notFound": [
+      {
+        "filename": "ie-soybean-whole-01.webp",
+        "reason": "Error: Wikimedia file not found: File:Sojabohnen.jpg"
+      }
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { pool } = require('../config/database');
+const { getJwtSecret } = require('../config/security');
 
 const authenticateToken = async (req, res, next) => {
   try {
@@ -10,7 +11,7 @@ const authenticateToken = async (req, res, next) => {
       return res.status(401).json({ error: 'Access token required' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret_key');
+    const decoded = jwt.verify(token, getJwtSecret());
     
     // Get user from database
     const [users] = await pool.execute(

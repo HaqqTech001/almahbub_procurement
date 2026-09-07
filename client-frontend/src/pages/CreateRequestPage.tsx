@@ -191,13 +191,108 @@ const CreateRequestPage: React.FC = () => {
     setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
 
+  const validateRequestItems = (): string | null => {
+    for (let i = 0; i < requestItems.length; i++) {
+      const item = requestItems[i];
+      if (!item.name || item.name.trim() === '') {
+        return `Item ${i + 1}: Item/Service Name is required`;
+      }
+      if (item.quantity < 1) {
+        return `Item ${i + 1}: Quantity must be at least 1`;
+      }
+    }
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (requestItems.length === 0) {
       toast({
-        title: 'Error',
+        title: 'Missing Items',
         description: 'Please add at least one item to your procurement request.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const itemValidationError = validateRequestItems();
+    if (itemValidationError) {
+      toast({
+        title: 'Invalid Item',
+        description: itemValidationError,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!requesterInfo.fullName.trim()) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please provide your full name.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!requesterInfo.email.trim()) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please provide your email address.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!requesterInfo.companyName.trim()) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please provide your company name.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!deliveryAddress.street.trim()) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please provide a street address for delivery.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!deliveryAddress.city.trim()) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please provide a city for delivery.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!deliveryAddress.state.trim()) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please provide a state for delivery.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!deliveryAddress.country.trim()) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please provide a country for delivery.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (!urgency) {
+      toast({
+        title: 'Missing Information',
+        description: 'Please select an urgency level.',
         variant: 'destructive',
       });
       return;
@@ -206,17 +301,14 @@ const CreateRequestPage: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      // Build items description for the backend
       const itemsDescription = requestItems.map((item, index) => {
         return `${index + 1}. ${item.name || 'Unnamed Item'} (Qty: ${item.quantity} ${item.unit}) - ${item.category || 'No category'}${item.description ? '\n   Description: ' + item.description : ''}${item.specifications ? '\n   Specs: ' + item.specifications : ''}`;
       }).join('\n');
 
-      // Build title with category info if selected
       const title = selectedCategory 
         ? `${selectedCategory.name} - ${requesterInfo.companyName}`
         : `Procurement Request - ${requesterInfo.companyName}`;
 
-      // Build comprehensive description
       let description = `Category: ${selectedCategory?.name || 'General Procurement'}\n\n`;
       description += `Items Requested:\n${itemsDescription}\n\n`;
       if (specialRequirements) {
@@ -236,25 +328,30 @@ const CreateRequestPage: React.FC = () => {
         deliveryCountry: deliveryAddress.country,
         budgetCurrency: budget.currency,
         budgetAmount: budget.amount,
+        files: referenceFiles,
       };
 
-      console.log('Submitting procurement request to /api/v1/orders:', requestData);
+      console.log('Submitting procurement request to /api/v1/requests:', requestData);
       
       const response = await apiClient.createOrder(requestData);
       console.log('Order created successfully:', response);
-    
+      
+      const createdRequestId = response?.data?.request?.id || response?.data?.order?.id;
+      
       toast({
         title: 'Success',
         description: 'Your procurement request has been submitted successfully. You will receive a confirmation email shortly.',
       });
 
-      navigate('/my-requests');
+      if (createdRequestId) {
+        navigate(`/request/${createdRequestId}`);
+      } else {
+        navigate('/my-requests');
+      }
     } catch (error: any) {
       console.error('Create order error:', error);
-      // Improve error message display
       let errorMessage = error.message || 'Failed to submit procurement request. Please try again.';
       
-      // Check for common errors and provide user-friendly messages
       if (errorMessage.includes('401') || errorMessage.includes('Unauthorized')) {
         errorMessage = 'Your session has expired. Please log in again and try submitting your request.';
       } else if (errorMessage.includes('404') || errorMessage.includes('not found')) {
@@ -268,7 +365,7 @@ const CreateRequestPage: React.FC = () => {
           description: errorMessage,
           variant: 'destructive',
         });
-      } finally {
+    } finally {
       setIsSubmitting(false);
     }
   };

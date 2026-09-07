@@ -276,9 +276,29 @@ class ApiClient {
       }
     });
 
-    return this.request<any>('/orders', {
+    return this.request<any>('/requests', {
       method: 'POST',
       body: formData,
+    });
+  }
+
+  async updateOrder(id: number | string, data: any) {
+    return this.request<any>(`/orders/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateOrder(id: number | string, data: any) {
+    return this.request<any>(`/orders/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async cancelOrder(id: number | string) {
+    return this.request<any>(`/orders/${id}/cancel`, {
+      method: 'PUT',
     });
   }
 

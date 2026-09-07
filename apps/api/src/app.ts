@@ -9,6 +9,7 @@ import { API_V1_PATH } from "@hamd/constants";
 import type { Request, Response } from "express";
 
 import type { Environment } from "./config/env.js";
+import { isAllowedDevelopmentBrowserOrigin } from "./shared/http/dev-cors-origin.js";
 import {
   createReadinessDependencies,
   type ApiDependencies,
@@ -32,7 +33,6 @@ import { createPaymentRouter } from "./modules/finance/payment/api/payment-route
 import { ShipmentService } from "./modules/logistics/shipment/application/shipment-service.js";
 import { createShipmentRouter } from "./modules/logistics/shipment/api/shipment-routes.js";
 import { NotificationService } from "./modules/communication/notification/application/notification-service.js";
-import { ResendEmailGateway } from "./modules/communication/notification/application/notification-gateways.js";
 import { createCommunicationTemplateRouter, createNotificationPreferenceRouter, createNotificationRouter } from "./modules/communication/notification/api/notification-routes.js";
 import { GuidanceService } from "./modules/communication/guidance/application/guidance-service.js";
 import { createGuidanceAdminRouter, createGuidanceRouter } from "./modules/communication/guidance/api/guidance-routes.js";
@@ -43,12 +43,21 @@ import { createParityRouters } from "./modules/communication/parity/api/parity-r
 import { CopilotService } from "./modules/ai/application/copilot-service.js";
 import { createCopilotRouter } from "./modules/ai/api/copilot-routes.js";
 import { createLlmProviderFromEnv } from "./modules/ai/providers/create-llm-gateway.js";
-import { createAuthenticate } from "./shared/auth/authenticate.js";
+import { createAuthenticate, createOptionalAuthenticate } from "./shared/auth/authenticate.js";
 import { AuthRepository } from "./modules/identity/auth/infrastructure/auth-repository.js";
 import { AuthService } from "./modules/identity/auth/application/auth-service.js";
-import { createAuthEmailGateway } from "./modules/identity/auth/application/auth-email.js";
+import { createAuthEmailGateway, createTransactionalEmailGateway } from "./modules/identity/auth/application/auth-email.js";
+import { createEmailBrand } from "./modules/communication/email/email-brand.js";
 import { createAuthRouter } from "./modules/identity/auth/api/auth-routes.js";
+import { CatalogService } from "./modules/catalog/application/catalog-service.js";
+import { createCatalogRouters } from "./modules/catalog/api/catalog-routes.js";
+import { createCatalogMediaRouter } from "./modules/catalog/api/catalog-media-routes.js";
+import { createCatalogMediaStore } from "./modules/catalog/infrastructure/catalog-media-store.js";
 import { createApiAbuseLimiters } from "./middleware/redis-rate-limit.js";
+import { IeCommodityService } from "./modules/integrated-export/application/ie-commodity-service.js";
+import { createIeCommodityRouter } from "./modules/integrated-export/api/ie-commodity-routes.js";
+import { WeddingCampaignService } from "./modules/wedding/application/wedding-campaign-service.js";
+import { createWeddingRouter } from "./modules/wedding/api/wedding-routes.js";
 
 export function createApp(
   environment: Environment,
@@ -92,7 +101,13 @@ export function createApp(
           callback(null, true);
           return;
         }
-
+        if (
+          environment.NODE_ENV !== "production" &&
+          isAllowedDevelopmentBrowserOrigin(origin)
+        ) {
+          callback(null, origin);
+          return;
+        }
         callback(null, false);
       },
       credentials: true,
@@ -111,42 +126,61 @@ export function createApp(
   );
   app.use(createOpenApiRouter());
   if (dependencies.database) {
-    const authenticate = createAuthenticate(dependencies.database, environment);
+    const database = dependencies.database;
+    const authenticate = createAuthenticate(database, environment);
+    const optionalAuthenticate = createOptionalAuthenticate(
+      database,
+      environment,
+    );
     const authEmailGateway = createAuthEmailGateway(environment);
     const authService = new AuthService(
-      new AuthRepository(dependencies.database),
+      new AuthRepository(database),
       environment,
       authEmailGateway,
     );
-    const procurementService = new ProcurementRequestService(
-      dependencies.database,
+    const quotationService = new QuotationService(database);
+    const invoiceService = new InvoiceService(database);
+    const paymentService = new PaymentService(database);
+    const shipmentService = new ShipmentService(database);
+    const emailGateway = createTransactionalEmailGateway(environment);
+    const notificationService = new NotificationService(
+      database,
+      emailGateway,
+      createEmailBrand(environment),
     );
+    const procurementService = new ProcurementRequestService(database);
     const documentService = new DocumentService(
-      dependencies.database,
+      database,
       environment.UPLOAD_ROOT,
     );
-    const quotationService = new QuotationService(dependencies.database);
-    const invoiceService = new InvoiceService(dependencies.database);
-    const paymentService = new PaymentService(dependencies.database);
-    const shipmentService = new ShipmentService(dependencies.database);
-    const emailGateway = environment.RESEND_API_KEY && environment.EMAIL_FROM
-      ? new ResendEmailGateway(environment.RESEND_API_KEY, environment.EMAIL_FROM)
-      : undefined;
-    const notificationService = new NotificationService(dependencies.database, emailGateway);
-    const guidanceService = new GuidanceService(dependencies.database);
-    const opsService = new OpsService(dependencies.database);
+    const guidanceService = new GuidanceService(database);
+    const opsService = new OpsService(
+      database,
+      environment.UPLOAD_ROOT,
+      createCatalogMediaStore({
+        uploadRoot: environment.UPLOAD_ROOT,
+        driver: environment.CATALOG_MEDIA_DRIVER,
+        nodeEnv: environment.NODE_ENV,
+        s3Bucket: environment.CATALOG_MEDIA_S3_BUCKET,
+        s3Region: environment.AWS_REGION,
+        s3AccessKeyId: environment.AWS_ACCESS_KEY_ID,
+        s3SecretAccessKey: environment.AWS_SECRET_ACCESS_KEY,
+        s3PublicBaseUrl: environment.CATALOG_MEDIA_S3_PUBLIC_BASE_URL,
+        supabaseUrl: environment.CATALOG_MEDIA_SUPABASE_URL,
+        supabaseServiceRoleKey: environment.CATALOG_MEDIA_SUPABASE_SERVICE_ROLE_KEY,
+        supabaseBucket: environment.CATALOG_MEDIA_SUPABASE_BUCKET,
+      }),
+    );
     const limiters = createApiAbuseLimiters(dependencies.redis);
-    const parityService = new ParityService(dependencies.database);
+    const parityService = new ParityService(database, documentService);
     const parityRouters = createParityRouters(
       authenticate,
       parityService,
       limiters.marketing,
+      optionalAuthenticate,
     );
     const llmProvider = createLlmProviderFromEnv(environment);
-    const copilotService = new CopilotService(
-      dependencies.database,
-      llmProvider,
-    );
+    const copilotService = new CopilotService(database, llmProvider);
     app.use(API_V1_PATH, limiters.api);
     app.use(
       `${API_V1_PATH}/auth`,
@@ -197,6 +231,60 @@ export function createApp(
       createGuidanceAdminRouter(authenticate, guidanceService),
     );
     app.use(`${API_V1_PATH}/ops`, createOpsRouter(authenticate, opsService));
+    app.use(
+      `${API_V1_PATH}/public/catalog-media`,
+      createCatalogMediaRouter(environment.UPLOAD_ROOT, {
+        canServeCatalogEntity: async (entityId) => {
+          const product = await database.product.findFirst({
+            where: { id: entityId },
+            select: { id: true },
+          });
+          if (product) return true;
+          const category = await database.productCategory.findFirst({
+            where: { id: entityId },
+            select: { id: true },
+          });
+          if (category) return true;
+          const ie = (
+            database as unknown as {
+              integratedExportCommodity?: {
+                findFirst: (args: {
+                  where: { id: string };
+                  select: { id: true };
+                }) => Promise<{ id: string } | null>;
+              };
+            }
+          ).integratedExportCommodity;
+          const commodity = await ie?.findFirst({
+            where: { id: entityId },
+            select: { id: true },
+          });
+          return Boolean(commodity);
+        },
+      }),
+    );
+    const catalogRouters = createCatalogRouters(new CatalogService(database));
+    app.use(`${API_V1_PATH}/products`, catalogRouters.products);
+    app.use(`${API_V1_PATH}/categories`, catalogRouters.categories);
+    app.use(
+      `${API_V1_PATH}/integrated-export/commodities`,
+      createIeCommodityRouter(
+        authenticate,
+        optionalAuthenticate,
+        new IeCommodityService(
+          database,
+          createCatalogMediaStore({ uploadRoot: environment.UPLOAD_ROOT }),
+        ),
+      ),
+    );
+    app.use(
+      `${API_V1_PATH}/wedding`,
+      createWeddingRouter(
+        authenticate,
+        optionalAuthenticate,
+        new WeddingCampaignService(environment, database),
+      ),
+    );
     app.use(`${API_V1_PATH}/announcements`, parityRouters.announcements);
     app.use(`${API_V1_PATH}/support`, parityRouters.support);
     app.use(

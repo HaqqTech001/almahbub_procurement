@@ -1,0 +1,39 @@
+{
+  "name": "hamd-genesis",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Almahbub International V2 procurement platform monorepo",
+  "packageManager": "pnpm@10.14.0",
+  "engines": {
+    "node": ">=24.11.0 <25",
+    "pnpm": ">=10.14.0 <11"
+  },
+  "scripts": {
+    "postinstall": "corepack pnpm db:generate && corepack pnpm --filter @hamd/api... build",
+    "bootstrap": "corepack pnpm db:generate && corepack pnpm build",
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "typecheck": "turbo typecheck",
+    "test": "turbo test",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "audit:deps": "corepack pnpm audit --prod --audit-level=high",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:reset": "docker compose down --volumes --remove-orphans",
+    "db:generate": "corepack pnpm --filter @hamd/database generate",
+    "db:migrate": "corepack pnpm --filter @hamd/database migrate:deploy",
+    "db:studio": "corepack pnpm --filter @hamd/database studio"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "turbo": "^2.6.3",
+    "typescript": "^5.9.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "fast-uri": ">=3.1.5"
+    }
+  }
+}

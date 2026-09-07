@@ -1,0 +1,299 @@
+/* HAMD Genesis - Recommendation Engine */
+.hamd-rec {
+  --rec-canvas: var(--hamd-color-canvas, #f9fafb);
+  --rec-surface: var(--hamd-color-surface, #fff);
+  --rec-subtle: var(--hamd-color-surface-subtle, #f2f4f7);
+  --rec-text: var(--hamd-color-text, #101828);
+  --rec-muted: var(--hamd-color-text-secondary, #344054);
+  --rec-tertiary: var(--hamd-color-text-tertiary, #667085);
+  --rec-border: var(--hamd-color-border, #d0d5dd);
+  --rec-border-subtle: var(--hamd-color-border-subtle, #eaecf0);
+  --rec-action: var(--hamd-color-action, #155aaf);
+  --rec-danger: var(--hamd-color-danger, #b42318);
+  --rec-radius: var(--hamd-radius-lg, 0.5rem);
+  background: var(--rec-canvas);
+  color: var(--rec-text);
+  font-family: var(--hamd-font-sans, "Segoe UI", system-ui, sans-serif);
+  min-height: 100%;
+  padding: 1.25rem clamp(1rem, 2.5vw, 1.75rem) 2rem;
+}
+
+[data-theme="dark"] .hamd-rec,
+.hamd-rec[data-theme="dark"] {
+  --rec-canvas: #101828;
+  --rec-surface: #182230;
+  --rec-subtle: #1d2939;
+  --rec-text: #f9fafb;
+  --rec-muted: #d0d5dd;
+  --rec-tertiary: #98a2b3;
+  --rec-border: #344054;
+  --rec-border-subtle: #1d2939;
+  --rec-action: #53b1fd;
+}
+
+.hamd-rec__header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.hamd-rec__header h1 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+}
+
+.hamd-rec__header p {
+  margin: 0.35rem 0 0;
+  max-width: 52rem;
+  color: var(--rec-tertiary);
+}
+
+.hamd-rec__context {
+  font-size: 0.85rem;
+}
+
+.hamd-rec-toolbar {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background: var(--rec-surface);
+  border: 1px solid var(--rec-border-subtle);
+  border-radius: var(--rec-radius);
+}
+
+.hamd-rec-toolbar label {
+  display: grid;
+  gap: 0.25rem;
+  color: var(--rec-muted);
+  font-size: 0.8rem;
+}
+
+.hamd-rec-toolbar input,
+.hamd-rec-toolbar select {
+  min-width: 12rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--rec-border);
+  border-radius: 0.375rem;
+  background: var(--rec-canvas);
+  color: var(--rec-text);
+  font: inherit;
+}
+
+.hamd-rec-kinds {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.hamd-rec-chip,
+.hamd-rec-btn,
+.hamd-rec-card__actions button,
+.hamd-rec-card__actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.42rem 0.7rem;
+  border: 1px solid var(--rec-border);
+  border-radius: 0.375rem;
+  background: var(--rec-surface);
+  color: var(--rec-text);
+  font: inherit;
+  font-size: 0.82rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.hamd-rec-chip.is-active {
+  background: var(--rec-action);
+  border-color: var(--rec-action);
+  color: #fff;
+}
+
+.hamd-rec-groups {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.hamd-rec-group > header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.55rem;
+}
+
+.hamd-rec-group > header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.hamd-rec-group > header span {
+  padding: 0.08rem 0.4rem;
+  border-radius: 999px;
+  background: var(--rec-subtle);
+  color: var(--rec-tertiary);
+  font-size: 0.75rem;
+}
+
+.hamd-rec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 0.75rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hamd-rec-card {
+  height: 100%;
+  overflow: hidden;
+  background: var(--rec-surface);
+  border: 1px solid var(--rec-border-subtle);
+  border-radius: var(--rec-radius);
+}
+
+.hamd-rec-card img {
+  display: block;
+  width: 100%;
+  height: 9rem;
+  object-fit: cover;
+}
+
+.hamd-rec-card__body {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.85rem;
+}
+
+.hamd-rec-card__eyebrow,
+.hamd-rec-card__actions,
+.hamd-rec-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.hamd-rec-card__eyebrow {
+  justify-content: space-between;
+  color: var(--rec-tertiary);
+  font-size: 0.72rem;
+  text-transform: capitalize;
+}
+
+.hamd-rec-card h3,
+.hamd-rec-card p,
+.hamd-rec-card dl {
+  margin: 0;
+}
+
+.hamd-rec-card h3 {
+  font-size: 1rem;
+}
+
+.hamd-rec-card p,
+.hamd-rec-card dl {
+  color: var(--rec-muted);
+  font-size: 0.85rem;
+}
+
+.hamd-rec-card__reason {
+  padding: 0.55rem;
+  background: var(--rec-subtle);
+  border-radius: 0.375rem;
+}
+
+.hamd-rec-card__confidence,
+.hamd-rec-card__evidence {
+  color: var(--rec-tertiary) !important;
+  font-size: 0.78rem !important;
+}
+
+.hamd-rec-card dl div {
+  display: grid;
+  grid-template-columns: 5rem 1fr;
+  gap: 0.4rem;
+}
+
+.hamd-rec-card dt {
+  color: var(--rec-tertiary);
+}
+
+.hamd-rec-card dd {
+  margin: 0;
+}
+
+.hamd-rec-badges {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hamd-rec-badges li {
+  padding: 0.12rem 0.4rem;
+  border-radius: 999px;
+  background: var(--rec-subtle);
+  color: var(--rec-muted);
+  font-size: 0.7rem;
+}
+
+.hamd-rec-empty,
+.hamd-rec-toast {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: var(--rec-radius);
+  background: var(--rec-surface);
+  color: var(--rec-tertiary);
+}
+
+.hamd-rec-toast {
+  color: var(--rec-danger);
+  border: 1px solid var(--rec-danger);
+}
+
+.hamd-rec--skeleton .hamd-rec-skel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.hamd-rec-skel {
+  border-radius: var(--rec-radius);
+  background: var(--rec-subtle);
+  animation: hamd-rec-pulse 1.2s ease-in-out infinite alternate;
+}
+
+.hamd-rec-skel--toolbar {
+  height: 4rem;
+}
+
+.hamd-rec-skel--card {
+  height: 13rem;
+}
+
+@keyframes hamd-rec-pulse {
+  to { opacity: 0.55; }
+}
+
+@media (max-width: 720px) {
+  .hamd-rec__header {
+    flex-direction: column;
+  }
+
+  .hamd-rec-toolbar,
+  .hamd-rec-toolbar label,
+  .hamd-rec-toolbar input,
+  .hamd-rec-toolbar select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-rec-skel { animation: none; }
+}

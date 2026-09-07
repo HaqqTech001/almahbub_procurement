@@ -1,0 +1,552 @@
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
+
+import {
+  googleSignInRequest,
+  loginRequest,
+  logoutEverywhereRequest,
+  logoutRequest,
+  meRequest,
+  refreshRequest,
+  type AuthMePayload,
+  type AuthUser,
+} from "../api/auth-client.js";
+import { AuthApiError, isCredentialFailure } from "../api/auth-errors.js";
+import {
+  googleClientIdFromEnv,
+  initializeGoogleIdentity,
+  loadGoogleIdentityScript,
+} from "../google/gis.js";
+import { setPendingGoogleCredential } from "../google/pending-credential.js";
+import {
+  clearLoginFailures,
+  getLoginLockUntil,
+  isLoginLocked,
+  recordLoginFailure,
+} from "./client-rate-limit.js";
+import {
+  clearAccessToken,
+  getAccessToken,
+  getRememberMe,
+  getRememberedEmail,
+  hasSessionHint,
+  isAccessTokenFresh,
+  setAccessToken,
+  setRememberMe,
+  setSessionHint,
+} from "./token-store.js";
+import {
+  classifyRefreshFailure,
+  logSessionEvent,
+  statusAfterFailedRefresh,
+  withRefreshLock,
+} from "@hamd/ui/auth";
+import { configureWebSession } from "./session-http.js";
+import {
+  clearTrustedDevices,
+  getCurrentDeviceFingerprint,
+  getCurrentDeviceLabel,
+  getCurrentDevicePlatform,
+  listTrustedDevices,
+  revokeOtherTrustedDevices,
+  revokeTrustedDevice,
+  touchCurrentDevice,
+  trustCurrentDevice,
+  type TrustedDevice,
+} from "./trusted-devices.js";
+
+export type AuthStatus =
+  | "booting"
+  | "anonymous"
+  | "authenticated"
+  | "expired"
+  | "locked";
+
+type AuthContextValue = {
+  status: AuthStatus;
+  user: AuthUser | null;
+  organizationId: string | null;
+  organizationName: string | null;
+  permissions: string[];
+  bootstrapping: boolean;
+  rememberMe: boolean;
+  rememberedEmail: string;
+  trustedDevices: TrustedDevice[];
+  lockUntil: number | null;
+  login: (input: {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+  }) => Promise<void>;
+  loginWithGoogle: (
+    credential: string,
+    extra?: { code?: string; email?: string },
+  ) => Promise<void>;
+  registerGoogleCredentialHandler: (
+    handler: (credential: string) => void,
+  ) => () => void;
+  googleSignInReady: boolean;
+  googleSignInAvailable: boolean;
+  logout: () => Promise<void>;
+  logoutEverywhere: () => Promise<void>;
+  refreshSession: () => Promise<boolean>;
+  ensureSession: () => Promise<string | null>;
+  persistRememberMe: (enabled: boolean) => void;
+  revokeDevice: (id: string) => void;
+  revokeOtherDevices: () => void;
+  markExpired: () => void;
+};
+
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+async function hydrateMe(token: string): Promise<AuthMePayload> {
+  return meRequest(token);
+}
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [status, setStatus] = useState<AuthStatus>("booting");
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [organizationId, setOrganizationId] = useState<string | null>(null);
+  const [organizationName, setOrganizationName] = useState<string | null>(null);
+  const [permissions, setPermissions] = useState<string[]>([]);
+  const [bootstrapping, setBootstrapping] = useState(true);
+  const [rememberMe, setRememberMeState] = useState(false);
+  const [rememberedEmail, setRememberedEmail] = useState("");
+  const [trustedDevices, setTrustedDevices] = useState<TrustedDevice[]>([]);
+  const [lockUntil, setLockUntil] = useState<number | null>(null);
+  const [googleSignInReady, setGoogleSignInReady] = useState(false);
+  const [googleSignInFailed, setGoogleSignInFailed] = useState(false);
+  const googleCredentialHandler = useRef<((credential: string) => void) | null>(
+    null,
+  );
+  const refreshPromise = useRef<Promise<boolean> | null>(null);
+  const lastRefreshKind = useRef<"ok" | "transient" | "expired">("ok");
+  const bootstrapGeneration = useRef(0);
+
+  const syncDevices = useCallback(() => {
+    setTrustedDevices(listTrustedDevices());
+  }, []);
+
+  const applySession = useCallback(
+    async (token: string, expiresIn: number, nextUser?: AuthUser, orgId?: string) => {
+      setAccessToken(token, expiresIn);
+      if (nextUser) setUser(nextUser);
+      if (orgId) setOrganizationId(orgId);
+      try {
+        const me = await hydrateMe(token);
+        setUser(me.user);
+        setOrganizationId(me.organizationId);
+        setOrganizationName(me.organizationName ?? null);
+        setPermissions(me.permissions);
+      } catch {
+        if (nextUser) {
+          setPermissions([]);
+        } else {
+          throw new AuthApiError({
+            message: "Unable to load your profile.",
+            status: 401,
+            code: "UNAUTHENTICATED",
+          });
+        }
+      }
+      setStatus("authenticated");
+      touchCurrentDevice();
+      syncDevices();
+    },
+    [syncDevices],
+  );
+
+  const refreshSession = useCallback(async (): Promise<boolean> => {
+    if (refreshPromise.current) return refreshPromise.current;
+    refreshPromise.current = withRefreshLock(async () => {
+      if (isAccessTokenFresh()) {
+        lastRefreshKind.current = "ok";
+        const token = getAccessToken();
+        if (token) {
+          try {
+            const me = await hydrateMe(token);
+            setUser(me.user);
+            setOrganizationId(me.organizationId);
+            setOrganizationName(me.organizationName ?? null);
+            setPermissions(me.permissions);
+          } catch {
+            /* keep the current profile if /me is temporarily unavailable */
+          }
+        }
+        setStatus("authenticated");
+        return true;
+      }
+      try {
+        logSessionEvent("refresh_attempted");
+        const session = await refreshRequest(getAccessToken());
+        await applySession(
+          session.accessToken,
+          session.expiresIn,
+          session.user,
+          session.organizationId,
+        );
+        lastRefreshKind.current = "ok";
+        logSessionEvent("refresh_succeeded");
+        return true;
+      } catch (error) {
+        const category = classifyRefreshFailure(error);
+        lastRefreshKind.current = category;
+        logSessionEvent("refresh_failed", { category });
+        if (category === "expired") {
+          logSessionEvent("logout_reason", { reason: "refresh_expired" });
+          clearAccessToken();
+          setSessionHint(false);
+          setUser(null);
+          setOrganizationId(null);
+          setOrganizationName(null);
+          setPermissions([]);
+          setStatus("anonymous");
+        }
+        return false;
+      }
+    }).finally(() => {
+      refreshPromise.current = null;
+    });
+    return refreshPromise.current;
+  }, [applySession]);
+
+  const ensureSession = useCallback(async (): Promise<string | null> => {
+    if (isAccessTokenFresh()) return getAccessToken();
+    const ok = await refreshSession();
+    if (ok) return getAccessToken();
+    return getAccessToken();
+  }, [refreshSession]);
+
+  /**
+   * Bootstrap on mount only (stable deps via refs). Clear `bootstrapping` for
+   * the latest generation so StrictMode/HMR cancel cannot leave RequireAuth
+   * stuck on the auth skeleton forever.
+   */
+  const refreshSessionRef = useRef(refreshSession);
+  refreshSessionRef.current = refreshSession;
+  const syncDevicesRef = useRef(syncDevices);
+  syncDevicesRef.current = syncDevices;
+
+  useEffect(() => {
+    const generation = ++bootstrapGeneration.current;
+    let cancelled = false;
+
+    setBootstrapping(true);
+    setRememberMeState(getRememberMe());
+    setRememberedEmail(getRememberedEmail());
+    setLockUntil(getLoginLockUntil());
+    syncDevicesRef.current();
+
+    void (async () => {
+      try {
+        if (isLoginLocked()) {
+          if (!cancelled && generation === bootstrapGeneration.current) {
+            setStatus("locked");
+          }
+          return;
+        }
+        const hadSession = hasSessionHint() || isAccessTokenFresh();
+        const recovered = hadSession
+          ? await refreshSessionRef.current()
+          : false;
+        if (cancelled || generation !== bootstrapGeneration.current) return;
+        if (!recovered) {
+          const next = statusAfterFailedRefresh({
+            kind: lastRefreshKind.current === "expired" ? "expired" : "transient",
+            hasAccessToken: Boolean(getAccessToken()),
+          });
+          if (next === "authenticated") {
+            setStatus("authenticated");
+            window.setTimeout(() => {
+              void refreshSessionRef.current();
+            }, 2000);
+          } else {
+            setSessionHint(false);
+            setStatus("anonymous");
+          }
+        }
+      } finally {
+        if (!cancelled && generation === bootstrapGeneration.current) {
+          setBootstrapping(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const clientId = googleClientIdFromEnv();
+    if (!clientId) return;
+    let cancelled = false;
+    void loadGoogleIdentityScript()
+      .then((api) => {
+        if (cancelled) return;
+        initializeGoogleIdentity(api, clientId, (credential) => {
+          googleCredentialHandler.current?.(credential);
+        });
+        setGoogleSignInReady(true);
+      })
+      .catch(() => {
+        if (!cancelled) setGoogleSignInFailed(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const login = useCallback(
+    async (input: { email: string; password: string; rememberMe: boolean }) => {
+      const lockedUntil = getLoginLockUntil();
+      if (lockedUntil) {
+        setLockUntil(lockedUntil);
+        setStatus("locked");
+        throw new AuthApiError({
+          message: "Account temporarily locked due to failed sign-in attempts.",
+          status: 423,
+          code: "ACCOUNT_LOCKED",
+        });
+      }
+
+      try {
+        const session = await loginRequest({
+          email: input.email,
+          password: input.password,
+          rememberMe: input.rememberMe,
+          ...(input.rememberMe
+            ? {
+                deviceFingerprint: getCurrentDeviceFingerprint(),
+                deviceName: getCurrentDeviceLabel(),
+                devicePlatform: getCurrentDevicePlatform(),
+              }
+            : {}),
+        });
+        clearLoginFailures();
+        setLockUntil(null);
+        setRememberMe(input.rememberMe, input.email);
+        setRememberMeState(input.rememberMe);
+        setRememberedEmail(input.rememberMe ? input.email : "");
+        if (input.rememberMe) {
+          trustCurrentDevice();
+        }
+        await applySession(
+          session.accessToken,
+          session.expiresIn,
+          session.user,
+          session.organizationId,
+        );
+      } catch (error) {
+        if (isCredentialFailure(error)) {
+          const result = recordLoginFailure();
+          if (result.locked) {
+            setLockUntil(result.unlockAt);
+            setStatus("locked");
+          }
+        }
+        throw error;
+      }
+    },
+    [applySession],
+  );
+
+  const loginWithGoogle = useCallback(
+    async (
+      credential: string,
+      extra?: { code?: string; email?: string },
+    ) => {
+      try {
+        const session = await googleSignInRequest({
+          credential,
+          ...(extra?.code ? { code: extra.code } : {}),
+          ...(extra?.email ? { email: extra.email } : {}),
+        });
+        await applySession(
+          session.accessToken,
+          session.expiresIn,
+          session.user,
+          session.organizationId,
+        );
+      } catch (error) {
+        if (error instanceof AuthApiError && error.isGoogleLinkRequired) {
+          setPendingGoogleCredential(credential);
+        }
+        throw error;
+      }
+    },
+    [applySession],
+  );
+
+  const registerGoogleCredentialHandler = useCallback(
+    (handler: (credential: string) => void) => {
+      googleCredentialHandler.current = handler;
+      return () => {
+        if (googleCredentialHandler.current === handler) {
+          googleCredentialHandler.current = null;
+        }
+      };
+    },
+    [],
+  );
+
+  const logout = useCallback(async () => {
+    const token = getAccessToken();
+    try {
+      if (token) await logoutRequest(token);
+    } catch {
+      /* still clear local session */
+    }
+    clearAccessToken();
+    setSessionHint(false);
+    setUser(null);
+    setOrganizationId(null);
+    setOrganizationName(null);
+    setPermissions([]);
+    setStatus("anonymous");
+  }, []);
+
+  const logoutEverywhere = useCallback(async () => {
+    const token = getAccessToken();
+    try {
+      if (token) await logoutEverywhereRequest(token);
+    } catch {
+      /* clear locally anyway */
+    }
+    clearAccessToken();
+    setSessionHint(false);
+    clearTrustedDevices();
+    syncDevices();
+    setUser(null);
+    setOrganizationId(null);
+    setOrganizationName(null);
+    setPermissions([]);
+    setStatus("anonymous");
+  }, [syncDevices]);
+
+  useEffect(() => {
+    configureWebSession({
+      getAccessToken,
+      ensureSession: () => ensureSession(),
+      refreshSession: async () => {
+        const ok = await refreshSession();
+        if (ok) return true;
+        return lastRefreshKind.current === "transient" ? "transient" : false;
+      },
+      onSessionLost: () => {
+        clearAccessToken();
+        setSessionHint(false);
+        setUser(null);
+        setOrganizationId(null);
+        setOrganizationName(null);
+        setPermissions([]);
+        setStatus("anonymous");
+      },
+    });
+    return () => configureWebSession(null);
+  }, [ensureSession, refreshSession]);
+
+  useEffect(() => {
+    if (!import.meta.env.DEV || !bootstrapping) return;
+    const started = Date.now();
+    const timer = window.setTimeout(() => {
+      logSessionEvent("bootstrap_slow", { elapsedMs: Date.now() - started });
+    }, 8_000);
+    return () => window.clearTimeout(timer);
+  }, [bootstrapping]);
+
+  const persistRememberMe = useCallback(
+    (enabled: boolean) => {
+      setRememberMe(enabled, enabled ? (user?.email ?? rememberedEmail) || undefined : undefined);
+      setRememberMeState(enabled);
+      if (!enabled) setRememberedEmail("");
+    },
+    [rememberedEmail, user?.email],
+  );
+
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      status,
+      user,
+      organizationId,
+      organizationName,
+      permissions,
+      bootstrapping,
+      rememberMe,
+      rememberedEmail,
+      trustedDevices,
+      lockUntil,
+      login,
+      loginWithGoogle,
+      registerGoogleCredentialHandler,
+      googleSignInReady,
+      googleSignInAvailable:
+        Boolean(googleClientIdFromEnv()) && !googleSignInFailed,
+      logout,
+      logoutEverywhere,
+      refreshSession,
+      ensureSession,
+      persistRememberMe,
+      revokeDevice: (id: string) => {
+        revokeTrustedDevice(id);
+        syncDevices();
+      },
+      revokeOtherDevices: () => {
+        revokeOtherTrustedDevices();
+        syncDevices();
+      },
+      markExpired: () => {
+        clearAccessToken();
+        setSessionHint(false);
+        setUser(null);
+        setOrganizationId(null);
+        setOrganizationName(null);
+        setPermissions([]);
+        setStatus("anonymous");
+      },
+    }),
+    [
+      status,
+      user,
+      organizationId,
+      organizationName,
+      permissions,
+      bootstrapping,
+      rememberMe,
+      rememberedEmail,
+      trustedDevices,
+      lockUntil,
+      login,
+      loginWithGoogle,
+      registerGoogleCredentialHandler,
+      googleSignInReady,
+      googleSignInFailed,
+      logout,
+      logoutEverywhere,
+      refreshSession,
+      ensureSession,
+      persistRememberMe,
+      syncDevices,
+    ],
+  );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth(): AuthContextValue {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+  return ctx;
+}
+
+export function useOptionalAuth(): AuthContextValue | null {
+  return useContext(AuthContext);
+}

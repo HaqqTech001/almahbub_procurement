@@ -1,0 +1,29 @@
+---
+description: Master development rule - ship production enterprise platform, no placeholders
+alwaysApply: true
+---
+
+# Master Development Rule
+
+From this point onward:
+
+- Do not create placeholder pages.
+- Do not create unfinished UI.
+- Do not create mock workflows.
+- Do not create duplicate business logic.
+- Do not bypass quality gates.
+- Do not mark modules complete unless they are browser-visible, API-connected, tested, responsive, accessible, and production-ready.
+
+Every completed sprint must move the project measurably closer to retiring Version 1.
+
+The objective is not to generate code.
+
+The objective is to ship a production enterprise platform.
+
+## Definition of done (any module)
+
+1. Visible in buyer (`apps/web`) and/or ops (`apps/ops`) as appropriate
+2. Backed by real `apps/api` routes + Zod validation + RBAC/policy
+3. Covered by automated tests (unit and/or integration; e2e for public critical paths)
+4. Responsive and WCAG AA for interactive surfaces
+5. No parallel V1 business logic - extend Genesis; leave V1 READ ONLY

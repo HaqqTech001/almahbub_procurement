@@ -1,0 +1,17 @@
+{
+  "name": "Almahbub International",
+  "short_name": "Almahbub",
+  "description": "Global procurement. Local accountability.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1F3A",
+  "theme_color": "#0B1F3A",
+  "icons": [
+    {
+      "src": "/almahbub.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "categories": 10,
+  "products": 1000,
+  "productsPerCategory": {
+    "iphones-gadgets": 100,
+    "medical-equipments": 100,
+    "home-garden-wares": 100,
+    "machineries": 100,
+    "general-procurement": 100,
+    "home-appliances": 100,
+    "office-business": 100,
+    "fashion-textiles": 100,
+    "beauty-spa-salon": 100,
+    "retail-store-setup": 100
+  },
+  "uniqueProductSlugs": 1000,
+  "duplicateProductSlugs": [],
+  "maxProductNameLength": 46,
+  "maxProductSlugLength": 66,
+  "maxProductDescriptionLength": 399,
+  "allPublished": true,
+  "plannedProductImages": 3000,
+  "plannedProductVideos": 1000,
+  "categoryImagesPlanned": 10,
+  "schemaMigrationRequiredForCatalogueRows": false
+}

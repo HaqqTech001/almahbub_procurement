@@ -1,0 +1,869 @@
+{
+  "downloadDate": "2026-08-17",
+  "license": "Unsplash License",
+  "licenseUrl": "https://unsplash.com/license",
+  "iePortal": [
+    {
+      "filename": "ie-portal-home-hero-01.webp",
+      "folder": "apps/web/public/media/ie/portal/hero",
+      "manifestId": "IE-PORTAL-HOME-HERO-001",
+      "authenticity": "representative",
+      "alt": "Representative imagery illustrating agro commodity export trade",
+      "photoId": "1596040033229-a9821ebd058d",
+      "photographer": "Chad Montano",
+      "subject": "IE homepage hero — spice assortment"
+    },
+    {
+      "filename": "ie-portal-home-hero-02.webp",
+      "folder": "apps/web/public/media/ie/portal/hero",
+      "manifestId": "IE-PORTAL-HOME-HERO-002",
+      "authenticity": "contextual",
+      "alt": "Representative photo of export logistics at a shipping port",
+      "photoId": "1578575437130-527eed3abbec",
+      "photographer": "chuttersnap",
+      "subject": "IE homepage hero — port containers"
+    },
+    {
+      "filename": "ie-portal-capability-commodities-01.webp",
+      "folder": "apps/web/public/media/ie/portal/capabilities",
+      "manifestId": "IE-PORTAL-CAP-COMMODITIES-001",
+      "authenticity": "representative",
+      "alt": "Representative assortment of agro commodities for illustration",
+      "photoId": "1546069901-ba9599a7e63c",
+      "photographer": "Unsplash contributor",
+      "subject": "IE capability commodities (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "ie-portal-capability-bulk-01.webp",
+      "folder": "apps/web/public/media/ie/portal/capabilities",
+      "manifestId": "IE-PORTAL-CAP-BULK-001",
+      "authenticity": "contextual",
+      "alt": "Representative photo of bulk commodity packaging in sacks",
+      "photoId": "1586201375761-83865001e31c",
+      "photographer": "Nathan Dumlao",
+      "subject": "IE capability bulk sacks"
+    },
+    {
+      "filename": "ie-portal-capability-export-01.webp",
+      "folder": "apps/web/public/media/ie/portal/capabilities",
+      "manifestId": "IE-PORTAL-CAP-EXPORT-001",
+      "authenticity": "contextual",
+      "alt": "Representative photo of international export logistics",
+      "photoId": "1494412574643-ff11b0a5c1c3",
+      "photographer": "Louis Reed",
+      "subject": "IE capability export ship"
+    },
+    {
+      "filename": "ie-portal-process-enquiry-01.webp",
+      "folder": "apps/web/public/media/ie/portal/process",
+      "manifestId": "IE-PORTAL-PROCESS-ENQUIRY-001",
+      "authenticity": "contextual",
+      "alt": "Representative photo of a business discussion over documents",
+      "photoId": "1454165804606-c3d57bc86b40",
+      "photographer": "Scott Graham",
+      "subject": "IE process enquiry"
+    },
+    {
+      "filename": "ie-portal-quality-detail-01.webp",
+      "folder": "apps/web/public/media/ie/portal/quality",
+      "manifestId": "IE-PORTAL-QUALITY-001",
+      "authenticity": "representative",
+      "alt": "Representative close-up of agro commodity appearance for quality context",
+      "photoId": "1464226184884-fa280b87c399",
+      "photographer": "Mockup Graphics",
+      "subject": "IE quality detail"
+    },
+    {
+      "filename": "ie-portal-markets-reach-01.webp",
+      "folder": "apps/web/public/media/ie/portal/markets",
+      "manifestId": "IE-PORTAL-MARKETS-001",
+      "authenticity": "contextual",
+      "alt": "Representative imagery suggesting international trade logistics",
+      "photoId": "1542838132-92c53300491e",
+      "photographer": "Unsplash contributor",
+      "subject": "IE markets logistics (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "ie-portal-about-01.webp",
+      "folder": "apps/web/public/media/ie/portal/about",
+      "manifestId": "IE-PORTAL-ABOUT-001",
+      "authenticity": "contextual",
+      "alt": "Representative imagery for Integrated Export business context",
+      "photoId": "1521737711867-e3b97375f902",
+      "photographer": "LinkedIn Sales Solutions",
+      "subject": "IE about business"
+    },
+    {
+      "filename": "ie-portal-contact-01.webp",
+      "folder": "apps/web/public/media/ie/portal/contact",
+      "manifestId": "IE-PORTAL-CONTACT-001",
+      "authenticity": "contextual",
+      "alt": "Representative photo suggesting a professional export enquiry discussion",
+      "photoId": "1450101499163-c8848c66ca85",
+      "photographer": "Scott Graham",
+      "subject": "IE contact desk"
+    }
+  ],
+  "international": [
+    {
+      "filename": "intl-iphones-gadgets-hero-01.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/hero",
+      "manifestId": "INTL-IPHONES_GADGETS-HERO-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (hero)",
+      "photoId": "1511707171634-5f897ff02aa9",
+      "photographer": "Neil Son",
+      "subject": "smartphone hero"
+    },
+    {
+      "filename": "intl-iphones-gadgets-hero-02.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/hero",
+      "manifestId": "INTL-IPHONES_GADGETS-HERO-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (hero)",
+      "photoId": "1557800636-894a64c1696f",
+      "photographer": "Unsplash contributor",
+      "subject": "phone hero (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-iphones-gadgets-hero-03.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/hero",
+      "manifestId": "INTL-IPHONES_GADGETS-HERO-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (hero)",
+      "photoId": "1504674900247-0877df9cc836",
+      "photographer": "Unsplash contributor",
+      "subject": "phone desk (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-iphones-gadgets-product-01.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/gallery",
+      "manifestId": "INTL-IPHONES_GADGETS-PRODUCT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (product)",
+      "photoId": "1556656793-08538906a9f8",
+      "photographer": "Tamas Pap",
+      "subject": "phones product"
+    },
+    {
+      "filename": "intl-iphones-gadgets-product-02.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/gallery",
+      "manifestId": "INTL-IPHONES_GADGETS-PRODUCT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (product)",
+      "photoId": "1601784551446-20c9e07cdbdb",
+      "photographer": "Daniel Korpai",
+      "subject": "gadgets"
+    },
+    {
+      "filename": "intl-iphones-gadgets-product-03.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/gallery",
+      "manifestId": "INTL-IPHONES_GADGETS-PRODUCT-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (product)",
+      "photoId": "1441986300917-64674bd600d8",
+      "photographer": "Unsplash contributor",
+      "subject": "audio gadgets (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-iphones-gadgets-product-04.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/gallery",
+      "manifestId": "INTL-IPHONES_GADGETS-PRODUCT-04",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (product)",
+      "photoId": "1523275335684-37898b6baf30",
+      "photographer": "Kiran CK",
+      "subject": "device"
+    },
+    {
+      "filename": "intl-iphones-gadgets-closeup-01.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/gallery",
+      "manifestId": "INTL-IPHONES_GADGETS-CLOSEUP-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (closeup)",
+      "photoId": "1516035069371-29a1b244cc32",
+      "photographer": "Vojtech Bruzek",
+      "subject": "camera closeup"
+    },
+    {
+      "filename": "intl-iphones-gadgets-closeup-02.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/gallery",
+      "manifestId": "INTL-IPHONES_GADGETS-CLOSEUP-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (closeup)",
+      "photoId": "1556740738-b6a63e27c4df",
+      "photographer": "Unsplash contributor",
+      "subject": "phone edge (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-iphones-gadgets-closeup-03.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/gallery",
+      "manifestId": "INTL-IPHONES_GADGETS-CLOSEUP-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (closeup)",
+      "photoId": "1580910051074-3eb694886505",
+      "photographer": "Do Nguyen",
+      "subject": "phone back"
+    },
+    {
+      "filename": "intl-iphones-gadgets-alt-01.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/gallery",
+      "manifestId": "INTL-IPHONES_GADGETS-ALT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (alt)",
+      "photoId": "1498049794561-7780e7231661",
+      "photographer": "Luca Bravo",
+      "subject": "desk tech"
+    },
+    {
+      "filename": "intl-iphones-gadgets-alt-02.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/gallery",
+      "manifestId": "INTL-IPHONES_GADGETS-ALT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (alt)",
+      "photoId": "1497366216548-37526070297c",
+      "photographer": "Unsplash contributor",
+      "subject": "tech alt (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-iphones-gadgets-alt-03.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/gallery",
+      "manifestId": "INTL-IPHONES_GADGETS-ALT-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (alt)",
+      "photoId": "1531297484001-80022131f5a1",
+      "photographer": "Ales Nesetril",
+      "subject": "laptop"
+    },
+    {
+      "filename": "intl-iphones-gadgets-context-01.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/context",
+      "manifestId": "INTL-IPHONES_GADGETS-CONTEXT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (context)",
+      "photoId": "1550009158-9ebf69173e03",
+      "photographer": "Nathan Dumlao",
+      "subject": "retail context"
+    },
+    {
+      "filename": "intl-iphones-gadgets-context-02.webp",
+      "folder": "apps/web/public/media/international/categories/iphones-gadgets/context",
+      "manifestId": "INTL-IPHONES_GADGETS-CONTEXT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for iPhones & Gadgets (context)",
+      "photoId": "1519389950473-47ba0277781c",
+      "photographer": "Marvin Meyer",
+      "subject": "workplace"
+    },
+    {
+      "filename": "intl-medical-equipments-hero-01.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/hero",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-HERO-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (hero)",
+      "photoId": "1576091160399-112ba8d25d1d",
+      "photographer": "National Cancer Institute",
+      "subject": "clinic"
+    },
+    {
+      "filename": "intl-medical-equipments-hero-02.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/hero",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-HERO-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (hero)",
+      "photoId": "1497366754035-f200968a6e72",
+      "photographer": "Unsplash contributor",
+      "subject": "medical (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-medical-equipments-hero-03.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/hero",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-HERO-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (hero)",
+      "photoId": "1631815588090-d4bfec5b1ccb",
+      "photographer": "Online Marketing",
+      "subject": "devices"
+    },
+    {
+      "filename": "intl-medical-equipments-product-01.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/gallery",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-PRODUCT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (product)",
+      "photoId": "1584982751601-97dcc096659c",
+      "photographer": "Owen Beard",
+      "subject": "equipment"
+    },
+    {
+      "filename": "intl-medical-equipments-product-02.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/gallery",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-PRODUCT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (product)",
+      "photoId": "1579684385127-1ef15d508118",
+      "photographer": "CDC",
+      "subject": "lab"
+    },
+    {
+      "filename": "intl-medical-equipments-product-03.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/gallery",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-PRODUCT-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (product)",
+      "photoId": "1666214280557-f1b5022eb634",
+      "photographer": "National Cancer Institute",
+      "subject": "monitor"
+    },
+    {
+      "filename": "intl-medical-equipments-product-04.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/gallery",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-PRODUCT-04",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (product)",
+      "photoId": "1579154204601-01588f351e67",
+      "photographer": "Owen Beard",
+      "subject": "supplies"
+    },
+    {
+      "filename": "intl-medical-equipments-closeup-01.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/gallery",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-CLOSEUP-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (closeup)",
+      "photoId": "1584308666744-24d5c474f2ae",
+      "photographer": "Christina Victoria Craft",
+      "subject": "detail"
+    },
+    {
+      "filename": "intl-medical-equipments-closeup-02.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/gallery",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-CLOSEUP-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (closeup)",
+      "photoId": "1556761175-5973dc0f32e7",
+      "photographer": "Unsplash contributor",
+      "subject": "instruments (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-medical-equipments-closeup-03.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/gallery",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-CLOSEUP-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (closeup)",
+      "photoId": "1600880292203-757bb62b4baf",
+      "photographer": "Unsplash contributor",
+      "subject": "tools (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-medical-equipments-alt-01.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/gallery",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-ALT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (alt)",
+      "photoId": "1530026405186-ed1f139313f8",
+      "photographer": "National Cancer Institute",
+      "subject": "care"
+    },
+    {
+      "filename": "intl-medical-equipments-alt-02.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/gallery",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-ALT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (alt)",
+      "photoId": "1573164713714-d95e436ab8d6",
+      "photographer": "Unsplash contributor",
+      "subject": "tools-alt-shared (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-medical-equipments-alt-03.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/gallery",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-ALT-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (alt)",
+      "photoId": "1585435557343-3b092031a831",
+      "photographer": "National Cancer Institute",
+      "subject": "stethoscope"
+    },
+    {
+      "filename": "intl-medical-equipments-context-01.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/context",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-CONTEXT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (context)",
+      "photoId": "1519494026892-80bbd2d6fd0d",
+      "photographer": "Hush Naidoo",
+      "subject": "hospital"
+    },
+    {
+      "filename": "intl-medical-equipments-context-02.webp",
+      "folder": "apps/web/public/media/international/categories/medical-equipments/context",
+      "manifestId": "INTL-MEDICAL_EQUIPMENTS-CONTEXT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Medical Equipments (context)",
+      "photoId": "1586773860418-d37222d8fce3",
+      "photographer": "Martha Dom",
+      "subject": "healthcare"
+    },
+    {
+      "filename": "intl-home-garden-wares-hero-01.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/hero",
+      "manifestId": "INTL-HOME_GARDEN_WARES-HERO-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (hero)",
+      "photoId": "1581092795360-fd1ca04f0952",
+      "photographer": "Unsplash contributor",
+      "subject": "plants (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-home-garden-wares-hero-02.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/hero",
+      "manifestId": "INTL-HOME_GARDEN_WARES-HERO-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (hero)",
+      "photoId": "1486406146926-c627a92ad1ab",
+      "photographer": "Unsplash contributor",
+      "subject": "tomato (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-home-garden-wares-hero-03.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/hero",
+      "manifestId": "INTL-HOME_GARDEN_WARES-HERO-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (hero)",
+      "photoId": "1416879595882-3373a0480b5b",
+      "photographer": "Markus Spiske",
+      "subject": "garden"
+    },
+    {
+      "filename": "intl-home-garden-wares-product-01.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/gallery",
+      "manifestId": "INTL-HOME_GARDEN_WARES-PRODUCT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (product)",
+      "photoId": "1497366811353-6870744d04b2",
+      "photographer": "Unsplash contributor",
+      "subject": "tools (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-home-garden-wares-product-02.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/gallery",
+      "manifestId": "INTL-HOME_GARDEN_WARES-PRODUCT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (product)",
+      "photoId": "1556910103-1c02745aae4d",
+      "photographer": "Unsplash contributor",
+      "subject": "pots (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-home-garden-wares-product-03.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/gallery",
+      "manifestId": "INTL-HOME_GARDEN_WARES-PRODUCT-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (product)",
+      "photoId": "1501004318641-b39e6451bec6",
+      "photographer": "Scott Webb",
+      "subject": "indoor"
+    },
+    {
+      "filename": "intl-home-garden-wares-product-04.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/gallery",
+      "manifestId": "INTL-HOME_GARDEN_WARES-PRODUCT-04",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (product)",
+      "photoId": "1487700160041-babef9c3cb55",
+      "photographer": "Annie Spratt",
+      "subject": "homewares"
+    },
+    {
+      "filename": "intl-home-garden-wares-closeup-01.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/gallery",
+      "manifestId": "INTL-HOME_GARDEN_WARES-CLOSEUP-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (closeup)",
+      "photoId": "1567620905732-2d1ec7ab7445",
+      "photographer": "Unsplash contributor",
+      "subject": "home detail (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-home-garden-wares-closeup-02.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/gallery",
+      "manifestId": "INTL-HOME_GARDEN_WARES-CLOSEUP-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (closeup)",
+      "photoId": "1512621776951-a57141f2eefd",
+      "photographer": "Unsplash contributor",
+      "subject": "greenery (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-home-garden-wares-closeup-03.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/gallery",
+      "manifestId": "INTL-HOME_GARDEN_WARES-CLOSEUP-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (closeup)",
+      "photoId": "1540420773420-3366772f4999",
+      "photographer": "Unsplash contributor",
+      "subject": "leaf (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-home-garden-wares-alt-01.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/gallery",
+      "manifestId": "INTL-HOME_GARDEN_WARES-ALT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (alt)",
+      "photoId": "1416879595882-3373a0480b5b",
+      "photographer": "Markus Spiske",
+      "subject": "garden-alt-shared"
+    },
+    {
+      "filename": "intl-home-garden-wares-alt-02.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/gallery",
+      "manifestId": "INTL-HOME_GARDEN_WARES-ALT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (alt)",
+      "photoId": "1501004318641-b39e6451bec6",
+      "photographer": "Scott Webb",
+      "subject": "indoor-shared"
+    },
+    {
+      "filename": "intl-home-garden-wares-alt-03.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/gallery",
+      "manifestId": "INTL-HOME_GARDEN_WARES-ALT-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (alt)",
+      "photoId": "1567620905732-2d1ec7ab7445",
+      "photographer": "Unsplash contributor",
+      "subject": "tomato-shared (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-home-garden-wares-context-01.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/context",
+      "manifestId": "INTL-HOME_GARDEN_WARES-CONTEXT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (context)",
+      "photoId": "1512621776951-a57141f2eefd",
+      "photographer": "Unsplash contributor",
+      "subject": "plants-shared (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-home-garden-wares-context-02.webp",
+      "folder": "apps/web/public/media/international/categories/home-garden-wares/context",
+      "manifestId": "INTL-HOME_GARDEN_WARES-CONTEXT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Home & Garden Wares (context)",
+      "photoId": "1540420773420-3366772f4999",
+      "photographer": "Unsplash contributor",
+      "subject": "pots-shared (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-machineries-hero-01.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/hero",
+      "manifestId": "INTL-MACHINERIES-HERO-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (hero)",
+      "photoId": "1565043666747-69f6646db940",
+      "photographer": "American Public Power Association",
+      "subject": "machinery"
+    },
+    {
+      "filename": "intl-machineries-hero-02.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/hero",
+      "manifestId": "INTL-MACHINERIES-HERO-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (hero)",
+      "photoId": "1546069901-ba9599a7e63c",
+      "photographer": "Unsplash contributor",
+      "subject": "industrial (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-machineries-hero-03.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/hero",
+      "manifestId": "INTL-MACHINERIES-HERO-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (hero)",
+      "photoId": "1581091226825-a6a2a5aee158",
+      "photographer": "ThisisEngineering",
+      "subject": "engineering"
+    },
+    {
+      "filename": "intl-machineries-product-01.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/gallery",
+      "manifestId": "INTL-MACHINERIES-PRODUCT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (product)",
+      "photoId": "1581092160562-40aa08e78837",
+      "photographer": "ThisisEngineering",
+      "subject": "equipment"
+    },
+    {
+      "filename": "intl-machineries-product-02.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/gallery",
+      "manifestId": "INTL-MACHINERIES-PRODUCT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (product)",
+      "photoId": "1581092918056-0c4c3acd3789",
+      "photographer": "ThisisEngineering",
+      "subject": "factory"
+    },
+    {
+      "filename": "intl-machineries-product-03.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/gallery",
+      "manifestId": "INTL-MACHINERIES-PRODUCT-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (product)",
+      "photoId": "1542838132-92c53300491e",
+      "photographer": "Unsplash contributor",
+      "subject": "skip (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-machineries-product-03.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/gallery",
+      "manifestId": "INTL-MACHINERIES-PRODUCT-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (product)",
+      "photoId": "1557800636-894a64c1696f",
+      "photographer": "Unsplash contributor",
+      "subject": "machine (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-machineries-product-04.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/gallery",
+      "manifestId": "INTL-MACHINERIES-PRODUCT-04",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (product)",
+      "photoId": "1565043666747-69f6646db940",
+      "photographer": "American Public Power Association",
+      "subject": "machinery-shared"
+    },
+    {
+      "filename": "intl-machineries-closeup-01.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/gallery",
+      "manifestId": "INTL-MACHINERIES-CLOSEUP-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (closeup)",
+      "photoId": "1581091226825-a6a2a5aee158",
+      "photographer": "ThisisEngineering",
+      "subject": "detail-shared"
+    },
+    {
+      "filename": "intl-machineries-closeup-02.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/gallery",
+      "manifestId": "INTL-MACHINERIES-CLOSEUP-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (closeup)",
+      "photoId": "1581092918056-0c4c3acd3789",
+      "photographer": "ThisisEngineering",
+      "subject": "metal"
+    },
+    {
+      "filename": "intl-machineries-closeup-03.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/gallery",
+      "manifestId": "INTL-MACHINERIES-CLOSEUP-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (closeup)",
+      "photoId": "1504674900247-0877df9cc836",
+      "photographer": "Unsplash contributor",
+      "subject": "industrial-detail (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-machineries-alt-01.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/gallery",
+      "manifestId": "INTL-MACHINERIES-ALT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (alt)",
+      "photoId": "1581092160562-40aa08e78837",
+      "photographer": "ThisisEngineering",
+      "subject": "alt equipment"
+    },
+    {
+      "filename": "intl-machineries-alt-02.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/gallery",
+      "manifestId": "INTL-MACHINERIES-ALT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (alt)",
+      "photoId": "1441986300917-64674bd600d8",
+      "photographer": "Unsplash contributor",
+      "subject": "alt machine (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-machineries-alt-03.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/gallery",
+      "manifestId": "INTL-MACHINERIES-ALT-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (alt)",
+      "photoId": "1565043666747-69f6646db940",
+      "photographer": "American Public Power Association",
+      "subject": "alt shared"
+    },
+    {
+      "filename": "intl-machineries-context-01.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/context",
+      "manifestId": "INTL-MACHINERIES-CONTEXT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (context)",
+      "photoId": "1556740738-b6a63e27c4df",
+      "photographer": "Unsplash contributor",
+      "subject": "factory context (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-machineries-context-02.webp",
+      "folder": "apps/web/public/media/international/categories/machineries/context",
+      "manifestId": "INTL-MACHINERIES-CONTEXT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for Machineries (context)",
+      "photoId": "1581091226825-a6a2a5aee158",
+      "photographer": "ThisisEngineering",
+      "subject": "shop floor"
+    },
+    {
+      "filename": "intl-general-procurement-hero-01.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/hero",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-HERO-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (hero)",
+      "photoId": "1586528116311-ad8dd3c8310d",
+      "photographer": "CHUTTERSNAP",
+      "subject": "warehouse"
+    },
+    {
+      "filename": "intl-general-procurement-hero-02.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/hero",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-HERO-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (hero)",
+      "photoId": "1553413077-190dd305871c",
+      "photographer": "CHUTTERSNAP",
+      "subject": "boxes"
+    },
+    {
+      "filename": "intl-general-procurement-hero-03.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/hero",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-HERO-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (hero)",
+      "photoId": "1566576912321-d58ddd7a6088",
+      "photographer": "CHUTTERSNAP",
+      "subject": "pallets"
+    },
+    {
+      "filename": "intl-general-procurement-product-01.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/gallery",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-PRODUCT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (product)",
+      "photoId": "1553413077-190dd305871c",
+      "photographer": "CHUTTERSNAP",
+      "subject": "goods"
+    },
+    {
+      "filename": "intl-general-procurement-product-02.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/gallery",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-PRODUCT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (product)",
+      "photoId": "1586528116311-ad8dd3c8310d",
+      "photographer": "CHUTTERSNAP",
+      "subject": "aisle"
+    },
+    {
+      "filename": "intl-general-procurement-product-03.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/gallery",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-PRODUCT-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (product)",
+      "photoId": "1578575437130-527eed3abbec",
+      "photographer": "chuttersnap",
+      "subject": "containers"
+    },
+    {
+      "filename": "intl-general-procurement-product-04.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/gallery",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-PRODUCT-04",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (product)",
+      "photoId": "1566576912321-d58ddd7a6088",
+      "photographer": "CHUTTERSNAP",
+      "subject": "stacked"
+    },
+    {
+      "filename": "intl-general-procurement-closeup-01.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/gallery",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-CLOSEUP-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (closeup)",
+      "photoId": "1566576721346-d4a3b4eaeb55",
+      "photographer": "CHUTTERSNAP",
+      "subject": "carton"
+    },
+    {
+      "filename": "intl-general-procurement-closeup-02.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/gallery",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-CLOSEUP-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (closeup)",
+      "photoId": "1553413077-190dd305871c",
+      "photographer": "CHUTTERSNAP",
+      "subject": "packaging"
+    },
+    {
+      "filename": "intl-general-procurement-closeup-03.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/gallery",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-CLOSEUP-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (closeup)",
+      "photoId": "1586528116311-ad8dd3c8310d",
+      "photographer": "CHUTTERSNAP",
+      "subject": "shelf"
+    },
+    {
+      "filename": "intl-general-procurement-alt-01.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/gallery",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-ALT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (alt)",
+      "photoId": "1494412574643-ff11b0a5c1c3",
+      "photographer": "Louis Reed",
+      "subject": "ship"
+    },
+    {
+      "filename": "intl-general-procurement-alt-02.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/gallery",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-ALT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (alt)",
+      "photoId": "1566576721346-d4a3b4eaeb55",
+      "photographer": "Unsplash contributor",
+      "subject": "port (remapped verified Unsplash id)"
+    },
+    {
+      "filename": "intl-general-procurement-alt-03.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/gallery",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-ALT-03",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (alt)",
+      "photoId": "1566576912321-d58ddd7a6088",
+      "photographer": "CHUTTERSNAP",
+      "subject": "pallets-alt"
+    },
+    {
+      "filename": "intl-general-procurement-context-01.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/context",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-CONTEXT-01",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (context)",
+      "photoId": "1586528116311-ad8dd3c8310d",
+      "photographer": "CHUTTERSNAP",
+      "subject": "warehouse context"
+    },
+    {
+      "filename": "intl-general-procurement-context-02.webp",
+      "folder": "apps/web/public/media/international/categories/general-procurement/context",
+      "manifestId": "INTL-GENERAL_PROCUREMENT-CONTEXT-02",
+      "authenticity": "representative",
+      "alt": "Representative imagery for General Procurement (context)",
+      "photoId": "1578575437130-527eed3abbec",
+      "photographer": "chuttersnap",
+      "subject": "logistics context"
+    }
+  ]
+}

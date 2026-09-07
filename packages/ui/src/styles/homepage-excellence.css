@@ -1,0 +1,420 @@
+/**
+ * Homepage UX/UI Excellence Pass - refinement layer only.
+ * Principles applied (not layouts copied): Stripe clarity, Linear density control,
+ * Notion calm surfaces, Vercel CTA focus, Apple type hierarchy, Atlassian a11y.
+ * Scoped under .hamd-public-frame so @hamd/ui remains the composition source.
+ */
+
+/* --- Foundation --- */
+
+html {
+  scroll-behavior: smooth;
+  hanging-punctuation: first last;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+.hamd-public-frame {
+  background: var(--hamd-color-canvas, #f9fafb);
+  color: var(--hamd-color-text, #101828);
+  --hamd-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --hamd-ease: cubic-bezier(0.2, 0, 0, 1);
+  --hamd-shadow-card: 0 1px 2px rgb(16 24 40 / 0.04),
+    0 8px 24px -12px rgb(16 24 40 / 0.12);
+  --hamd-shadow-card-hover: 0 1px 2px rgb(16 24 40 / 0.05),
+    0 16px 32px -12px rgb(16 24 40 / 0.18);
+  /* Offset for fixed portal navbars when the global strip is mounted. */
+  --hamd-pin-banner: 0px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.hamd-public-frame:has(> .hamd-announcement-slider) {
+  --hamd-pin-banner: clamp(2.35rem, 3.6vh, 2.85rem);
+}
+
+.hamd-public-frame:has(> .hamd-announcement-slider .hamd-announcement-slider__message) {
+  --hamd-pin-banner: clamp(2.65rem, 4vh, 3.15rem);
+}
+
+.hamd-public-frame ::selection {
+  background: color-mix(in srgb, var(--hamd-color-action, #155aaf) 28%, transparent);
+  color: var(--hamd-color-text, #101828);
+}
+
+[data-theme="dark"] .hamd-public-frame {
+  background: var(--hamd-color-canvas, #101828);
+  color: var(--hamd-color-text, #f9fafb);
+}
+
+[data-theme="dark"] .hamd-public-frame ::selection {
+  color: #f9fafb;
+}
+
+/* Prefer Inter when available; keep system fallback for performance */
+.hamd-public-frame,
+.hamd-public-frame .hamd-homepage,
+.hamd-public-frame .hamd-header,
+.hamd-public-frame .hamd-footer {
+  font-family:
+    Inter,
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  font-feature-settings: "ss01" on, "cv11" on;
+}
+
+/* --- Typography hierarchy --- */
+
+.hamd-public-frame .hamd-hero__headline {
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  max-width: 14ch;
+  text-wrap: balance;
+}
+
+.hamd-public-frame .hamd-hero__support {
+  max-width: 36rem;
+  color: color-mix(in srgb, #f9fafb 86%, transparent);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.hamd-public-frame .hamd-hero__brand-name {
+  letter-spacing: -0.01em;
+}
+
+.hamd-public-frame .hamd-section__title {
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+  max-width: 22ch;
+}
+
+.hamd-public-frame .hamd-section__description {
+  max-width: 40rem;
+  line-height: 1.65;
+  color: var(--hamd-color-text-secondary, #344054);
+  text-wrap: pretty;
+}
+
+.hamd-public-frame .hamd-section__header {
+  margin-bottom: clamp(2rem, 4vw, 3rem);
+}
+
+/* --- Section rhythm & balance --- */
+
+.hamd-public-frame .hamd-section--default {
+  padding-block: clamp(4rem, 8vw, 6rem);
+}
+
+.hamd-public-frame .hamd-section--spacious {
+  padding-block: clamp(5rem, 10vw, 7.5rem);
+}
+
+.hamd-public-frame .hamd-section--compact {
+  padding-block: clamp(3rem, 6vw, 4.5rem);
+}
+
+.hamd-public-frame .hamd-homepage__main > * + * {
+  scroll-margin-top: 5.5rem;
+}
+
+/* --- Sticky navigation seamlessness --- */
+
+.hamd-public-frame .hamd-header {
+  transition:
+    background-color 180ms var(--hamd-ease),
+    border-color 180ms var(--hamd-ease),
+    box-shadow 180ms var(--hamd-ease),
+    color 180ms var(--hamd-ease);
+}
+
+.hamd-public-frame .hamd-header--solid {
+  box-shadow: 0 1px 0 rgb(16 24 40 / 0.04);
+}
+
+.hamd-public-frame .hamd-header__nav-link,
+.hamd-public-frame .hamd-header__nav-trigger {
+  border-radius: 6px;
+  transition:
+    background-color 120ms var(--hamd-ease),
+    color 120ms var(--hamd-ease);
+}
+
+.hamd-public-frame .hamd-header--solid .hamd-header__nav-link:hover,
+.hamd-public-frame .hamd-header--solid .hamd-header__nav-trigger:hover {
+  background: color-mix(in srgb, var(--hamd-color-action) 8%, transparent);
+}
+
+.hamd-public-frame .hamd-header--transparent .hamd-header__nav-link:hover,
+.hamd-public-frame .hamd-header--transparent .hamd-header__nav-trigger:hover {
+  background: color-mix(in srgb, #fff 12%, transparent);
+}
+
+.hamd-public-frame .hamd-header__brand {
+  transition: opacity 120ms var(--hamd-ease);
+}
+
+.hamd-public-frame .hamd-header__brand:hover {
+  opacity: 0.88;
+}
+
+/* --- Buttons & CTAs --- */
+
+.hamd-public-frame .hamd-btn {
+  transition:
+    background-color 160ms var(--hamd-ease),
+    border-color 160ms var(--hamd-ease),
+    color 160ms var(--hamd-ease),
+    box-shadow 160ms var(--hamd-ease-out);
+}
+
+.hamd-public-frame .hamd-btn--primary {
+  box-shadow: 0 1px 2px rgb(11 31 58 / 0.1);
+}
+
+.hamd-public-frame .hamd-btn--primary:hover {
+  box-shadow: 0 1px 2px rgb(11 31 58 / 0.14);
+}
+
+.hamd-public-frame .hamd-btn--primary:active {
+  box-shadow: none;
+}
+
+.hamd-public-frame .hamd-btn--secondary:hover,
+.hamd-public-frame .hamd-btn--secondary:active {
+  border-color: var(--hamd-btn-secondary-border, var(--hamd-color-border));
+  background: var(--hamd-btn-secondary-hover-bg);
+  color: var(--hamd-btn-secondary-hover-text);
+}
+
+.hamd-public-frame .hamd-hero__cta-primary.hamd-btn--primary {
+  min-height: 48px;
+  padding-inline: 1.35rem;
+  font-weight: 600;
+}
+
+.hamd-public-frame .hamd-hero__cta-row {
+  gap: 0.75rem;
+}
+
+.hamd-public-frame .hamd-hero__tertiary {
+  transition: color 120ms var(--hamd-ease), opacity 120ms var(--hamd-ease);
+  text-underline-offset: 0.2em;
+}
+
+.hamd-public-frame .hamd-btn:focus-visible,
+.hamd-public-frame a:focus-visible,
+.hamd-public-frame button:focus-visible,
+.hamd-public-frame input:focus-visible,
+.hamd-public-frame select:focus-visible,
+.hamd-public-frame summary:focus-visible {
+  outline: 2px solid var(--hamd-color-action, #155aaf);
+  outline-offset: 2px;
+}
+
+.hamd-public-frame .hamd-hero .hamd-btn:focus-visible,
+.hamd-public-frame .hamd-hero a:focus-visible,
+.hamd-public-frame .hamd-hero button:focus-visible {
+  outline-color: #53b1fd;
+}
+
+/* --- Cards --- */
+
+.hamd-public-frame .hamd-categories__card,
+.hamd-public-frame .hamd-industries__card,
+.hamd-public-frame .hamd-products__card,
+.hamd-public-frame .hamd-trust__indicator {
+  transition:
+    border-color 160ms var(--hamd-ease),
+    background-color 160ms var(--hamd-ease),
+    box-shadow 200ms var(--hamd-ease-out),
+    transform 200ms var(--hamd-ease-out);
+}
+
+.hamd-public-frame .hamd-services__card {
+  transition:
+    border-color 160ms var(--hamd-ease),
+    background-color 160ms var(--hamd-ease);
+}
+
+.hamd-public-frame .hamd-categories__card:hover,
+.hamd-public-frame .hamd-industries__card:hover,
+.hamd-public-frame .hamd-products__card:hover {
+  background: var(--hamd-color-surface);
+  color: inherit;
+  border-color: color-mix(in srgb, var(--hamd-color-action) 55%, var(--hamd-color-border));
+  box-shadow: var(--hamd-shadow-card);
+}
+
+.hamd-public-frame .hamd-services__card:hover {
+  background: var(--hamd-color-surface-subtle, #f9fafb);
+  color: var(--hamd-color-text, #101828);
+  border-color: color-mix(in srgb, var(--hamd-color-action) 50%, var(--hamd-color-border));
+  box-shadow: none;
+  transform: none;
+}
+
+html[data-theme="dark"] .hamd-public-frame .hamd-services__card:hover {
+  background: color-mix(in srgb, var(--hamd-color-surface, #182230) 86%, #fff);
+  color: var(--hamd-color-text, #f9fafb);
+}
+
+.hamd-public-frame .hamd-categories__card:active,
+.hamd-public-frame .hamd-industries__card:active {
+  transform: translateY(0);
+  box-shadow: var(--hamd-shadow-card);
+}
+
+.hamd-public-frame .hamd-industries__cta {
+  transition: color 120ms var(--hamd-ease), transform 120ms var(--hamd-ease);
+}
+
+.hamd-public-frame .hamd-industries__card:hover .hamd-industries__cta {
+  transform: translateX(2px);
+}
+
+.hamd-public-frame .hamd-trust__indicator {
+  box-shadow: var(--hamd-shadow-card);
+}
+
+/* --- FAQ accordion --- */
+
+.hamd-public-frame .hamd-faq__trigger {
+  transition: background-color 120ms var(--hamd-ease), color 120ms var(--hamd-ease);
+  border-radius: 6px;
+}
+
+.hamd-public-frame .hamd-faq__trigger:hover {
+  background: color-mix(in srgb, var(--hamd-color-action) 6%, transparent);
+}
+
+.hamd-public-frame .hamd-faq__panel {
+  transition: opacity 180ms var(--hamd-ease);
+}
+
+/* --- Forms / newsletter --- */
+
+.hamd-public-frame .hamd-newsletter__input {
+  transition:
+    border-color 120ms var(--hamd-ease),
+    box-shadow 160ms var(--hamd-ease);
+}
+
+.hamd-public-frame .hamd-newsletter__input:hover {
+  border-color: color-mix(in srgb, var(--hamd-color-action) 40%, var(--hamd-color-border));
+}
+
+.hamd-public-frame .hamd-newsletter__input:focus-visible {
+  border-color: var(--hamd-color-action);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--hamd-color-action) 22%, transparent);
+  outline: none;
+}
+
+.hamd-public-frame .hamd-newsletter__submit {
+  background: var(--hamd-color-action);
+  border-color: transparent;
+  color: #fff;
+  transition:
+    background-color 120ms var(--hamd-ease),
+    transform 120ms var(--hamd-ease),
+    box-shadow 160ms var(--hamd-ease);
+}
+
+.hamd-public-frame .hamd-newsletter__submit:hover {
+  background: var(--hamd-color-action-hover);
+  color: #fff;
+  box-shadow: 0 4px 12px -4px rgb(21 90 175 / 0.5);
+}
+
+.hamd-public-frame .hamd-newsletter__submit:active {
+  transform: translateY(1px);
+}
+
+.hamd-public-frame .hamd-newsletter__submit:disabled {
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+/* --- Footer --- */
+
+.hamd-public-frame .hamd-footer a {
+  text-underline-offset: 0.18em;
+  transition: color 120ms var(--hamd-ease), opacity 120ms var(--hamd-ease);
+}
+
+.hamd-public-frame .hamd-footer a:hover {
+  color: var(--hamd-color-action);
+}
+
+/* --- Hero search --- */
+
+.hamd-public-frame .hamd-hero__search-input,
+.hamd-public-frame .hamd-header__search-input {
+  transition:
+    border-color 120ms var(--hamd-ease),
+    box-shadow 160ms var(--hamd-ease),
+    background-color 120ms var(--hamd-ease);
+}
+
+.hamd-public-frame .hamd-header__search-input:focus-visible {
+  outline: 2px solid var(--hamd-color-action);
+  outline-offset: 2px;
+}
+
+/* --- CTA band --- */
+
+.hamd-public-frame .hamd-section--cta .hamd-section__title {
+  max-width: 22rem;
+}
+
+.hamd-public-frame .hamd-cta__reassurance {
+  max-width: 36rem;
+  line-height: 1.55;
+  color: var(--hamd-color-text-secondary);
+}
+
+/* --- Large displays --- */
+
+@media (min-width: 1440px) {
+  .hamd-public-frame .hamd-hero__copy {
+    max-width: 44rem;
+  }
+
+  .hamd-public-frame .hamd-hero__headline {
+    font-size: clamp(2.75rem, 3.2vw, 3.5rem);
+  }
+}
+
+/* --- Motion budget --- */
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-public-frame .hamd-btn,
+  .hamd-public-frame .hamd-services__card,
+  .hamd-public-frame .hamd-categories__card,
+  .hamd-public-frame .hamd-industries__card,
+  .hamd-public-frame .hamd-products__card,
+  .hamd-public-frame .hamd-trust__indicator,
+  .hamd-public-frame .hamd-industries__cta,
+  .hamd-public-frame .hamd-newsletter__submit {
+    transition: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .hamd-public-frame .hamd-services__card:hover,
+  .hamd-public-frame .hamd-categories__card:hover,
+  .hamd-public-frame .hamd-industries__card:hover,
+  .hamd-public-frame .hamd-products__card:hover {
+    transform: none;
+  }
+}

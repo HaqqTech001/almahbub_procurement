@@ -1,4 +1,4 @@
-/** Shared upload acceptance policy — V1 request attachment parity + safer defaults. */
+/** Shared upload acceptance policy - V1 request attachment parity + safer defaults. */
 
 export const uploadSecurityPolicy = {
   /** Absolute max object size accepted by API/gateway (bytes). V1 request uploads: 10MB. */
@@ -24,6 +24,30 @@ export const uploadSecurityPolicy = {
   requireMalwareScan: false,
 } as const;
 
+/** V1 announcement uploads: images and video only, max 3 files. */
+export const announcementUploadPolicy = {
+  ...uploadSecurityPolicy,
+  maxFilesPerRequest: 3,
+  allowedMimeTypes: [
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "video/mp4",
+    "video/quicktime",
+    "video/x-msvideo",
+  ],
+} as const;
+
+export type UploadSecurityPolicy = {
+  maxBytes: number;
+  maxFilesPerRequest: number;
+  allowedMimeTypes: readonly string[];
+  filenamePattern: RegExp;
+  storage: "local-disk";
+  requireMalwareScan: boolean;
+};
+
 export type UploadValidationInput = {
   filename: string;
   mimeType: string;
@@ -47,7 +71,7 @@ export function sanitizeUploadFilename(filename: string): string {
 
 export function validateUploadCandidate(
   input: UploadValidationInput,
-  policy = uploadSecurityPolicy,
+  policy: UploadSecurityPolicy = uploadSecurityPolicy,
 ): UploadValidationIssue[] {
   const issues: UploadValidationIssue[] = [];
   if (input.sizeBytes <= 0 || input.sizeBytes > policy.maxBytes) {

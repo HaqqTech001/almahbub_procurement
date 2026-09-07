@@ -1,0 +1,50 @@
+{
+  "source": "Owner instruction 2026-08-17: Approve all seven: Sesame Seeds, Cashew, Ginger, Hibiscus, Shea, Soybean and Cocoa",
+  "approvedForPublication": false,
+  "published": false,
+  "notes": "Draft Ops CMS rows only. Name and slug are owner-approved. Do not invent specifications, markets, certifications, prices, quantities, destinations, or media.",
+  "commodities": [
+    {
+      "id": "0190c8a0-1000-7000-8000-00000000e001",
+      "slug": "sesame-seeds",
+      "name": "Sesame Seeds",
+      "sortOrder": 10
+    },
+    {
+      "id": "0190c8a0-1000-7000-8000-00000000e002",
+      "slug": "cashew",
+      "name": "Cashew",
+      "sortOrder": 20
+    },
+    {
+      "id": "0190c8a0-1000-7000-8000-00000000e003",
+      "slug": "ginger",
+      "name": "Ginger",
+      "sortOrder": 30
+    },
+    {
+      "id": "0190c8a0-1000-7000-8000-00000000e004",
+      "slug": "hibiscus",
+      "name": "Hibiscus",
+      "sortOrder": 40
+    },
+    {
+      "id": "0190c8a0-1000-7000-8000-00000000e005",
+      "slug": "shea",
+      "name": "Shea",
+      "sortOrder": 50
+    },
+    {
+      "id": "0190c8a0-1000-7000-8000-00000000e006",
+      "slug": "soybean",
+      "name": "Soybean",
+      "sortOrder": 60
+    },
+    {
+      "id": "0190c8a0-1000-7000-8000-00000000e007",
+      "slug": "cocoa",
+      "name": "Cocoa",
+      "sortOrder": 70
+    }
+  ]
+}

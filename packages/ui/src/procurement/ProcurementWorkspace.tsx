@@ -38,6 +38,7 @@ export type ProcurementWorkspaceProps = {
   createHref?: string | undefined;
   onCreate?: (() => void) | undefined;
   onDuplicate?: ((request: ProcurementRequestRecord) => void) | undefined;
+  onDelete?: ((request: ProcurementRequestRecord) => void | Promise<void>) | undefined;
   onSelect?: ((request: ProcurementRequestRecord) => void) | undefined;
   onTransition?: ((
     requestId: string,
@@ -102,6 +103,7 @@ export function ProcurementWorkspace({
   createHref,
   onCreate,
   onDuplicate,
+  onDelete,
   onSelect,
   onTransition,
   onAutosave,
@@ -120,6 +122,7 @@ export function ProcurementWorkspace({
   const [toast, setToast] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
 
   const directory = useProcurementDirectory(requests);
   const selected = directory.selected;
@@ -182,7 +185,12 @@ export function ProcurementWorkspace({
         </div>
         <div className="hamd-pr__header-actions">
           {createHref ? (
-            <a className="hamd-btn hamd-btn--primary" href={createHref}>
+            <a
+              className="hamd-btn hamd-btn--primary"
+              href={createHref}
+              data-tour="create-request"
+              data-guide="create-request"
+            >
               New request
             </a>
           ) : null}
@@ -190,6 +198,8 @@ export function ProcurementWorkspace({
             <button
               type="button"
               className="hamd-btn hamd-btn--primary"
+              data-tour={createHref ? undefined : "create-request"}
+              data-guide={createHref ? undefined : "create-request"}
               onClick={onCreate}
             >
               New request
@@ -261,7 +271,13 @@ export function ProcurementWorkspace({
             </label>
           </div>
 
-          <ul className="hamd-pr-list" role="list" aria-label="Requests">
+          <ul
+            className="hamd-pr-list"
+            role="list"
+            aria-label="Requests"
+            data-tour="request-list"
+            data-guide="request-list"
+          >
             {directory.page.items.map((row) => {
               const active = selected?.id === row.id;
               return (
@@ -397,15 +413,54 @@ export function ProcurementWorkspace({
                 </div>
               ) : null}
 
-              {onDuplicate ? (
+              {onDuplicate || onDelete ? (
                 <div className="hamd-pr-actions">
-                  <button
-                    type="button"
-                    className="hamd-pr-btn"
-                    onClick={() => onDuplicate(selected)}
-                  >
-                    Duplicate request
-                  </button>
+                  {onDuplicate ? (
+                    <button
+                      type="button"
+                      className="hamd-pr-btn"
+                      onClick={() => onDuplicate(selected)}
+                    >
+                      Duplicate request
+                    </button>
+                  ) : null}
+                  {onDelete && selected.status === "draft" ? (
+                    pendingDeleteId === selected.id ? (
+                      <>
+                        <p className="hamd-pr-reason" role="status">
+                          Delete this draft? It will be removed from your list.
+                        </p>
+                        <button
+                          type="button"
+                          className="hamd-pr-btn hamd-pr-btn--danger"
+                          onClick={() => {
+                            setPendingDeleteId(null);
+                            void run(
+                              () => onDelete(selected),
+                              "Request deleted",
+                            );
+                          }}
+                        >
+                          Confirm delete
+                        </button>
+                        <button
+                          type="button"
+                          className="hamd-pr-btn"
+                          onClick={() => setPendingDeleteId(null)}
+                        >
+                          Keep request
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        type="button"
+                        className="hamd-pr-btn hamd-pr-btn--danger"
+                        onClick={() => setPendingDeleteId(selected.id)}
+                      >
+                        Delete request
+                      </button>
+                    )
+                  ) : null}
                 </div>
               ) : null}
 
@@ -502,7 +557,7 @@ export function ProcurementWorkspace({
                         <div>
                           <dt>Destination</dt>
                           <dd>
-                            {selected.destinationCountryCode || "—"}
+                            {selected.destinationCountryCode || "-"}
                             {selected.destinationAddress
                               ? ` · ${selected.destinationAddress}`
                               : ""}
@@ -513,12 +568,12 @@ export function ProcurementWorkspace({
                           <dd>
                             {selected.budgetAmount != null
                               ? `${selected.currencyCode} ${selected.budgetAmount.toLocaleString()}`
-                              : "—"}
+                              : "-"}
                           </dd>
                         </div>
                         <div>
                           <dt>Notes</dt>
-                          <dd>{selected.notes || "—"}</dd>
+                          <dd>{selected.notes || "-"}</dd>
                         </div>
                       </dl>
                     )}

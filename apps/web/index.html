@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0B1F3A" />
+    <meta
+      name="description"
+      content="Procure globally with a Nigerian partner accountable for every next step."
+    />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:site_name" content="Almahbub International" />
+    <meta property="og:locale" content="en_NG" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Almahbub International | Global procurement. Local accountability."
+    />
+    <meta
+      property="og:description"
+      content="Procure globally with a Nigerian partner accountable for every next step."
+    />
+    <meta property="og:url" content="https://almahbub.com/" />
+    <meta property="og:image" content="https://almahbub.com/og-default.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Almahbub International | Global procurement. Local accountability."
+    />
+    <meta
+      name="twitter:description"
+      content="Procure globally with a Nigerian partner accountable for every next step."
+    />
+    <meta name="twitter:image" content="https://almahbub.com/og-default.svg" />
+    <link rel="canonical" href="https://almahbub.com/" />
+    <link rel="icon" type="image/svg+xml" href="/almahbub.svg" />
+    <link rel="apple-touch-icon" href="/almahbub.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <title>Almahbub International | Global procurement. Local accountability.</title>
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("hamd.web.theme");
+          var theme =
+            stored === "light" || stored === "dark" || stored === "system"
+              ? stored
+              : "system";
+          var resolved =
+            theme === "light" || theme === "dark"
+              ? theme
+              : window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
+          document.documentElement.dataset.theme = resolved;
+          document.documentElement.style.colorScheme = resolved;
+        } catch (e) {
+          /* ignore */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

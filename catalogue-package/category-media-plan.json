@@ -1,0 +1,92 @@
+[
+  {
+    "categoryId": "0190c8a0-1000-7000-8000-000000000001",
+    "categorySlug": "iphones-gadgets",
+    "categoryName": "Electronics, Mobile & Digital Technology",
+    "filename": "electronics-mobile-digital-technology-category.webp",
+    "altText": "Commercial arrangement of smartphones, laptops, networking devices and digital accessories for procurement",
+    "generationPrompt": "Premium commercial procurement photograph, clean studio-style arrangement of modern smartphones, tablet, laptop, monitor, wireless router, power bank and digital accessories, no visible brand logos, no people, no text, neutral sophisticated background, balanced product-focused composition, realistic materials, high detail, suitable for a professional procurement website category card, landscape 4:3 composition.",
+    "status": "planned"
+  },
+  {
+    "categoryId": "0190c8a0-1000-7000-8000-000000000002",
+    "categorySlug": "medical-equipments",
+    "categoryName": "Medical, Healthcare & Laboratory Equipment",
+    "filename": "medical-healthcare-laboratory-equipment-category.webp",
+    "altText": "Healthcare and laboratory equipment arranged in a clean professional procurement setting",
+    "generationPrompt": "Premium commercial procurement photograph of healthcare and laboratory equipment in a clean modern equipment showroom, patient monitor, examination light, laboratory microscope, centrifuge, stainless medical trolley and diagnostic equipment, no patients, no staff, no logos, no text, accurate realistic equipment, bright controlled professional lighting, landscape 4:3.",
+    "status": "planned"
+  },
+  {
+    "categoryId": "0190c8a0-1000-7000-8000-000000000003",
+    "categorySlug": "home-garden-wares",
+    "categoryName": "Home, Garden & Facility Supplies",
+    "filename": "home-garden-facility-supplies-category.webp",
+    "altText": "Home, garden and facility equipment arranged in a modern commercial environment",
+    "generationPrompt": "Premium realistic commercial procurement scene combining tasteful home furniture, shelving, modern lighting, garden tools, pressure washer, cleaning trolley and facility supplies, carefully arranged like a professional product showroom, no people, no logos, no text, natural neutral palette, landscape 4:3.",
+    "status": "planned"
+  },
+  {
+    "categoryId": "0190c8a0-1000-7000-8000-000000000004",
+    "categorySlug": "machineries",
+    "categoryName": "Industrial Machinery, Tools & Processing Equipment",
+    "filename": "industrial-machinery-tools-processing-equipment-category.webp",
+    "altText": "Industrial machines, workshop tools and processing equipment in a professional procurement display",
+    "generationPrompt": "Premium industrial procurement photograph inside a clean modern workshop showroom, silent diesel generator, air compressor, welding machine, drill press, material trolley and compact processing equipment arranged professionally, no workers, no logos, no text, realistic scale and materials, dramatic but clean commercial lighting, landscape 4:3.",
+    "status": "planned"
+  },
+  {
+    "categoryId": "0190c8a0-1000-7000-8000-000000000005",
+    "categorySlug": "general-procurement",
+    "categoryName": "General Procurement & Custom Sourcing",
+    "filename": "general-procurement-custom-sourcing-category.webp",
+    "altText": "Assorted professional procurement supplies, packaging, safety items and business materials",
+    "generationPrompt": "Premium commercial procurement flat-lay and showroom composition of organised business supplies, stationery, packaging cartons, labels, safety equipment, maintenance tools, electrical consumables and corporate supply boxes, no people, no logos, no text, clean high-end procurement aesthetic, landscape 4:3.",
+    "status": "planned"
+  },
+  {
+    "categoryId": "0190c8c0-1000-7000-8000-000000000001",
+    "categorySlug": "home-appliances",
+    "categoryName": "Home Appliances & Living Equipment",
+    "filename": "home-appliances-living-equipment-category.webp",
+    "altText": "Modern refrigeration, laundry, kitchen and household appliances arranged for procurement",
+    "generationPrompt": "Premium realistic appliance showroom photograph with refrigerator, chest freezer, washing machine, air conditioner, television, microwave and small kitchen appliances arranged cleanly, no visible brands, no people, no text, sophisticated commercial showroom lighting, landscape 4:3.",
+    "status": "planned"
+  },
+  {
+    "categoryId": "0190c8c0-1000-7000-8000-000000000002",
+    "categorySlug": "office-business",
+    "categoryName": "Office, Business & Commercial Technology",
+    "filename": "office-business-commercial-technology-category.webp",
+    "altText": "Professional office furniture, point-of-sale equipment and commercial technology",
+    "generationPrompt": "Premium modern business procurement scene with ergonomic office chair, desk workstation, point-of-sale terminal, receipt printer, conference camera, interactive display and UPS, professional clean workspace, no people, no logos, no text, realistic commercial styling, landscape 4:3.",
+    "status": "planned"
+  },
+  {
+    "categoryId": "0190c8c0-1000-7000-8000-000000000003",
+    "categorySlug": "fashion-textiles",
+    "categoryName": "Fashion, Textiles, Uniforms & Accessories",
+    "filename": "fashion-textiles-uniforms-accessories-category.webp",
+    "altText": "Professional display of fabrics, uniforms, footwear and fashion accessories for procurement",
+    "generationPrompt": "Premium textile and uniform procurement showroom composition, neatly arranged fabric rolls, folded textiles, corporate uniform garments, workwear, safety footwear and business bags, no models, no people, no logos, no text, rich realistic fabric textures, elegant commercial presentation, landscape 4:3.",
+    "status": "planned"
+  },
+  {
+    "categoryId": "0190c8c0-1000-7000-8000-000000000004",
+    "categorySlug": "beauty-spa-salon",
+    "categoryName": "Beauty, Salon & Spa Equipment",
+    "filename": "beauty-salon-spa-equipment-category.webp",
+    "altText": "Professional salon and spa chairs, mirrors, hair tools and beauty equipment",
+    "generationPrompt": "Premium salon and spa equipment showroom, hydraulic styling chair, barber chair, shampoo station, illuminated salon mirror, hood dryer, manicure table and spa equipment, no customers, no staff, no logos, no text, refined professional interior, landscape 4:3.",
+    "status": "planned"
+  },
+  {
+    "categoryId": "0190c8c0-1000-7000-8000-000000000005",
+    "categorySlug": "retail-store-setup",
+    "categoryName": "Retail, Store Setup & Merchandising Equipment",
+    "filename": "retail-store-setup-merchandising-equipment-category.webp",
+    "altText": "Retail shelving, checkout counters, display racks and merchandising equipment in a modern store",
+    "generationPrompt": "Premium modern retail-store setup photograph featuring gondola shelving, display racks, checkout counter, POS terminal, refrigerated display, baskets and stockroom rack, empty clean store without people, no brand logos, no text, professional commercial design, landscape 4:3.",
+    "status": "planned"
+  }
+]

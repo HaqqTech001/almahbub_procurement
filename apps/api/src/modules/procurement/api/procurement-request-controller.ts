@@ -4,12 +4,17 @@ import {
   archiveProcurementRequestSchema,
   assignProcurementRequestSchema,
   createProcurementRequestSchema,
+  getProcurementRequestQuerySchema,
   listProcurementRequestsSchema,
   procurementRequestIdSchema,
   transitionProcurementRequestSchema,
   updateProcurementRequestSchema,
 } from "./procurement-request-schemas.js";
 import type { ProcurementRequestService } from "../application/procurement-request-service.js";
+import {
+  procurementRequestAudience,
+  serializeProcurementRequest,
+} from "./procurement-request-serialize.js";
 
 export class ProcurementRequestController {
   public constructor(private readonly service: ProcurementRequestService) {}
@@ -22,7 +27,9 @@ export class ProcurementRequestController {
         input,
         correlationId(response),
       );
-      response.status(201).json({ data: serialize(created) });
+      response.status(201).json({
+        data: serialize(created, requireAuth(request)),
+      });
     } catch (error) {
       next(error);
     }
@@ -34,7 +41,9 @@ export class ProcurementRequestController {
       const requests = await this.service.list(requireAuth(request), input);
       const hasMore = requests.length > input.pageSize;
       response.json({
-        data: requests.slice(0, input.pageSize).map(serialize),
+        data: requests
+          .slice(0, input.pageSize)
+          .map((row) => serialize(row, requireAuth(request))),
         page: { hasMore, nextCursor: null },
       });
     } catch (error) {
@@ -47,11 +56,16 @@ export class ProcurementRequestController {
       const { requestId: id } = procurementRequestIdSchema.parse(
         request.params,
       );
+      const { lob } = getProcurementRequestQuerySchema.parse(request.query);
       const procurementRequest = await this.service.get(
         requireAuth(request),
         id,
+        false,
+        lob,
       );
-      response.json({ data: serialize(procurementRequest) });
+      response.json({
+        data: serialize(procurementRequest, requireAuth(request)),
+      });
     } catch (error) {
       next(error);
     }
@@ -69,7 +83,7 @@ export class ProcurementRequestController {
         input,
         correlationId(response),
       );
-      response.json({ data: serialize(updated) });
+      response.json({ data: serialize(updated, requireAuth(request)) });
     } catch (error) {
       next(error);
     }
@@ -93,7 +107,7 @@ export class ProcurementRequestController {
         input.reason,
         correlationId(response),
       );
-      response.json({ data: serialize(updated) });
+      response.json({ data: serialize(updated, requireAuth(request)) });
     } catch (error) {
       next(error);
     }
@@ -113,7 +127,27 @@ export class ProcurementRequestController {
         rowVersion,
         correlationId(response),
       );
-      response.json({ data: serialize(updated) });
+      response.json({ data: serialize(updated, requireAuth(request)) });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public readonly destroy: RequestHandler = async (request, response, next) => {
+    try {
+      const { requestId: id } = procurementRequestIdSchema.parse(
+        request.params,
+      );
+      const { rowVersion } = archiveProcurementRequestSchema.parse(
+        request.body ?? {},
+      );
+      await this.service.destroyCancelled(
+        requireAuth(request),
+        id,
+        rowVersion,
+        correlationId(response),
+      );
+      response.status(204).send();
     } catch (error) {
       next(error);
     }
@@ -133,7 +167,7 @@ export class ProcurementRequestController {
         rowVersion,
         correlationId(response),
       );
-      response.json({ data: serialize(updated) });
+      response.json({ data: serialize(updated, requireAuth(request)) });
     } catch (error) {
       next(error);
     }
@@ -153,7 +187,9 @@ export class ProcurementRequestController {
         id,
         correlationId(response),
       );
-      response.status(201).json({ data: serialize(created) });
+      response.status(201).json({
+        data: serialize(created, requireAuth(request)),
+      });
     } catch (error) {
       next(error);
     }
@@ -172,7 +208,7 @@ export class ProcurementRequestController {
         input.rowVersion,
         correlationId(response),
       );
-      response.json({ data: serialize(updated) });
+      response.json({ data: serialize(updated, requireAuth(request)) });
     } catch (error) {
       next(error);
     }
@@ -196,57 +232,10 @@ function correlationId(response: Response): string {
 
 function serialize(
   request: Awaited<ReturnType<ProcurementRequestService["get"]>>,
+  auth: NonNullable<Express.Request["auth"]>,
 ) {
-  return {
-    id: request.id,
-    publicCode: request.publicCode,
-    status: request.status,
-    title: request.title,
-    currencyCode: request.currencyCode,
-    notes: request.notes,
-    destinationCountryCode: request.destinationCountryCode,
-    destinationAddress: request.destinationAddress,
-    requiredByDate: request.requiredByDate,
-    budgetAmount: request.budgetAmount?.toString() ?? null,
-    priority: request.priority,
-    restrictedGoodsDeclared: request.restrictedGoodsDeclared,
-    rowVersion: request.rowVersion,
-    createdAt: request.createdAt,
-    updatedAt: request.updatedAt,
-    archivedAt: request.archivedAt,
-    items: request.items.map((item) => ({
-      id: item.id,
-      productVariantId: item.productVariantId,
-      description: item.description,
-      quantity: item.quantity.toString(),
-      unit: item.unit,
-      targetUnitAmount: item.targetUnitAmount?.toString() ?? null,
-    })),
-    attachments: (request.documents ?? []).map((link) => ({
-      id: link.document.id,
-      name: link.document.originalFilename,
-      mimeType: link.document.mimeType,
-      sizeBytes: link.document.sizeBytes,
-      sizeLabel: formatAttachmentSize(link.document.sizeBytes),
-      href: `/api/v1/documents/${link.document.id}`,
-      kind: attachmentKind(link.document.mimeType),
-      uploadedAt: link.document.createdAt,
-    })),
-    documentIds: (request.documents ?? []).map((link) => link.documentId),
-  };
-}
-
-function formatAttachmentSize(sizeBytes: number): string {
-  if (sizeBytes < 1024) return `${sizeBytes} B`;
-  if (sizeBytes < 1024 * 1024) {
-    return `${Math.max(1, Math.round(sizeBytes / 1024))} KB`;
-  }
-  return `${(sizeBytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function attachmentKind(mimeType: string): string {
-  if (mimeType.startsWith("image/")) return "image";
-  if (mimeType === "application/pdf") return "pdf";
-  if (mimeType.includes("word") || mimeType === "text/plain") return "document";
-  return "file";
+  return serializeProcurementRequest(
+    request,
+    procurementRequestAudience(auth),
+  );
 }

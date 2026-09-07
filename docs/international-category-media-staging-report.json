@@ -1,0 +1,177 @@
+{
+  "downloadDate": "2026-08-18",
+  "acquired": 34,
+  "aliased": 0,
+  "notFound": [
+    {
+      "filename": "intl-home-garden-wares-gallery-02.webp",
+      "reason": "Error: HTTP 404 for https://images.unsplash.com/photo-146414607223-2adc52ca0aa4?auto=format&fit=crop&w=1920&q=85",
+      "url": "https://images.unsplash.com/photo-146414607223-2adc52ca0aa4?auto=format&fit=crop&w=1920&q=85"
+    },
+    {
+      "filename": "intl-home-garden-wares-context-02.webp",
+      "reason": "Error: HTTP 404 for https://images.unsplash.com/photo-1493663284031-b7e3aaa443fb?auto=format&fit=crop&w=1920&q=85",
+      "url": "https://images.unsplash.com/photo-1493663284031-b7e3aaa443fb?auto=format&fit=crop&w=1920&q=85"
+    },
+    {
+      "filename": "intl-machineries-context-01.webp",
+      "reason": "Error: HTTP 404 for https://images.unsplash.com/photo-1504917599795-e8a3edf1b4d0?auto=format&fit=crop&w=1920&q=85",
+      "url": "https://images.unsplash.com/photo-1504917599795-e8a3edf1b4d0?auto=format&fit=crop&w=1920&q=85"
+    },
+    {
+      "filename": "intl-machineries-context-02.webp",
+      "reason": "Error: HTTP 404 for https://images.unsplash.com/photo-1590496793929-35424a331829?auto=format&fit=crop&w=1920&q=85",
+      "url": "https://images.unsplash.com/photo-1590496793929-35424a331829?auto=format&fit=crop&w=1920&q=85"
+    },
+    {
+      "filename": "intl-general-procurement-context-01.webp",
+      "reason": "Error: HTTP 404 for https://images.unsplash.com/photo-1605745341112-47e83c871ed1?auto=format&fit=crop&w=1920&q=85",
+      "url": "https://images.unsplash.com/photo-1605745341112-47e83c871ed1?auto=format&fit=crop&w=1920&q=85"
+    },
+    {
+      "filename": "intl-general-procurement-context-02.webp",
+      "reason": "Error: HTTP 404 for https://images.unsplash.com/photo-1587293855545-a37c5abceb41?auto=format&fit=crop&w=1920&q=85",
+      "url": "https://images.unsplash.com/photo-1587293855545-a37c5abceb41?auto=format&fit=crop&w=1920&q=85"
+    }
+  ],
+  "rejected": [],
+  "acquiredFiles": [
+    {
+      "filename": "intl-iphones-gadgets-hero-01.webp",
+      "path": "apps/web/public/media/international/categories/iphones-gadgets/hero/intl-iphones-gadgets-hero-01.webp"
+    },
+    {
+      "filename": "intl-iphones-gadgets-gallery-01.webp",
+      "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-gallery-01.webp"
+    },
+    {
+      "filename": "intl-iphones-gadgets-gallery-02.webp",
+      "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-gallery-02.webp"
+    },
+    {
+      "filename": "intl-iphones-gadgets-gallery-03.webp",
+      "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-gallery-03.webp"
+    },
+    {
+      "filename": "intl-iphones-gadgets-gallery-04.webp",
+      "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-gallery-04.webp"
+    },
+    {
+      "filename": "intl-iphones-gadgets-gallery-05.webp",
+      "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-gallery-05.webp"
+    },
+    {
+      "filename": "intl-iphones-gadgets-gallery-06.webp",
+      "path": "apps/web/public/media/international/categories/iphones-gadgets/gallery/intl-iphones-gadgets-gallery-06.webp"
+    },
+    {
+      "filename": "intl-iphones-gadgets-context-01.webp",
+      "path": "apps/web/public/media/international/categories/iphones-gadgets/context/intl-iphones-gadgets-context-01.webp"
+    },
+    {
+      "filename": "intl-iphones-gadgets-context-02.webp",
+      "path": "apps/web/public/media/international/categories/iphones-gadgets/context/intl-iphones-gadgets-context-02.webp"
+    },
+    {
+      "filename": "intl-medical-equipments-hero-01.webp",
+      "path": "apps/web/public/media/international/categories/medical-equipments/hero/intl-medical-equipments-hero-01.webp"
+    },
+    {
+      "filename": "intl-medical-equipments-gallery-01.webp",
+      "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-gallery-01.webp"
+    },
+    {
+      "filename": "intl-medical-equipments-gallery-02.webp",
+      "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-gallery-02.webp"
+    },
+    {
+      "filename": "intl-medical-equipments-gallery-03.webp",
+      "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-gallery-03.webp"
+    },
+    {
+      "filename": "intl-medical-equipments-gallery-04.webp",
+      "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-gallery-04.webp"
+    },
+    {
+      "filename": "intl-medical-equipments-gallery-05.webp",
+      "path": "apps/web/public/media/international/categories/medical-equipments/gallery/intl-medical-equipments-gallery-05.webp"
+    },
+    {
+      "filename": "intl-medical-equipments-context-01.webp",
+      "path": "apps/web/public/media/international/categories/medical-equipments/context/intl-medical-equipments-context-01.webp"
+    },
+    {
+      "filename": "intl-medical-equipments-context-02.webp",
+      "path": "apps/web/public/media/international/categories/medical-equipments/context/intl-medical-equipments-context-02.webp"
+    },
+    {
+      "filename": "intl-home-garden-wares-hero-01.webp",
+      "path": "apps/web/public/media/international/categories/home-garden-wares/hero/intl-home-garden-wares-hero-01.webp"
+    },
+    {
+      "filename": "intl-home-garden-wares-gallery-01.webp",
+      "path": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-gallery-01.webp"
+    },
+    {
+      "filename": "intl-home-garden-wares-gallery-03.webp",
+      "path": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-gallery-03.webp"
+    },
+    {
+      "filename": "intl-home-garden-wares-gallery-04.webp",
+      "path": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-gallery-04.webp"
+    },
+    {
+      "filename": "intl-home-garden-wares-gallery-05.webp",
+      "path": "apps/web/public/media/international/categories/home-garden-wares/gallery/intl-home-garden-wares-gallery-05.webp"
+    },
+    {
+      "filename": "intl-home-garden-wares-context-01.webp",
+      "path": "apps/web/public/media/international/categories/home-garden-wares/context/intl-home-garden-wares-context-01.webp"
+    },
+    {
+      "filename": "intl-machineries-hero-01.webp",
+      "path": "apps/web/public/media/international/categories/machineries/hero/intl-machineries-hero-01.webp"
+    },
+    {
+      "filename": "intl-machineries-gallery-01.webp",
+      "path": "apps/web/public/media/international/categories/machineries/gallery/intl-machineries-gallery-01.webp"
+    },
+    {
+      "filename": "intl-machineries-gallery-02.webp",
+      "path": "apps/web/public/media/international/categories/machineries/gallery/intl-machineries-gallery-02.webp"
+    },
+    {
+      "filename": "intl-machineries-gallery-03.webp",
+      "path": "apps/web/public/media/international/categories/machineries/gallery/intl-machineries-gallery-03.webp"
+    },
+    {
+      "filename": "intl-machineries-gallery-04.webp",
+      "path": "apps/web/public/media/international/categories/machineries/gallery/intl-machineries-gallery-04.webp"
+    },
+    {
+      "filename": "intl-machineries-gallery-05.webp",
+      "path": "apps/web/public/media/international/categories/machineries/gallery/intl-machineries-gallery-05.webp"
+    },
+    {
+      "filename": "intl-general-procurement-hero-01.webp",
+      "path": "apps/web/public/media/international/categories/general-procurement/hero/intl-general-procurement-hero-01.webp"
+    },
+    {
+      "filename": "intl-general-procurement-gallery-01.webp",
+      "path": "apps/web/public/media/international/categories/general-procurement/gallery/intl-general-procurement-gallery-01.webp"
+    },
+    {
+      "filename": "intl-general-procurement-gallery-02.webp",
+      "path": "apps/web/public/media/international/categories/general-procurement/gallery/intl-general-procurement-gallery-02.webp"
+    },
+    {
+      "filename": "intl-general-procurement-gallery-03.webp",
+      "path": "apps/web/public/media/international/categories/general-procurement/gallery/intl-general-procurement-gallery-03.webp"
+    },
+    {
+      "filename": "intl-general-procurement-gallery-04.webp",
+      "path": "apps/web/public/media/international/categories/general-procurement/gallery/intl-general-procurement-gallery-04.webp"
+    }
+  ],
+  "skipped": []
+}

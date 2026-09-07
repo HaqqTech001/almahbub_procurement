@@ -1,0 +1,35 @@
+/* Enterprise performance utilities - pair with @hamd/ui/performance */
+
+.hamd-perf-sentinel {
+  position: relative;
+  height: 1px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.hamd-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  content-visibility: auto;
+}
+
+.hamd-img--priority {
+  content-visibility: visible;
+}
+
+.hamd-perf-cv {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 24rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-perf-reduce *,
+  .hamd-perf-reduce *::before,
+  .hamd-perf-reduce *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

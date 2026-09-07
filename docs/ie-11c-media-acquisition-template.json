@@ -1,0 +1,226 @@
+{
+  "phase": "IE-11C",
+  "purpose": "Media acquisition template after owner approval. downloadAllowed is false until a licensed file is selected for an approved commodity.",
+  "downloadAllowedDefault": false,
+  "createFoldersUntilApproval": false,
+  "doNotSeedDatabase": false,
+  "seedUnpublishedDraftsOnly": true,
+  "doNotPublish": false,
+  "doNotCopyInternationalMedia": true,
+  "internationalCanonicalRoot": "apps/web/public/media/international/",
+  "iePortalSharedRoot": "apps/web/public/media/ie/portal/",
+  "ieCommodityRoot": "apps/web/public/media/ie/commodities/",
+  "filenamePattern": "ie-{commoditySlug}-{role}-{nn}.webp",
+  "ceilingPerCommodity": 50,
+  "preferredSources": ["Unsplash", "Pexels", "Wikimedia Commons"],
+  "discoveryOnly": ["Google Images", "Bing Images"],
+  "outOfScope": ["WhatsApp merchandise dump", "International Product SKU files used as IE commodities"],
+  "forbiddenCaptionPhrasesUnlessVerified": [
+    "Almahbub facility",
+    "Almahbub warehouse",
+    "Almahbub farm",
+    "Almahbub shipment"
+  ],
+  "representativeCaption": "Representative imagery for illustration — not Almahbub facilities, staff, farms, or product lots.",
+  "roles": [
+    { "key": "hero", "order": 1, "folder": "hero", "minPx": 1920, "aspect": "16:9" },
+    { "key": "whole", "order": 2, "folder": "whole", "minPx": 1600, "aspect": "4:3" },
+    { "key": "close-up", "order": 3, "folder": "close-up", "minPx": 1400, "aspect": "1:1" },
+    { "key": "bulk", "order": 4, "folder": "bulk", "minPx": 1600, "aspect": "16:9" },
+    { "key": "sacks", "order": 5, "folder": "sacks", "minPx": 1600, "aspect": "16:9" },
+    { "key": "packaging", "order": 6, "folder": "packaging", "minPx": 1600, "aspect": "4:3" },
+    { "key": "grading", "order": 7, "folder": "grading", "minPx": 1600, "aspect": "16:9" },
+    { "key": "quality", "order": 8, "folder": "quality", "minPx": 1400, "aspect": "4:3" },
+    { "key": "storage", "order": 9, "folder": "storage", "minPx": 1600, "aspect": "16:9" },
+    { "key": "logistics", "order": 10, "folder": "logistics", "minPx": 1600, "aspect": "16:9" },
+    { "key": "loading", "order": 11, "folder": "loading", "minPx": 1600, "aspect": "16:9" },
+    { "key": "transport", "order": 12, "folder": "transport", "minPx": 1600, "aspect": "16:9" },
+    { "key": "port", "order": 13, "folder": "port", "minPx": 1600, "aspect": "16:9" },
+    { "key": "processing", "order": 14, "folder": "processing", "minPx": 1600, "aspect": "16:9" },
+    { "key": "application", "order": 15, "folder": "application", "minPx": 1400, "aspect": "4:3" },
+    { "key": "gallery", "order": 16, "folder": "gallery", "minPx": 1400, "aspect": "mixed" }
+  ],
+  "provenanceFields": [
+    "filename",
+    "folder",
+    "commodity",
+    "commoditySlug",
+    "imageRole",
+    "source",
+    "sourceUrl",
+    "downloadUrl",
+    "photographer",
+    "photoId",
+    "license",
+    "licenseUrl",
+    "downloadDate",
+    "altText",
+    "authenticity",
+    "status",
+    "sha256",
+    "reusedExistingFile"
+  ],
+  "blankCandidateRow": {
+    "commodity": "",
+    "slug": "",
+    "suggestedCategory": "",
+    "ownerApproval": null,
+    "approvedForPublication": null,
+    "verifiedInRepo": false,
+    "downloadAllowed": false,
+    "createFolders": false,
+    "targetImageCountCeiling": 50,
+    "images": []
+  },
+  "blankImageRow": {
+    "id": "IE-{SLUG}-{ROLE}-01",
+    "domain": "integrated_export",
+    "status": "planned",
+    "downloadAllowed": false,
+    "createFolder": false,
+    "commodity": "",
+    "commoditySlug": "",
+    "imageRole": "hero",
+    "nn": "01",
+    "suggestedFilename": "ie-{slug}-{role}-01.webp",
+    "suggestedFolder": "apps/web/public/media/ie/commodities/{slug}/{role}/",
+    "primarySearchQuery": "",
+    "source": null,
+    "sourceUrl": null,
+    "photographer": null,
+    "photoId": null,
+    "license": null,
+    "licenseUrl": null,
+    "downloadDate": null,
+    "altText": "",
+    "authenticity": "representative",
+    "sha256": null
+  },
+  "searchQueryTemplates": {
+    "hero": "high quality {name} agricultural export commodity product photography clean composition warehouse light",
+    "whole": "whole {name} commodity lot commercial photography identifiable kernels or seeds on neutral surface",
+    "close-up": "macro close up {name} texture agricultural commodity grade detail sharp focus",
+    "bulk": "bulk quantity {name} piled agricultural commodity export warehouse not a handful",
+    "sacks": "{name} in jute sacks bulk agricultural export bags unmarked commercial photography",
+    "packaging": "{name} export packaging polypropylene bags stacked commodity trade photography no brand logos",
+    "grading": "{name} grading sorting table agricultural quality control commodity inspection photography",
+    "quality": "{name} quality inspection agricultural commodity clean sample close context not a laboratory claim",
+    "storage": "{name} storage warehouse sacks generic agro commodity storehouse photography not a named company",
+    "logistics": "{name} agro commodity logistics pallet yard stuffing preparation export photography",
+    "loading": "loading {name} sacks into truck or shipping container agricultural export photography",
+    "transport": "truck transporting bagged {name} agricultural commodity highway or depot photography",
+    "port": "{name} export port containers bulk agro commodity shipping terminal photography",
+    "processing": "{name} processing plant agricultural commodity handling generic facility photography no company name",
+    "application": "{name} food or industrial use context still photography not a customer testimonial",
+    "gallery": "{name} professional agricultural commodity still life natural light commercial"
+  },
+  "unverifiedPlanningCandidates": [
+    {
+      "commodity": "Sesame",
+      "slugOptions": ["sesame-seeds", "sesame"],
+      "downloadAllowed": false,
+      "note": "Superseded by ownerApprovedDrafts. Historical planning row."
+    },
+    {
+      "commodity": "Cashew",
+      "slugOptions": ["cashew"],
+      "downloadAllowed": false,
+      "note": "Superseded by ownerApprovedDrafts. Historical planning row."
+    },
+    {
+      "commodity": "Ginger",
+      "slugOptions": ["ginger"],
+      "downloadAllowed": false,
+      "note": "Superseded by ownerApprovedDrafts. Historical planning row."
+    },
+    {
+      "commodity": "Hibiscus",
+      "slugOptions": ["hibiscus"],
+      "downloadAllowed": false,
+      "note": "Superseded by ownerApprovedDrafts. Historical planning row."
+    },
+    {
+      "commodity": "Shea",
+      "slugOptions": ["shea"],
+      "downloadAllowed": false,
+      "note": "Superseded by ownerApprovedDrafts. Historical planning row."
+    },
+    {
+      "commodity": "Soybean",
+      "slugOptions": ["soybean"],
+      "downloadAllowed": false,
+      "note": "Superseded by ownerApprovedDrafts. Historical planning row."
+    },
+    {
+      "commodity": "Cocoa",
+      "slugOptions": ["cocoa"],
+      "downloadAllowed": false,
+      "note": "Superseded by ownerApprovedDrafts. Historical planning row."
+    }
+  ],
+  "ownerApprovedDrafts": [
+    {
+      "commodity": "Sesame Seeds",
+      "slug": "sesame-seeds",
+      "ownerApproval": true,
+      "approvedForPublication": true,
+      "downloadAllowed": false,
+      "createFolders": false,
+      "note": "Owner instruction 2026-08-17. Draft CMS only. No licensed SKU media selected."
+    },
+    {
+      "commodity": "Cashew",
+      "slug": "cashew",
+      "ownerApproval": true,
+      "approvedForPublication": true,
+      "downloadAllowed": false,
+      "createFolders": false,
+      "note": "Owner instruction 2026-08-17. Draft CMS only. No licensed SKU media selected."
+    },
+    {
+      "commodity": "Ginger",
+      "slug": "ginger",
+      "ownerApproval": true,
+      "approvedForPublication": true,
+      "downloadAllowed": false,
+      "createFolders": false,
+      "note": "Owner instruction 2026-08-17. Draft CMS only. No licensed SKU media selected."
+    },
+    {
+      "commodity": "Hibiscus",
+      "slug": "hibiscus",
+      "ownerApproval": true,
+      "approvedForPublication": true,
+      "downloadAllowed": false,
+      "createFolders": false,
+      "note": "Owner instruction 2026-08-17. Draft CMS only. No licensed SKU media selected."
+    },
+    {
+      "commodity": "Shea",
+      "slug": "shea",
+      "ownerApproval": true,
+      "approvedForPublication": true,
+      "downloadAllowed": false,
+      "createFolders": false,
+      "note": "Owner instruction 2026-08-17. Draft CMS only. No licensed SKU media selected."
+    },
+    {
+      "commodity": "Soybean",
+      "slug": "soybean",
+      "ownerApproval": true,
+      "approvedForPublication": true,
+      "downloadAllowed": false,
+      "createFolders": false,
+      "note": "Owner instruction 2026-08-17. Draft CMS only. No licensed SKU media selected."
+    },
+    {
+      "commodity": "Cocoa",
+      "slug": "cocoa",
+      "ownerApproval": true,
+      "approvedForPublication": true,
+      "downloadAllowed": false,
+      "createFolders": false,
+      "note": "Owner instruction 2026-08-17. Draft CMS only. No licensed SKU media selected."
+    }
+  ]
+}
