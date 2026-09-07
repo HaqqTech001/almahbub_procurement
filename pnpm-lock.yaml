@@ -324,6 +324,9 @@ importers:
       '@hamd/config-eslint':
         specifier: workspace:*
         version: link:../packages/config-eslint
+      '@types/node':
+        specifier: ^22.20.1
+        version: 22.20.1
       '@types/pg':
         specifier: ^8.20.4
         version: 8.20.4

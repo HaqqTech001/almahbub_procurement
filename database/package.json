@@ -35,6 +35,7 @@
   "devDependencies": {
     "@faker-js/faker": "^10.5.0",
     "@hamd/config-eslint": "workspace:*",
+    "@types/node": "^22.20.1",
     "@types/pg": "^8.20.4",
     "eslint": "^9.35.0",
     "prisma": "^7.9.1",
