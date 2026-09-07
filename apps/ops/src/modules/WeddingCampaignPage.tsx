@@ -167,7 +167,7 @@ export function WeddingCampaignPage() {
               {!configured
                 ? "Not configured"
                 : campaign.streamStatus === "live"
-                  ? "Live"
+                  ? `Live . ${viewers} ${viewers === 1 ? "viewer" : "viewers"}`
                   : campaign.streamStatus === "ended"
                     ? "Ended"
                     : "Ready"}

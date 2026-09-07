@@ -585,7 +585,7 @@ export async function uploadProcurementDocuments(
     body: form,
     credentials: "include",
   });
-  const payload = (await parseJson(response)) as Envelope<
+  const payload = (await readResponseBody(response)) as Envelope<
     Array<{ id: string; name: string; href: string }>
   > | null;
   if (!response.ok) {

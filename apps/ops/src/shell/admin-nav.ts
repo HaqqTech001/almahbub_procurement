@@ -86,7 +86,7 @@ export const ADMIN_NAV_SECTIONS: AdminNavSection[] = [
         id: "wedding",
         label: "Wedding Campaign",
         href: "/wedding",
-        icon: "cms",
+        icon: "announcements",
         permission: "ops:access",
       },
     ],
