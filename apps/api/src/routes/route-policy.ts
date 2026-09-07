@@ -12,6 +12,8 @@ export interface RoutePolicy {
  * starting an HTTP server or inspecting Express internals.
  */
 export const routePolicies = [
+  { method: "GET", path: "/", access: "public" },
+  { method: "HEAD", path: "/", access: "public" },
   { method: "GET", path: "/health/live", access: "public" },
   { method: "GET", path: "/health/ready", access: "public" },
   { method: "GET", path: "/openapi.json", access: "public" },

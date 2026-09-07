@@ -15,6 +15,24 @@ const app = createApp(
 );
 
 describe("health endpoints", () => {
+  it("returns a production-safe root status for GET /", async () => {
+    const response = await request(app).get("/").expect(200);
+
+    expect(response.body).toEqual({
+      status: "ok",
+      service: "Almahbub Procurement API",
+      message: "API is running",
+    });
+    expect(response.body.error).toBeUndefined();
+  });
+
+  it("returns HTTP 200 with no error body for HEAD /", async () => {
+    const response = await request(app).head("/").expect(200);
+
+    expect(response.text ?? "").toBe("");
+    expect(response.body).toEqual({});
+  });
+
   it("returns the liveness contract", async () => {
     const response = await request(app).get("/health/live").expect(200);
 

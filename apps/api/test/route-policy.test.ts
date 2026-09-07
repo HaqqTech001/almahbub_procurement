@@ -4,6 +4,12 @@ import { findRoutePolicy, routePolicies } from "../src/routes/route-policy.js";
 
 describe("route policy registry", () => {
   it("makes the baseline operational routes explicitly public", () => {
+    expect(findRoutePolicy("GET", "/")).toMatchObject({
+      access: "public",
+    });
+    expect(findRoutePolicy("HEAD", "/")).toMatchObject({
+      access: "public",
+    });
     expect(findRoutePolicy("get", "/health/live")).toMatchObject({
       access: "public",
     });

@@ -20,6 +20,7 @@ import { apiEnvelope } from "./middleware/api-envelope.js";
 import { requestContext } from "./middleware/request-context.js";
 import { createHealthRouter } from "./routes/health.js";
 import { createOpenApiRouter } from "./routes/openapi.js";
+import { createRootRouter } from "./routes/root.js";
 import { ProcurementRequestService } from "./modules/procurement/application/procurement-request-service.js";
 import { createProcurementRequestRouter } from "./modules/procurement/api/procurement-request-routes.js";
 import { DocumentService } from "./modules/media/document/application/document-service.js";
@@ -120,6 +121,7 @@ export function createApp(
   app.use(express.urlencoded({ extended: false, limit: "1mb" }));
   app.use(apiEnvelope);
 
+  app.use(createRootRouter());
   app.use(
     "/health",
     createHealthRouter(environment, createReadinessDependencies(dependencies)),
