@@ -482,7 +482,7 @@ export function App() {
         <Route path="/announcements/:id" element={page(AnnouncementDetailPage)} />
         <Route path="/about" element={page(AboutPage)} />
         <Route path="/group" element={page(GroupPage)} />
-        <Route path="/businesses" element={<Navigate to="/group" replace />} />
+        <Route path="/businesses" element={<Navigate to="/" replace />} />
         <Route path="/businesses/almahbub-international" element={page(BusinessPage)} />
         <Route path="/businesses/:slug" element={page(BusinessPage)} />
         <Route path="/services" element={page(ServicesPage)} />

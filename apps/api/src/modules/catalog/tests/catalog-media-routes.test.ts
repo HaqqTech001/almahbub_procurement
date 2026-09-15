@@ -5,6 +5,7 @@ import { randomUUID } from "node:crypto";
 
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
+import { WEDDING_MEDIA_STORAGE_ID } from "@hamd/constants";
 
 import { createApp } from "../../../app.js";
 import { parseEnvironment } from "../../../config/env.js";
@@ -31,6 +32,77 @@ function mockDatabase(): DatabaseClient {
 }
 
 describe("public catalog media", () => {
+  it.each(["waiting.mp3", "clip.mp4"])(
+    "serves byte ranges and HEAD for %s",
+    async (filename) => {
+      const uploadRoot = join(tmpdir(), `hamd-media-range-${randomUUID()}`);
+      const directory = join(
+        uploadRoot,
+        "public",
+        "catalog",
+        WEDDING_MEDIA_STORAGE_ID,
+      );
+      await mkdir(directory, { recursive: true });
+      await writeFile(join(directory, filename), "0123456789");
+      const app = createApp(
+        parseEnvironment({
+          NODE_ENV: "test",
+          LOG_LEVEL: "silent",
+          UPLOAD_ROOT: uploadRoot,
+        }),
+        { database: mockDatabase() },
+      );
+      const url = `/api/v1/public/catalog-media/${WEDDING_MEDIA_STORAGE_ID}/${filename}`;
+      for (const range of ["bytes=2-5", "bytes=100-"]) {
+        const head = await request(app).head(url).set("Range", range);
+        expect(head.status).toBe(200);
+        expect(head.headers["content-length"]).toBe("10");
+        expect(head.headers["content-range"]).toBeUndefined();
+      }
+      const precondition = await request(app).get(url).set("If-Match", '"different"');
+      expect(precondition.status).toBe(412);
+      expect(precondition.headers["cache-control"]).toBe("no-store");
+      for (const [range, expected, contentRange] of [
+        ["bytes=2-5", "2345", "bytes 2-5/10"],
+        ["bytes=7-", "789", "bytes 7-9/10"],
+        ["bytes=-3", "789", "bytes 7-9/10"],
+        ["bytes=8-100", "89", "bytes 8-9/10"],
+      ] as const) {
+        const result = await request(app)
+          .get(url)
+          .set("Range", range)
+          .buffer(true)
+          .parse((res, callback) => {
+            const chunks: Buffer[] = [];
+            res.on("data", (chunk: Buffer) => chunks.push(chunk));
+            res.on("end", () => callback(null, Buffer.concat(chunks)));
+          })
+          .expect(206);
+        expect(result.body.toString()).toBe(expected);
+        expect(result.headers["content-range"]).toBe(contentRange);
+        expect(result.headers["content-length"]).toBe(String(expected.length));
+        expect(result.headers["accept-ranges"]).toBe("bytes");
+      }
+      const unsatisfiable = await request(app)
+        .get(url)
+        .set("Range", "bytes=20-")
+        .expect(416);
+      expect(unsatisfiable.headers["content-range"]).toBe("bytes */10");
+      const full = await request(app).get(url).expect(200);
+      expect(full.headers["content-length"]).toBe("10");
+      await request(app).get(url).set("Range", "bytes=invalid").expect(200);
+      await request(app).get(url).set("Range", "bytes=0-1,8-9").expect(200);
+      await request(app)
+        .get(url)
+        .set("Range", "bytes=0-1")
+        .set("If-Range", '"stale"')
+        .expect(200);
+      const head = await request(app).head(url).expect(200);
+      expect(head.headers["content-length"]).toBe("10");
+      expect(head.text).toBeUndefined();
+    },
+  );
+
   it("serves a catalog image and rejects path escape / invalid ids", async () => {
     const uploadRoot = join(tmpdir(), `hamd-catalog-media-${randomUUID()}`);
     const productId = "0190c8a0-1000-7000-8000-00000000c0de";

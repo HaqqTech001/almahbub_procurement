@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { HorizontalStepper } from "../primitives/HorizontalStepper.js";
 import { cx } from "../utils/cx.js";
 import {
   BUYER_JOURNEY_STAGES,
@@ -12,6 +13,7 @@ export type ProcurementProgressVariant = "full" | "compact" | "preview" | "wizar
 export type WizardProgressStep = {
   id: string;
   label: string;
+  compactLabel?: string;
 };
 
 export type ProcurementProgressProps = {
@@ -21,6 +23,7 @@ export type ProcurementProgressProps = {
   className?: string | undefined;
   wizardSteps?: readonly WizardProgressStep[] | undefined;
   wizardIndex?: number | undefined;
+  wizardErrorSteps?: readonly number[] | undefined;
   onWizardStepSelect?: ((index: number) => void) | undefined;
 };
 
@@ -37,88 +40,16 @@ export function ProcurementProgress({
   className,
   wizardSteps,
   wizardIndex = 0,
+  wizardErrorSteps,
   onWizardStepSelect,
 }: ProcurementProgressProps) {
   const labelId = useId();
   if (variant === "wizard" && wizardSteps?.length) {
     const total = wizardSteps.length;
     const current = Math.min(Math.max(0, wizardIndex), total - 1);
-    const percent = wizardProgressPercent(current, total);
-    const step = wizardSteps[current];
-    const next = wizardSteps[current + 1];
     return (
       <div className={cx("hamd-progress", "hamd-progress--wizard", className)}>
-        <div className="hamd-progress__compact">
-          <p className="hamd-progress__kicker" id={labelId}>
-            Step {current + 1} of {total}
-          </p>
-          <p className="hamd-progress__current-title">{step?.label}</p>
-          <div
-            className="hamd-progress__track"
-            role="progressbar"
-            aria-labelledby={labelId}
-            aria-valuemin={0}
-            aria-valuemax={total}
-            aria-valuenow={current + 1}
-            aria-valuetext={`${step?.label ?? "Current step"}, step ${current + 1} of ${total}`}
-          >
-            <span style={{ width: `${percent}%` }} />
-          </div>
-          {next ? <p className="hamd-progress__next">Next: {next.label}</p> : null}
-          <ol className="hamd-progress__dots" aria-hidden="true">
-            {wizardSteps.map((item, index) => (
-              <li
-                key={item.id}
-                className={cx(
-                  "hamd-progress__dot-item",
-                  index < current && "is-complete",
-                  index === current && "is-current",
-                )}
-              >
-                <span className="hamd-progress__dot" />
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        <ol className="hamd-progress__stepper" aria-label="Request steps">
-          {wizardSteps.map((item, index) => {
-            const complete = index < current;
-            const active = index === current;
-            const content = (
-              <>
-                <span className="hamd-progress__marker" aria-hidden="true">
-                  {complete ? "✓" : index + 1}
-                </span>
-                <span className="hamd-progress__stepper-label">{item.label}</span>
-              </>
-            );
-            return (
-              <li
-                key={item.id}
-                className={cx(
-                  "hamd-progress__step",
-                  complete && "is-complete",
-                  active && "is-current",
-                )}
-                aria-current={active ? "step" : undefined}
-              >
-                {index > 0 ? <span className="hamd-progress__connector" aria-hidden="true" /> : null}
-                {complete && onWizardStepSelect ? (
-                  <button
-                    type="button"
-                    className="hamd-progress__step-btn"
-                    onClick={() => onWizardStepSelect(index)}
-                  >
-                    {content}
-                  </button>
-                ) : (
-                  <span className="hamd-progress__step-static">{content}</span>
-                )}
-              </li>
-            );
-          })}
-        </ol>
+        <HorizontalStepper steps={wizardSteps} currentStep={current} errorSteps={wizardErrorSteps} onStepSelect={onWizardStepSelect} label="Request steps" />
       </div>
     );
   }

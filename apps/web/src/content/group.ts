@@ -13,7 +13,7 @@ export const GROUP = {
     "Almahbub Group brings together distinct businesses across procurement, supply, and international trade. Each company is separately registered and keeps its own focus.",
   operatingNote:
     "This website is operated by Almahbub International, the procurement platform for buyers who need accountable cross-border sourcing.",
-  href: "/group",
+  href: "/",
   /** Subtle hero / secondary discovery into the group overview. */
   exploreLabel: "Explore our businesses",
   switcherLabel: "Your businesses",
@@ -137,7 +137,7 @@ export const INTEGRATED_EXPORT_PORTAL = {
     id: "commodities",
     title: "Agro Commodities",
     description:
-      "Capability focus on agro commodity trade. Specific SKUs and grades are confirmed through enquiry - not listed in the Almahbub International product catalogue.",
+      "Browse agricultural commodities. Grades, packaging and availability are confirmed in your quotation.",
     points: [
       "Enquiry-led commodity discussions",
       "Clear separation from International retail/procurement catalogue",
@@ -214,7 +214,7 @@ export const INTEGRATED_EXPORT_PORTAL = {
       title: "Explore Our Commodities",
       emptyTitle: "No commodities published yet",
       emptyDescription:
-        "We are preparing detailed commodity information for buyers. Contact our export desk to discuss your sourcing requirement. Specific grades, packaging, and commercial terms are confirmed per enquiry. They are not published as stock or pricing on this website.",
+        "Contact our export team to discuss current availability, grades and packaging.",
     },
     process: {
       title: "From enquiry to export coordination",

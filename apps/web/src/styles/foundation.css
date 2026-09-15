@@ -1165,42 +1165,6 @@ a.hamd-btn.hamd-btn--primary:active {
   overflow: auto;
 }
 
-.hamd-stepper {
-  display: grid;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.hamd-stepper__item {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.75rem;
-  align-items: start;
-}
-
-.hamd-stepper__index {
-  width: 1.75rem;
-  height: 1.75rem;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  background: #eef2f6;
-  font-size: 0.8125rem;
-  font-weight: 700;
-}
-
-.hamd-stepper__item--current .hamd-stepper__index {
-  background: #155aaf;
-  color: #fff;
-}
-
-.hamd-stepper__item--done .hamd-stepper__index {
-  background: #027a48;
-  color: #fff;
-}
-
 .hamd-notification {
   display: grid;
   gap: 0.25rem;
@@ -1417,10 +1381,6 @@ html[data-theme="dark"] .hamd-success-state__description {
   color: #98a2b3;
 }
 
-html[data-theme="dark"] .hamd-stepper__index {
-  background: #344054;
-  color: #f9fafb;
-}
 
 html[data-theme="dark"] .hamd-timeline {
   border-left-color: #344054;
@@ -2734,3 +2694,19 @@ html[data-theme="dark"] .hamd-disc-card--grid:focus-within {
     flex: 1 1 100%;
   }
 }
+
+/* Homepage process stays readable without a second interactive wizard. */
+.hamd-homepage-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: procurement-step;
+}
+.hamd-homepage-steps li { min-width: 0; counter-increment: procurement-step; }
+.hamd-homepage-steps li::before { content: counter(procurement-step); font-weight: 700; }
+.hamd-homepage-steps h3 { margin-block: 0.5rem; }
+.hamd-wedding-participation-menu { padding: 0.5rem 1rem; }
+.hamd-wedding-participation-menu summary { cursor: pointer; min-height: 44px; display: list-item; align-content: center; }
+@media (max-width: 600px) { .hamd-homepage-steps { grid-template-columns: 1fr; } }

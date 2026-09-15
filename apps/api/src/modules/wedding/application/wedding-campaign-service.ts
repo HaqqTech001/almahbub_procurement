@@ -79,7 +79,7 @@ const feeds = new Map<string, WeddingBroadcastFeed>();
 const waitingTracks: WeddingWaitingTrack[] = [];
 let waitingHydrated = false;
 let waitingHydratePromise: Promise<void> | null = null;
-const CANONICAL_WEDDING_EVENT_DATE = "2026-09-29";
+const CANONICAL_WEDDING_EVENT_DATE = DEFAULT_WEDDING_CAMPAIGN.eventAt;
 
 /**
  * The catalog media store requires a UUID-shaped productId for its object-key namespace.
@@ -88,13 +88,13 @@ const CANONICAL_WEDDING_EVENT_DATE = "2026-09-29";
 // const WEDDING_MEDIA_STORAGE_ID = "9c7f5d2e-8a61-4c95-b1d7-2f8a6e3c4b90";
 
 function canonicalizeWeddingEventDate(campaign: WeddingCampaignRecord): WeddingCampaignRecord {
-  if (!String(campaign.eventAt).includes("2026-09-30")) return campaign;
-  const eventAt = CANONICAL_WEDDING_EVENT_DATE;
-  const streamAt = String(campaign.streamAt).includes("2026-09-30")
-    ? CANONICAL_WEDDING_EVENT_DATE
-    : campaign.streamAt;
+  const oldDate = /^2026-09-(29|30)/;
+  const eventChanged = oldDate.test(campaign.eventAt);
+  if (!eventChanged && !oldDate.test(campaign.streamAt)) return campaign;
+  const eventAt = campaign.eventAt.replace(oldDate, CANONICAL_WEDDING_EVENT_DATE);
+  const streamAt = campaign.streamAt.replace(oldDate, CANONICAL_WEDDING_EVENT_DATE);
   const parsed = Date.parse(eventAt);
-  const modalEndsAt = Number.isNaN(parsed)
+  const modalEndsAt = !eventChanged || Number.isNaN(parsed)
     ? campaign.modalEndsAt
     : new Date(parsed + 3 * 24 * 60 * 60 * 1000).toISOString();
   return { ...campaign, eventAt, streamAt, modalEndsAt };
@@ -137,6 +137,16 @@ export class WeddingCampaignService {
     private readonly database?: DatabaseClient,
     private readonly media: CatalogMediaStore = createCatalogMediaStore({
       uploadRoot: environment.UPLOAD_ROOT,
+      driver: environment.CATALOG_MEDIA_DRIVER,
+      nodeEnv: environment.NODE_ENV,
+      s3Bucket: environment.CATALOG_MEDIA_S3_BUCKET,
+      s3Region: environment.AWS_REGION,
+      s3AccessKeyId: environment.AWS_ACCESS_KEY_ID,
+      s3SecretAccessKey: environment.AWS_SECRET_ACCESS_KEY,
+      s3PublicBaseUrl: environment.CATALOG_MEDIA_S3_PUBLIC_BASE_URL,
+      supabaseUrl: environment.CATALOG_MEDIA_SUPABASE_URL,
+      supabaseServiceRoleKey: environment.CATALOG_MEDIA_SUPABASE_SERVICE_ROLE_KEY,
+      supabaseBucket: environment.CATALOG_MEDIA_SUPABASE_BUCKET,
     }),
   ) {}
 
@@ -160,6 +170,12 @@ export class WeddingCampaignService {
       });
     }
     await campaignHydratePromise;
+  }
+
+  /** Refresh persisted campaign switches across API instances. */
+  public async refreshCampaign(): Promise<void> {
+    await this.flushCampaignPersistence();
+    await this.hydrateCampaignFromDatabase();
   }
 
   public getCampaign(auth?: AuthContext): WeddingCampaignRecord {
@@ -501,6 +517,7 @@ export class WeddingCampaignService {
     patch: { enabled?: boolean; loop?: boolean },
   ): Promise<WeddingCampaignRecord> {
     this.assertOps(auth);
+    await this.ensureWaitingTracksHydrated();
     overlay = {
       ...overlay,
       waitingMusicEnabled: patch.enabled ?? overlay.waitingMusicEnabled ?? false,
@@ -907,15 +924,21 @@ export class WeddingCampaignService {
         waitingHydrated = true;
         return;
       }
+      if (this.environment.NODE_ENV === "production") throw new Error("Waiting playlist database unavailable");
       const fromFile = await this.loadWaitingTracksFromFile();
       if (fromFile) {
         waitingTracks.length = 0;
         waitingTracks.push(...fromFile);
       }
-    } catch {
-      /* keep in-memory if durable stores are unavailable */
-    } finally {
       waitingHydrated = true;
+    } catch {
+      if (this.environment.NODE_ENV === "production") throw new AppError({
+        statusCode: 503, code: "WEDDING_PERSISTENCE_UNAVAILABLE",
+        message: "Waiting music is temporarily unavailable. Please retry.",
+      });
+      /* keep in-memory if durable stores are unavailable */
+      waitingHydrated = true;
+    } finally {
       waitingHydratePromise = null;
     }
   }
@@ -941,7 +964,7 @@ export class WeddingCampaignService {
         loop?: boolean;
         enabled?: boolean;
       };
-      overlay = {
+      if (!this.database) overlay = {
         ...overlay,
         waitingMusicLoop: parsed.loop ?? overlay.waitingMusicLoop !== false,
         waitingMusicEnabled: parsed.enabled ?? (Array.isArray(parsed.tracks) && parsed.tracks.length > 0),
@@ -955,6 +978,8 @@ export class WeddingCampaignService {
 
   private campaignRowPayload(): Record<string, unknown> {
     const { feeds: _feeds, testBroadcastEligible: _eligible, ...stored } = overlay;
+    void _feeds;
+    void _eligible;
     return stored;
   }
 
@@ -969,6 +994,7 @@ export class WeddingCampaignService {
         overlay = canonicalizeWeddingEventDate({
           ...DEFAULT_WEDDING_CAMPAIGN,
           ...stored,
+          modalEnabled: stored.modalEnabled === true,
           id: WEDDING_CAMPAIGN_ID,
           slug: WEDDING_CAMPAIGN_SLUG,
           streamStatus:
@@ -979,8 +1005,9 @@ export class WeddingCampaignService {
         return;
       }
       await this.writeCampaignRow();
-    } catch {
-      /* table may not exist yet — keep in-memory until migrate */
+    } catch (error) {
+      if (this.environment.NODE_ENV === "production") throw error;
+      /* Development can start before migrations are applied. */
     }
   }
 
@@ -1009,17 +1036,28 @@ export class WeddingCampaignService {
         await this.ensureCampaignHydrated();
         await this.writeCampaignRow();
       })
-      .catch(() => undefined);
+      .catch((error: unknown) => { this.campaignPersistenceError = error; });
   }
+
+  private campaignPersistenceError: unknown;
 
   public async flushCampaignPersistence(): Promise<void> {
     await this.ensureCampaignHydrated();
     await campaignPersistChain;
+    if (this.campaignPersistenceError) {
+      const error = this.campaignPersistenceError;
+      this.campaignPersistenceError = undefined;
+      throw error;
+    }
   }
 
   private async persistWaitingPlaylist(): Promise<void> {
     const wroteDb = await this.persistWaitingTracksToDatabase();
     if (!wroteDb) {
+      if (this.environment.NODE_ENV === "production") throw new AppError({
+        statusCode: 503, code: "WEDDING_PERSISTENCE_UNAVAILABLE",
+        message: "Waiting music could not be saved. Check database availability and applied migrations, then retry.",
+      });
       try {
         await this.persistWaitingTracksToFile();
       } catch {
@@ -1080,17 +1118,10 @@ export class WeddingCampaignService {
   }
 
   private async hydrateWaitingMusicConfig(): Promise<void> {
+    // Track availability never overrides the persisted master switch.
     await this.ensureCampaignHydrated();
-    if (!this.database) {
-      if (waitingTracks.some((item) => item.isEnabled)) {
-        overlay = { ...overlay, waitingMusicEnabled: true };
-      }
-      return;
-    }
-    if (waitingTracks.some((item) => item.isEnabled) && overlay.waitingMusicEnabled !== true) {
-      overlay = { ...overlay, waitingMusicEnabled: true };
-    }
   }
+
 }
 
 export function markWeddingWaitingTracksUnhydratedForTests(): void {

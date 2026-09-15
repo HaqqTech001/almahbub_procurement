@@ -1,135 +1,55 @@
 import { useEffect } from "react";
-import { Link, Navigate, useLocation, useParams } from "react-router-dom";
-import { ButtonLink, EmptyState, Section } from "../components/index.js";
-import {
-  BusinessDiscovery,
-  GroupBusinessMark,
-} from "../components/GroupBusinessSwitcher.js";
-import { PageHero } from "../components/PageHero.js";
-import {
-  getGroupBusiness,
-  GROUP,
-  isIntegratedExportSlug,
-} from "../content/group.js";
-import { SITE } from "../content/site.js";
-import { applyJsonLd, applyPageSeo } from "../lib/seo.js";
-
-function businessSlugFromPath(pathname: string): string {
-  const match = pathname.match(/^\/businesses\/([^/]+)\/?$/);
-  return match?.[1]?.trim() ?? "";
-}
-
-/**
- * Almahbub International business profile (and unknown-slug empty state).
- * Integrated Export uses the dedicated portal route - do not render a card profile.
- */
+import { Navigate, Link, useParams } from "react-router-dom";
+import { ButtonLink, EmptyState } from "../components/index.js";
+import { InternationalCategories } from "../components/CommerceCatalogue.js";
+import { COMMERCE } from "../content/commerce.js";
+import { applyPageSeo } from "../lib/seo.js";
 export function BusinessPage() {
-  const { slug: paramSlug = "" } = useParams();
-  const { pathname } = useLocation();
-  const slug = paramSlug.trim() || businessSlugFromPath(pathname);
-  const isExportPortal = isIntegratedExportSlug(slug);
-  const business = isExportPortal ? undefined : getGroupBusiness(slug);
-
+  const { slug = "almahbub-international" } = useParams();
   useEffect(() => {
-    if (!business) return;
     applyPageSeo({
-      title: business.name,
-      description: business.summary,
-      path: business.href,
+      title: COMMERCE.international.name,
+      description: COMMERCE.international.description,
+      path: "/businesses/almahbub-international",
     });
-    applyJsonLd({
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: business.legalName,
-      description: business.summary,
-      url: `${SITE.url}${business.href}`,
-    });
-  }, [business]);
-
-  if (isExportPortal) {
+  }, []);
+  if (slug === "almahbub-integrated-export")
     return <Navigate to="/businesses/almahbub-integrated-export" replace />;
-  }
-
-  if (!business) {
+  if (slug !== "almahbub-international")
     return (
       <EmptyState
         title="Business not found"
-        description="That company is not listed under Almahbub Group on this website."
-        actionHref="/group"
-        actionLabel="View Almahbub Group"
+        description="Explore our import and export operations."
+        actionHref="/"
+        actionLabel="Home"
       />
     );
-  }
-
   return (
-    <>
-      <PageHero
-        eyebrow={GROUP.endorsement}
-        title={business.name}
-        description={business.focus}
-        breadcrumbs={[
-          { label: "Home", href: "/" },
-          { label: GROUP.name, href: "/group" },
-          { label: business.name },
-        ]}
-        actions={
-          <>
-            <ButtonLink href={business.cta.href} variant="primary">
-              {business.cta.label}
-            </ButtonLink>
-            <ButtonLink href={GROUP.href} variant="secondary">
-              Explore Almahbub Group
-            </ButtonLink>
-          </>
-        }
-      />
-
-      <Section
-        id="business-profile"
-        title="Business profile"
-        description="Separately registered. The operating company behind this website."
-      >
-        <div className="hamd-group-profile">
-          <div className="hamd-group-profile__visual" aria-hidden="true">
-            <GroupBusinessMark business={business} size="lg" />
-            <p className="hamd-group-profile__media-label">{business.mediaLabel}</p>
-          </div>
-          <div className="hamd-group-profile__body">
-            <p className="hamd-group-profile__endorsement">
-              <Link to={GROUP.href}>{GROUP.endorsement}</Link>
-            </p>
-            <p className="hamd-group-profile__focus">{business.focusShort}</p>
-            {business.description.map((paragraph) => (
-              <p key={paragraph.slice(0, 32)} className="hamd-prose">
-                {paragraph}
-              </p>
-            ))}
-            <h3 className="hamd-group-profile__heading">Capabilities</h3>
-            <ul className="hamd-group-profile__caps">
-              {business.capabilities.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-            <p className="hamd-prose">
-              Browse the <Link to="/products">product catalogue</Link> or{" "}
-              <Link to="/services">services</Link> for Almahbub International.
-            </p>
-            <div className="hamd-group-profile__actions">
-              <ButtonLink href={business.cta.href} variant="primary">
-                {business.cta.label}
-              </ButtonLink>
-              <ButtonLink href={GROUP.href} variant="secondary">
-                Explore Almahbub Group
-              </ButtonLink>
-            </div>
-          </div>
-        </div>
-        <BusinessDiscovery currentSlug={business.slug} variant="panel" />
-      </Section>
-    </>
+    <div className="commerce-page commerce-wrap">
+      <p className="commerce-eyebrow">{COMMERCE.international.positioning}</p>
+      <h1>{COMMERCE.international.name}</h1>
+      <p className="commerce-lead">
+        Source devices, machinery and general merchandise to your
+        specifications.
+      </p>
+      <InternationalCategories />
+      <p>
+        <Link to="/products">Browse the full product catalogue</Link>
+      </p>
+      <section>
+        <h2>Request sourcing</h2>
+        <p>
+          Include specifications, quantity, budget and delivery destination. Our
+          team confirms supplier options, pricing and delivery terms in your
+          quotation.
+        </p>
+        <ButtonLink href="/app/requests/new">
+          Start a procurement request
+        </ButtonLink>
+      </section>
+    </div>
   );
 }
-
 export function BusinessesIndexRedirect() {
-  return <Navigate to="/group" replace />;
+  return <Navigate to="/" replace />;
 }

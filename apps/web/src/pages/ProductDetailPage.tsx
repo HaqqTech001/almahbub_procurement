@@ -200,9 +200,8 @@ export function ProductDetailPage() {
           ) : null}
         </p>
         <h1>{product.name}</h1>
-        {product.category ? (
-          <p className="hamd-product-detail__tag">{product.category.name}</p>
-        ) : null}
+        {product.description ? <p className="hamd-prose">{product.description}</p> : null}
+
       </header>
       <div className="hamd-product-detail">
           <div
@@ -267,16 +266,6 @@ export function ProductDetailPage() {
           </div>
           <div className="hamd-product-detail__copy">
             <dl className="hamd-product-detail__meta">
-              {product.category ? (
-                <div>
-                  <dt>Category</dt>
-                  <dd>
-                    <Link to={`/products?category=${product.category.slug}`}>
-                      {product.category.name}
-                    </Link>
-                  </dd>
-                </div>
-              ) : null}
               {product.brandName ? (
                 <div>
                   <dt>Brand</dt>
@@ -290,9 +279,7 @@ export function ProductDetailPage() {
                 </div>
               ) : null}
             </dl>
-            {product.description ? (
-              <p className="hamd-prose">{product.description}</p>
-            ) : null}
+
             {specificationVariant ? (
               <section className="hamd-product-specs" aria-labelledby="product-specs-heading">
                 <h2 id="product-specs-heading">Specifications to include</h2>

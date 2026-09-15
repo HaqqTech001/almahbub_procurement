@@ -30,27 +30,27 @@ const media = {
 } as const;
 
 export const homepageSeo: NonNullable<HomepageProps["seo"]> = {
-  title: "Almahbub International | Global procurement. Local accountability.",
+  title: "Almahbub | Multi-Commerce Import & Export",
   description:
-    "Managed international procurement for buyers who need a Nigerian partner that owns every next step request, clarify, source, quote, approve, and deliver.",
+    "Almahbub International sources devices, machinery and general items. Almahbub Integrated Export supplies agricultural commodities to international buyers.",
   canonicalUrl: `${siteUrl}/`,
-  organizationName: "Almahbub International",
+  organizationName: "Almahbub",
   organizationUrl: siteUrl,
   contactEmail: "almahbubinternational@gmail.com",
   includeJsonLd: true,
-  includeFaqJsonLd: true,
+  includeFaqJsonLd: false,
 };
 
 /** 1. Hero - dual CTA, enterprise typography, professional visual system. */
 export const homepageHero: NonNullable<HomepageProps["hero"]> = {
   brandName: "Almahbub International",
   groupAffiliation: "Part of Almahbub Group",
-  groupHref: "/group",
+  groupHref: "/",
   groupExploreLabel: "Explore our businesses",
-  headline: "Global procurement. Local accountability.",
+  headline: "Commerce Across Borders. Sourcing What Businesses Need. Supplying What the World Needs.",
   supportingText:
-    "We source, clarify, quote, and deliver for buyers who need a Nigerian partner that owns every next step from China, USA, Korea, and beyond into Nigeria.",
-  primaryCta: { href: "/contact", label: "Request Procurement" },
+    "Our import and export operations connect international sourcing with agricultural commodity trade across China, USA, UK, UAE, Korea and other markets.",
+  primaryCta: { href: "/app/requests/new", label: "Start a procurement request" },
   secondaryCta: { href: "/services", label: "Explore Services" },
   searchLabel: "Search products and capabilities",
   searchPlaceholder: "Product, category, or destination",
@@ -68,16 +68,16 @@ export const homepageHero: NonNullable<HomepageProps["hero"]> = {
 
 /** 2. Trusted Companies - corridor partners with accountable roles. */
 export const homepageTrust: NonNullable<HomepageProps["trust"]> = {
-  eyebrow: "Trusted companies",
-  title: "Partners that keep delivery accountable",
+  eyebrow: "Your procurement partner",
+  title: "Support from sourcing to delivery",
   description:
-    "Named logistics, inspection, and freight relationships, not anonymous marketplace sellers.",
+    "A Nigeria-based team to coordinate suppliers, quotations, and delivery.",
   indicators: [
     {
       id: "process",
       label: "Managed end-to-end process",
       detail:
-        "Request, clarify, source, quote, approve, deliver with a named next owner.",
+        "A team to guide your request through sourcing and delivery.",
     },
     {
       id: "rooted",
@@ -87,7 +87,7 @@ export const homepageTrust: NonNullable<HomepageProps["trust"]> = {
     {
       id: "verify",
       label: "Quotes and tracking you can verify",
-      detail: "Commercial and shipment states wait for confirmed records.",
+      detail: "Review quotations and follow confirmed shipment updates.",
     },
   ],
   partners: [],
@@ -124,7 +124,7 @@ export const homepageBelowFold: NonNullable<HomepageProps["belowFold"]> = {
       },
       {
         id: "import-export",
-        title: "Import & Export",
+        title: "Import Coordination",
         description:
           "Documentation-aware trade execution with named owners for each milestone.",
         href: "/services/import-export",
@@ -140,7 +140,7 @@ export const homepageBelowFold: NonNullable<HomepageProps["belowFold"]> = {
         id: "warehousing",
         title: "Warehousing",
         description:
-          "Storage and handling aligned to your delivery plan, not open marketplace inventory.",
+          "Storage and handling aligned to your delivery plan.",
         href: "/services/warehousing",
       },
     ],
@@ -388,8 +388,8 @@ export const homepageHeader: NonNullable<HomepageProps["header"]> = {
   brandHref: "/",
   brandLogoSrc: "/almahbub.svg",
   brandLogoAlt: "Almahbub International",
-  brandAffiliation: "Part of Almahbub Group",
-  brandAffiliationHref: "/group",
+  brandAffiliation: "Import & Export",
+  brandAffiliationHref: "/",
   /** Conversion CTA lives in hero / section surfaces - not the global navbar. */
   requestCta: null,
   languageOptions: [],
@@ -400,9 +400,9 @@ export const homepageHeader: NonNullable<HomepageProps["header"]> = {
   megaMenus: [],
   links: [
     { id: "home", label: "Home", href: "/" },
-    { id: "products", label: "Products", href: "/products" },
+    { id: "products", label: "International", href: "/businesses/almahbub-international" },
+    { id: "integrated-export", label: "Integrated Export", href: "/businesses/almahbub-integrated-export" },
     { id: "services", label: "Services", href: "/services" },
-    { id: "industries", label: "Industries", href: "/industries" },
     { id: "about", label: "About", href: "/about" },
     { id: "contact", label: "Contact", href: "/contact" },
   ],
@@ -411,27 +411,26 @@ export const homepageHeader: NonNullable<HomepageProps["header"]> = {
 export const homepageFooter: NonNullable<HomepageProps["footer"]> = {
   brandName: "Almahbub International",
   brandHref: "/",
-  tagline: "Global procurement. Local accountability.",
+  tagline: "Devices, machinery and general items import. Agricultural commodity export.",
   groupName: "Almahbub Group",
-  groupHref: "/group",
+  groupHref: "/",
   businessLinks: [
     {
       id: "international",
       label: "Almahbub International",
       href: "/businesses/almahbub-international",
-      summary: "Procurement · sourcing · supply · logistics",
+      summary: "Devices, machinery and general items import",
     },
     {
       id: "integrated-export",
       label: "Almahbub Integrated Export Ltd.",
       href: "/businesses/almahbub-integrated-export",
-      summary: "Agro commodities · bulk supply · export",
+      summary: "Agro commodities for export",
     },
   ],
   companyLinks: [
     { id: "home", label: "Home", href: "/" },
     { id: "about", label: "About", href: "/about" },
-    { id: "group", label: "Almahbub Group", href: "/group" },
     { id: "request", label: "Request Procurement", href: "/contact" },
     { id: "signin", label: "Sign in", href: "/login" },
   ],

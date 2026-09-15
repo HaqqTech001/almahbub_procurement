@@ -205,7 +205,7 @@ describe("IE-3B catalogue and detail UI", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /approved imagery forthcoming/i })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: /specifications/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: /overview/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /additional details/i })).not.toBeInTheDocument();
     expect(screen.queryByText(/nigeria/i)).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: /^Request a Quote$/i })).toHaveAttribute(
       "href",
@@ -221,7 +221,7 @@ describe("IE-3B catalogue and detail UI", () => {
         </AppProviders>
       </MemoryRouter>,
     );
-    expect(screen.getByRole("heading", { name: /overview/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /additional details/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /specifications/i })).toBeInTheDocument();
     expect(screen.getByText("Approved label")).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: /packaging/i })).not.toBeInTheDocument();

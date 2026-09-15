@@ -1,7 +1,8 @@
+import { ModuleSkeleton } from "@hamd/ui/module-layout";
 import { useCallback, useEffect, useState } from "react";
 
 import { useAuth } from "../auth/session/AuthProvider.js";
-import { HostAlert, HostLoading, HostPage } from "../components/HostChrome.js";
+import { HostAlert,  HostPage } from "../components/HostChrome.js";
 import {
   FinanceApiError,
   listPayments,
@@ -57,7 +58,7 @@ export function PaymentsPage() {
         </button>
       </header>
       {error ? <HostAlert>{error}</HostAlert> : null}
-      {loading ? <HostLoading label="Loading payments…" /> : null}
+      {loading ? <ModuleSkeleton variant="table" /> : null}
       {!loading && !error && rows.length === 0 ? (
         <p className="hamd-web-finance__empty" role="status">
           No payments yet.

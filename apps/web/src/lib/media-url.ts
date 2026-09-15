@@ -13,13 +13,14 @@ export function resolveMediaUrl(
   if (/^(https?:)?\/\//i.test(raw) || raw.startsWith("data:") || raw.startsWith("blob:")) {
     return raw;
   }
-  if (raw.startsWith("/media/") || raw.startsWith("/almahbub") || raw.startsWith("/api/v1/public/catalog-media/")) {
+  if (raw.startsWith("/media/") || raw.startsWith("/almahbub")) {
     return raw;
   }
   const base = (apiBase ?? browserApiBase()).replace(/\/$/, "");
   if (
     raw.startsWith("/uploads") ||
     raw.startsWith("uploads/") ||
+    raw.startsWith("/api/v1/public/catalog-media/") ||
     raw.startsWith("/api/v1/documents/")
   ) {
     const path = raw.startsWith("/") ? raw : `/${raw}`;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCookieConsent } from "../app/providers/CookieConsentProvider.js";
 
@@ -17,6 +17,20 @@ export function CookieConsentBanner() {
     closePreferences,
   } = useCookieConsent();
   const [analytics, setAnalytics] = useState(analyticsAllowed);
+  const bannerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const banner = bannerRef.current;
+    if (!banner) return;
+    const update = () => document.documentElement.style.setProperty("--hamd-cookie-banner-height", `${banner.getBoundingClientRect().height}px`);
+    update();
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
+    observer?.observe(banner);
+    return () => {
+      observer?.disconnect();
+      document.documentElement.style.removeProperty("--hamd-cookie-banner-height");
+    };
+  }, [ready, decided, preferencesOpen]);
 
   useEffect(() => {
     setAnalytics(analyticsAllowed);
@@ -26,7 +40,7 @@ export function CookieConsentBanner() {
   if (decided && !preferencesOpen) return null;
 
   return (
-    <div className="hamd-cookie" role="dialog" aria-label="Cookie consent">
+    <div ref={bannerRef} className="hamd-cookie" role="dialog" aria-label="Cookie consent">
       <div className="hamd-cookie__panel">
         <p className="hamd-cookie__title">Cookies and privacy</p>
         <p className="hamd-cookie__body">

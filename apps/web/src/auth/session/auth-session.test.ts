@@ -3,8 +3,7 @@ import { describe, expect, it, beforeEach } from "vitest";
 import {
   clearLoginFailures,
   getLoginLockUntil,
-  isLoginLocked,
-  recordLoginFailure,
+  rememberLoginLock,
 } from "./client-rate-limit.js";
 import {
   clearAccessToken,
@@ -67,14 +66,10 @@ describe("client login rate limit", () => {
     clearLoginFailures();
   });
 
-  it("locks after repeated failures", () => {
-    for (let i = 0; i < 4; i += 1) {
-      expect(recordLoginFailure().locked).toBe(false);
-    }
-    const result = recordLoginFailure();
-    expect(result.locked).toBe(true);
-    expect(isLoginLocked()).toBe(true);
-    expect(getLoginLockUntil()).toBeTypeOf("number");
+  it("remembers only the server supplied cooldown", () => {
+    expect(getLoginLockUntil()).toBeNull();
+    const deadline = rememberLoginLock(900);
+    expect(getLoginLockUntil()).toBe(deadline);
   });
 });
 

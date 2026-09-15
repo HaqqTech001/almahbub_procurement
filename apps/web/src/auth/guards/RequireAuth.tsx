@@ -22,7 +22,7 @@ export function AuthBoot({
  * Anonymous users are sent to Sign In (not Unauthorized) with return path preserved.
  */
 export function RequireAuth({ children }: { children: ReactNode }) {
-  const { status, bootstrapping } = useAuth();
+  const { status, bootstrapping, lockUntil } = useAuth();
   const location = useLocation();
 
   if (bootstrapping) {
@@ -40,7 +40,7 @@ export function RequireAuth({ children }: { children: ReactNode }) {
     );
   }
 
-  if (status === "locked") {
+  if (status === "locked" && lockUntil !== null && lockUntil > Date.now()) {
     return <Navigate to="/account-locked" replace />;
   }
 

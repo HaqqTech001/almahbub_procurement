@@ -285,21 +285,6 @@
   border-top: 0;
 }
 
-.hamd-guide-tour__progress {
-  height: 3px;
-  background: rgb(20 32 51 / 0.1);
-  border-radius: 99px;
-  margin-bottom: 0.65rem;
-  overflow: hidden;
-}
-
-.hamd-guide-tour__progress-bar {
-  display: block;
-  height: 100%;
-  background: #c9a227;
-  transition: width 200ms ease;
-}
-
 .hamd-guide-tour__title {
   margin: 0 0 0.4rem;
   font-size: 1.05rem;
@@ -968,7 +953,6 @@
   .hamd-guide-tip,
   .hamd-guide-spotlight,
   .hamd-guide-spotlight--pulse,
-  .hamd-guide-tour__progress-bar,
   .hamd-guide-tour__resume-chip {
     animation: none !important;
     transition: none !important;

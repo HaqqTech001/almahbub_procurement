@@ -89,6 +89,8 @@ export function CelebrationExperienceModal({
   const titleId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const dismissRef = useRef(onDismiss);
+  dismissRef.current = onDismiss;
   const clock = now ?? new Date();
   const actions = weddingModalActions(campaign, clock);
   const names = campaign.coupleNames.trim() || campaign.title;
@@ -107,12 +109,12 @@ export function CelebrationExperienceModal({
       if (!open) return;
       if (event.key === "Escape" && dismissible) {
         event.preventDefault();
-        onDismiss();
+        dismissRef.current();
       }
     };
     node.addEventListener("keydown", onKey);
     return () => node.removeEventListener("keydown", onKey);
-  }, [dismissible, onDismiss, open]);
+  }, [dismissible, open]);
 
   const go = (href: string) => {
     onDismiss();
@@ -222,6 +224,7 @@ export function CelebrationExperienceModal({
             </button>
           ) : null}
         </div>
+        {dismissible ? <button type="button" className="hamd-btn hamd-btn--ghost" onClick={onDismiss}>Continue browsing</button> : null}
       </article>
     </dialog>
   );

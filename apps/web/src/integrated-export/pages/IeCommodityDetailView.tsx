@@ -19,7 +19,6 @@ type IeCommodityDetailViewProps = {
  */
 export function IeCommodityDetailView({ commodity }: IeCommodityDetailViewProps) {
   const quoteHref = useIeQuoteHref(commodity.slug);
-  const hasOverview = Boolean(commodity.shortDescription || commodity.description);
 
   return (
     <div className="hamd-aie-commodity-detail__layout">
@@ -63,18 +62,6 @@ export function IeCommodityDetailView({ commodity }: IeCommodityDetailViewProps)
           )}
         </div>
       </header>
-
-      {hasOverview && commodity.description ? (
-        <section
-          className="hamd-aie-commodity-detail__section"
-          aria-labelledby="aie-commodity-overview"
-        >
-          <h2 id="aie-commodity-overview" className="hamd-aie-commodity-detail__h2">
-            Overview
-          </h2>
-          <p className="hamd-aie-commodity-detail__copy">{commodity.description}</p>
-        </section>
-      ) : null}
 
       {commodity.specifications && commodity.specifications.length > 0 ? (
         <section
@@ -147,6 +134,18 @@ export function IeCommodityDetailView({ commodity }: IeCommodityDetailViewProps)
         </section>
       ) : null}
 
+      {commodity.description && commodity.description !== commodity.shortDescription ? (
+        <section
+          className="hamd-aie-commodity-detail__section"
+          aria-labelledby="aie-commodity-overview"
+        >
+          <h2 id="aie-commodity-overview" className="hamd-aie-commodity-detail__h2">
+            Additional details
+          </h2>
+          <p className="hamd-aie-commodity-detail__copy">{commodity.description}</p>
+        </section>
+      ) : null}
+
       {commodity.gallery && commodity.gallery.length > 0 ? (
         <section
           className="hamd-aie-commodity-detail__section"
@@ -180,8 +179,7 @@ export function IeCommodityDetailView({ commodity }: IeCommodityDetailViewProps)
           Request a Quote
         </h2>
         <p className="hamd-aie-commodity-detail__copy">
-          Tell us what you need. Commercial terms, grades, and availability are confirmed
-          through enquiry, not as self-serve checkout on this website.
+          Include quantity, grade and destination. Availability and commercial terms are confirmed in your quotation.
         </p>
         <div className="hamd-aie-commodity-detail__actions">
           <ButtonLink

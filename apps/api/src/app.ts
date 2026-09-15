@@ -58,6 +58,7 @@ import { createApiAbuseLimiters } from "./middleware/redis-rate-limit.js";
 import { IeCommodityService } from "./modules/integrated-export/application/ie-commodity-service.js";
 import { createIeCommodityRouter } from "./modules/integrated-export/api/ie-commodity-routes.js";
 import { WeddingCampaignService } from "./modules/wedding/application/wedding-campaign-service.js";
+import { WeddingParticipationService } from "./modules/wedding/application/wedding-participation-service.js";
 import { createWeddingRouter } from "./modules/wedding/api/wedding-routes.js";
 
 export function createApp(
@@ -112,6 +113,7 @@ export function createApp(
         callback(null, false);
       },
       credentials: true,
+      exposedHeaders: ["Retry-After"],
       maxAge: 86_400,
     }),
   );
@@ -285,6 +287,7 @@ export function createApp(
         authenticate,
         optionalAuthenticate,
         new WeddingCampaignService(environment, database),
+        new WeddingParticipationService(database),
       ),
     );
     app.use(`${API_V1_PATH}/announcements`, parityRouters.announcements);

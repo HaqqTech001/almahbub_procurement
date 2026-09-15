@@ -1,3 +1,5 @@
+import { CollectionSkeleton } from "@hamd/ui/primitives";
+import { ModuleSkeleton } from "@hamd/ui/module-layout";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ActivityFeed, type ActivityItem, type ActivityKind } from "@hamd/ui/dashboard";
@@ -10,7 +12,7 @@ import {
   type OpsSeriesPoint,
 } from "../api/ops-api.js";
 import { useAuth } from "../auth/session/AuthProvider.js";
-import { OpsAlert, OpsLoading, OpsPage } from "../components/OpsChrome.js";
+import { OpsAlert, OpsPage } from "../components/OpsChrome.js";
 
 type SeriesRange = "7d" | "30d" | "90d";
 
@@ -239,7 +241,7 @@ export function DashboardPage() {
         </OpsAlert>
       ) : null}
 
-      {loading ? <OpsLoading label="Loading dashboard…" /> : null}
+      {loading ? <><CollectionSkeleton label="Loading dashboard metrics" variant="metrics" gridClassName="hamd-ops-kpi-grid" cardClassName="hamd-ops-kpi-card" count={4} /><ModuleSkeleton variant="list" count={4} /></> : null}
 
       {!loading && !error && data ? (
         <>

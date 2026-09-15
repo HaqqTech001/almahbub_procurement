@@ -82,3 +82,10 @@ describe("WeddingWaitingAudioPanel", () => {
     expect(opsFetch).not.toHaveBeenCalled();
   });
 });
+
+it("keeps the persisted value on save failure and reports the error", async () => {
+ opsFetch.mockRejectedValue(new Error("Could not save")); const onEnabled=vi.fn();
+ render(<WeddingWaitingAudioPanel tracks={[]} enabled={false} loop accessToken={async()=>"token"} onTracks={vi.fn()} onEnabled={onEnabled} onLoop={vi.fn()} />);
+ fireEvent.click(screen.getByRole("checkbox",{name:/Enable waiting music/i}));
+ expect(await screen.findByText("Could not save")).toBeInTheDocument(); expect(onEnabled).not.toHaveBeenCalled();
+});

@@ -188,7 +188,7 @@ function createMemoryRepository() {
       const user = users.get(id);
       return user ? toAuthUser(user) : null;
     }),
-    countRecentFailedLogins: vi.fn(async () => 0),
+    checkPasswordAttempt: vi.fn(async () => ({ lockedUntil: null, now: new Date() })),
     findUserForLoginById: vi.fn(),
     recordLoginEvent: vi.fn(async (input) => {
       loginEvents.push(input);

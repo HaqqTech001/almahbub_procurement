@@ -1,3 +1,5 @@
+import { CollectionSkeleton } from "@hamd/ui/primitives";
+import { ModuleSkeleton } from "@hamd/ui/module-layout";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CelebrationExperienceModal } from "@hamd/ui/marketing";
@@ -14,9 +16,10 @@ import { OpsAlert, OpsPage, OpsStatus } from "../components/OpsChrome.js";
 import { opsFetch, requireOpsToken } from "../lib/ops-fetch.js";
 import { WeddingGalleryPanel, type WeddingOpsGalleryItem } from "./wedding/WeddingGalleryPanel.js";
 import { WeddingWaitingAudioPanel } from "./wedding/WeddingWaitingAudioPanel.js";
+import { WeddingParticipantsPanel } from "./wedding/WeddingParticipantsPanel.js";
 import type { WeddingWaitingTrack } from "@hamd/constants";
 
-type Tab = "overview" | "live" | "waiting-music" | "gallery" | "comments" | "invitation";
+type Tab = "overview" | "live" | "waiting-music" | "gallery" | "comments" | "invitation" | "waiting" | "subscription";
 
 const TABS: Array<{ id: Tab; label: string }> = [
   { id: "overview", label: "Overview" },
@@ -25,6 +28,8 @@ const TABS: Array<{ id: Tab; label: string }> = [
   { id: "gallery", label: "Gallery" },
   { id: "comments", label: "Comments" },
   { id: "invitation", label: "Invitation" },
+  { id: "waiting", label: "Waiting Room" },
+  { id: "subscription", label: "Update subscriptions" },
 ];
 
 export function WeddingCampaignPage() {
@@ -40,11 +45,14 @@ export function WeddingCampaignPage() {
   const [commentQuery, setCommentQuery] = useState("");
   const [gallery, setGallery] = useState<WeddingOpsGalleryItem[]>([]);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [collectionsLoading, setCollectionsLoading] = useState(true);
+  const [collectionErrors, setCollectionErrors] = useState<Record<string, boolean>>({});
   const [waitingTracks, setWaitingTracks] = useState<WeddingWaitingTrack[]>([]);
 
   const token = () => requireOpsToken(auth.ensureSession, getAccessToken);
 
   const refresh = async () => {
+    setCollectionsLoading(true); setCollectionErrors({});
     const access = await token();
     const row = await opsFetch<
       WeddingCampaignRecord & { testControlsEnabled?: boolean; livekitConfigured?: boolean }
@@ -67,7 +75,7 @@ export function WeddingCampaignPage() {
       );
       setComments(list.items ?? []);
     } catch {
-      setComments([]);
+      setCollectionErrors(current => ({...current, comments: true}));
     }
     try {
       const media = await opsFetch<{ items: WeddingOpsGalleryItem[] }>(
@@ -76,7 +84,7 @@ export function WeddingCampaignPage() {
       );
       setGallery(media.items ?? []);
     } catch {
-      setGallery([]);
+      setCollectionErrors(current => ({...current, gallery: true}));
     }
     try {
       const audio = await opsFetch<{ items: WeddingWaitingTrack[] }>("/wedding/waiting-audio", {
@@ -84,13 +92,15 @@ export function WeddingCampaignPage() {
       });
       setWaitingTracks(audio.items ?? []);
     } catch {
-      setWaitingTracks([]);
+      setCollectionErrors(current => ({...current, "waiting-music": true}));
     }
+    setCollectionsLoading(false);
   };
 
   useEffect(() => {
     void refresh().catch((err: unknown) => {
       setError(err instanceof Error ? err.message : "Unable to load campaign.");
+      setCollectionsLoading(false);
     });
   }, []);
 
@@ -145,6 +155,7 @@ export function WeddingCampaignPage() {
         ))}
       </nav>
 
+      {tab === "waiting" || tab === "subscription" ? <WeddingParticipantsPanel key={tab} kind={tab} /> : null}
       {tab === "overview" ? (
         <dl className="hamd-wedding-ops__overview">
           <div>
@@ -218,23 +229,25 @@ export function WeddingCampaignPage() {
         </section>
       ) : null}
 
-      {tab === "waiting-music" ? (
+      {["gallery", "comments", "waiting-music"].includes(tab) && collectionsLoading ? (tab === "gallery" ? <CollectionSkeleton label="Loading wedding media" gridClassName="hamd-wedding-gallery" aspectRatio="1" /> : <ModuleSkeleton variant="list" count={4} />) : null}
+      {collectionErrors[tab] && !collectionsLoading ? <OpsAlert>Unable to load {tab}. <button onClick={() => void refresh().catch(() => { setCollectionsLoading(false); setError("Unable to refresh wedding content."); })}>Retry</button></OpsAlert> : null}
+      {tab === "waiting-music" && !collectionsLoading && !collectionErrors[tab] ? (
         <WeddingWaitingAudioPanel
           tracks={waitingTracks}
           enabled={Boolean(campaign.waitingMusicEnabled)}
           loop={campaign.waitingMusicLoop !== false}
           accessToken={token}
           onTracks={setWaitingTracks}
-          onEnabled={(value) => setCampaign({ ...campaign, waitingMusicEnabled: value })}
-          onLoop={(value) => setCampaign({ ...campaign, waitingMusicLoop: value })}
+          onEnabled={(value) => setCampaign(current => ({ ...current, waitingMusicEnabled: value }))}
+          onLoop={(value) => setCampaign(current => ({ ...current, waitingMusicLoop: value }))}
         />
       ) : null}
 
-      {tab === "gallery" ? (
+      {tab === "gallery" && !collectionsLoading && !collectionErrors[tab] ? (
         <WeddingGalleryPanel items={gallery} accessToken={token} onItems={setGallery} />
       ) : null}
 
-      {tab === "comments" ? (
+      {tab === "comments" && !collectionsLoading && !collectionErrors[tab] ? (
         <section className="hamd-wedding-ops-comments">
           <header>
             <h2>Guest messages</h2>
@@ -337,7 +350,8 @@ export function WeddingCampaignPage() {
                   checked={campaign.modalEnabled}
                   onChange={(e) => setCampaign({ ...campaign, modalEnabled: e.target.checked })}
                 />{" "}
-                Modal enabled
+                Wedding promotion: {campaign.modalEnabled ? "Enabled" : "Disabled"}
+                <small> Controls the public wedding invitation and floating wedding entry. Save invitation to apply.</small>
               </span>
             </label>
             <div className="hamd-entity-form__actions">

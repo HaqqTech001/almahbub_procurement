@@ -199,7 +199,7 @@ describe("RequestCreateWizard", () => {
       screen.getByRole("button", { name: "Save for later" }),
     ).toBeInTheDocument();
     expect(screen.queryByText("Save and continue later")).not.toBeInTheDocument();
-    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "1");
+    expect(screen.getByRole("img", { name: "Products, step 1 of 5, current" }).parentElement).toHaveAttribute("aria-current", "step");
 
     await user.click(screen.getByRole("button", { name: /^next$/i }));
     expect(screen.getByRole("alert")).toHaveTextContent(/at least one product/i);

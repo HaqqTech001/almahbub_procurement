@@ -50,6 +50,7 @@ export const errorHandler: ErrorRequestHandler = (
     },
   };
 
+  if (normalized.retryAfterSeconds !== undefined) response.setHeader("Retry-After", String(normalized.retryAfterSeconds));
   response.status(normalized.statusCode).json(body);
 };
 

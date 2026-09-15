@@ -24,7 +24,9 @@
     "docker:reset": "docker compose down --volumes --remove-orphans",
     "db:generate": "corepack pnpm --filter @hamd/database generate",
     "db:migrate": "corepack pnpm --filter @hamd/database migrate:deploy",
-    "db:studio": "corepack pnpm --filter @hamd/database studio"
+    "db:studio": "corepack pnpm --filter @hamd/database studio",
+    "media:acquire": "corepack pnpm --filter @hamd/api exec tsx src/scripts/acquire-product-primary-media.ts",
+    "media:generate": "corepack pnpm --filter @hamd/api exec tsx src/scripts/generate-product-primary-media.ts"
   },
   "devDependencies": {
     "@types/dom-mediacapture-record": "^1.0.22",

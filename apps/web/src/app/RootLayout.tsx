@@ -62,7 +62,7 @@ export function RootLayout({ children, bare = false }: RootLayoutProps) {
       <AnnouncementSlider
         announcements={announcementSlides}
         storagePrefix={announcementSystem.storagePrefix}
-        autoRotateMs={1500}
+        autoRotateMs={2500}
         chrome="minimal"
       />
     ) : null;

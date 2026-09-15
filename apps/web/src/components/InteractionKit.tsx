@@ -1,3 +1,4 @@
+import { HorizontalStepper } from "@hamd/ui";
 import {
   useId,
   useState,
@@ -148,20 +149,7 @@ export function Stepper({
     0,
     steps.findIndex((step) => step.id === currentId),
   );
-  return (
-    <ol className="hamd-stepper" aria-label="Progress">
-      {steps.map((step, index) => {
-        const state =
-          index < currentIndex ? "complete" : index === currentIndex ? "current" : "upcoming";
-        return (
-          <li key={step.id} className={cx("hamd-stepper__item", `hamd-stepper__item--${state}`)}>
-            <span className="hamd-stepper__index">{index + 1}</span>
-            <span className="hamd-stepper__label">{step.label}</span>
-          </li>
-        );
-      })}
-    </ol>
-  );
+  return <HorizontalStepper steps={steps} currentStep={currentIndex} />;
 }
 
 export function NotificationItem({

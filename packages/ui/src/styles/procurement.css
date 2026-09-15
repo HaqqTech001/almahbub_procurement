@@ -576,63 +576,6 @@
   margin-bottom: 1rem;
 }
 
-.hamd-pr-wizard__steps ol {
-  list-style: none;
-  margin: 0 0 0.65rem;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.hamd-pr-wizard__steps button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  min-height: 2.5rem;
-  padding: 0.35rem 0.7rem;
-  border: 1px solid var(--pr-border, #d0d5dd);
-  border-radius: 0.4rem;
-  background: var(--pr-surface, #fff);
-  color: inherit;
-  cursor: pointer;
-  font: inherit;
-}
-
-.hamd-pr-wizard__steps li.is-current button {
-  border-color: var(--pr-action, #155aaf);
-  background: color-mix(in srgb, var(--pr-action, #155aaf) 10%, transparent);
-}
-
-.hamd-pr-wizard__steps li.is-done button {
-  border-color: var(--pr-success, #067647);
-}
-
-.hamd-pr-wizard__step-index {
-  display: inline-grid;
-  place-items: center;
-  width: 1.35rem;
-  height: 1.35rem;
-  border-radius: 999px;
-  background: var(--pr-subtle, #f2f4f7);
-  font-size: 0.75rem;
-  font-weight: 650;
-}
-
-.hamd-pr-wizard__progress {
-  height: 0.35rem;
-  background: var(--pr-border-subtle, #eaecf0);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.hamd-pr-wizard__progress > span {
-  display: block;
-  height: 100%;
-  background: var(--pr-action, #155aaf);
-  transition: width 180ms ease;
-}
-
 .hamd-pr-wizard__toolbar,
 .hamd-pr-wizard__grid {
   display: grid;
@@ -1175,23 +1118,6 @@ html[data-theme="light"] .hamd-dash-row:hover {
   .hamd-pr-wizard__actions {
     flex-direction: column;
     justify-content: stretch;
-  }
-}
-
-@media (max-width: 480px) {
-  .hamd-pr-wizard__steps ol {
-    flex-direction: column;
-  }
-
-  .hamd-pr-wizard__steps button {
-    width: 100%;
-    justify-content: flex-start;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hamd-pr-wizard__progress > span {
-    transition: none;
   }
 }
 
@@ -1756,21 +1682,6 @@ html[data-theme="light"] .hamd-request-detail__panel {
   box-sizing: border-box;
 }
 
-.hamd-progress__kicker {
-  margin: 0;
-  font-size: 0.75rem;
-  font-weight: 650;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--hamd-color-text-tertiary, #667085);
-}
-
-.hamd-progress__current-title {
-  margin: 0;
-  font-size: 1.05rem;
-  font-weight: 650;
-}
-
 .hamd-progress__track {
   position: relative;
   height: 0.28rem;
@@ -1785,130 +1696,6 @@ html[data-theme="light"] .hamd-request-detail__panel {
   border-radius: inherit;
   background: var(--hamd-color-action, #155aaf);
   transition: width 220ms ease;
-}
-
-.hamd-progress__next {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--hamd-color-text-tertiary, #667085);
-}
-
-.hamd-progress__dots {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  gap: 0.4rem;
-}
-
-.hamd-progress__dot-item {
-  display: flex;
-}
-
-.hamd-progress--wizard .hamd-progress__stepper {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: none;
-  align-items: stretch;
-  width: 100%;
-}
-
-.hamd-progress__step {
-  display: flex;
-  align-items: center;
-  flex: 1 1 0;
-  min-width: 0;
-  color: var(--hamd-color-text-tertiary, #667085);
-}
-
-.hamd-progress__connector {
-  flex: 0 0 0.85rem;
-  height: 2px;
-  margin-inline: 0.2rem;
-  background: var(--hamd-color-border, #d0d5dd);
-}
-
-.hamd-progress__step.is-complete .hamd-progress__connector,
-.hamd-progress__step.is-current .hamd-progress__connector {
-  background: var(--hamd-color-action, #155aaf);
-}
-
-.hamd-progress__step-btn,
-.hamd-progress__step-static {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  min-width: 0;
-  padding: 0.15rem 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-}
-
-.hamd-progress__step-btn {
-  cursor: pointer;
-}
-
-.hamd-progress__marker {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.35rem;
-  height: 1.35rem;
-  flex: 0 0 auto;
-  border-radius: 999px;
-  border: 1.5px solid var(--hamd-color-border, #d0d5dd);
-  font-size: 0.7rem;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.hamd-progress__step.is-complete .hamd-progress__marker,
-.hamd-progress__step.is-current .hamd-progress__marker {
-  border-color: var(--hamd-color-action, #155aaf);
-  background: var(--hamd-color-action, #155aaf);
-  color: #fff;
-}
-
-.hamd-progress__step.is-current {
-  color: var(--hamd-color-text, #101828);
-  font-weight: 650;
-}
-
-.hamd-progress__step.is-complete {
-  color: var(--hamd-color-text, #101828);
-}
-
-.hamd-progress__stepper-label {
-  font-size: 0.8rem;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-@media (max-width: 767px) {
-  .hamd-progress--wizard .hamd-progress__compact {
-    display: grid;
-    gap: 0.4rem;
-  }
-
-  .hamd-progress--wizard .hamd-progress__stepper {
-    display: none;
-  }
-}
-
-@media (min-width: 768px) {
-  .hamd-progress--wizard .hamd-progress__compact {
-    display: none;
-  }
-
-  .hamd-progress--wizard .hamd-progress__stepper {
-    display: flex;
-  }
 }
 
 .hamd-progress__nodes {

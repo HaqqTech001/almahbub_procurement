@@ -1,4 +1,5 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { HorizontalStepper } from "../../primitives/HorizontalStepper.js";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { AuthShell } from "../AuthShell.js";
 import {
   AuthAlert,
@@ -59,6 +60,12 @@ export function RegisterScreen({
     setFormError(errorMessage);
   }, [errorMessage]);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    const first = formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]');
+    first?.scrollIntoView?.({ block: "center", behavior: "auto" });
+    first?.focus({ preventScroll: true });
+  }, [fieldErrors]);
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -150,20 +157,14 @@ export function RegisterScreen({
         </p>
       }
     >
-      <ol className="hamd-auth-steps" aria-label="Registration progress">
-        {[1, 2, 3].map((n) => (
-          <li
-            key={n}
-            className={
-              n === step ? "is-current" : n < step ? "is-done" : undefined
-            }
-            aria-current={n === step ? "step" : undefined}
-          >
-            Step {n}
-          </li>
-        ))}
-      </ol>
-      <form className="hamd-auth-form" onSubmit={handleSubmit} noValidate>
+      <HorizontalStepper
+        steps={[{ id: "account", label: "Account" }, { id: "company", label: "Company" }, { id: "security", label: "Security" }]}
+        currentStep={step - 1}
+        errorSteps={Object.keys(fieldErrors).length ? [step - 1] : []}
+        onStepSelect={(index) => { setFieldErrors({}); setStep(index + 1); }}
+        label="Registration progress"
+      />
+      <form ref={formRef} className="hamd-auth-form" onSubmit={handleSubmit} noValidate>
         {formError ? (
           <AuthAlert tone="error" title="Could not register">
             {formError}

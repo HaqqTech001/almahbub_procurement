@@ -1334,3 +1334,5 @@ a.hamd-module-card {
     white-space: normal;
   }
 }
+
+@media (prefers-reduced-motion: reduce) { .hamd-skeleton { animation: none; } }

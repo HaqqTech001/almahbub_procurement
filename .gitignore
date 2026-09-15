@@ -19,3 +19,7 @@ apps/api/.email-previews/
 almahbub-product-media/
 
 almahbub-beta-media-runner/staging/
+
+# Playwright generated test artifacts
+apps/web/test-results/
+apps/web/commerce-test-results/

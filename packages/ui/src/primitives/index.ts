@@ -103,3 +103,7 @@ export {
   DEFAULT_POWERED_BY_LABEL,
   type PoweredByAttributionProps,
 } from "./PoweredByAttribution.js";
+export { HorizontalStepper } from "./HorizontalStepper.js";
+export type { HorizontalStepperProps, HorizontalStep } from "./HorizontalStepper.js";
+
+export { CollectionSkeleton } from "./CollectionSkeleton.js";

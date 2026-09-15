@@ -1,10 +1,39 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it } from "vitest";
-
+import { describe, expect, it, vi } from "vitest";
 import { AppProviders } from "../app/providers/AppProviders.js";
 import { HomePage } from "./HomePage.js";
-
+import { listPublicCategories } from "../api/catalog-api.js";
+vi.mock("../api/catalog-api.js", () => ({
+  listPublicCategories: vi
+    .fn()
+    .mockResolvedValue({
+      data: [
+        {
+          slug: "machineries",
+          name: "Machinery",
+          imageUrl: "/media/category-industrial.svg",
+        },
+      ],
+    }),
+}));
+vi.mock(
+  "../integrated-export/commodities/use-published-ie-catalogue.js",
+  () => ({
+    usePublishedIeCommodities: () => ({
+      previews: [
+        {
+          slug: "sesame-seeds",
+          name: "Sesame Seeds",
+          imageSrc: "/media/category-industrial.svg",
+        },
+      ],
+      loading: false,
+      error: null,
+      retry: vi.fn(),
+    }),
+  }),
+);
 function renderHome() {
   return render(
     <MemoryRouter>
@@ -14,65 +43,47 @@ function renderHome() {
     </MemoryRouter>,
   );
 }
-
-describe("HomePage", () => {
-  it(
-    "renders the production Homepage shell with RC4.2 sections",
-    async () => {
-      renderHome();
-
-      expect(await screen.findByTestId("homepage")).toBeInTheDocument();
-      expect(
-        screen.getByRole("heading", {
-          name: /global procurement\. local accountability/i,
-        }),
-      ).toBeInTheDocument();
-      expect(
-        await screen.findByRole(
-          "heading",
-          { name: /why buyers choose almahbub/i },
-          { timeout: 10_000 },
-        ),
-      ).toBeInTheDocument();
-      expect(
-        await screen.findByRole(
-          "heading",
-          { name: /what can we source for you/i },
-          { timeout: 10_000 },
-        ),
-      ).toBeInTheDocument();
-      expect(screen.getByRole("link", { name: /explore full catalogue/i })).toHaveAttribute(
-        "href",
-        "/products",
-      );
-      expect(screen.getAllByRole("link", { name: "Part of Almahbub Group" }).length).toBeGreaterThan(0);
-      expect(screen.getByRole("link", { name: /explore our businesses/i })).toBeInTheDocument();
-      expect(
-        await screen.findByText(/current website/i, {}, { timeout: 10_000 }),
-      ).toBeInTheDocument();
-      expect(screen.getByText(/explore our other business/i)).toBeInTheDocument();
-      expect(screen.getByText(/interested in agro/i)).toBeInTheDocument();
-      expect(
-        await screen.findByRole("link", { name: /explore integrated export/i }, { timeout: 10_000 }),
-      ).toHaveAttribute("href", "/businesses/almahbub-integrated-export");
-      expect(document.querySelector(".hamd-business-relation")).toBeTruthy();
-      expect(
-        await screen.findByRole("heading", { name: "Almahbub Group" }, { timeout: 10_000 }),
-      ).toBeInTheDocument();
-      expect(
-        screen.getAllByRole("heading", { name: "Almahbub Integrated Export Ltd." }).length,
-      ).toBeGreaterThan(0);
-      expect(document.querySelector(".hamd-group-structure")).toBeTruthy();
-      expect(screen.getByText("Powered by HaqqTech")).toBeInTheDocument();
-    },
-    45_000,
-  );
-  it("does not duplicate the global Rowdotul HAMD'26 announcement inside the homepage body", async () => {
+describe("HomePage business gateway", () => {
+  it("introduces both operations immediately and links directly to catalogue records", async () => {
     renderHome();
-    expect(await screen.findByTestId("homepage")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Commerce Across Borders.",
+    );
+    const sections = document.querySelectorAll("main > section");
+    expect(sections[1]).toHaveAttribute("id", "international");
+    expect(sections[2]).toHaveAttribute("id", "integrated-export");
     expect(
-      screen.queryByRole("region", { name: /site announcements?/i }),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByText(/Rowdotul HAMD'26/i)).not.toBeInTheDocument();
+      await screen.findByRole("link", { name: /Machinery Machinery/ }),
+    ).toHaveAttribute("href", "/products?category=machineries");
+    expect(
+      within(
+        screen.getByRole("list", { name: "Integrated Export commodities" }),
+      ).getByRole("link"),
+    ).toHaveAttribute(
+      "href",
+      "/businesses/almahbub-integrated-export/commodities/sesame-seeds",
+    );
+    expect(
+      screen.getByRole("link", { name: "Explore International" }),
+    ).toHaveAttribute("href", "/businesses/almahbub-international");
+    expect(
+      screen.getByRole("link", { name: "Explore Integrated Export" }),
+    ).toHaveAttribute("href", "/businesses/almahbub-integrated-export");
+    expect(document.querySelector('a[href="/group"]')).toBeNull();
+    expect(document.querySelector('[type="application/ld+json"]')).toBeTruthy();
+  });
+  it("keeps both business entries and request actions during a category outage", async () => {
+    vi.mocked(listPublicCategories).mockRejectedValueOnce(new Error("offline"));
+    renderHome();
+    expect(
+      await screen.findByText(/catalogue is temporarily unavailable/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Explore International" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Request an export quotation" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Rowdotul HAMD'26/i)).toBeNull();
   });
 });

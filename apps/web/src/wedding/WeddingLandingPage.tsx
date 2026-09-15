@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { MediaLightbox, type MediaLightboxItem } from "@hamd/ui/primitives";
+import { CollectionSkeleton, MediaLightbox, OptimizedImage, type MediaLightboxItem } from "@hamd/ui/primitives";
 import { WeddingInvitationCard } from "@hamd/ui/marketing";
 import {
   DEFAULT_WEDDING_CAMPAIGN,
@@ -9,6 +9,7 @@ import {
 } from "@hamd/constants";
 
 import { useAuth } from "../auth/session/AuthProvider.js";
+import { WeddingParticipation } from "./WeddingParticipation.js";
 import {
   fetchWeddingCampaign,
   listWeddingComments,
@@ -36,6 +37,9 @@ export function WeddingLandingPage() {
   const [now, setNow] = useState(() => new Date());
   const [comments, setComments] = useState<WeddingCommentDto[]>([]);
   const [gallery, setGallery] = useState<WeddingGalleryItemDto[]>([]);
+  const [galleryLoading, setGalleryLoading] = useState(true);
+  const [galleryError, setGalleryError] = useState(false);
+  const [galleryAttempt, setGalleryAttempt] = useState(0);
   const [draft, setDraft] = useState("");
   const [commentError, setCommentError] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{ items: MediaLightboxItem[]; index: number } | null>(
@@ -44,9 +48,18 @@ export function WeddingLandingPage() {
 
   useEffect(() => {
     void fetchWeddingCampaign().then(setCampaign);
-    void listWeddingGallery().then(setGallery).catch(() => setGallery([]));
+
     void listWeddingComments().then(setComments).catch(() => setComments([]));
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    setGalleryLoading(true); setGalleryError(false);
+    void listWeddingGallery().then(rows => { if (!cancelled) setGallery(rows); })
+      .catch(() => { if (!cancelled) setGalleryError(true); })
+      .finally(() => { if (!cancelled) setGalleryLoading(false); });
+    return () => { cancelled = true; };
+  }, [galleryAttempt]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 1000);
@@ -94,6 +107,7 @@ export function WeddingLandingPage() {
       </section>
 
       <section className="hamd-wedding-page__section" aria-labelledby="wedding-details">
+        <WeddingParticipation />
         <h2 id="wedding-details">Event details</h2>
         <p>{formatWeddingWhen(campaign.eventAt)}</p>
         {campaign.venue ? (
@@ -150,7 +164,7 @@ export function WeddingLandingPage() {
       {campaign.galleryEnabled ? (
         <section className="hamd-wedding-page__section" id="gallery" aria-labelledby="wedding-gallery">
           <h2 id="wedding-gallery">Wedding gallery</h2>
-          {gallery.length === 0 ? (
+          {galleryLoading ? <CollectionSkeleton label="Loading wedding gallery" gridClassName="hamd-wedding-gallery" aspectRatio="1" /> : galleryError ? <p role="alert">Unable to load wedding gallery. <button onClick={() => setGalleryAttempt(value => value + 1)}>Retry gallery</button></p> : gallery.length === 0 ? (
             <p>Photographs and clips appear here when the host publishes them.</p>
           ) : (
             <ul className="hamd-wedding-gallery">
@@ -164,7 +178,7 @@ export function WeddingLandingPage() {
                     {item.kind === "video" ? (
                       <video src={item.src} muted playsInline />
                     ) : (
-                      <img src={item.src} alt={item.title || item.caption || ""} />
+                      <OptimizedImage src={item.src} alt={item.title || item.caption || "Wedding gallery image unavailable"} />
                     )}
                     {item.title ? <span className="hamd-sr-only">{item.title}</span> : null}
                   </button>

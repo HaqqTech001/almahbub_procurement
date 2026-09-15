@@ -101,8 +101,10 @@ export function ForbiddenScreen({
 export function AccountLockedScreen({
   supportHref = "/contact",
   unlockAt,
+  remainingSeconds,
+  loginHref = "/login",
   loading,
-}: StatusScreenProps & { unlockAt?: string }) {
+}: StatusScreenProps & { unlockAt?: string; remainingSeconds?: number }) {
   return (
     <AuthShell
       variant="locked"
@@ -112,14 +114,14 @@ export function AccountLockedScreen({
       loading={loading}
     >
       <AuthAlert tone="warning" title="Temporarily unavailable">
-        {unlockAt
-          ? `Try again after ${unlockAt}, or contact support if you need help sooner.`
-          : "Wait for the cooldown to end, or contact support to unlock your account."}
+        {remainingSeconds && remainingSeconds > 0
+          ? `Try again in ${Math.floor(remainingSeconds / 60)}:${String(remainingSeconds % 60).padStart(2, "0")}.`
+          : unlockAt ? `Try again after ${unlockAt}.` : "Return to sign in to check whether the cooldown has ended."}
       </AuthAlert>
       <p className="hamd-auth-cta-wrap">
-        <a href={supportHref} className="hamd-auth-submit hamd-auth-submit--link">
-          Contact support
-        </a>
+        <a href={loginHref} className="hamd-auth-submit hamd-auth-submit--link">Return to sign in</a>
+      </p>
+      <p><a href={supportHref} className="hamd-auth-link">Contact support</a>
       </p>
     </AuthShell>
   );

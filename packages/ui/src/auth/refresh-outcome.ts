@@ -42,7 +42,10 @@ export function isTerminalRefreshFailure(error: unknown): boolean {
   ) {
     return false;
   }
-  if (code === "FORBIDDEN" || status === 403) return false;
+  // CSRF failures are retryable after the cookie/header is refreshed. A
+  // forbidden/unauthenticated refresh session is terminal and must sign out.
+  if (code === "CSRF_VALIDATION_FAILED") return false;
+  if (code === "FORBIDDEN" || code === "UNAUTHENTICATED" || status === 403) return true;
   if (TERMINAL_CODES.has(code)) return true;
   return status === 401 && (code === "" || TERMINAL_CODES.has(code));
 }

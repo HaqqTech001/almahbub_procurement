@@ -24,7 +24,7 @@ describe("wedding campaign eligibility", () => {
   it("shows the modal inside the configured window", () => {
     expect(
       isWeddingModalEligible(
-        DEFAULT_WEDDING_CAMPAIGN,
+        { ...DEFAULT_WEDDING_CAMPAIGN, modalEnabled: true },
         new Date("2026-09-15T12:00:00+01:00"),
       ),
     ).toBe(true);
@@ -36,7 +36,7 @@ describe("wedding campaign eligibility", () => {
     expect(ends - event).toBe(3 * 24 * 60 * 60 * 1000);
     expect(
       isWeddingModalEligible(
-        DEFAULT_WEDDING_CAMPAIGN,
+        { ...DEFAULT_WEDDING_CAMPAIGN, modalEnabled: true },
         new Date(ends + 1000),
       ),
     ).toBe(false);
@@ -90,15 +90,15 @@ describe("wedding campaign eligibility", () => {
   });
 
   it("derives modal expiry from the event date once", () => {
-    expect(deriveWeddingModalEndsAt("2026-09-29")).toBe(
+    expect(deriveWeddingModalEndsAt("2026-09-26")).toBe(
       DEFAULT_WEDDING_CAMPAIGN.modalEndsAt,
     );
   });
 
   it("formats a date-only event without inventing a time", () => {
-    expect(DEFAULT_WEDDING_CAMPAIGN.eventAt).toBe("2026-09-29");
+    expect(DEFAULT_WEDDING_CAMPAIGN.eventAt).toBe("2026-09-26");
     expect(DEFAULT_WEDDING_CAMPAIGN.eventAt.includes("T")).toBe(false);
-    expect(formatWeddingWhen(DEFAULT_WEDDING_CAMPAIGN.eventAt)).toBe("29 September 2026");
+    expect(formatWeddingWhen(DEFAULT_WEDDING_CAMPAIGN.eventAt)).toBe("26 September 2026");
   });
 
   it("does not mint a live token on every render or after a known outage", () => {

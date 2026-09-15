@@ -19,7 +19,7 @@ import {
   type AuthMePayload,
   type AuthUser,
 } from "../api/auth-client.js";
-import { AuthApiError, isCredentialFailure } from "../api/auth-errors.js";
+import { AuthApiError } from "../api/auth-errors.js";
 import {
   googleClientIdFromEnv,
   initializeGoogleIdentity,
@@ -29,8 +29,7 @@ import { setPendingGoogleCredential } from "../google/pending-credential.js";
 import {
   clearLoginFailures,
   getLoginLockUntil,
-  isLoginLocked,
-  recordLoginFailure,
+  rememberLoginLock,
 } from "./client-rate-limit.js";
 import {
   clearAccessToken,
@@ -121,7 +120,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [rememberMe, setRememberMeState] = useState(false);
   const [rememberedEmail, setRememberedEmail] = useState("");
   const [trustedDevices, setTrustedDevices] = useState<TrustedDevice[]>([]);
-  const [lockUntil, setLockUntil] = useState<number | null>(null);
+  const [lockUntil, setLockUntil] = useState<number | null>(getLoginLockUntil);
   const [googleSignInReady, setGoogleSignInReady] = useState(false);
   const [googleSignInFailed, setGoogleSignInFailed] = useState(false);
   const googleCredentialHandler = useRef<((credential: string) => void) | null>(
@@ -130,6 +129,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshPromise = useRef<Promise<boolean> | null>(null);
   const lastRefreshKind = useRef<"ok" | "transient" | "expired">("ok");
   const bootstrapGeneration = useRef(0);
+
+  useEffect(() => {
+    if (lockUntil === null) return;
+    const expire = () => {
+      if (lockUntil <= Date.now()) {
+        clearLoginFailures();
+        setLockUntil(null);
+        setStatus(current => current === "locked" ? "anonymous" : current);
+      }
+    };
+    expire();
+    const timer = window.setInterval(expire, 1000);
+    window.addEventListener("focus", expire);
+    return () => { window.clearInterval(timer); window.removeEventListener("focus", expire); };
+  }, [lockUntil]);
 
   const syncDevices = useCallback(() => {
     setTrustedDevices(listTrustedDevices());
@@ -157,6 +171,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           });
         }
       }
+      clearLoginFailures();
+      setLockUntil(null);
       setStatus("authenticated");
       touchCurrentDevice();
       syncDevices();
@@ -247,12 +263,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     void (async () => {
       try {
-        if (isLoginLocked()) {
-          if (!cancelled && generation === bootstrapGeneration.current) {
-            setStatus("locked");
-          }
-          return;
-        }
         const hadSession = hasSessionHint() || isAccessTokenFresh();
         const recovered = hadSession
           ? await refreshSessionRef.current()
@@ -307,17 +317,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(
     async (input: { email: string; password: string; rememberMe: boolean }) => {
-      const lockedUntil = getLoginLockUntil();
-      if (lockedUntil) {
-        setLockUntil(lockedUntil);
-        setStatus("locked");
-        throw new AuthApiError({
-          message: "Account temporarily locked due to failed sign-in attempts.",
-          status: 423,
-          code: "ACCOUNT_LOCKED",
-        });
-      }
-
       try {
         const session = await loginRequest({
           email: input.email,
@@ -346,12 +345,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           session.organizationId,
         );
       } catch (error) {
-        if (isCredentialFailure(error)) {
-          const result = recordLoginFailure();
-          if (result.locked) {
-            setLockUntil(result.unlockAt);
-            setStatus("locked");
-          }
+        if (error instanceof AuthApiError && error.isLocked) {
+          setLockUntil(rememberLoginLock(error.retryAfterSeconds));
+          setStatus("locked");
         }
         throw error;
       }

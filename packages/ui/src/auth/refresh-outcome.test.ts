@@ -15,16 +15,14 @@ describe("refresh failure classification", () => {
     );
   });
 
-  it("does not treat network, CSRF, 403, 429, or 500 as logout", () => {
+  it("does not treat network, CSRF, 429, or 500 as logout", () => {
     expect(isTerminalRefreshFailure({ status: 0, code: "NETWORK_ERROR" })).toBe(
       false,
     );
     expect(
       isTerminalRefreshFailure({ status: 403, code: "CSRF_VALIDATION_FAILED" }),
     ).toBe(false);
-    expect(isTerminalRefreshFailure({ status: 403, code: "FORBIDDEN" })).toBe(
-      false,
-    );
+    expect(isTerminalRefreshFailure({ status: 403, code: "FORBIDDEN" })).toBe(true);
     expect(isTerminalRefreshFailure({ status: 429, code: "TOO_MANY_REQUESTS" })).toBe(
       false,
     );

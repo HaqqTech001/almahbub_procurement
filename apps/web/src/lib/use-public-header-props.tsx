@@ -1,6 +1,10 @@
 import { useCallback, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import type { GlobalHeaderProps, NavLinkItem, ThemeMode } from "@hamd/ui/navigation";
+import type {
+  GlobalHeaderProps,
+  NavLinkItem,
+  ThemeMode,
+} from "@hamd/ui/navigation";
 
 import { useOptionalAuth } from "../auth/session/AuthProvider.js";
 import { homepageHeader } from "../content/homepage.js";
@@ -12,23 +16,25 @@ export const AUTHENTICATED_IE_HEADER_LINK = {
   href: IE_PATHS.home,
 } as const;
 
-/**
- * Guest links stay International-only. After login, insert Integrated Export
- * once - after Products - without duplicating an existing href.
- */
-/**
- * Guest links stay International-only. After login, insert Integrated Export
- * once - after Products - without duplicating an existing href.
- */
+/** Both operations are discoverable for guests and signed-in buyers. */
 export function buildAuthenticatedPublicHeaderLinks(
   links: readonly NavLinkItem[],
   authenticated: boolean,
 ): NavLinkItem[] {
-  const mapped: NavLinkItem[] = links.map((link) =>
-    authenticated && link.href === "/"
-      ? { ...link, href: "/app", label: link.id === "home" ? "Dashboard" : link.label }
-      : { ...link },
-  );
+  const mapped: NavLinkItem[] = links
+    .filter(
+      (link, index) =>
+        links.findIndex((item) => item.href === link.href) === index,
+    )
+    .map((link) =>
+      authenticated && link.href === "/"
+        ? {
+            ...link,
+            href: "/app",
+            label: link.id === "home" ? "Dashboard" : link.label,
+          }
+        : { ...link },
+    );
   if (!authenticated) return mapped;
   if (mapped.some((link) => link.href === AUTHENTICATED_IE_HEADER_LINK.href)) {
     return mapped;
@@ -74,16 +80,22 @@ export function usePublicHeaderProps(options: Options = {}): GlobalHeaderProps {
 
   const onSearchSubmit = useCallback(
     (query: string) => {
-      navigate(query ? `/products?q=${encodeURIComponent(query)}` : "/products");
+      navigate(
+        query ? `/products?q=${encodeURIComponent(query)}` : "/products",
+      );
     },
     [navigate],
   );
 
   return useMemo(() => {
-    const authenticated = Boolean(auth?.user) && auth?.status === "authenticated";
+    const authenticated =
+      Boolean(auth?.user) && auth?.status === "authenticated";
     const userLabel =
       auth?.user?.displayName?.trim() ||
-      [auth?.user?.firstName, auth?.user?.lastName].filter(Boolean).join(" ").trim() ||
+      [auth?.user?.firstName, auth?.user?.lastName]
+        .filter(Boolean)
+        .join(" ")
+        .trim() ||
       auth?.user?.email?.split("@")[0] ||
       "Account";
 
@@ -91,7 +103,7 @@ export function usePublicHeaderProps(options: Options = {}): GlobalHeaderProps {
       ...homepageHeader,
       brandLogoSrc: "/almahbub.svg",
       brandLogoAlt: "Almahbub International",
-      brandHref: authenticated ? "/app" : homepageHeader.brandHref ?? "/",
+      brandHref: authenticated ? "/app" : (homepageHeader.brandHref ?? "/"),
       links: buildAuthenticatedPublicHeaderLinks(
         homepageHeader.links ?? [],
         authenticated,

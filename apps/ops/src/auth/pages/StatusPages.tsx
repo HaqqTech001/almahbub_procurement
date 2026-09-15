@@ -1,3 +1,5 @@
+import { Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   AccountLockedScreen,
   ForbiddenScreen,
@@ -22,17 +24,14 @@ export function SessionExpiredPage() {
 
 export function AccountLockedPage() {
   const { lockUntil } = useAuth();
-  const unlockAt = lockUntil
-    ? new Date(lockUntil).toLocaleString(undefined, {
-        dateStyle: "medium",
-        timeStyle: "short",
-      })
-    : undefined;
-
-  return (
-    <AccountLockedScreen
-      supportHref="/support"
-      {...(unlockAt ? { unlockAt } : {})}
-    />
-  );
+  const [now, setNow] = useState(Date.now);
+  useEffect(() => {
+    const tick = () => setNow(Date.now());
+    const timer = window.setInterval(tick, 1000);
+    window.addEventListener("focus", tick);
+    return () => { window.clearInterval(timer); window.removeEventListener("focus", tick); };
+  }, []);
+  // Recheck authorization on the next explicit sign-in, never by querying an email.
+  if (!lockUntil || lockUntil <= now) return <Navigate to="/login" replace />;
+  return <AccountLockedScreen supportHref="mailto:almahbubinternational@gmail.com" remainingSeconds={Math.ceil((lockUntil - now) / 1000)} />;
 }

@@ -63,8 +63,7 @@ export class WeddingCampaignController {
 
   public readonly getCampaign: RequestHandler = async (request, response, next) => {
     try {
-      await this.service.ensureCampaignHydrated();
-      await this.service.flushCampaignPersistence();
+      await this.service.refreshCampaign();
       const campaign = this.service.getCampaign(request.auth);
       const ops = Boolean(request.auth?.permissionKeys.has("ops:access"));
       response.json({
@@ -85,6 +84,7 @@ export class WeddingCampaignController {
     try {
       if (!request.auth) throw unauthenticated();
       const patch = invitationPatchSchema.parse(request.body ?? {});
+      await this.service.refreshCampaign();
       const data = this.service.updateInvitation(request.auth, patch);
       await this.service.flushCampaignPersistence();
       response.json({ data });

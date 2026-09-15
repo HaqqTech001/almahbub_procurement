@@ -50,7 +50,8 @@ export type AnnouncementSliderProps = {
 };
 
 const DEFAULT_STORAGE_PREFIX = "hamd.campaign.dismissed.";
-const DEFAULT_AUTO_MS = 1500;
+export const DEFAULT_ANNOUNCEMENT_ROTATE_MS = 2500;
+const DEFAULT_AUTO_MS = DEFAULT_ANNOUNCEMENT_ROTATE_MS;
 
 function isDismissed(prefix: string, id: string): boolean {
   try {

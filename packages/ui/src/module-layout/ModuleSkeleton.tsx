@@ -3,12 +3,13 @@ import { cx } from "../utils/cx.js";
 export type ModuleSkeletonProps = {
   variant?: "table" | "card" | "list" | "detail";
   count?: number;
+  columns?: number;
   className?: string;
 };
 
 const SKELETON_COUNT = 6;
 
-export function ModuleSkeleton({ variant = "table", count = SKELETON_COUNT, className }: ModuleSkeletonProps) {
+export function ModuleSkeleton({ variant = "table", count = SKELETON_COUNT, columns = 5, className }: ModuleSkeletonProps) {
   if (variant === "table") {
     return (
       <div className={cx("hamd-module-skeleton", className)} aria-busy="true" aria-live="polite">
@@ -17,7 +18,7 @@ export function ModuleSkeleton({ variant = "table", count = SKELETON_COUNT, clas
           <table className="hamd-module-table">
             <thead>
               <tr>
-                {Array.from({ length: 5 }).map((_, index) => (
+                {Array.from({ length: columns }).map((_, index) => (
                   <th key={index}>
                     <div className="hamd-skeleton" style={{ height: "0.75rem", width: "60%" }} />
                   </th>
@@ -27,13 +28,13 @@ export function ModuleSkeleton({ variant = "table", count = SKELETON_COUNT, clas
             <tbody>
               {Array.from({ length: count }).map((_, rowIndex) => (
                 <tr key={rowIndex}>
-                  {Array.from({ length: 5 }).map((_, colIndex) => (
+                  {Array.from({ length: columns }).map((_, colIndex) => (
                     <td key={colIndex}>
                       <div
                         className="hamd-skeleton"
                         style={{
                           height: "0.875rem",
-                          width: `${Math.max(30, Math.random() * 80 + 20)}%`,
+                          width: `${(colIndex % 2 ? 55 : 75)}%`,
                         }}
                       />
                     </td>
@@ -73,8 +74,8 @@ export function ModuleSkeleton({ variant = "table", count = SKELETON_COUNT, clas
           {Array.from({ length: count }).map((_, index) => (
             <div key={index} className="hamd-module-list__row" style={{ cursor: "default" }}>
               <div className="hamd-module-list__row-primary">
-                <div className="hamd-skeleton hamd-skeleton--text" style={{ width: `${Math.max(30, Math.random() * 60 + 20)}%` }} />
-                <div className="hamd-skeleton hamd-skeleton--text" style={{ width: `${Math.max(40, Math.random() * 50 + 20)}%` }} />
+                <div className="hamd-skeleton hamd-skeleton--text" style={{ width: `${(index % 2 ? 55 : 75)}%` }} />
+                <div className="hamd-skeleton hamd-skeleton--text" style={{ width: `${(index % 2 ? 70 : 50)}%` }} />
               </div>
             </div>
           ))}

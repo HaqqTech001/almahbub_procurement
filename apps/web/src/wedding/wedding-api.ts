@@ -8,6 +8,8 @@ import {
 import { readResponseBody, unwrapEnvelopeData } from "@hamd/ui/auth";
 
 import { browserApiBase } from "../lib/api-origin.js";
+import { resolveMediaUrl } from "../lib/media-url.js";
+import { sessionFetch } from "../auth/session/session-http.js";
 import { getAccessToken } from "../auth/session/token-store.js";
 
 function apiUrl(path: string): string {
@@ -27,7 +29,7 @@ async function weddingFetch<T>(
   if (init.body && !(init.body instanceof FormData) && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
-  const response = await fetch(apiUrl(path), {
+  const response = await sessionFetch(apiUrl(path), {
     ...init,
     headers,
     credentials: "include",
@@ -48,13 +50,14 @@ export async function fetchWeddingCampaign(): Promise<WeddingCampaignRecord> {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       const row = await weddingFetch<WeddingCampaignRecord>("/wedding/campaign");
+      if (!row || typeof row.modalEnabled !== "boolean") throw new Error("Invalid wedding campaign response.");
       return { ...DEFAULT_WEDDING_CAMPAIGN, ...row };
     } catch (error) {
       lastError = error;
     }
   }
   void lastError;
-  return DEFAULT_WEDDING_CAMPAIGN;
+  return { ...DEFAULT_WEDDING_CAMPAIGN, modalEnabled: false };
 }
 
 export type WeddingCommentDto = {
@@ -106,6 +109,7 @@ export async function listWeddingWaitingAudio(): Promise<WeddingWaitingTrack[]> 
   const payload = await weddingFetch<{ items?: WeddingWaitingTrack[] }>("/wedding/waiting-audio");
   return (payload.items ?? []).map((row) => ({
     ...row,
+    src: resolveMediaUrl(row.src) ?? row.src,
     caption: row.caption ?? "",
     storageKey: row.storageKey ?? "",
     mimeType: row.mimeType ?? "audio/mpeg",
@@ -136,9 +140,29 @@ export async function listWeddingGallery(): Promise<WeddingGalleryItemDto[]> {
   const payload = await weddingFetch<{ items?: WeddingGalleryItemDto[] } | WeddingGalleryItemDto[]>(
     "/wedding/gallery",
   );
-  if (Array.isArray(payload)) return payload;
-  return payload.items ?? [];
+  return (Array.isArray(payload) ? payload : payload.items ?? []).map((row) => ({
+    ...row, src: resolveMediaUrl(row.src) ?? row.src,
+  }));
 }
+
+export type WeddingParticipationState = { subscribed: boolean; joined: boolean };
+export async function fetchWeddingParticipation(): Promise<WeddingParticipationState> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try { return await weddingFetch<WeddingParticipationState>("/wedding/participation"); }
+    catch (error) { lastError = error; if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, attempt === 0 ? 250 : 750)); }
+  }
+  throw lastError instanceof Error ? lastError : new Error("Unable to load wedding preferences.");
+}
+export const changeWeddingSubscription = (enabled: boolean) => weddingFetch<WeddingParticipationState>(
+  "/wedding/subscription", { method: "PUT", body: JSON.stringify({ enabled }) },
+);
+export const changeWeddingWaiting = (joined: boolean) => weddingFetch<WeddingParticipationState>(
+  "/wedding/waiting-room", { method: "PUT", body: JSON.stringify({ joined }) },
+);
+export const heartbeatWeddingWaiting = () => weddingFetch<WeddingParticipationState>(
+  "/wedding/waiting-room/heartbeat", { method: "POST" },
+);
 
 export function assertWeddingGalleryFile(file: File): string | null {
   return validateWeddingGalleryFile(file);

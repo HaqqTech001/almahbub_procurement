@@ -301,55 +301,27 @@ export class AuthService {
     const user = await this.repository.findUserForLogin(email);
     const ipHash = input.ip ? hashToken(input.ip) : undefined;
 
-    if (user) {
-      const since = new Date(
-        Date.now() - this.environment.AUTH_LOCKOUT_WINDOW_SECONDS * 1000,
-      );
-      const failures = await this.repository.countRecentFailedLogins(
-        user.id,
-        since,
-      );
-      if (failures >= this.environment.AUTH_LOCKOUT_THRESHOLD) {
-        await this.repository.recordLoginEvent({
-          userId: user.id,
-          type: "sign_in_failed",
-          outcome: "blocked",
-          ipHash,
-          userAgent: input.userAgent,
-          metadata: { reason: "lockout" },
-        });
-        throw new AppError({
-          statusCode: 423,
-          code: "ACCOUNT_LOCKED",
-          message:
-            "This account is temporarily locked after repeated failed sign-in attempts. Try again later.",
-        });
-      }
-    }
-
-    const passwordValid = await verifyPasswordConstantTime(
-      user?.credentials ?? null,
-      input.password,
-    );
+    const passwordValid = await verifyPasswordConstantTime(user?.credentials ?? null, input.password);
+    const attempt = user ? await this.repository.checkPasswordAttempt({
+      userId: user.id, passwordValid,
+      threshold: this.environment.AUTH_LOCKOUT_THRESHOLD,
+      windowSeconds: this.environment.AUTH_LOCKOUT_WINDOW_SECONDS,
+      ipHash, userAgent: input.userAgent,
+    }) : null;
+    // Do not disclose account existence/lock state to someone without its password.
     if (!user || !passwordValid) {
-      if (user) {
-        await this.repository.recordLoginEvent({
-          userId: user.id,
-          type: "sign_in_failed",
-          outcome: "failure",
-          ipHash,
-          userAgent: input.userAgent,
-        });
-      } else {
-        await this.repository.recordLoginEvent({
-          type: "sign_in_failed",
-          outcome: "failure",
-          ipHash,
-          userAgent: input.userAgent,
-          metadata: { emailHash: hashToken(email) },
-        });
-      }
+      if (!user) await this.repository.recordLoginEvent({
+        type: "sign_in_failed", outcome: "failure", ipHash,
+        userAgent: input.userAgent, metadata: { emailHash: hashToken(email) },
+      });
       throw invalidCredentials();
+    }
+    if (attempt?.lockedUntil) {
+      throw new AppError({
+        statusCode: 423, code: "ACCOUNT_LOCKED",
+        message: "Sign-in is temporarily unavailable. Please try again after the cooldown.",
+        retryAfterSeconds: Math.max(1, Math.ceil((attempt.lockedUntil.getTime() - attempt.now.getTime()) / 1000)),
+      });
     }
 
     try {

@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { describe, expect, it, vi } from "vitest";
 
 import { parseEnvironment } from "../../../../config/env.js";
+import { passwordLockUntil } from "./password-lockout.js";
 import { AuthService } from "./auth-service.js";
 import type { AuthRepository } from "../infrastructure/auth-repository.js";
 
@@ -269,14 +270,15 @@ function createMemoryRepository() {
       };
     }),
     findOrganizationDisplayName: vi.fn(async () => "Org"),
-    countRecentFailedLogins: vi.fn(async (userId: string, since: Date) =>
-      loginEvents.filter(
-        (event) =>
-          event.userId === userId &&
-          event.type === "sign_in_failed" &&
-          event.createdAt >= since,
-      ).length,
-    ),
+    checkPasswordAttempt: vi.fn(async (input) => {
+      const now = new Date();
+      const events = loginEvents.filter((event) => event.userId === input.userId);
+      const reset = events.findLastIndex((event) => event.type === "sign_in" && event.outcome === "success");
+      const failures = events.slice(reset + 1).filter((event) => event.type === "sign_in_failed" && event.outcome === "failure");
+      const lockedUntil = passwordLockUntil(failures.map((event) => event.createdAt), now, input.threshold, input.windowSeconds);
+      if (!input.passwordValid || lockedUntil) loginEvents.push({ id: randomUUID(), userId: input.userId, type: "sign_in_failed", outcome: lockedUntil ? "blocked" : "failure", createdAt: now });
+      return { lockedUntil, now };
+    }),
     recordLoginEvent: vi.fn(async (input) => {
       loginEvents.push({
         id: randomUUID(),
@@ -699,6 +701,16 @@ describe("AuthService user lifecycle", () => {
         password: "SecurePass1",
       }),
     ).rejects.toMatchObject({ code: "ACCOUNT_LOCKED" });
+    vi.useFakeTimers({ toFake: ["Date"] });
+    try {
+      vi.setSystemTime(new Date(Date.now() + 900_001));
+      await expect(service.login({ email: "lock@example.com", password: "WrongPass1" })).rejects.toMatchObject({ code: "INVALID_CREDENTIALS" });
+      await expect(service.login({ email: "lock@example.com", password: "SecurePass1" })).resolves.toBeDefined();
+      // Success resets the previous sequence, so two failures remain below three.
+      for (let i = 0; i < 2; i++) await expect(service.login({ email: "lock@example.com", password: "WrongPass1" })).rejects.toMatchObject({ code: "INVALID_CREDENTIALS" });
+      await expect(service.login({ email: "lock@example.com", password: "SecurePass1" })).resolves.toBeDefined();
+    } finally { vi.useRealTimers(); }
+
   },
   30_000,
   );

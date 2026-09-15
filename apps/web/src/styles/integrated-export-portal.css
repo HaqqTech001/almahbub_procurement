@@ -3384,3 +3384,8 @@ html[data-theme="dark"] .hamd-aie-contact__section--cta,
 html[data-theme="dark"] .hamd-aie-request__section--cta {
   background: #163526;
 }
+/* Keep buyer details close to specifications, including on narrow screens. */
+.hamd-aie-commodity-detail__hero-block { padding-block: 20px; }
+.hamd-aie-commodity-detail__section { margin-block: 20px; padding-block: 12px; }
+.hamd-aie-commodity-detail__hero-media { max-width: 440px; }
+.hamd-aie-catalogue__hero, .hamd-aie-catalogue__body, .hamd-aie-catalogue__cta { padding-block: 28px; }

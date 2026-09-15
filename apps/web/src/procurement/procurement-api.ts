@@ -132,12 +132,14 @@ function procurementUrl(path = ""): string {
 export class ProcurementApiError extends Error {
   readonly status: number;
   readonly code: string;
+  readonly details: Array<{ field?: string; message?: string }>;
 
-  constructor(message: string, status: number, code: string) {
+  constructor(message: string, status: number, code: string, details: Array<{ field?: string; message?: string }> = []) {
     super(message);
     this.name = "ProcurementApiError";
     this.status = status;
     this.code = code;
+    this.details = details;
   }
 }
 
@@ -204,6 +206,7 @@ async function procurementFetch<T>(
       detail && detail !== base ? `${base} (${detail})` : base,
       response.status,
       envelope?.error?.code ?? "PROCUREMENT_ERROR",
+      envelope?.error?.details ?? envelope?.errors ?? [],
     );
   }
 

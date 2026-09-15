@@ -1,5 +1,6 @@
-import type { Prisma } from "@hamd/database";
+import { Prisma } from "@hamd/database";
 import type { DatabaseClient } from "../../../../shared/database/database-client.js";
+import { passwordLockUntil } from "../application/password-lockout.js";
 import { resolvePermissionRows } from "../domain/permission-catalog.js";
 
 /** Supabase pool latency needs more than Prisma's 5s interactive default. */
@@ -348,31 +349,64 @@ export class AuthRepository {
     userAgent?: string | undefined;
     metadata?: Prisma.InputJsonValue | undefined;
   }) {
-    return this.database.loginEvent.create({
-      data: {
+    const data = {
         type: input.type,
         outcome: input.outcome,
         ...(input.userId ? { userId: input.userId } : {}),
         ...(input.ipHash !== undefined ? { ipHash: input.ipHash } : {}),
         ...(input.userAgent !== undefined ? { userAgent: input.userAgent } : {}),
         ...(input.metadata !== undefined ? { metadata: input.metadata } : {}),
-      },
-      select: { id: true },
-    });
+    };
+    return this.database.$transaction(async tx => {
+      if (input.userId && input.type === "sign_in" && input.outcome === "success") {
+        await tx.$queryRaw(Prisma.sql`SELECT id FROM users WHERE id = ${input.userId}::uuid FOR UPDATE`);
+      }
+      const event = await tx.loginEvent.create({ data, select: { id: true } });
+      await tx.$executeRaw(Prisma.sql`UPDATE login_events SET created_at = clock_timestamp() WHERE id = ${event.id}::uuid`);
+      return event;
+    }, AUTH_TX);
   }
 
-  public countRecentFailedLogins(
-    userId: string,
-    since: Date,
-  ): Promise<number> {
-    return this.database.loginEvent.count({
-      where: {
-        userId,
-        type: "sign_in_failed",
-        outcome: { in: ["failure", "blocked"] },
-        createdAt: { gte: since },
-      },
-    });
+  /** Serialized per account in PostgreSQL, shared by every API instance. */
+  public async checkPasswordAttempt(input: {
+    userId: string;
+    passwordValid: boolean;
+    threshold: number;
+    windowSeconds: number;
+    ipHash?: string | undefined;
+    userAgent?: string | undefined;
+  }): Promise<{ lockedUntil: Date | null; now: Date }> {
+    return this.database.$transaction(async tx => {
+      await tx.$queryRaw(Prisma.sql`SELECT id FROM users WHERE id = ${input.userId}::uuid FOR UPDATE`);
+      const [clock] = await tx.$queryRaw<Array<{ now: Date }>>(Prisma.sql`SELECT clock_timestamp() AS now`);
+      const now = clock!.now;
+      // Compare timestamps inside PostgreSQL to preserve timestamptz precision.
+      const rows = await tx.$queryRaw<Array<{ createdAt: Date }>>(Prisma.sql`
+        SELECT created_at AS "createdAt" FROM login_events
+        WHERE user_id = ${input.userId}::uuid
+          AND type = 'sign_in_failed' AND outcome = 'failure'
+          AND created_at > COALESCE((
+            SELECT max(created_at) FROM login_events
+            WHERE user_id = ${input.userId}::uuid AND type = 'sign_in' AND outcome = 'success'
+          ), '-infinity'::timestamptz)
+        ORDER BY created_at DESC LIMIT ${input.threshold}
+      `);
+      const failures = rows.map(row => row.createdAt);
+      const activeLock = passwordLockUntil(failures, now, input.threshold, input.windowSeconds);
+      if (!input.passwordValid || activeLock) {
+        // Blocked retries are audit-only: they can never extend a lock.
+        const event = await tx.loginEvent.create({ data: {
+          userId: input.userId, type: "sign_in_failed",
+          outcome: activeLock ? "blocked" : "failure",
+          ...(input.ipHash ? { ipHash: input.ipHash } : {}),
+          ...(input.userAgent ? { userAgent: input.userAgent } : {}),
+          metadata: { reason: activeLock ? "lockout" : "invalid_password" },
+        }, select: { id: true } });
+        // now() is transaction-start time, possibly before a row-lock wait.
+        await tx.$executeRaw(Prisma.sql`UPDATE login_events SET created_at = clock_timestamp() WHERE id = ${event.id}::uuid`);
+      }
+      return { lockedUntil: activeLock, now };
+    }, AUTH_TX);
   }
 
   public listLoginHistory(userId: string, take = 25) {

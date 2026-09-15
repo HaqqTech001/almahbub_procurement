@@ -4,22 +4,21 @@
  * Downloads binaries into CatalogMediaStore — never hotlinks.
  *
  * Usage:
- *   npx tsx src/scripts/acquire-product-primary-media.ts
- *   npx tsx src/scripts/acquire-product-primary-media.ts --execute
+ *   pnpm media:acquire --limit=100
+ *   pnpm media:acquire --limit=100 --after=product-slug --category=valves
+ *   pnpm media:acquire --limit=100 --execute
  */
 import "../load-env.js";
 
 import { writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { createDatabaseClient } from "@hamd/database";
 
 import { parseEnvironment } from "../config/env.js";
-import {
-  buildProductCoreTypeIndex,
-  classifyProductPrimaryMatch,
-} from "../modules/catalog/application/product-primary-media-match.js";
+import { classifyProductPrimaryMatch } from "../modules/catalog/application/product-primary-media-match.js";
 import { isBlockedTestBedProduct } from "../modules/catalog/application/catalog-media-importer.js";
 import {
   sniffCatalogMediaMime,
@@ -40,7 +39,6 @@ type ProductRow = {
   status: string;
   categorySlug: string | null;
   hasPrimary: boolean;
-  hasAnyImage: boolean;
 };
 
 type ResolvedSource = {
@@ -53,6 +51,8 @@ type ResolvedSource = {
   title: string;
   width: number;
   height: number;
+  confidenceScore?: number;
+  searchQuery?: string;
 };
 
 type ReportRow = {
@@ -60,7 +60,7 @@ type ReportRow = {
   productName: string;
   categorySlug: string | null;
   coreType: string;
-  status: "kept_existing" | "imported" | "needs_review" | "failed";
+  status: "kept_existing" | "imported" | "resolved_candidate" | "needs_review" | "failed" | "duplicate_rejected";
   reason: string;
   mediaUrl?: string;
   httpStatus?: number;
@@ -70,6 +70,15 @@ type ReportRow = {
   license?: string;
   licenseUrl?: string;
   photographer?: string;
+  candidateTitle?: string;
+  searchQuery?: string;
+  confidenceScore?: number;
+  rejectionReason?: string;
+  candidateDescription?: string;
+  matchedRequiredAnchors?: string[];
+  matchedSupportingAnchors?: string[];
+  matchedForbiddenTerms?: string[];
+  searchQueries?: string[];
 };
 
 function hasFlag(argv: string[], flag: string): boolean {
@@ -161,28 +170,82 @@ function titleLooksUseful(title: string, coreType: string): boolean {
 }
 
 async function fetchJson(url: URL | string, timeoutMs = 12000): Promise<unknown | null> {
-  try {
+  for (let attempt = 0; attempt <= 3; attempt += 1) try {
     const response = await fetch(url, {
       headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
       signal: AbortSignal.timeout(timeoutMs),
     });
+    if (response.status === 429 && attempt < 3) {
+      const retryAfter = Number(response.headers.get("retry-after") ?? "");
+      await sleep(Number.isFinite(retryAfter) ? Math.min(retryAfter * 1000, 10000) : 500 * 2 ** attempt);
+      continue;
+    }
     if (!response.ok) return null;
     return response.json();
   } catch {
-    return null;
+    if (attempt === 3) return null;
+    await sleep(300 * 2 ** attempt);
   }
+  return null;
+}
+
+function candidateConfidence(title: string, coreType: string, categorySlug: string | null): number {
+  const hay = title.toLowerCase().replace(/[_-]+/g, " ");
+  const tokens = coreType.toLowerCase().split(/\s+/).filter((t) => t.length > 2);
+  const overlap = tokens.filter((t) => hay.includes(t)).length;
+  let score = tokens.length ? (overlap / tokens.length) * 70 : 0;
+  const context = `${categorySlug ?? ""} ${coreType}`.toLowerCase();
+  const contradictions = [
+    ["cabinet", /president|government|minister|political|cabinet meeting|administration/],
+    ["steamer", /food|cooking|ship|locomotive|historical vessel|kitchen/],
+    ["tablet", /medicine|pill|food|butter|stone tablet/],
+  ] as const;
+  for (const [noun, pattern] of contradictions) if (context.includes(noun) && pattern.test(hay)) score -= 100;
+  if (/people|person|portrait|model|wearing|fashion/.test(hay) && /fabric|lace|textile|uniform|shoe|bag/.test(context)) score -= 45;
+  if (/product|equipment|device|object|furniture|machine|cabinet|unit/.test(hay)) score += 15;
+  return Math.round(score);
+}
+
+function semanticEvidence(productName: string, candidateTitle: string, categorySlug: string | null) {
+  const product = `${productName} ${categorySlug ?? ""}`.toLowerCase();
+  const hay = candidateTitle.toLowerCase().replace(/[_-]+/g, " ");
+  const rules: Array<{ test: RegExp; required: RegExp[]; supporting: RegExp[]; forbidden: RegExp[] }> = [
+    { test: /trolley|cart/, required: [/salon|beauty|hairdresser|hairdressing|stylist|cosmetic/], supporting: [/trolley|cart|mobile cart/], forbidden: [/railway|train|tram|transport|station trolley/] },
+    { test: /manicure table|manicure desk|nail table/, required: [/manicure|nail|beauty salon/], supporting: [/table|desk|workstation/], forbidden: [/table rock|horseshoe|dining|geographic/] },
+    { test: /styling chair|salon chair/, required: [/salon|barber|styling|hairdresser/], supporting: [/chair|seat/], forbidden: [/antique|louis|dining|office|historical/] },
+    { test: /facial steamer/, required: [/facial|face|skincare|esthetician|beauty/], supporting: [/steamer|steam/], forbidden: [/cooking|food|kitchen|ship|locomotive|historical vessel/] },
+    { test: /hair steamer/, required: [/hair|salon|hairdressing/], supporting: [/steamer|steam/], forbidden: [/food|cooking|kitchen|historical vessel/] },
+    { test: /wax heater/, required: [/waxing|depilatory|hair removal|beauty|salon|wax pot/], supporting: [/wax/, /heater|warmer/], forbidden: [/sealing wax|candle wax|stamp|craft|envelope/] },
+    { test: /nail lamp/, required: [/nail|manicure|gel polish/], supporting: [/uv|led|lamp/], forbidden: [/mining|miner|industrial lamp|desk lamp/] },
+    { test: /cabinet/, required: [/beauty|salon|cosmetic|storage|furniture/], supporting: [/cabinet|cupboard|storage unit/], forbidden: [/government|president|minister|administration|political|cabinet meeting/] },
+    { test: /mirror station/, required: [/salon|barber|vanity|hairdresser/], supporting: [/mirror/, /station|workstation|unit/], forbidden: [/railway|transport|electrical/] },
+    { test: /shampoo station/, required: [/shampoo|backwash|hair wash/], supporting: [/salon|basin|chair|station/], forbidden: [] },
+  ];
+  const rule = rules.find((item) => item.test.test(product));
+  const matchedRequiredAnchors = rule?.required.filter((r) => r.test(hay)).map(String) ?? [];
+  const matchedSupportingAnchors = rule?.supporting.filter((r) => r.test(hay)).map(String) ?? [];
+  const matchedForbiddenTerms = rule?.forbidden.filter((r) => r.test(hay)).map(String) ?? [];
+  const requiredOk = !rule || matchedRequiredAnchors.length > 0;
+  const supportingOk = !rule || matchedSupportingAnchors.length > 0;
+  return { safe: requiredOk && supportingOk && matchedForbiddenTerms.length === 0, matchedRequiredAnchors, matchedSupportingAnchors, matchedForbiddenTerms };
 }
 
 async function download(url: string): Promise<Buffer> {
-  const response = await fetch(url, {
+  for (let attempt = 0; attempt <= 3; attempt += 1) {
+    const response = await fetch(url, {
     headers: { "User-Agent": USER_AGENT, Accept: "image/*,*/*" },
     redirect: "follow",
     signal: AbortSignal.timeout(20000),
-  });
-  if (!response.ok) {
-    throw new Error(`Download ${response.status} ${url}`);
+    });
+    if (response.status === 429 && attempt < 3) {
+      const retryAfter = Number(response.headers.get("retry-after") ?? "");
+      await sleep(Number.isFinite(retryAfter) ? Math.min(retryAfter * 1000, 10000) : 500 * 2 ** attempt);
+      continue;
+    }
+    if (!response.ok) throw new Error(`Download ${response.status} ${url}`);
+    return Buffer.from(await response.arrayBuffer());
   }
-  return Buffer.from(await response.arrayBuffer());
+  throw new Error(`Download rate limited after retries: ${url}`);
 }
 
 async function resolveWikimedia(coreType: string): Promise<ResolvedSource | null> {
@@ -339,19 +402,18 @@ async function resolveSource(coreType: string): Promise<ResolvedSource | null> {
   return resolveOpenverse(coreType);
 }
 
-async function verifyMediaUrl(
-  origin: string,
-  path: string,
-): Promise<{ status: number; contentType: string }> {
-  const response = await fetch(`${origin}${path}`, { method: "GET" });
-  return {
-    status: response.status,
-    contentType: response.headers.get("content-type") ?? "",
-  };
-}
-
 async function main(): Promise<void> {
-  const execute = hasFlag(process.argv.slice(2), "--execute");
+  const argv = process.argv.slice(2);
+  const execute = hasFlag(argv, "--execute");
+  const value = (name: string): string | undefined => {
+    const item = argv.find((arg) => arg.startsWith(`${name}=`));
+    return item?.slice(name.length + 1);
+  };
+  const rawLimit = value("--limit");
+  const limit = rawLimit === undefined ? 100 : Number(rawLimit);
+  if (!Number.isInteger(limit) || limit <= 0) throw new Error("--limit must be a positive integer.");
+  const after = value("--after");
+  const category = value("--category");
   const environment = parseEnvironment(process.env);
   if (!environment.DATABASE_URL) {
     throw new Error("DATABASE_URL is required.");
@@ -373,13 +435,14 @@ async function main(): Promise<void> {
   });
 
   const products = (await database.product.findMany({
+    where: { status: "published" },
     select: {
       id: true,
       slug: true,
       name: true,
       status: true,
       category: { select: { slug: true } },
-      images: { select: { id: true, url: true, position: true } },
+      images: { select: { id: true, url: true, position: true, isPrimary: true } },
     },
     orderBy: { slug: "asc" },
   })) as Array<{
@@ -388,7 +451,7 @@ async function main(): Promise<void> {
     name: string;
     status: string;
     category: { slug: string } | null;
-    images: Array<{ id: string; url: string; position: number }>;
+    images: Array<{ id: string; url: string; position: number; isPrimary: boolean }>;
   }>;
 
   const rows: ProductRow[] = products.map((product) => ({
@@ -397,125 +460,67 @@ async function main(): Promise<void> {
     name: product.name,
     status: product.status,
     categorySlug: product.category?.slug ?? null,
-    hasPrimary: product.images.some((image) => image.position === 0),
-    hasAnyImage: product.images.length > 0,
+    hasPrimary: product.images.some((image) => (image.isPrimary || image.position === 0) && image.url.trim().length > 0),
   }));
 
-  const beforePrimary = rows.filter((row) => row.hasPrimary).length;
-  const coreIndex = buildProductCoreTypeIndex(rows.map((row) => row.name));
+  const alreadyCovered = rows.filter((row) => row.hasPrimary).length;
   const report: ReportRow[] = [];
-  const sourceCache = new Map<string, { source: ResolvedSource; bytes: Buffer; mime: string }>();
-  const failedCores = new Set<string>();
-
   let imported = 0;
   let needsReview = 0;
   let failed = 0;
+  let duplicateRejected = 0;
 
   try {
-    const missing = rows.filter(
-      (row) =>
-        !row.hasPrimary &&
-        !row.hasAnyImage &&
-        row.status === "published" &&
-        !isBlockedTestBedProduct(row.slug),
-    );
-    const byCore = new Map<string, ProductRow[]>();
-    for (const product of missing) {
-      const match = classifyProductPrimaryMatch(product.name, coreIndex);
+    const candidates = rows.filter((row) => !row.hasPrimary && !isBlockedTestBedProduct(row.slug) && (!after || row.slug > after) && (!category || row.categorySlug === category)).slice(0, limit);
+    const seenHashes = new Set<string>();
+    let lastProcessedSlug: string | null = null;
+    for (const product of candidates) {
+      lastProcessedSlug = product.slug;
+      const match = classifyProductPrimaryMatch(product.name);
+      const coreType = match.coreType;
       if (match.kind === "needs_review") {
         needsReview += 1;
-        report.push({
-          productSlug: product.slug,
-          productName: product.name,
-          categorySlug: product.categorySlug,
-          coreType: match.coreType,
-          status: "needs_review",
-          reason: match.reason,
-        });
+        report.push({ productSlug: product.slug, productName: product.name, categorySlug: product.categorySlug, coreType, status: "needs_review", reason: match.reason });
         continue;
       }
-      const list = byCore.get(match.coreType) ?? [];
-      list.push(product);
-      byCore.set(match.coreType, list);
-    }
-
-    const coreEntries = [...byCore.entries()];
-    console.log(JSON.stringify({ phase: "resolve-cores", cores: coreEntries.length, missing: missing.length }));
-    for (const [coreType, group] of coreEntries) {
-      let cached = sourceCache.get(coreType);
-      if (!cached && !failedCores.has(coreType)) {
-        try {
-          const resolved = await resolveSource(coreType);
-          await sleep(60);
-          console.log(JSON.stringify({ coreType, products: group.length, resolved: Boolean(resolved) }));
-          if (!resolved) {
-            failedCores.add(coreType);
-          } else {
-            const bytes = await download(resolved.downloadUrl);
-            const mime = sniffCatalogMediaMime(bytes);
-            const size = imageSize(bytes);
-            if (!mime || !size || size.width < MIN_EDGE || size.height < MIN_EDGE) {
-              failedCores.add(coreType);
-            } else {
-              const issues = validateCatalogMediaUpload({
-                filename: `primary${extensionForMime(mime)}`,
-                mimeType: mime,
-                sizeBytes: bytes.length,
-                kind: "image",
-                bytes,
-              });
-              if (issues.length > 0) {
-                failedCores.add(coreType);
-              } else {
-                cached = { source: resolved, bytes, mime };
-                sourceCache.set(coreType, cached);
-              }
-            }
-          }
-        } catch {
-          failedCores.add(coreType);
-        }
-      }
-
-      if (!cached) {
-        for (const product of group) {
+      let resolved: ResolvedSource | null = null;
+      let bytes: Buffer | null = null;
+      let mime = "";
+      try {
+        resolved = await resolveSource(coreType);
+        if (!resolved) throw new Error("No licensed Wikimedia/Openverse match.");
+        const confidenceScore = candidateConfidence(resolved.title, coreType, product.categorySlug);
+        const evidence = semanticEvidence(product.name, resolved.title, product.categorySlug);
+        if (confidenceScore < 45 || !evidence.safe) {
           needsReview += 1;
-          report.push({
-            productSlug: product.slug,
-            productName: product.name,
-            categorySlug: product.categorySlug,
-            coreType,
-            status: "needs_review",
-            reason: "No licensed Wikimedia/Openverse still matched this core type with usable dimensions.",
-          });
-        }
-        continue;
-      }
-
-      for (const product of group) {
-        if (!execute) {
-          report.push({
-            productSlug: product.slug,
-            productName: product.name,
-            categorySlug: product.categorySlug,
-            coreType,
-            status: "needs_review",
-            reason: "Dry-run: licensed source resolved; pass --execute to store and map.",
-            source: cached.source.source,
-            sourceUrl: cached.source.sourceUrl,
-            license: cached.source.license,
-            licenseUrl: cached.source.licenseUrl,
-            photographer: cached.source.photographer,
-          });
+          report.push({ productSlug: product.slug, productName: product.name, categorySlug: product.categorySlug, coreType, status: "needs_review", reason: "Candidate failed fail-closed semantic validation.", candidateTitle: resolved.title, candidateDescription: "", searchQueries: [resolved.searchQuery ?? coreType], searchQuery: resolved.searchQuery ?? "", matchedRequiredAnchors: evidence.matchedRequiredAnchors, matchedSupportingAnchors: evidence.matchedSupportingAnchors, matchedForbiddenTerms: evidence.matchedForbiddenTerms, confidenceScore, rejectionReason: "Required domain anchors missing or forbidden meaning detected.", source: resolved.source, sourceUrl: resolved.sourceUrl });
           continue;
         }
-
+        bytes = await download(resolved.downloadUrl);
+        mime = sniffCatalogMediaMime(bytes) ?? "";
+        const size = imageSize(bytes);
+        const issues = !mime || !size || size.width < MIN_EDGE || size.height < MIN_EDGE ? ["invalid image dimensions or format"] : validateCatalogMediaUpload({ filename: `primary${extensionForMime(mime)}`, mimeType: mime, sizeBytes: bytes.length, kind: "image", bytes });
+        if (issues.length) throw new Error(issues.join(", "));
+        const hash = createHash("sha256").update(bytes).digest("hex");
+        if (seenHashes.has(hash)) { duplicateRejected += 1; report.push({ productSlug: product.slug, productName: product.name, categorySlug: product.categorySlug, coreType, status: "duplicate_rejected", reason: "Downloaded binary duplicates another unrelated product; no shared variant was confirmed.", source: resolved.source, sourceUrl: resolved.sourceUrl, license: resolved.license, licenseUrl: resolved.licenseUrl, photographer: resolved.photographer }); continue; }
+        seenHashes.add(hash);
+      } catch (error) {
+        failed += 1;
+        report.push({ productSlug: product.slug, productName: product.name, categorySlug: product.categorySlug, coreType, status: "failed", reason: error instanceof Error ? error.message : "Source acquisition failed." });
+        continue;
+      }
+      if (!execute) {
+        needsReview += 1;
+        const evidence = semanticEvidence(product.name, resolved.title, product.categorySlug);
+        report.push({ productSlug: product.slug, productName: product.name, categorySlug: product.categorySlug, coreType, status: "resolved_candidate", reason: "Dry-run: high-confidence candidate resolved; pass --execute to store and map.", source: resolved.source, sourceUrl: resolved.sourceUrl, license: resolved.license, licenseUrl: resolved.licenseUrl, photographer: resolved.photographer, candidateTitle: resolved.title, candidateDescription: "", searchQueries: [resolved.searchQuery ?? coreType], searchQuery: resolved.searchQuery ?? "", matchedRequiredAnchors: evidence.matchedRequiredAnchors, matchedSupportingAnchors: evidence.matchedSupportingAnchors, matchedForbiddenTerms: evidence.matchedForbiddenTerms, confidenceScore: candidateConfidence(resolved.title, coreType, product.categorySlug) });
+        continue;
+      }
         try {
           const existing = await database.productImage.findFirst({
-            where: { productId: product.id },
-            select: { id: true },
+            where: { productId: product.id, OR: [{ isPrimary: true }, { position: 0 }] },
+            select: { id: true, url: true },
           });
-          if (existing) {
+          if (existing?.url.trim()) {
             report.push({
               productSlug: product.slug,
               productName: product.name,
@@ -529,8 +534,8 @@ async function main(): Promise<void> {
 
           const stored = await store.put({
             productId: product.id,
-            originalFilename: `${product.slug}-primary${extensionForMime(cached.mime)}`,
-            bytes: cached.bytes,
+            originalFilename: `${product.slug}-primary${extensionForMime(mime)}`,
+            bytes,
           });
 
           await database.productImage.create({
@@ -541,8 +546,8 @@ async function main(): Promise<void> {
               caption:
                 "Primary catalogue view illustrating the procurement type. Licensed still — not Almahbub inventory.",
               storageKey: stored.filename,
-              mimeType: cached.mime,
-              fileSize: cached.bytes.length,
+              mimeType: mime,
+              fileSize: bytes.length,
               position: 0,
               isPrimary: true,
             }),
@@ -558,11 +563,11 @@ async function main(): Promise<void> {
             status: "imported",
             reason: "Downloaded licensed still and created primary ProductImage.",
             mediaUrl: stored.publicUrl,
-            source: cached.source.source,
-            sourceUrl: cached.source.sourceUrl,
-            license: cached.source.license,
-            licenseUrl: cached.source.licenseUrl,
-            photographer: cached.source.photographer,
+            source: resolved.source,
+            sourceUrl: resolved.sourceUrl,
+            license: resolved.license,
+            licenseUrl: resolved.licenseUrl,
+            photographer: resolved.photographer,
           });
         } catch (error) {
           failed += 1;
@@ -576,27 +581,6 @@ async function main(): Promise<void> {
           });
         }
       }
-    }
-
-    for (const product of rows.filter((row) => row.hasPrimary)) {
-      report.push({
-        productSlug: product.slug,
-        productName: product.name,
-        categorySlug: product.categorySlug,
-        coreType: coreIndex.get(product.name) ?? "",
-        status: "kept_existing",
-        reason: "Existing primary/media row kept.",
-      });
-    }
-
-    for (const row of report) {
-      if (row.status !== "imported" || !row.mediaUrl) continue;
-      const check = await verifyMediaUrl("http://127.0.0.1:4000", row.mediaUrl);
-      row.httpStatus = check.status;
-      row.contentType = check.contentType;
-    }
-
-    const afterPrimary = beforePrimary + imported;
     const root = join(dirname(fileURLToPath(import.meta.url)), "../../../../");
     const reportPath = join(root, "docs", REPORT_NAME);
     const payload = {
@@ -605,11 +589,14 @@ async function main(): Promise<void> {
       secrets: false,
       mode: execute ? "execute" : "dry-run",
       products: rows.length,
-      withPrimaryBefore: beforePrimary,
+      selected: candidates.length,
+      alreadyCovered,
       newPrimaryImagesImported: imported,
-      withPrimaryAfter: execute ? afterPrimary : beforePrimary,
-      needsReview: needsReview,
+      withPrimaryAfter: execute ? alreadyCovered + imported : alreadyCovered,
+      needsReview,
       failed,
+      duplicateRejected,
+      lastProcessedSlug,
       sameOriginCatalogMedia: true,
       note: "Existing 20-pilot and other ProductImage rows were not duplicated. Uncertain matches stay needs_review.",
       rows: report.sort((a, b) => a.productSlug.localeCompare(b.productSlug)),
@@ -620,11 +607,13 @@ async function main(): Promise<void> {
         {
           mode: payload.mode,
           reportPath: "docs/product-media-provenance.json",
-          withPrimaryBefore: payload.withPrimaryBefore,
-          newPrimaryImagesImported: payload.newPrimaryImagesImported,
-          withPrimaryAfter: payload.withPrimaryAfter,
+          selected: payload.selected,
+          alreadyCovered: payload.alreadyCovered,
+          imported: payload.newPrimaryImagesImported,
           needsReview: payload.needsReview,
           failed: payload.failed,
+          duplicateRejected: payload.duplicateRejected,
+          lastProcessedSlug: payload.lastProcessedSlug,
         },
         null,
         2,

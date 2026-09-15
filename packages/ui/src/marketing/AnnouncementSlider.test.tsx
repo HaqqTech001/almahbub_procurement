@@ -88,12 +88,12 @@ describe("AnnouncementSlider", () => {
     expect(screen.getByText(/celebrating with our family/i)).toBeInTheDocument();
   });
 
-  it("defaults autoplay to 1500ms and disables it under reduced motion", () => {
+  it("defaults autoplay to 2500ms and disables it under reduced motion", () => {
     const source = readFileSync(
       join(dirname(fileURLToPath(import.meta.url)), "AnnouncementSlider.tsx"),
       "utf8",
     );
-    expect(source).toMatch(/const DEFAULT_AUTO_MS = 1500/);
+    expect(source).toMatch(/DEFAULT_ANNOUNCEMENT_ROTATE_MS = 2500/);
     expect(source).toMatch(/prefersReducedMotion\(\)/);
     expect(source).toMatch(/autoRotateMs = DEFAULT_AUTO_MS/);
   });

@@ -78,7 +78,7 @@ export function LoginPage() {
     return <AuthBoot label="Preparing sign in…" />;
   }
 
-  if (auth.status === "locked") {
+  if (auth.status === "locked" && auth.lockUntil !== null && auth.lockUntil > Date.now()) {
     return <Navigate to="/account-locked" replace />;
   }
 

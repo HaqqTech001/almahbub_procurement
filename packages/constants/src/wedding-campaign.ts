@@ -51,7 +51,7 @@ export type WeddingCampaignRecord = {
   feeds?: WeddingBroadcastFeed[];
 };
 
-const EVENT_AT = "2026-09-29";
+const EVENT_AT = "2026-09-26";
 const MODAL_STARTS_AT = "2026-08-01T00:00:00+01:00";
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
@@ -74,7 +74,7 @@ export const DEFAULT_WEDDING_CAMPAIGN: WeddingCampaignRecord = {
   streamAt: EVENT_AT,
   venue: "",
   venueAddress: "",
-  modalEnabled: true,
+  modalEnabled: false,
   modalStartsAt: MODAL_STARTS_AT,
   modalEndsAt: deriveWeddingModalEndsAt(EVENT_AT),
   streamStatus: "upcoming",
@@ -143,6 +143,7 @@ export function weddingModalActions(
   campaign: WeddingCampaignRecord,
   _now: Date = new Date(),
 ): WeddingModalCta {
+  void _now; // Retain the existing call signature for consumers.
   if (isWeddingProductionLive(campaign)) {
     return { primary: { href: campaign.livePath, label: "Join Live Now" } };
   }
@@ -192,6 +193,7 @@ export function isUsableTermiiSenderId(senderId: string): boolean {
 }
 
 export function formatWeddingWhen(iso: string, _now?: Date): string {
+  void _now;
   const trimmed = iso.trim();
   if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
     return formatWeddingDate(trimmed);

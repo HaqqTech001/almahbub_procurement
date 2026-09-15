@@ -580,35 +580,6 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--auth-action) 28%, transparent);
 }
 
-.hamd-auth-steps {
-  display: flex;
-  gap: 0.5rem;
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1.25rem;
-}
-
-.hamd-auth-steps li {
-  flex: 1;
-  text-align: center;
-  font-size: 0.75rem;
-  padding: 0.45rem 0.25rem;
-  border-radius: 999px;
-  background: var(--auth-bg-subtle);
-  color: var(--auth-tertiary);
-  border: 1px solid transparent;
-}
-
-.hamd-auth-steps li.is-current {
-  color: var(--auth-action);
-  border-color: var(--auth-action);
-  font-weight: 600;
-}
-
-.hamd-auth-steps li.is-done {
-  color: var(--auth-success);
-}
-
 .hamd-auth-select__label {
   display: block;
   margin-bottom: 0.35rem;

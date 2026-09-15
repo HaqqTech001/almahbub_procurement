@@ -1,3 +1,4 @@
+import { CollectionSkeleton } from "@hamd/ui/primitives";
 import { ButtonLink, Container } from "../../components/index.js";
 import { INTEGRATED_EXPORT_PORTAL } from "../../content/group.js";
 import { usePublishedIeCommodities } from "../commodities/use-published-ie-catalogue.js";
@@ -36,7 +37,7 @@ export function IeCommoditiesPage() {
         }
       >
         <Container>
-          {error ? (
+          {loading ? <CollectionSkeleton label="Loading commodities" gridClassName="hamd-aie-catalogue__grid" cardClassName="hamd-aie-commodity-card" bodyClassName="hamd-aie-commodity-card__body" aspectRatio="4 / 3" /> : error ? (
             <div className="hamd-aie-catalogue__empty" data-ie-catalogue-source={source}>
               <div className="hamd-aie-catalogue__empty-panel" role="alert">
                 <h2 id="aie-catalogue-empty-title" className="hamd-aie-catalogue__empty-title">

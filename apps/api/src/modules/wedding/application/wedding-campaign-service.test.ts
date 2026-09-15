@@ -349,10 +349,11 @@ describe("WeddingCampaignService", () => {
       parseEnvironment({ NODE_ENV: "test" }),
       database as never,
     );
-    first.updateInvitation(auth(["ops:access"]), { venue: "Family compound" });
+    first.updateInvitation(auth(["ops:access"]), { venue: "Family compound", modalEnabled: false });
     await first.flushCampaignPersistence();
     expect(stored?.overlay.venue).toBe("Family compound");
-    expect(stored?.overlay.eventAt).toBe("2026-09-29");
+    expect(stored?.overlay.eventAt).toBe("2026-09-26");
+    expect(stored?.overlay.modalEnabled).toBe(false);
 
     resetWeddingCampaignForTests();
     markWeddingCampaignUnhydratedForTests();
@@ -362,7 +363,27 @@ describe("WeddingCampaignService", () => {
     );
     await restarted.ensureCampaignHydrated();
     expect(restarted.getCampaign(auth(["ops:access"])).venue).toBe("Family compound");
-    expect(restarted.getCampaign().eventAt).toBe("2026-09-29");
+    expect(restarted.getCampaign().eventAt).toBe("2026-09-26");
+    expect(restarted.getCampaign().modalEnabled).toBe(false);
     expect(String(restarted.getCampaign().eventAt)).not.toContain("T");
   });
+  it("corrects a stale stream date independently while preserving its time", () => {
+    const service = new WeddingCampaignService(parseEnvironment({ NODE_ENV: "test" }));
+    const result = service.updateInvitation(auth(["ops:access"]), {
+      eventAt: "2026-09-26", streamAt: "2026-09-" + "29T14:00:00+01:00",
+    });
+    expect(result.eventAt).toBe("2026-09-26");
+    expect(result.streamAt).toBe("2026-09-26T14:00:00+01:00");
+  });
+});
+
+it("does not infer promotion or music enablement from campaign or enabled track existence", async () => {
+ resetWeddingCampaignForTests(); markWeddingCampaignUnhydratedForTests(); markWeddingWaitingTracksUnhydratedForTests();
+ const database = {
+  weddingCampaign:{findUnique:async()=>({overlay:{waitingMusicEnabled:false,waitingMusicLoop:false},streamStatus:"upcoming"})},
+  weddingWaitingTrack:{findMany:async()=>[{id:"track",weddingCampaignId:"founder-wedding-september-2026",title:"Track",caption:"",storageKey:"track.mp3",src:"https://media.test/track.mp3",mimeType:"audio/mpeg",fileSize:100,durationSeconds:null,position:0,isEnabled:true,createdAt:new Date(),updatedAt:new Date()}]},
+ };
+ const service=new WeddingCampaignService(parseEnvironment({NODE_ENV:"test"}),database as never);
+ await service.ensureCampaignHydrated(); await service.listWaitingTracks(false);
+ expect(service.getCampaign()).toMatchObject({modalEnabled:false,waitingMusicEnabled:false,waitingMusicLoop:false});
 });

@@ -4,6 +4,7 @@ export class AppError extends Error {
   public readonly statusCode: number;
   public readonly code: string;
   public readonly details?: readonly ApiErrorDetail[];
+  public readonly retryAfterSeconds?: number;
   public readonly isOperational: boolean;
 
   public constructor(options: {
@@ -12,6 +13,7 @@ export class AppError extends Error {
     message: string;
     details?: readonly ApiErrorDetail[];
     isOperational?: boolean;
+    retryAfterSeconds?: number;
   }) {
     super(options.message);
     this.name = "AppError";
@@ -20,6 +22,7 @@ export class AppError extends Error {
     if (options.details) {
       this.details = options.details;
     }
+    if (options.retryAfterSeconds !== undefined) this.retryAfterSeconds = options.retryAfterSeconds;
     this.isOperational = options.isOperational ?? true;
   }
 }

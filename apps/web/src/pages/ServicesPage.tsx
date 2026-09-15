@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { ServicesSection } from "@hamd/ui/homepage";
-import { ContactCta } from "../components/ContactCta.js";
 import { ButtonLink } from "../components/index.js";
 import { PageHero } from "../components/PageHero.js";
 import { servicesContent } from "../content/pages.js";
@@ -30,10 +29,9 @@ export function ServicesPage() {
       <ServicesSection
         id="services-grid"
         title="Service lines"
-        description="Four capabilities that turn discovery into accountable delivery."
+        description="Sourcing, import coordination, logistics and storage support."
         services={servicesContent.services}
       />
-      <ContactCta />
     </>
   );
 }

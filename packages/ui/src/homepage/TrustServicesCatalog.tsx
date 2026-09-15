@@ -3,6 +3,7 @@ import { ProductCard } from "../catalog/ProductCard.js";
 import type { CatalogProduct } from "../catalog/types.js";
 import { ButtonLink } from "../primitives/ButtonLink.js";
 import { Section } from "../primitives/Section.js";
+import { OptimizedImage } from "../primitives/OptimizedImage.js";
 
 export type TrustIndicator = {
   id: string;
@@ -306,11 +307,9 @@ export function ProductCategoriesSection({
             <a href={category.href} className="hamd-categories__card">
               <div className="hamd-categories__media">
                 {category.imageSrc ? (
-                  <img
+                  <OptimizedImage
                     src={category.imageSrc}
                     alt={category.imageAlt ?? ""}
-                    loading="lazy"
-                    decoding="async"
                     sizes="(max-width: 768px) 100vw, 25vw"
                   />
                 ) : (

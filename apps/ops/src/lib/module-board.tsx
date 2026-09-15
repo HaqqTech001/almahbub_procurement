@@ -1,7 +1,8 @@
+import { ModuleSkeleton } from "@hamd/ui/module-layout";
 import { useEffect, useMemo, useState, type ChangeEvent, type ReactNode } from "react";
 
 import { FilterToolbar } from "@hamd/ui/module-layout";
-import { OpsAlert, OpsLoading, OpsPage, OpsStatus } from "../components/OpsChrome.js";
+import { OpsAlert, OpsPage, OpsStatus } from "../components/OpsChrome.js";
 import { downloadCsv, parseCsv } from "./csv.js";
 
 export type OpsColumn = {
@@ -282,7 +283,7 @@ export function OpsModuleBoard({
         </div>
       ) : null}
 
-      {loading ? <OpsLoading label={`Loading ${title}…`} /> : null}
+      {loading ? <ModuleSkeleton variant="table" /> : null}
 
       {!loading && filtered.length === 0 ? (
         <p className="hamd-ops-empty" role="status">

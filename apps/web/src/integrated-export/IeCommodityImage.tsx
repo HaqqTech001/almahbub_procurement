@@ -25,12 +25,13 @@ export function IeCommodityImage({
   hero = false,
   decorative = false,
 }: IeCommodityImageProps) {
-  const [failed, setFailed] = useState(false);
+  const [failedSrc, setFailedSrc] = useState<string | undefined>();
   const resolved = resolveIeMediaSrc(src);
 
-  if (!resolved || failed) {
+  if (!resolved || failedSrc === resolved) {
     return (
       <IeCommodityMediaPlaceholder
+        label={resolved ? "Image unavailable" : "Approved imagery forthcoming"}
         className={className}
         decorative={decorative}
       />
@@ -45,7 +46,7 @@ export function IeCommodityImage({
       loading={loading}
       decoding="async"
       data-ie-hero={hero ? "true" : undefined}
-      onError={() => setFailed(true)}
+      onError={() => setFailedSrc(resolved)}
     />
   );
 }

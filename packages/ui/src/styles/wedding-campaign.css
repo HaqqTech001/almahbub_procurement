@@ -572,6 +572,11 @@ html.dark .hamd-wedding-portal__status:not(.hamd-wedding-portal__status--live) {
   grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
   min-height: 0;
 }
+.hamd-wedding-portal__body--waiting,
+.hamd-wedding-portal__body--ended { grid-template-columns: minmax(0, 1fr); min-height: min(52dvh, 38rem); }
+.hamd-wedding-portal__state { display: grid; place-items: center; min-height: min(52dvh, 38rem); padding: clamp(1.25rem, 5vw, 4rem); text-align: center; background: linear-gradient(145deg, rgb(31 17 53 / 0.96), rgb(87 39 92 / 0.92)); border-radius: 1rem; color: #fff; }
+.hamd-wedding-portal__state h1 { max-width: 24ch; margin-inline: auto; }
+@media (max-width: 640px) { .hamd-wedding-portal__state { min-height: 22rem; padding: 1.25rem; } }
 
 .hamd-wedding-portal__media {
   display: grid;
@@ -840,3 +845,36 @@ html.dark .hamd-wedding-portal__comments {
     display: none;
   }
 }
+
+/* Compact re-entry, at the right-middle edge and away from chat/cookies. */
+.hamd-wedding-reentry {
+  position: fixed;
+  inset-inline-end: max(0.75rem, env(safe-area-inset-right));
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 52px;
+  height: 52px;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid #c8a86b;
+  border-radius: 2rem;
+  background: #6b1d4a;
+  color: #fff4dc;
+  text-decoration: none;
+  box-shadow: 0 4px 18px #0002;
+  font-size: 1.35rem;
+}
+.hamd-wedding-reentry__text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.hamd-wedding-reentry > span:first-child { animation: hamd-wedding-badge 1.4s ease-in-out 3; }
+@keyframes hamd-wedding-badge { 50% { transform: rotate(20deg) scale(1.15); } }
+.hamd-wedding-participation { min-width: 0; overflow-wrap: anywhere; }
+.hamd-wedding-participation button { min-height: 44px; max-width: 100%; white-space: normal; }
+.hamd-wedding-modal { max-width: calc(100vw - 1rem); max-height: calc(100dvh - 1rem); overflow-y: auto; }
+.hamd-wedding-modal__card { overflow-wrap: anywhere; }
+.hamd-wedding-reentry:focus-visible { outline: 3px solid #c8a86b; outline-offset: 3px; }
+@media (max-width: 640px) { .hamd-wedding-reentry { width: 44px; height: 44px; inset-inline-end: max(0.5rem, env(safe-area-inset-right)); } }
+@media (prefers-reduced-motion: reduce) { .hamd-wedding-reentry > span:first-child { animation: none; } }

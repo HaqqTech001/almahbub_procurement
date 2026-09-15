@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Navigate, useParams } from "react-router-dom";
-import { ContactCta } from "../components/ContactCta.js";
 import { ButtonLink, Section } from "../components/index.js";
 import { PageHero } from "../components/PageHero.js";
 import { servicesContent } from "../content/pages.js";
@@ -12,7 +11,6 @@ const SERVICE_DETAILS: Record<
     overview: string;
     covers: readonly string[];
     process: string;
-    audience: string;
   }
 > = {
   "global-procurement": {
@@ -25,21 +23,17 @@ const SERVICE_DETAILS: Record<
     ],
     process:
       "You raise a request, we clarify what is needed, source suitable options, issue a quotation, and keep status on confirmed records.",
-    audience:
-      "Buying teams that need a named owner for electronics, medical equipment, facility kit, and other commercial procurement.",
   },
   "import-export": {
     overview:
-      "Trade execution with documentation awareness and a named owner for each milestone, not a marketplace listing.",
+      "Coordinate import documents and shipping milestones for your order.",
     covers: [
-      "Import and export documentation coordination",
+      "Import documentation coordination",
       "Milestone ownership from booking to arrival",
       "Exception handling when documents or dates change",
     ],
     process:
       "We agree the corridor and documents, track each milestone against confirmed records, and keep you informed when something changes.",
-    audience:
-      "Organisations moving goods across borders that need accountable trade execution rather than open-ended freight browsing.",
   },
   logistics: {
     overview:
@@ -51,21 +45,17 @@ const SERVICE_DETAILS: Record<
     ],
     process:
       "Once a quotation is accepted, logistics is planned against the request, then tracked until delivery confirmation.",
-    audience:
-      "Buyers who need shipment status they can show internally, not informal chat updates.",
   },
   warehousing: {
     overview:
-      "Storage and handling aligned to your delivery plan, not open marketplace inventory.",
+      "Storage and handling aligned to your delivery plan.",
     covers: [
       "Receiving and handling against the agreed plan",
       "Release in line with your delivery windows",
       "Coordination with the procurement record",
     ],
     process:
-      "Warehousing is scoped as part of the engagement, then executed against confirmed instructions rather than as a public stock room.",
-    audience:
-      "Teams that need holding or consolidation as part of a procurement journey, not a self-serve warehouse marketplace.",
+      "Storage, consolidation and release instructions are agreed as part of your order.",
   },
 };
 
@@ -128,10 +118,7 @@ export function ServiceDetailPage() {
       <Section id="service-process" title="How the engagement works" spacing="compact">
         <p>{detail.process}</p>
       </Section>
-      <Section id="service-audience" title="Who it is useful for" spacing="compact">
-        <p>{detail.audience}</p>
-      </Section>
-      <ContactCta />
+
     </>
   );
 }

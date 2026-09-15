@@ -24,14 +24,14 @@ export const servicesContent = {
   seo: {
     title: "Services",
     description:
-      "Global procurement, import & export, logistics, and warehousing managed service lines, not marketplace browsing.",
+      "International sourcing, import coordination, logistics and warehousing.",
     path: "/services",
   } satisfies PageSeo,
   hero: {
     eyebrow: "Services",
-    title: "What we run for your buying team",
+    title: "Sourcing and import support",
     description:
-      "Procurement, import/export, logistics, and warehousing managed as service lines with clear ownership at each stage.",
+      "Get support with supplier sourcing, import documentation, shipping and storage.",
   },
   services: homepageBelowFold.services!.services,
 };

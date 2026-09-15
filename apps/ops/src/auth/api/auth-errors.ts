@@ -30,12 +30,7 @@ export class AuthApiError extends Error {
   }
 
   get isLocked(): boolean {
-    return (
-      this.status === 423 ||
-      this.code === "ACCOUNT_LOCKED" ||
-      this.code === "TOO_MANY_REQUESTS" ||
-      this.status === 429
-    );
+    return this.status === 423 && this.code === "ACCOUNT_LOCKED";
   }
 
   get isRateLimited(): boolean {

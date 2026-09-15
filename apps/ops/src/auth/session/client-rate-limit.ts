@@ -1,69 +1,22 @@
-/** Client-side login attempt limiter - complements server authAbuseLimiter. */
-
-const STORAGE_KEY = "hamd.web.auth.loginAttempts";
-const MAX_ATTEMPTS = 5;
-const WINDOW_MS = 15 * 60 * 1000;
-const LOCK_MS = 15 * 60 * 1000;
-
-type AttemptState = {
-  failures: number;
-  firstAt: number;
-  lockedUntil: number | null;
-};
-
-function read(): AttemptState {
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { failures: 0, firstAt: Date.now(), lockedUntil: null };
-    return JSON.parse(raw) as AttemptState;
-  } catch {
-    return { failures: 0, firstAt: Date.now(), lockedUntil: null };
-  }
-}
-
-function write(state: AttemptState): void {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch {
-    /* ignore */
-  }
-}
-
+/** Advisory UI cooldown received from the API. PostgreSQL enforces account locks. */
+const STORAGE_KEY = "hamd.ops.auth.serverCooldown";
 export function getLoginLockUntil(): number | null {
-  const state = read();
-  if (state.lockedUntil && state.lockedUntil > Date.now()) {
-    return state.lockedUntil;
-  }
-  if (state.lockedUntil && state.lockedUntil <= Date.now()) {
-    write({ failures: 0, firstAt: Date.now(), lockedUntil: null });
-    return null;
-  }
+  try {
+    // Retire the old browser-wide failure counter; it is not account authority.
+    localStorage.removeItem("hamd.web.auth.loginAttempts");
+    const until = Number(sessionStorage.getItem(STORAGE_KEY));
+    if (Number.isFinite(until) && until > Date.now() && until - Date.now() <= 86_400_000) return until;
+    sessionStorage.removeItem(STORAGE_KEY);
+  } catch { /* Storage is optional. */ }
   return null;
 }
-
-export function isLoginLocked(): boolean {
-  return getLoginLockUntil() !== null;
+export function rememberLoginLock(retryAfterSeconds: number | undefined): number | null {
+  const seconds = retryAfterSeconds;
+  const until = seconds !== undefined && Number.isFinite(seconds) && seconds > 0 && seconds <= 86_400
+    ? Date.now() + seconds * 1000 : null;
+  try { if (until) sessionStorage.setItem(STORAGE_KEY, String(until)); else sessionStorage.removeItem(STORAGE_KEY); } catch { /* optional */ }
+  return until;
 }
-
-export function recordLoginFailure(): { locked: boolean; unlockAt: number | null } {
-  const now = Date.now();
-  let state = read();
-  if (state.lockedUntil && state.lockedUntil > now) {
-    return { locked: true, unlockAt: state.lockedUntil };
-  }
-  if (now - state.firstAt > WINDOW_MS) {
-    state = { failures: 0, firstAt: now, lockedUntil: null };
-  }
-  state.failures += 1;
-  if (state.failures >= MAX_ATTEMPTS) {
-    state.lockedUntil = now + LOCK_MS;
-    write(state);
-    return { locked: true, unlockAt: state.lockedUntil };
-  }
-  write(state);
-  return { locked: false, unlockAt: null };
-}
-
 export function clearLoginFailures(): void {
-  write({ failures: 0, firstAt: Date.now(), lockedUntil: null });
+  try { sessionStorage.removeItem(STORAGE_KEY); localStorage.removeItem("hamd.web.auth.loginAttempts"); } catch { /* optional */ }
 }

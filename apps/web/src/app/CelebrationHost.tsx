@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CelebrationExperienceModal } from "@hamd/ui/marketing";
 
 import {
@@ -39,12 +39,12 @@ function isPublicCampaignRoute(pathname: string): boolean {
 }
 
 function resolveCampaign(row: WeddingCampaignRecord | null): WeddingCampaignRecord {
-  if (!row) return DEFAULT_WEDDING_CAMPAIGN;
+  if (!row) return { ...DEFAULT_WEDDING_CAMPAIGN, modalEnabled: false };
   return {
     ...DEFAULT_WEDDING_CAMPAIGN,
     ...row,
     id: row.id || DEFAULT_WEDDING_CAMPAIGN.id,
-    modalEnabled: row.modalEnabled !== false,
+    modalEnabled: row.modalEnabled === true,
     modalStartsAt: row.modalStartsAt || DEFAULT_WEDDING_CAMPAIGN.modalStartsAt,
     modalEndsAt: row.modalEndsAt || DEFAULT_WEDDING_CAMPAIGN.modalEndsAt,
   };
@@ -108,15 +108,21 @@ export function CelebrationHost() {
   const auth = useOptionalAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const [campaign, setCampaign] = useState<WeddingCampaignRecord>(DEFAULT_WEDDING_CAMPAIGN);
+  const [campaign, setCampaign] = useState<WeddingCampaignRecord>({ ...DEFAULT_WEDDING_CAMPAIGN, modalEnabled: false });
   const [open, setOpen] = useState(false);
-  const campaignRef = useRef<WeddingCampaignRecord>(DEFAULT_WEDDING_CAMPAIGN);
+  const campaignRef = useRef<WeddingCampaignRecord>({ ...DEFAULT_WEDDING_CAMPAIGN, modalEnabled: false });
   const pathRef = useRef(location.pathname);
   pathRef.current = location.pathname;
 
   useEffect(() => {
-    void fetchWeddingCampaign()
+    let cancelled = false;
+    let refreshing = false;
+    const refresh = () => {
+      if (refreshing) return;
+      refreshing = true;
+      void fetchWeddingCampaign()
       .then((row) => {
+        if (cancelled) return;
         const next = resolveCampaign(row);
         campaignRef.current = next;
         setCampaign(next);
@@ -126,6 +132,7 @@ export function CelebrationHost() {
           modalEnabled: next.modalEnabled,
           eventAt: next.eventAt,
         });
+        if (!next.modalEnabled) setOpen(false);
         if (publicModalTimerId === -1) {
           const reason = suppressionReason(pathRef.current, next);
           if (!reason) {
@@ -139,10 +146,16 @@ export function CelebrationHost() {
         }
       })
       .catch(() => {
-        campaignRef.current = DEFAULT_WEDDING_CAMPAIGN;
-        setCampaign(DEFAULT_WEDDING_CAMPAIGN);
+        if (cancelled) return;
+        campaignRef.current = { ...DEFAULT_WEDDING_CAMPAIGN, modalEnabled: false };
+        setCampaign(campaignRef.current);
+        setOpen(false);
         debugWedding({ campaignLoaded: false, usedDefault: true });
-      });
+      }).finally(() => { refreshing = false; });
+
+    };
+    refresh();
+    const interval = window.setInterval(refresh, 10_000);
 
     const releaseTimer = ensurePublicModalTimer(() => {
       const row = resolveCampaign(campaignRef.current);
@@ -158,7 +171,7 @@ export function CelebrationHost() {
       setOpen(true);
     });
 
-    return releaseTimer;
+    return () => { cancelled = true; clearInterval(interval); releaseTimer(); };
   }, []);
 
   useEffect(() => {
@@ -176,8 +189,14 @@ export function CelebrationHost() {
   }, [campaign.id, open]);
 
   return (
+    <>
+    {!open && campaign.modalEnabled === true && isPublicCampaignRoute(location.pathname) ? (
+      <Link className="hamd-wedding-reentry" title="Return to Rowdotul HAMD'26" aria-label="Return to Rowdotul HAMD'26" to={campaign.sitePath}>
+        <span aria-hidden="true">&#10022;</span><span className="hamd-wedding-reentry__text">Rowdotul HAMD'26</span>
+      </Link>
+    ) : null}
     <CelebrationExperienceModal
-      open={open}
+      open={open && campaign.modalEnabled === true && isPublicCampaignRoute(location.pathname)}
       campaign={campaign}
       onNavigate={(href) => {
         writeDismissed(campaign.id);
@@ -194,5 +213,6 @@ export function CelebrationHost() {
         setOpen(false);
       }}
     />
+    </>
   );
 }

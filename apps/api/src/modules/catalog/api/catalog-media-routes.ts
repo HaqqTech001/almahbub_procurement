@@ -1,4 +1,3 @@
-import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { join, normalize, resolve } from "node:path";
 import { WEDDING_MEDIA_STORAGE_ID } from "@hamd/constants";
@@ -104,11 +103,27 @@ export function createCatalogMediaRouter(
       response.setHeader("Content-Type", mime);
       response.setHeader("Cache-Control", "public, max-age=86400, immutable");
       response.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-      response.setHeader("Content-Length", String(info.size));
-      if (mime.startsWith("video/") || mime.startsWith("audio/")) {
-        response.setHeader("Accept-Ranges", "bytes");
-      }
-      createReadStream(absolute).pipe(response);
+      // Express handles bounded/open-ended/suffix ranges, HEAD and If-Range.
+      response.sendFile(absolute, { acceptRanges: request.method === "GET" }, (error) => {
+        if (!error) return;
+        if (response.headersSent) {
+          response.destroy();
+          return;
+        }
+        response.removeHeader("Content-Type");
+        response.removeHeader("Content-Length");
+        response.setHeader("Cache-Control", "no-store");
+        if ("status" in error && error.status === 416) {
+          response.setHeader("Content-Range", `bytes */${info.size}`);
+          response.status(416).end();
+          return;
+        }
+        if ("status" in error && error.status === 412) {
+          response.status(412).end();
+          return;
+        }
+        next(error);
+      });
     } catch (error) {
       next(error);
     }

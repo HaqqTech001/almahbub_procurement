@@ -318,6 +318,8 @@ model User {
   hiddenAnnouncementReplies   AnnouncementReply[]             @relation("AnnouncementReplyModerator")
   announcementReactions       AnnouncementReaction[]
   weddingComments             WeddingComment[]
+  weddingSubscriptions        WeddingSubscription[]
+  weddingWaitingMemberships   WeddingWaitingMembership[]
 
   @@index([status, createdAt(sort: Desc)])
   @@map("users")
@@ -1877,6 +1879,8 @@ model WeddingCampaign {
   gallery       WeddingGalleryItem[]
   recording     WeddingRecording?
   waitingTracks WeddingWaitingTrack[]
+  subscriptions WeddingSubscription[]
+  waitingMemberships WeddingWaitingMembership[]
 
   @@map("wedding_campaigns")
 }
@@ -1948,4 +1952,38 @@ model WeddingRecording {
   updatedAt     DateTime            @updatedAt @map("updated_at") @db.Timestamptz
 
   @@map("wedding_recordings")
+}
+
+// Update consent and waiting attendance are deliberately independent.
+model WeddingSubscription {
+  id String @id @default(uuid(7)) @db.Uuid
+  campaignId String @map("campaign_id")
+  campaign WeddingCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  userId String @map("user_id") @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enabled Boolean @default(false)
+  subscribedAt DateTime? @map("subscribed_at") @db.Timestamptz
+  unsubscribedAt DateTime? @map("unsubscribed_at") @db.Timestamptz
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  @@unique([campaignId, userId])
+  @@index([campaignId, enabled])
+  @@map("wedding_subscriptions")
+}
+
+model WeddingWaitingMembership {
+  id String @id @default(uuid(7)) @db.Uuid
+  campaignId String @map("campaign_id")
+  campaign WeddingCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  userId String @map("user_id") @db.Uuid
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  joined Boolean @default(false)
+  joinedAt DateTime? @map("joined_at") @db.Timestamptz
+  leftAt DateTime? @map("left_at") @db.Timestamptz
+  lastSeenAt DateTime? @map("last_seen_at") @db.Timestamptz
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  @@unique([campaignId, userId])
+  @@index([campaignId, joined, lastSeenAt])
+  @@map("wedding_waiting_memberships")
 }

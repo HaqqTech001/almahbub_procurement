@@ -1,0 +1,43 @@
+{
+  "generatedAt": "2026-09-15T20:10:41.759Z",
+  "execute": true,
+  "rows": [
+    {
+      "productId": "cdcd50e8-18f4-4f0a-805b-cafea6a402da",
+      "productSlug": "home-appliances-double-door-household-refrigerator",
+      "productName": "Double-door Household Refrigerator",
+      "category": "Home Appliances & Living Equipment",
+      "strategy": "generated_generic",
+      "classification": "generic_product",
+      "generatedPrompt": "Photorealistic ecommerce product photography of modern double-door refrigerator appliance with clearly visible door layout. Category: Home Appliances & Living Equipment. Visible physical characteristics: double doors, dual/double configuration. Modern current-market design, realistic proportions and materials, complete product visible, centered with safe margins, front or three-quarter view, warm white/light gray studio background, soft realistic shadow, no people unless essential, no unrelated objects, no text, no watermark, no fake or invented logo, square 1:1. Negative constraints: none",
+      "preservedVisualModifiers": [
+        "double doors",
+        "dual/double configuration",
+        "Double-door"
+      ],
+      "generationProvider": "openai",
+      "status": "generated",
+      "product": {
+        "id": "cdcd50e8-18f4-4f0a-805b-cafea6a402da",
+        "slug": "home-appliances-double-door-household-refrigerator",
+        "name": "Double-door Household Refrigerator",
+        "description": "Double-door Household Refrigerator is sourced for household, staff housing and light-commercial living spaces. Specify capacity, voltage, finish, energy rating, quantity, quantity and delivery destination. This listing supports procurement and does not confirm warehouse stock.",
+        "category": {
+          "slug": "home-appliances",
+          "name": "Home Appliances & Living Equipment"
+        },
+        "images": []
+      },
+      "provider": "openai",
+      "model": "gpt-image-2",
+      "size": "1024x1024",
+      "quality": "medium",
+      "sha256": "135b78edc9f6afcf64208a3deb51781114ee9a456ad8f37d90628d6b3be7156a",
+      "storageKey": "b747b743-f4ef-4a1f-a526-ddabd930e95f-home-appliances-double-door-household-refrigerator-generated.png",
+      "mediaUrl": "/api/v1/public/catalog-media/cdcd50e8-18f4-4f0a-805b-cafea6a402da/b747b743-f4ef-4a1f-a526-ddabd930e95f-home-appliances-double-door-household-refrigerator-generated.png",
+      "mimeType": "image/png",
+      "width": 1024,
+      "height": 1024
+    }
+  ]
+}

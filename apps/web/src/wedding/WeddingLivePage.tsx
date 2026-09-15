@@ -1,5 +1,7 @@
+import { ModuleSkeleton } from "@hamd/ui/module-layout";
 import { Component, useCallback, useEffect, useMemo, useRef, useState, type ErrorInfo, type ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { WeddingParticipation } from "./WeddingParticipation.js";
 import {
   DEFAULT_WEDDING_CAMPAIGN,
   WEDDING_WAITING_AUDIO_SESSION_MUTE_KEY,
@@ -121,6 +123,10 @@ export function WeddingLivePage() {
   const [waitingMuted, setWaitingMuted] = useState(() => readWaitingMute());
   const [waitingVolume, setWaitingVolume] = useState(() => readWaitingVolume());
   const [needWaitingSound, setNeedWaitingSound] = useState(false);
+  const [waitingPlaying, setWaitingPlaying] = useState(false);
+  const [waitingPlaybackError, setWaitingPlaybackError] = useState<string | null>(null);
+  const [waitingLoaded, setWaitingLoaded] = useState(false);
+  const [waitingLoadError, setWaitingLoadError] = useState(false);
   const [feedLost, setFeedLost] = useState(false);
   const waitingAudioRef = useRef<HTMLAudioElement>(null);
   const waitingLockRef = useRef(false);
@@ -160,8 +166,9 @@ export function WeddingLivePage() {
   useEffect(() => {
     const load = () => {
       void listWeddingWaitingAudio()
-        .then((rows) => setWaitingTracks(enabledWeddingWaitingTracks(rows)))
-        .catch(() => undefined);
+        .then((rows) => { setWaitingTracks(enabledWeddingWaitingTracks(rows)); setWaitingLoadError(false); })
+        .catch(() => setWaitingLoadError(true))
+        .finally(() => setWaitingLoaded(true));
     };
     load();
     const timer = window.setInterval(load, 8000);
@@ -170,11 +177,29 @@ export function WeddingLivePage() {
 
   const playableWaiting = useMemo(
     () =>
-      campaign.waitingMusicEnabled === false ? [] : enabledWeddingWaitingTracks(waitingTracks),
+      campaign.waitingMusicEnabled !== true ? [] : enabledWeddingWaitingTracks(waitingTracks),
     [campaign.waitingMusicEnabled, waitingTracks],
   );
   const currentWaiting = playableWaiting.find((row) => row.id === currentWaitingId) ?? null;
   const waitingAllowed = shouldPlayWeddingWaitingMusic(campaign);
+  const startWaitingMusic = useCallback(() => {
+    const node = waitingAudioRef.current;
+    if (!node || !waitingAllowed || waitingLockRef.current) return;
+    if (currentWaiting?.src && !node.getAttribute("src")) node.src = currentWaiting.src;
+    setWaitingPlaybackError(null);
+    node.muted = waitingMutedRef.current;
+    node.volume = waitingVolumeRef.current;
+    void playMediaElement(node).then(() => {
+      if (waitingLockRef.current) return;
+      setNeedWaitingSound(false);
+      setWaitingPlaying(true);
+    }).catch((cause: unknown) => {
+      setWaitingPlaying(false);
+      if (cause instanceof Error && cause.name === "NotAllowedError") setNeedWaitingSound(true);
+      else if (!(cause instanceof Error && cause.name === "AbortError")) setWaitingPlaybackError("Waiting music could not play. Try again.");
+    });
+  }, [waitingAllowed, currentWaiting?.src]);
+
 
   useEffect(() => {
     if (!waitingAllowed) {
@@ -227,9 +252,9 @@ export function WeddingLivePage() {
       node.pause();
       return undefined;
     }
-    void playMediaElement(node).catch(() => setNeedWaitingSound(true));
+    startWaitingMusic();
     return undefined;
-  }, [currentWaiting?.src, waitingAllowed, waitingMuted, waitingVolume]);
+  }, [currentWaiting?.src, waitingAllowed, waitingMuted, waitingVolume, startWaitingMusic]);
 
   const advanceWaitingTrack = (fromError: boolean) => {
     if (waitingLockRef.current || !shouldPlayWeddingWaitingMusic(campaign)) return;
@@ -393,6 +418,7 @@ export function WeddingLivePage() {
       return (
         <>
           <h1>Thank you for celebrating with us.</h1>
+          <p>Waiting music is off because this celebration has ended.</p>
           <div className="hamd-wedding-portal__overlay-actions">
             <Link className="hamd-btn hamd-btn--primary" to={`${campaign.sitePath}#gallery`}>
               View Gallery
@@ -460,24 +486,25 @@ export function WeddingLivePage() {
           ) : (
             <p>Waiting for the live celebration to begin.</p>
           )}
-          {currentWaiting ? (
+          {!waitingLoaded ? <ModuleSkeleton variant="list" count={1} /> : waitingLoadError ? <p role="alert">Unable to load waiting music. Checking again shortly.</p> : null}
+          {currentWaiting && waitingAllowed ? (
             <div className="hamd-wedding-waiting__audio">
-              <span className="hamd-wedding-waiting__audio-title">Now playing {currentWaiting.title}</span>
+              <span className="hamd-wedding-waiting__audio-title">{waitingPlaying && !waitingMuted ? "Now playing" : "Waiting music:"} {currentWaiting.title}</span>
               <button
                 type="button"
                 className="hamd-btn hamd-btn--ghost"
-                aria-label={needWaitingSound ? "Enable Sound" : waitingMuted ? "Sound On" : "Mute"}
+                aria-label={needWaitingSound || !waitingPlaying && !waitingMuted ? "Play waiting music" : waitingMuted ? "Unmute waiting music" : "Mute waiting music"}
                 onClick={() => {
-                  const nextMuted = needWaitingSound ? false : !waitingMuted;
+                  const nextMuted = needWaitingSound || !waitingPlaying && !waitingMuted ? false : !waitingMuted;
                   setWaitingMuted(nextMuted);
                   writeWaitingMute(nextMuted);
                   setNeedWaitingSound(false);
-                  waitingLockRef.current = false;
+                  waitingMutedRef.current = nextMuted;
                   const node = waitingAudioRef.current;
                   if (node) {
                     node.muted = nextMuted;
                     node.volume = waitingVolumeRef.current;
-                    if (!nextMuted) void playMediaElement(node).catch(() => setNeedWaitingSound(true));
+                    if (!nextMuted) startWaitingMusic();
                     else node.pause();
                   }
                 }}
@@ -489,8 +516,10 @@ export function WeddingLivePage() {
                     <path d="M4 10v4h3l4 3V7L7 10H4zm11 1a3 3 0 0 1 0 2m3-4a6 6 0 0 1 0 6" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
                   )}
                 </svg>
-                {needWaitingSound ? "Enable Sound" : waitingMuted ? "Sound On" : "Mute"}
+                {needWaitingSound || !waitingPlaying && !waitingMuted ? "Play waiting music" : waitingMuted ? "Unmute" : "Mute"}
               </button>
+              {needWaitingSound ? <span role="status">Browser requires interaction</span> : waitingMuted ? <span role="status">Muted</span> : waitingPlaying ? <span role="status">Playing</span> : null}
+              {waitingPlaybackError ? <span role="alert">{waitingPlaybackError}</span> : null}
               <label>
                 <span className="hamd-sr-only">Waiting music volume</span>
                 <input
@@ -539,8 +568,12 @@ export function WeddingLivePage() {
           exitHref={campaign.sitePath}
           exitLabel="Back to Wedding"
         />
-        <div className="hamd-wedding-portal__body">
-          <div className="hamd-wedding-portal__media">
+        <details className="hamd-wedding-participation-menu">
+          <summary>Waiting room &amp; updates</summary>
+          <WeddingParticipation onJoinInteraction={() => { if (!waitingMutedRef.current) startWaitingMusic(); }} />
+        </details>
+        <div className={`hamd-wedding-portal__body hamd-wedding-portal__body--${headerStatus.toLowerCase()}`}>
+          {liveActive || connecting ? <div className="hamd-wedding-portal__media">
             <WeddingViewingPanel videoRef={videoRef} overlay={overlay} />
             <div className="hamd-wedding-portal__controls">
               <button
@@ -671,8 +704,8 @@ export function WeddingLivePage() {
                 Messages
               </button>
             </div>
-          </div>
-          <WeddingCommentsPanel
+          </div> : <section className="hamd-wedding-portal__state" aria-live="polite">{overlay}</section>}
+          {liveActive ? <WeddingCommentsPanel
             comments={comments}
             draft={draft}
             onDraftChange={setDraft}
@@ -693,30 +726,23 @@ export function WeddingLivePage() {
                   setCommentError(err instanceof Error ? err.message : "Unable to post.");
                 });
             }}
-          />
+          /> : null}
         </div>
         {currentWaiting?.src ? (
-          // <audio
-          //   ref={waitingAudioRef}
-          //   src={currentWaiting.src}
-          //   preload="metadata"
-          //   onEnded={() => advanceWaitingTrack(false)}
-          //   onError={() => {
-          //     if (currentWaiting) failedWaitingIdsRef.current.add(currentWaiting.id);
-          //     advanceWaitingTrack(true);
-          //   }}
-          // />
-
           <audio
             ref={waitingAudioRef}
             src={currentWaiting.src}
             preload="metadata"
+            onPlaying={() => { setWaitingPlaying(true); setNeedWaitingSound(false); }}
+            onPause={() => setWaitingPlaying(false)}
             loop={
               campaign.waitingMusicLoop !== false &&
               playableWaiting.length === 1
             }
-            onEnded={() => advanceWaitingTrack(false)}
+            onEnded={() => { setWaitingPlaying(false); advanceWaitingTrack(false); }}
             onError={() => {
+              setWaitingPlaying(false);
+              setWaitingPlaybackError("This waiting track is unavailable.");
               if (currentWaiting) {
                 failedWaitingIdsRef.current.add(currentWaiting.id);
               }
@@ -733,8 +759,8 @@ function playMediaElement(node: HTMLMediaElement): Promise<void> {
   try {
     const result = node.play();
     if (result && typeof result.catch === "function") return result;
-  } catch {
-    return Promise.reject(new Error("autoplay blocked"));
+  } catch (error) {
+    return Promise.reject(error);
   }
   return Promise.resolve();
 }

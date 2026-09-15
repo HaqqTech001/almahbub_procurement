@@ -41,7 +41,7 @@ export function ModuleWorkspace({
   className,
 }: ModuleWorkspaceProps) {
   const showEmpty = !loading && !error && Boolean(empty) && (isEmpty ?? !children);
-  const showRecords = !error && !showEmpty && Boolean(children);
+  const showRecords = !loading && !error && !showEmpty && Boolean(children);
 
   return (
     <div className={cx("hamd-module-workspace", "hamd-list-module-frame", className)}>
@@ -54,7 +54,7 @@ export function ModuleWorkspace({
       </div>
 
       <div className="hamd-module-workspace__body">
-        {loading && !children ? (
+        {loading && !error ? (
           <div className="hamd-module-workspace__loading" aria-busy="true" aria-live="polite">
             <span className="hamd-sr-only">{loadingLabel}</span>
             <ModuleSkeleton variant="table" count={6} />

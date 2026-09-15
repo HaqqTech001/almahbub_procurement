@@ -1,3 +1,4 @@
+import { HorizontalStepper } from "../primitives/HorizontalStepper.js";
 import { useEffect, useId, useRef } from "react";
 import { cx } from "../utils/cx.js";
 import { useOptionalGuidance } from "./guidance-context.js";
@@ -164,12 +165,11 @@ export function TourRunner({ className }: TourRunnerProps) {
         {rect ? (
           <span className="hamd-guide-tour__arrow" data-placement={layout.placement} aria-hidden="true" />
         ) : null}
-        <div className="hamd-guide-tour__progress" aria-hidden="true">
-          <span
-            className="hamd-guide-tour__progress-bar"
-            style={{ width: `${(index / total) * 100}%` }}
-          />
-        </div>
+        <HorizontalStepper
+          steps={activeTour.steps.map((item) => ({ id: item.stepKey, label: item.title }))}
+          currentStep={activeStepIndex}
+          label="Tour progress"
+        />
         <p className="hamd-guide-tour__meta" id={liveId} aria-live="polite">
           {activeTour.title} · Step {index} of {total}
           {activeTour.version ? ` · v${activeTour.version}` : ""}

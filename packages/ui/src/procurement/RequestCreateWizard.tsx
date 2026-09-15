@@ -51,10 +51,11 @@ function QuantityStepper({
       <input
         className="hamd-qty__input"
         inputMode="numeric"
-        value={Number.isFinite(value) ? String(value) : "1"}
+        aria-label="Quantity required"
+        value={Number.isFinite(value) && value > 0 ? String(value) : ""}
         onChange={(e) => {
           const next = Number.parseInt(e.target.value.replace(/[^\d]/g, ""), 10);
-          onChange(Number.isFinite(next) && next > 0 ? next : 1);
+          onChange(Number.isFinite(next) ? next : 0);
         }}
         data-wizard-field={fieldKey}
         aria-required="true"
@@ -74,8 +75,8 @@ function QuantityStepper({
 }
 
 export const REQUEST_WIZARD_STEPS = [
-  { id: "products", label: "Products" },
-  { id: "basics", label: "Requirements" },
+  { id: "products", label: "Products", compactLabel: "Items" },
+  { id: "basics", label: "Requirements", compactLabel: "Needs" },
   { id: "delivery", label: "Delivery" },
   { id: "documents", label: "Media" },
   { id: "review", label: "Review" },
@@ -97,6 +98,10 @@ export type CatalogProductOption = {
 
 export type WizardFieldKey =
   | "title"
+  | "budgetAmount"
+  | "currencyCode"
+  | "notes"
+  | "requiredByDate"
   | "items"
   | `item:${string}:description`
   | `item:${string}:quantity`
@@ -104,6 +109,12 @@ export type WizardFieldKey =
   | `item:${string}:category`
   | "destinationAddress"
   | "destinationCountryCode";
+
+export function wizardStepForField(field: WizardFieldKey): RequestWizardStepId {
+  if (["title", "budgetAmount", "currencyCode", "notes"].includes(field)) return "basics";
+  if (["destinationAddress", "destinationCountryCode", "requiredByDate"].includes(field)) return "delivery";
+  return "products";
+}
 
 export type WizardValidationResult = {
   messages: string[];
@@ -385,7 +396,26 @@ function isBlankLine(item: RequestWizardDraft["items"][number]): boolean {
   );
 }
 
-function validateStep(
+function serverValidation(error: unknown, draft: RequestWizardDraft): WizardValidationResult {
+  const result: WizardValidationResult = { messages: [], fields: [] };
+  const details = error && typeof error === "object" && "details" in error ? error.details : null;
+  if (Array.isArray(details)) for (const detail of details) {
+    if (!detail || typeof detail.field !== "string" || typeof detail.message !== "string") continue;
+    let field: WizardFieldKey | undefined;
+    if (["title", "items", "destinationAddress", "destinationCountryCode", "budgetAmount", "currencyCode", "notes", "requiredByDate"].includes(detail.field)) {
+      field = detail.field as WizardFieldKey;
+    } else {
+      const match = /^items(?:\[|\.)(\d+)\]?\.(description|quantity|unit)$/.exec(detail.field);
+      const item = match ? draft.items.filter((row) => !isBlankLine(row))[Number(match[1])] : undefined;
+      if (item && match) field = `item:${item.id}:${match[2]}` as WizardFieldKey;
+    }
+    if (field) { result.fields.push(field); result.messages.push(detail.message); }
+  }
+  if (!result.messages.length) result.messages.push(error instanceof Error ? error.message : "Could not submit request. Please try again.");
+  return result;
+}
+
+export function validateStep(
   step: RequestWizardStepId,
   draft: RequestWizardDraft,
 ): WizardValidationResult {
@@ -399,12 +429,24 @@ function validateStep(
     } else if (draft.title.trim().length < 3) {
       messages.push("Request title must be at least 3 characters.");
       fields.push("title");
+    } else if (draft.title.trim().length > 200) {
+      messages.push("Request title must be 200 characters or fewer."); fields.push("title");
+    }
+    if (draft.budgetAmount != null && (!Number.isFinite(draft.budgetAmount) || draft.budgetAmount < 0 || draft.budgetAmount > 999_999_999_999)) {
+      messages.push("Enter a budget between 0 and 999,999,999,999, or leave it blank."); fields.push("budgetAmount");
+    }
+    if (!/^[A-Z]{3}$/.test(draft.currencyCode?.trim().toUpperCase() ?? "")) {
+      messages.push("Select a valid currency."); fields.push("currencyCode");
+    }
+    if ((draft.notes?.trim().length ?? 0) > 10_000) {
+      messages.push("Shorten the description to 10,000 characters or fewer."); fields.push("notes");
     }
   }
 
   if (step === "products" || step === "review") {
     const active = draft.items.filter((item) => !isBlankLine(item));
     const rows = active.length > 0 ? active : draft.items.slice(0, 1);
+    if (active.length > 100) { messages.push("Include no more than 100 products in one request."); fields.push("items"); }
     if (active.length === 0) {
       messages.push(
         "Add at least one product with a description, or select catalog products and click Add selected.",
@@ -414,22 +456,25 @@ function validateStep(
     rows.forEach((item) => {
       const index = Math.max(0, draft.items.findIndex((row) => row.id === item.id));
       const label = `Line ${index + 1}`;
-      if (item.description.trim().length < 2) {
-        messages.push(`${label}: product description must be at least 2 characters.`);
+      if (item.description.trim().length < 2 || item.description.trim().length > 2_000) {
+        messages.push(item.description.trim().length < 2 ? `${label}: product description must be at least 2 characters.` : `${label}: product description must be 2,000 characters or fewer.`);
         fields.push(`item:${item.id}:description`);
       }
-      if (!(item.quantity > 0)) {
-        messages.push(`${label}: quantity must be greater than zero.`);
+      if (!(item.quantity > 0) || !Number.isFinite(item.quantity) || item.quantity > 1_000_000) {
+        messages.push(`${label}: enter a quantity greater than zero and no more than 1,000,000.`);
         fields.push(`item:${item.id}:quantity`);
       }
-      if (!item.unit.trim()) {
-        messages.push(`${label}: unit is required.`);
+      if (!item.unit.trim() || item.unit.trim().length > 32) {
+        messages.push(`${label}: enter a unit of 1 to 32 characters.`);
         fields.push(`item:${item.id}:unit`);
       }
     });
   }
 
   if (step === "delivery" || step === "review") {
+    if (draft.requiredByDate && Number.isNaN(Date.parse(draft.requiredByDate))) {
+      messages.push("Enter a valid required-by date, or leave it blank."); fields.push("requiredByDate");
+    }
     const address = draft.destinationAddress.trim();
     const country = draft.destinationCountryCode.trim().toUpperCase();
     if (!country) {
@@ -442,8 +487,8 @@ function validateStep(
     if (!address) {
       messages.push("Delivery location is required.");
       fields.push("destinationAddress");
-    } else if (address.length < 5) {
-      messages.push("Delivery location must be at least 5 characters.");
+    } else if (address.length < 5 || address.length > 1_000) {
+      messages.push("Delivery location must be between 5 and 1,000 characters.");
       fields.push("destinationAddress");
     }
   }
@@ -520,6 +565,24 @@ export function RequestCreateWizard({
   );
   const searchSeq = useRef(0);
   const errorRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [errorFields, setErrorFields] = useState<WizardFieldKey[]>([]);
+  const [focusRequest, setFocusRequest] = useState<{ field?: WizardFieldKey } | null>(null);
+  const navigateToError = useCallback((field?: WizardFieldKey) => {
+    if (field) setStepIndex(REQUEST_WIZARD_STEPS.findIndex((row) => row.id === wizardStepForField(field)));
+    setFocusRequest(field ? { field } : {});
+  }, []);
+  useEffect(() => {
+    if (!focusRequest) return;
+    const nodes = Array.from(formRef.current?.querySelectorAll<HTMLElement>("[data-wizard-field]") ?? []);
+    const field = focusRequest.field === "items"
+      ? nodes.find((node) => node.dataset.wizardField?.endsWith(":description"))
+      : nodes.find((node) => node.dataset.wizardField === focusRequest.field);
+    const target = field ?? errorRef.current;
+    target?.scrollIntoView?.({ block: "center", behavior: "auto" });
+    target?.focus({ preventScroll: true });
+    setFocusRequest(null);
+  }, [focusRequest, stepIndex]);
   const footerRef = useRef<HTMLDivElement>(null);
   const attachmentsRef = useRef(draft.attachments);
   attachmentsRef.current = draft.attachments;
@@ -527,6 +590,8 @@ export function RequestCreateWizard({
   const step = REQUEST_WIZARD_STEPS[stepIndex]!;
 
   const fieldInvalid = (key: WizardFieldKey) => invalidFields.has(key);
+  const fieldError = (key: WizardFieldKey) => fieldInvalid(key)
+    ? <span className="hamd-pr-wizard__field-error">{errors[errorFields.indexOf(key)]}</span> : null;
 
   useEffect(() => {
     if (!onCatalogSearch) {
@@ -585,10 +650,6 @@ export function RequestCreateWizard({
     });
   }, [catalogProducts, categoryFilter, productQuery, remoteCatalog]);
 
-  useEffect(() => {
-    if (errors.length === 0) return;
-    errorRef.current?.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
-  }, [errors]);
 
   useEffect(() => {
     return () => {
@@ -618,28 +679,10 @@ export function RequestCreateWizard({
 
   const applyValidation = useCallback((result: WizardValidationResult) => {
     setErrors(result.messages);
+    setErrorFields(result.fields);
     setInvalidFields(new Set(result.fields));
-    queueMicrotask(() => {
-      const key = result.fields[0];
-      const node = key
-        ? document.querySelector<HTMLElement>(
-            `[data-wizard-field="${key.replaceAll('"', '\\"')}"]`,
-          )
-        : null;
-      if (node instanceof HTMLElement && typeof node.scrollIntoView === "function") {
-        node.scrollIntoView({ block: "center", behavior: "smooth" });
-      }
-      if (
-        node instanceof HTMLInputElement ||
-        node instanceof HTMLSelectElement ||
-        node instanceof HTMLTextAreaElement
-      ) {
-        node.focus();
-      } else {
-        (node ?? errorRef.current)?.focus();
-      }
-    });
-  }, []);
+    navigateToError(result.fields[0]);
+  }, [navigateToError]);
 
   const patch = useCallback(
     (partial: Partial<RequestWizardDraft>) => {
@@ -820,33 +863,21 @@ export function RequestCreateWizard({
   };
 
   const submit = async () => {
-    const allMessages = REQUEST_WIZARD_STEPS.flatMap(
-      (s) => validateStep(s.id, draft).messages,
-    );
-    const allFields = REQUEST_WIZARD_STEPS.flatMap(
-      (s) => validateStep(s.id, draft).fields,
-    );
-    const unique = [...new Set(allMessages)];
-    if (unique.length) {
-      applyValidation({ messages: unique, fields: allFields });
-      const firstIncomplete = REQUEST_WIZARD_STEPS.findIndex(
-        (s) => validateStep(s.id, draft).messages.length > 0,
-      );
-      if (firstIncomplete >= 0) setStepIndex(firstIncomplete);
+    const results = REQUEST_WIZARD_STEPS.filter((step) => step.id !== "review")
+      .map((step) => validateStep(step.id, draft));
+    const messages = results.flatMap((result) => result.messages);
+    if (messages.length) {
+      applyValidation({ messages, fields: results.flatMap((result) => result.fields) });
       return;
     }
     setBusy(true);
     clearValidation();
     try {
+      await onAutosave?.(draft);
       await onSubmit?.(toPayload(true));
       setStatus("Request submitted for review.");
     } catch (err) {
-      applyValidation({
-        messages: [
-          err instanceof Error ? err.message : "Could not submit request.",
-        ],
-        fields: [],
-      });
+      applyValidation(serverValidation(err, draft));
     } finally {
       setBusy(false);
     }
@@ -926,6 +957,7 @@ export function RequestCreateWizard({
           variant="wizard"
           wizardSteps={REQUEST_WIZARD_STEPS}
           wizardIndex={stepIndex}
+          wizardErrorSteps={errorFields.map((field) => REQUEST_WIZARD_STEPS.findIndex((item) => item.id === wizardStepForField(field)))}
           onWizardStepSelect={(index) => {
             if (index >= stepIndex) return;
             clearValidation();
@@ -974,6 +1006,7 @@ export function RequestCreateWizard({
       </div>
 
       <form
+        ref={formRef}
         id={formId}
         className="hamd-pr-wizard__panel"
         noValidate
@@ -994,8 +1027,10 @@ export function RequestCreateWizard({
               Please complete the required fields before continuing.
             </p>
             <ul>
-              {errors.map((error) => (
-                <li key={error}>{error}</li>
+              {errors.map((error, index) => (
+                <li key={`${index}-${error}`}>
+                  {errorFields[index] ? <button type="button" onClick={() => navigateToError(errorFields[index])}>{error}</button> : error}
+                </li>
               ))}
             </ul>
           </div>
@@ -1017,9 +1052,7 @@ export function RequestCreateWizard({
               />
               {fieldInvalid("title") ? (
                 <span className="hamd-pr-wizard__field-error">
-                  {draft.title.trim().length > 0 && draft.title.trim().length < 3
-                    ? "Request title must be at least 3 characters."
-                    : "Request title is required."}
+                  {errors[errorFields.indexOf("title")]}
                 </span>
               ) : null}
             </label>
@@ -1028,9 +1061,12 @@ export function RequestCreateWizard({
               <textarea
                 rows={4}
                 value={draft.notes}
+                data-wizard-field="notes"
+                aria-invalid={fieldInvalid("notes") || undefined}
                 onChange={(e) => patch({ notes: e.target.value })}
                 placeholder="Optional commercial context for sourcing"
               />
+              {fieldError("notes")}
             </label>
             <div className="hamd-pr-wizard__grid">
               <label>
@@ -1054,6 +1090,8 @@ export function RequestCreateWizard({
                 Currency
                 <select
                   value={draft.currencyCode}
+                  data-wizard-field="currencyCode"
+                  aria-invalid={fieldInvalid("currencyCode") || undefined}
                   onChange={(e) => patch({ currencyCode: e.target.value })}
                 >
                   {["USD", "NGN", "EUR", "GBP", "CNY"].map((code) => (
@@ -1062,6 +1100,7 @@ export function RequestCreateWizard({
                     </option>
                   ))}
                 </select>
+                {fieldError("currencyCode")}
               </label>
               <label>
                 Budget
@@ -1070,6 +1109,8 @@ export function RequestCreateWizard({
                   min={0}
                   step="0.01"
                   value={draft.budgetAmount ?? ""}
+                  data-wizard-field="budgetAmount"
+                  aria-invalid={fieldInvalid("budgetAmount") || undefined}
                   onChange={(e) =>
                     patch({
                       budgetAmount:
@@ -1080,6 +1121,7 @@ export function RequestCreateWizard({
                   }
                   placeholder="Optional"
                 />
+                {fieldError("budgetAmount")}
               </label>
             </div>
             <label className="hamd-pr-wizard__check">
@@ -1234,6 +1276,7 @@ export function RequestCreateWizard({
                           undefined
                         }
                       />
+                      {fieldError(`item:${item.id}:description`)}
                     </label>
                     <label>
                       Category
@@ -1243,8 +1286,6 @@ export function RequestCreateWizard({
                           updateItem(item.id, { category: e.target.value })
                         }
                         data-wizard-field={`item:${item.id}:category`}
-                        aria-required="true"
-                        required
                         aria-invalid={
                           fieldInvalid(`item:${item.id}:category`) || undefined
                         }
@@ -1265,6 +1306,7 @@ export function RequestCreateWizard({
                         fieldKey={`item:${item.id}:quantity`}
                         onChange={(quantity) => updateItem(item.id, { quantity })}
                       />
+                      {fieldError(`item:${item.id}:quantity`)}
                     </label>
                     <label>
                       Unit
@@ -1302,6 +1344,7 @@ export function RequestCreateWizard({
                           </option>
                         ))}
                       </select>
+                      {fieldError(`item:${item.id}:unit`)}
                     </label>
                     <label className="hamd-pr-wizard__span-2">
                       Specifications
@@ -1366,8 +1409,11 @@ export function RequestCreateWizard({
                 <input
                   type="date"
                   value={draft.requiredByDate}
+                  data-wizard-field="requiredByDate"
+                  aria-invalid={fieldInvalid("requiredByDate") || undefined}
                   onChange={(e) => patch({ requiredByDate: e.target.value })}
                 />
+                {fieldError("requiredByDate")}
               </label>
               <label className="hamd-pr-wizard__span-2">
                 Delivery location
@@ -1388,18 +1434,9 @@ export function RequestCreateWizard({
                 />
                 {fieldInvalid("destinationAddress") ? (
                   <span className="hamd-pr-wizard__field-error">
-                    Enter a delivery location of at least 5 characters.
+                    {errors[errorFields.indexOf("destinationAddress")]}
                   </span>
                 ) : null}
-              </label>
-              <label className="hamd-pr-wizard__span-2">
-                Notes for sourcing
-                <textarea
-                  rows={3}
-                  value={draft.notes}
-                  onChange={(e) => patch({ notes: e.target.value })}
-                  placeholder="Commercial constraints, preferred brands, inspection needs"
-                />
               </label>
             </div>
           </fieldset>

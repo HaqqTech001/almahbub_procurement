@@ -1,3 +1,4 @@
+import { ModuleSkeleton } from "@hamd/ui/module-layout";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -8,7 +9,7 @@ import {
 import {
   HostAlert,
   HostBackLink,
-  HostLoading,
+
   HostPage,
 } from "../components/HostChrome.js";
 import { useAuth } from "../auth/session/AuthProvider.js";
@@ -61,7 +62,7 @@ export function QuotationHistoryPage() {
     <HostPage className="hamd-web-quotations">
       <HostBackLink to="/app/quotations">← Back to quotations</HostBackLink>
       {error ? <HostAlert>{error}</HostAlert> : null}
-      {loading ? <HostLoading label="Loading audit history…" /> : null}
+      {loading ? <ModuleSkeleton variant="list" /> : null}
       {!loading && !error ? (
         <QuotationHistoryBoard
           quotations={rows}

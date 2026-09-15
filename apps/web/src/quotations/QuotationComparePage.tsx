@@ -1,3 +1,4 @@
+import { ModuleSkeleton } from "@hamd/ui/module-layout";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
@@ -9,7 +10,7 @@ import {
 import {
   HostAlert,
   HostBackLink,
-  HostLoading,
+
   HostPage,
 } from "../components/HostChrome.js";
 import { useAuth } from "../auth/session/AuthProvider.js";
@@ -107,7 +108,7 @@ export function QuotationComparePage() {
     <HostPage className="hamd-web-quotations">
       <HostBackLink to="/app/quotations">← Back to quotations</HostBackLink>
       {error ? <HostAlert>{error}</HostAlert> : null}
-      {loading ? <HostLoading label="Loading quotations for comparison…" /> : null}
+      {loading ? <ModuleSkeleton variant="table" /> : null}
       {!loading && !error ? (
         <QuotationCompareView
           quotations={rows}

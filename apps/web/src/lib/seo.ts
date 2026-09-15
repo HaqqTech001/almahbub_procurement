@@ -30,9 +30,15 @@ function upsertLink(rel: string, href: string, extra?: Record<string, string>) {
 
 /** Production SEO manager - title, description, OG, Twitter, robots, canonical. */
 export function applyPageSeo(seo: PageSeo): void {
-  const title = seo.title.includes(SITE.name)
+  const brandName =
+    seo.path === "/"
+      ? "Almahbub"
+      : seo.path.startsWith("/businesses/almahbub-integrated-export")
+        ? "Almahbub Integrated Export"
+        : SITE.name;
+  const title = seo.title.includes(brandName)
     ? seo.title
-    : `${seo.title} · ${SITE.name}`;
+    : `${seo.title} | ${brandName}`;
   const url = absoluteUrl(seo.path);
   const image = absoluteUrl(seo.ogImage ?? SITE.defaultOgImage);
   const robots = seo.noIndex ? "noindex, nofollow" : "index, follow";
@@ -42,7 +48,7 @@ export function applyPageSeo(seo: PageSeo): void {
   upsertMeta("name", "robots", robots);
   upsertMeta("name", "theme-color", "#0B1F3A");
 
-  upsertMeta("property", "og:site_name", SITE.name);
+  upsertMeta("property", "og:site_name", brandName);
   upsertMeta("property", "og:locale", SITE.locale);
   upsertMeta("property", "og:title", title);
   upsertMeta("property", "og:description", seo.description);
@@ -61,7 +67,10 @@ export function applyPageSeo(seo: PageSeo): void {
   upsertLink("canonical", url);
 }
 
-export function applyJsonLd(data: Record<string, unknown>, id = "hamd-jsonld"): void {
+export function applyJsonLd(
+  data: Record<string, unknown>,
+  id = "hamd-jsonld",
+): void {
   let script = document.getElementById(id) as HTMLScriptElement | null;
   if (!script) {
     script = document.createElement("script");

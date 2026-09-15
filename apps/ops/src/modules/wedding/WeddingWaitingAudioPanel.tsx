@@ -174,14 +174,18 @@ export function WeddingWaitingAudioPanel({
   };
 
   const setConfig = async (next: { enabled?: boolean; loop?: boolean }) => {
-    if (next.enabled !== undefined) onEnabled(next.enabled);
-    if (next.loop !== undefined) onLoop(next.loop);
-    const token = await accessToken();
-    await opsFetch("/wedding/waiting-audio/enabled", {
-      method: "POST",
-      accessToken: token,
-      body: next,
-    });
+    setBusy(true); setError(null);
+    try {
+      const token = await accessToken();
+      const saved = await opsFetch<{ waitingMusicEnabled: boolean; waitingMusicLoop: boolean }>("/wedding/waiting-audio/enabled", {
+        method: "POST", accessToken: token, body: next,
+      });
+      onEnabled(saved.waitingMusicEnabled);
+      onLoop(saved.waitingMusicLoop);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Unable to save waiting music.");
+    } finally { setBusy(false); }
+
   };
 
   const toggleStoredPreview = (track: WeddingWaitingTrack) => {
@@ -468,6 +472,7 @@ export function WeddingWaitingAudioPanel({
           <input
             type="checkbox"
             checked={enabled}
+            disabled={busy}
             onChange={(event) => void setConfig({ enabled: event.target.checked })}
           />{" "}
           Enable waiting music
@@ -476,6 +481,7 @@ export function WeddingWaitingAudioPanel({
           <input
             type="checkbox"
             checked={loop}
+            disabled={busy}
             onChange={(event) => void setConfig({ loop: event.target.checked })}
           />{" "}
           Loop playlist
