@@ -158,10 +158,7 @@ export function createApp(
       environment.UPLOAD_ROOT,
     );
     const guidanceService = new GuidanceService(database);
-    const opsService = new OpsService(
-      database,
-      environment.UPLOAD_ROOT,
-      createCatalogMediaStore({
+    const catalogMediaStore = createCatalogMediaStore({
         uploadRoot: environment.UPLOAD_ROOT,
         driver: environment.CATALOG_MEDIA_DRIVER,
         nodeEnv: environment.NODE_ENV,
@@ -173,8 +170,8 @@ export function createApp(
         supabaseUrl: environment.CATALOG_MEDIA_SUPABASE_URL,
         supabaseServiceRoleKey: environment.CATALOG_MEDIA_SUPABASE_SERVICE_ROLE_KEY,
         supabaseBucket: environment.CATALOG_MEDIA_SUPABASE_BUCKET,
-      }),
-    );
+      });
+    const opsService = new OpsService(database, environment.UPLOAD_ROOT, catalogMediaStore);
     const limiters = createApiAbuseLimiters(dependencies.redis);
     const parityService = new ParityService(database, documentService);
     const parityRouters = createParityRouters(
@@ -277,7 +274,7 @@ export function createApp(
         optionalAuthenticate,
         new IeCommodityService(
           database,
-          createCatalogMediaStore({ uploadRoot: environment.UPLOAD_ROOT }),
+          catalogMediaStore,
         ),
       ),
     );

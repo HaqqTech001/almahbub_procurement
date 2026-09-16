@@ -61,7 +61,7 @@ describe("homepage products adapter", () => {
     vi.unstubAllGlobals();
   });
 
-  it("uses the API category image when present", async () => {
+  it("uses durable presentation artwork for a legacy local API category image", async () => {
     const { toCategoryItem } = await import("./homepage-products.js");
     const item = toCategoryItem({
       slug: "medical-equipments",
@@ -69,7 +69,7 @@ describe("homepage products adapter", () => {
       imageUrl: "/api/v1/public/catalog-media/cat/medical.png",
       imageAlt: "Medical equipment category",
     });
-    expect(item.imageSrc).toContain("/api/v1/public/catalog-media/cat/medical.png");
+    expect(item.imageSrc).toBe("/media/international/category-medical-equipments.jpg");
     expect(item.imageAlt).toBe("Medical equipment category");
     expect(item.href).toContain("medical-equipments");
   });

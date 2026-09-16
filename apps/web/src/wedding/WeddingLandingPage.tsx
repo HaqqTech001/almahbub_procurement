@@ -164,7 +164,7 @@ export function WeddingLandingPage() {
       {campaign.galleryEnabled ? (
         <section className="hamd-wedding-page__section" id="gallery" aria-labelledby="wedding-gallery">
           <h2 id="wedding-gallery">Wedding gallery</h2>
-          {galleryLoading ? <CollectionSkeleton label="Loading wedding gallery" gridClassName="hamd-wedding-gallery" aspectRatio="1" /> : galleryError ? <p role="alert">Unable to load wedding gallery. <button onClick={() => setGalleryAttempt(value => value + 1)}>Retry gallery</button></p> : gallery.length === 0 ? (
+          {galleryLoading ? <CollectionSkeleton label="Loading wedding gallery" gridClassName="hamd-wedding-gallery" aspectRatio="4 / 5" /> : galleryError ? <p role="alert">Unable to load wedding gallery. <button onClick={() => setGalleryAttempt(value => value + 1)}>Retry gallery</button></p> : gallery.length === 0 ? (
             <p>Photographs and clips appear here when the host publishes them.</p>
           ) : (
             <ul className="hamd-wedding-gallery">

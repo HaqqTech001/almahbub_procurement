@@ -44,6 +44,7 @@ export function IeCommodityDetailView({ commodity }: IeCommodityDetailViewProps)
           {commodity.heroMedia ? (
             <figure className="hamd-aie-commodity-detail__hero-figure">
               <IeCommodityImage
+                slug={commodity.slug}
                 className="hamd-aie-commodity-detail__hero"
                 src={commodity.heroMedia.src}
                 alt={commodity.heroMedia.alt}

@@ -58,6 +58,10 @@ describe("WeddingLivePage", () => {
       configurable: true,
       value: vi.fn(),
     });
+    Object.defineProperty(HTMLMediaElement.prototype, "load", {
+      configurable: true,
+      value: vi.fn(),
+    });
   });
 
   it("shows the ended celebration without requesting a token", async () => {
@@ -171,11 +175,13 @@ describe("WeddingLivePage", () => {
       ...(multiple ? [{id:"b",title:"Second",src:"/second.mp3",isEnabled:true,enabled:true,position:2}] : []),
     ]);
     fetchWeddingCampaign.mockResolvedValue({...DEFAULT_WEDDING_CAMPAIGN,streamStatus:"upcoming",waitingMusicEnabled:true,waitingMusicLoop:loop});
-    fetchWeddingLiveStatus.mockResolvedValue({configured:false});
+    fetchWeddingLiveStatus.mockResolvedValue({ configured: true });
     return render(<MemoryRouter><WeddingLivePage /></MemoryRouter>);
   }
   it("reports autoplay rejection and retries from a user gesture, with mute/unmute", async () => {
-    vi.mocked(HTMLMediaElement.prototype.play).mockRejectedValueOnce(new DOMException("Interaction required","NotAllowedError"));
+    const blocked = new Error("Interaction required");
+    blocked.name = "NotAllowedError";
+    vi.mocked(HTMLMediaElement.prototype.play).mockRejectedValueOnce(blocked);
     waiting();
     expect(await screen.findByText("Browser requires interaction")).toBeInTheDocument();
     expect(screen.queryByText(/Now playing/)).toBeNull();

@@ -29,6 +29,7 @@ export function IeCommodityCard({
       <Link className="hamd-aie-commodity-card__media-link" to={href}>
         {commodity.imageSrc ? (
           <IeCommodityImage
+            slug={commodity.slug}
             className="hamd-aie-commodity-card__image"
             src={commodity.imageSrc}
             alt={imageAlt}

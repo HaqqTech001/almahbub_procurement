@@ -7,6 +7,8 @@ import { usePublishedIeCommodities } from "../integrated-export/commodities/use-
 import { IeCommodityImage } from "../integrated-export/IeCommodityImage.js";
 import { IE_PATHS } from "../integrated-export/ie-paths.js";
 import "../styles/commerce.css";
+import { PresentationImage } from "./PresentationImage.js";
+import { INTERNATIONAL_PRESENTATION_MEDIA } from "../content/presentation-media.js";
 
 async function loadCategories() {
   try {
@@ -55,11 +57,10 @@ export function InternationalCategories() {
         <li key={item.id}>
           <Link to={item.href}>
             {item.imageSrc ? (
-              <img
+              <PresentationImage
                 src={item.imageSrc}
+                fallbackSrc={INTERNATIONAL_PRESENTATION_MEDIA[item.id] ?? undefined}
                 alt={item.imageAlt || item.name}
-                width={480}
-                height={320}
                 loading="lazy"
               />
             ) : (
@@ -95,6 +96,7 @@ export function ExportCommodities() {
           <Link to={IE_PATHS.commodity(item.slug)}>
             {item.imageSrc ? (
               <IeCommodityImage
+                slug={item.slug}
                 src={item.imageSrc}
                 alt={item.imageAlt || item.name}
               />

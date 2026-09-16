@@ -1,10 +1,9 @@
-import { useState } from "react";
-
-import { resolveIeMediaSrc } from "./commodities/ie-commodity-api.js";
-import { IeCommodityMediaPlaceholder } from "./IeCommodityMediaPlaceholder.js";
+import { PresentationImage } from "../components/PresentationImage.js";
+import { canonicalIeMedia, presentationSource } from "../content/presentation-media.js";
 
 type IeCommodityImageProps = {
   src: string;
+  slug?: string;
   alt: string;
   className?: string;
   loading?: "lazy" | "eager";
@@ -14,39 +13,17 @@ type IeCommodityImageProps = {
 };
 
 /**
- * Renders assigned commodity media. Placeholder only when src is missing or the file fails to load.
- * Never substitutes a different stock photograph.
+ * Preserves persistent admin imagery with a matching canonical artwork fallback.
  */
 export function IeCommodityImage({
   src,
+  slug,
   alt,
   className,
   loading = "lazy",
   hero = false,
   decorative = false,
 }: IeCommodityImageProps) {
-  const [failedSrc, setFailedSrc] = useState<string | undefined>();
-  const resolved = resolveIeMediaSrc(src);
-
-  if (!resolved || failedSrc === resolved) {
-    return (
-      <IeCommodityMediaPlaceholder
-        label={resolved ? "Image unavailable" : "Approved imagery forthcoming"}
-        className={className}
-        decorative={decorative}
-      />
-    );
-  }
-
-  return (
-    <img
-      className={className}
-      src={resolved}
-      alt={decorative ? "" : alt}
-      loading={loading}
-      decoding="async"
-      data-ie-hero={hero ? "true" : undefined}
-      onError={() => setFailedSrc(resolved)}
-    />
-  );
+  const fallback = canonicalIeMedia(src, slug);
+  return <PresentationImage src={presentationSource(src, fallback)} fallbackSrc={fallback} alt={alt} className={className} loading={loading} hero={hero} decorative={decorative} />;
 }

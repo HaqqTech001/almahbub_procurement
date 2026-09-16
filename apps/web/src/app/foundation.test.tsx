@@ -41,7 +41,7 @@ describe("public website foundation", () => {
         await screen.findByRole(
           "heading",
           {
-            name: /about almahbub international/i,
+            name: /commerce built around real business needs/i,
           },
           { timeout: 30_000 },
         ),

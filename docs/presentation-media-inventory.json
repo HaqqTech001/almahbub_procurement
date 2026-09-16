@@ -1,0 +1,364 @@
+{
+  "currentDbVerified": false,
+  "rows": [
+    {
+      "businessLine": "International",
+      "contentType": "Category cover",
+      "name": "Electronics, Mobile & Digital Technology",
+      "slug": "iphones-gadgets",
+      "databaseApiUrl": "Current DB query unavailable (connection timeout)",
+      "observedLocalUrlCandidates": [
+        "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-000000000001/39f5e29c-d06c-486a-9f98-5cacad73dae6-electronics-mobile-digital-technology-category.png"
+      ],
+      "evidence": "Canonical category-media-plan and local cover files; not confirmation of current database URL",
+      "previousBrowserUrl": "API_ORIGIN + local candidate if assigned in DB",
+      "storage": "Local API disk for legacy URLs",
+      "staticAsset": "/media/international/category-iphones-gadgets.jpg",
+      "finalBrowserUrl": "WEB_ORIGIN/media/international/category-iphones-gadgets.jpg",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "strategy": "Static for missing/legacy URL; persistent API override with static fallback; designed final placeholder",
+      "action": "Include curated asset in next release; re-import any retained runtime local URL after approval"
+    },
+    {
+      "businessLine": "International",
+      "contentType": "Category cover",
+      "name": "Medical, Healthcare & Laboratory Equipment",
+      "slug": "medical-equipments",
+      "databaseApiUrl": "Current DB query unavailable (connection timeout)",
+      "observedLocalUrlCandidates": [
+        "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-000000000002/ad3d6f5f-87c1-4a0e-8740-b18834f08701-medical-healthcare-laboratory-equipment-category.png"
+      ],
+      "evidence": "Canonical category-media-plan and local cover files; not confirmation of current database URL",
+      "previousBrowserUrl": "API_ORIGIN + local candidate if assigned in DB",
+      "storage": "Local API disk for legacy URLs",
+      "staticAsset": "/media/international/category-medical-equipments.jpg",
+      "finalBrowserUrl": "WEB_ORIGIN/media/international/category-medical-equipments.jpg",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "strategy": "Static for missing/legacy URL; persistent API override with static fallback; designed final placeholder",
+      "action": "Include curated asset in next release; re-import any retained runtime local URL after approval"
+    },
+    {
+      "businessLine": "International",
+      "contentType": "Category cover",
+      "name": "Home, Garden & Facility Supplies",
+      "slug": "home-garden-wares",
+      "databaseApiUrl": "Current DB query unavailable (connection timeout)",
+      "observedLocalUrlCandidates": [
+        "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-000000000003/9cc8f6c8-0f38-4406-81a3-80a27efe124f-home-garden-facility-supplies-category.png"
+      ],
+      "evidence": "Canonical category-media-plan and local cover files; not confirmation of current database URL",
+      "previousBrowserUrl": "API_ORIGIN + local candidate if assigned in DB",
+      "storage": "Local API disk for legacy URLs",
+      "staticAsset": "/media/international/category-home-garden-wares.jpg",
+      "finalBrowserUrl": "WEB_ORIGIN/media/international/category-home-garden-wares.jpg",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "strategy": "Static for missing/legacy URL; persistent API override with static fallback; designed final placeholder",
+      "action": "Include curated asset in next release; re-import any retained runtime local URL after approval"
+    },
+    {
+      "businessLine": "International",
+      "contentType": "Category cover",
+      "name": "Industrial Machinery, Tools & Processing Equipment",
+      "slug": "machineries",
+      "databaseApiUrl": "Current DB query unavailable (connection timeout)",
+      "observedLocalUrlCandidates": [
+        "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-000000000004/ffbf0a53-b110-43fe-83df-02a6b23c8e64-industrial-machinery-tools-processing-equipment-category.png"
+      ],
+      "evidence": "Canonical category-media-plan and local cover files; not confirmation of current database URL",
+      "previousBrowserUrl": "API_ORIGIN + local candidate if assigned in DB",
+      "storage": "Local API disk for legacy URLs",
+      "staticAsset": "/media/international/category-machineries.jpg",
+      "finalBrowserUrl": "WEB_ORIGIN/media/international/category-machineries.jpg",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "strategy": "Static for missing/legacy URL; persistent API override with static fallback; designed final placeholder",
+      "action": "Include curated asset in next release; re-import any retained runtime local URL after approval"
+    },
+    {
+      "businessLine": "International",
+      "contentType": "Category cover",
+      "name": "General Procurement & Custom Sourcing",
+      "slug": "general-procurement",
+      "databaseApiUrl": "Current DB query unavailable (connection timeout)",
+      "observedLocalUrlCandidates": [
+        "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-000000000005/f95c0cfe-10c8-4dfd-96a4-7e0b28455b0d-general-procurement-custom-sourcing-category.png"
+      ],
+      "evidence": "Canonical category-media-plan and local cover files; not confirmation of current database URL",
+      "previousBrowserUrl": "API_ORIGIN + local candidate if assigned in DB",
+      "storage": "Local API disk for legacy URLs",
+      "staticAsset": "/media/international/category-general-procurement.jpg",
+      "finalBrowserUrl": "WEB_ORIGIN/media/international/category-general-procurement.jpg",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "strategy": "Static for missing/legacy URL; persistent API override with static fallback; designed final placeholder",
+      "action": "Include curated asset in next release; re-import any retained runtime local URL after approval"
+    },
+    {
+      "businessLine": "International",
+      "contentType": "Category cover",
+      "name": "Home Appliances & Living Equipment",
+      "slug": "home-appliances",
+      "databaseApiUrl": "Current DB query unavailable (connection timeout)",
+      "observedLocalUrlCandidates": [
+        "/api/v1/public/catalog-media/0190c8c0-1000-7000-8000-000000000001/42ce71ad-5e34-4e20-a33c-2b42159838c3-home-appliances-living-equipment-category.png"
+      ],
+      "evidence": "Canonical category-media-plan and local cover files; not confirmation of current database URL",
+      "previousBrowserUrl": "API_ORIGIN + local candidate if assigned in DB",
+      "storage": "Local API disk for legacy URLs",
+      "staticAsset": "/media/international/category-home-appliances.png",
+      "finalBrowserUrl": "WEB_ORIGIN/media/international/category-home-appliances.png",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "strategy": "Static for missing/legacy URL; persistent API override with static fallback; designed final placeholder",
+      "action": "Include curated asset in next release; re-import any retained runtime local URL after approval"
+    },
+    {
+      "businessLine": "International",
+      "contentType": "Category cover",
+      "name": "Office, Business & Commercial Technology",
+      "slug": "office-business",
+      "databaseApiUrl": "Current DB query unavailable (connection timeout)",
+      "observedLocalUrlCandidates": [
+        "/api/v1/public/catalog-media/0190c8c0-1000-7000-8000-000000000002/cdd1cfb4-de95-4d1a-a56e-3e48159aa1dd-office-business-commercial-technology-category.png"
+      ],
+      "evidence": "Canonical category-media-plan and local cover files; not confirmation of current database URL",
+      "previousBrowserUrl": "API_ORIGIN + local candidate if assigned in DB",
+      "storage": "Local API disk for legacy URLs",
+      "staticAsset": "/media/international/category-office-business.png",
+      "finalBrowserUrl": "WEB_ORIGIN/media/international/category-office-business.png",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "strategy": "Static for missing/legacy URL; persistent API override with static fallback; designed final placeholder",
+      "action": "Include curated asset in next release; re-import any retained runtime local URL after approval"
+    },
+    {
+      "businessLine": "International",
+      "contentType": "Category cover",
+      "name": "Fashion, Textiles, Uniforms & Accessories",
+      "slug": "fashion-textiles",
+      "databaseApiUrl": "Current DB query unavailable (connection timeout)",
+      "observedLocalUrlCandidates": [
+        "/api/v1/public/catalog-media/0190c8c0-1000-7000-8000-000000000003/387a6f2e-0485-47e9-8c46-d62e08dbbaf8-fashion-textiles-uniforms-accessories-category.png"
+      ],
+      "evidence": "Canonical category-media-plan and local cover files; not confirmation of current database URL",
+      "previousBrowserUrl": "API_ORIGIN + local candidate if assigned in DB",
+      "storage": "Local API disk for legacy URLs",
+      "staticAsset": "/media/international/category-fashion-textiles.png",
+      "finalBrowserUrl": "WEB_ORIGIN/media/international/category-fashion-textiles.png",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "strategy": "Static for missing/legacy URL; persistent API override with static fallback; designed final placeholder",
+      "action": "Include curated asset in next release; re-import any retained runtime local URL after approval"
+    },
+    {
+      "businessLine": "International",
+      "contentType": "Category cover",
+      "name": "Beauty, Salon & Spa Equipment",
+      "slug": "beauty-spa-salon",
+      "databaseApiUrl": "Current DB query unavailable (connection timeout)",
+      "observedLocalUrlCandidates": [
+        "/api/v1/public/catalog-media/0190c8c0-1000-7000-8000-000000000004/e49bb469-9255-41e1-814b-401048c49f3e-beauty-salon-spa-equipment-category.png"
+      ],
+      "evidence": "Canonical category-media-plan and local cover files; not confirmation of current database URL",
+      "previousBrowserUrl": "API_ORIGIN + local candidate if assigned in DB",
+      "storage": "Local API disk for legacy URLs",
+      "staticAsset": "/media/international/category-beauty-spa-salon.png",
+      "finalBrowserUrl": "WEB_ORIGIN/media/international/category-beauty-spa-salon.png",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "strategy": "Static for missing/legacy URL; persistent API override with static fallback; designed final placeholder",
+      "action": "Include curated asset in next release; re-import any retained runtime local URL after approval"
+    },
+    {
+      "businessLine": "International",
+      "contentType": "Category cover",
+      "name": "Retail, Store Setup & Merchandising Equipment",
+      "slug": "retail-store-setup",
+      "databaseApiUrl": "Current DB query unavailable (connection timeout)",
+      "observedLocalUrlCandidates": [
+        "/api/v1/public/catalog-media/0190c8c0-1000-7000-8000-000000000005/57f89725-18bf-4c8f-9484-8e80220c0610-retail-store-setup-merchandising-equipment-category.png"
+      ],
+      "evidence": "Canonical category-media-plan and local cover files; not confirmation of current database URL",
+      "previousBrowserUrl": "API_ORIGIN + local candidate if assigned in DB",
+      "storage": "Local API disk for legacy URLs",
+      "staticAsset": "/media/international/category-retail-store-setup.png",
+      "finalBrowserUrl": "WEB_ORIGIN/media/international/category-retail-store-setup.png",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "strategy": "Static for missing/legacy URL; persistent API override with static fallback; designed final placeholder",
+      "action": "Include curated asset in next release; re-import any retained runtime local URL after approval"
+    },
+    {
+      "businessLine": "Integrated Export",
+      "contentType": "Commodity cover and gallery",
+      "name": "Sesame Seeds",
+      "slug": "sesame-seeds",
+      "databaseApiUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e001/ie-sesame-seeds-hero-01.jpg",
+      "evidence": "Historical import report 2026-09-06T23:22:48.536Z; current DB query timed out",
+      "previousBrowserUrl": "API_ORIGIN/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e001/ie-sesame-seeds-hero-01.jpg",
+      "storage": "Local API disk",
+      "staticAsset": "/media/ie/commodities/sesame-seeds/hero/ie-sesame-seeds-hero-01.webp",
+      "finalBrowserUrl": "WEB_ORIGIN/media/ie/commodities/sesame-seeds/hero/ie-sesame-seeds-hero-01.webp",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "gallery": [
+        {
+          "oldUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e001/ie-sesame-seeds-whole-01.jpg",
+          "localFileExists": true
+        },
+        {
+          "oldUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e001/ie-sesame-seeds-sacks-01.jpg",
+          "localFileExists": true
+        },
+        {
+          "oldUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e001/ie-sesame-seeds-application-01.jpg",
+          "localFileExists": true
+        }
+      ],
+      "strategy": "Static for legacy cover/gallery filenames; persistent API override with static fallback; designed final placeholder",
+      "action": "Shared storage wiring fixed; historical local records need approved re-import for direct API/Ops consumers"
+    },
+    {
+      "businessLine": "Integrated Export",
+      "contentType": "Commodity cover and gallery",
+      "name": "Cashew",
+      "slug": "cashew",
+      "databaseApiUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e002/ie-cashew-hero-01.jpg",
+      "evidence": "Historical import report 2026-09-06T23:22:48.536Z; current DB query timed out",
+      "previousBrowserUrl": "API_ORIGIN/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e002/ie-cashew-hero-01.jpg",
+      "storage": "Local API disk",
+      "staticAsset": "/media/ie/commodities/cashew/hero/ie-cashew-hero-01.webp",
+      "finalBrowserUrl": "WEB_ORIGIN/media/ie/commodities/cashew/hero/ie-cashew-hero-01.webp",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "gallery": [
+        {
+          "oldUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e002/ie-cashew-whole-01.jpg",
+          "localFileExists": true
+        },
+        {
+          "oldUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e002/ie-cashew-bulk-01.jpg",
+          "localFileExists": true
+        },
+        {
+          "oldUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e002/ie-cashew-close-up-01.jpg",
+          "localFileExists": true
+        }
+      ],
+      "strategy": "Static for legacy cover/gallery filenames; persistent API override with static fallback; designed final placeholder",
+      "action": "Shared storage wiring fixed; historical local records need approved re-import for direct API/Ops consumers"
+    },
+    {
+      "businessLine": "Integrated Export",
+      "contentType": "Commodity cover and gallery",
+      "name": "Ginger",
+      "slug": "ginger",
+      "databaseApiUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e003/ie-ginger-hero-01.jpg",
+      "evidence": "Historical import report 2026-09-06T23:22:48.536Z; current DB query timed out",
+      "previousBrowserUrl": "API_ORIGIN/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e003/ie-ginger-hero-01.jpg",
+      "storage": "Local API disk",
+      "staticAsset": "/media/ie/commodities/ginger/hero/ie-ginger-hero-01.webp",
+      "finalBrowserUrl": "WEB_ORIGIN/media/ie/commodities/ginger/hero/ie-ginger-hero-01.webp",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "gallery": [
+        {
+          "oldUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e003/ie-ginger-whole-01.jpg",
+          "localFileExists": true
+        },
+        {
+          "oldUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e003/ie-ginger-close-up-01.jpg",
+          "localFileExists": true
+        },
+        {
+          "oldUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e003/ie-ginger-bulk-01.jpg",
+          "localFileExists": true
+        }
+      ],
+      "strategy": "Static for legacy cover/gallery filenames; persistent API override with static fallback; designed final placeholder",
+      "action": "Shared storage wiring fixed; historical local records need approved re-import for direct API/Ops consumers"
+    },
+    {
+      "businessLine": "Integrated Export",
+      "contentType": "Commodity cover and gallery",
+      "name": "Hibiscus",
+      "slug": "hibiscus",
+      "databaseApiUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e004/ie-hibiscus-hero-01.jpg",
+      "evidence": "Historical import report 2026-09-06T23:22:48.536Z; current DB query timed out",
+      "previousBrowserUrl": "API_ORIGIN/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e004/ie-hibiscus-hero-01.jpg",
+      "storage": "Local API disk",
+      "staticAsset": "/media/ie/commodities/hibiscus/hero/ie-hibiscus-hero-01.webp",
+      "finalBrowserUrl": "WEB_ORIGIN/media/ie/commodities/hibiscus/hero/ie-hibiscus-hero-01.webp",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "gallery": [
+        {
+          "oldUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e004/ie-hibiscus-whole-01.jpg",
+          "localFileExists": true
+        }
+      ],
+      "strategy": "Static for legacy cover/gallery filenames; persistent API override with static fallback; designed final placeholder",
+      "action": "Shared storage wiring fixed; historical local records need approved re-import for direct API/Ops consumers"
+    },
+    {
+      "businessLine": "Integrated Export",
+      "contentType": "Commodity cover and gallery",
+      "name": "Shea",
+      "slug": "shea",
+      "databaseApiUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e005/ie-shea-hero-01.jpg",
+      "evidence": "Historical import report 2026-09-06T23:22:48.536Z; current DB query timed out",
+      "previousBrowserUrl": "API_ORIGIN/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e005/ie-shea-hero-01.jpg",
+      "storage": "Local API disk",
+      "staticAsset": "/media/ie/commodities/shea/hero/ie-shea-hero-01.webp",
+      "finalBrowserUrl": "WEB_ORIGIN/media/ie/commodities/shea/hero/ie-shea-hero-01.webp",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "gallery": [],
+      "strategy": "Static for legacy cover/gallery filenames; persistent API override with static fallback; designed final placeholder",
+      "action": "Shared storage wiring fixed; historical local records need approved re-import for direct API/Ops consumers"
+    },
+    {
+      "businessLine": "Integrated Export",
+      "contentType": "Commodity cover and gallery",
+      "name": "Soybean",
+      "slug": "soybean",
+      "databaseApiUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e006/ie-soybean-hero-01.jpg",
+      "evidence": "Historical import report 2026-09-06T23:22:48.536Z; current DB query timed out",
+      "previousBrowserUrl": "API_ORIGIN/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e006/ie-soybean-hero-01.jpg",
+      "storage": "Local API disk",
+      "staticAsset": "/media/ie/commodities/soybean/hero/ie-soybean-hero-01.webp",
+      "finalBrowserUrl": "WEB_ORIGIN/media/ie/commodities/soybean/hero/ie-soybean-hero-01.webp",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "gallery": [],
+      "strategy": "Static for legacy cover/gallery filenames; persistent API override with static fallback; designed final placeholder",
+      "action": "Shared storage wiring fixed; historical local records need approved re-import for direct API/Ops consumers"
+    },
+    {
+      "businessLine": "Integrated Export",
+      "contentType": "Commodity cover and gallery",
+      "name": "Cocoa",
+      "slug": "cocoa",
+      "databaseApiUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e007/ie-cocoa-whole-01.jpg",
+      "evidence": "Historical import report 2026-09-06T23:22:48.536Z; current DB query timed out",
+      "previousBrowserUrl": "API_ORIGIN/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e007/ie-cocoa-whole-01.jpg",
+      "storage": "Local API disk",
+      "staticAsset": "/media/ie/commodities/cocoa/hero/ie-cocoa-hero-01.webp",
+      "finalBrowserUrl": "WEB_ORIGIN/media/ie/commodities/cocoa/hero/ie-cocoa-hero-01.webp",
+      "trackedFallbackAvailable": true,
+      "productionSafe": true,
+      "gallery": [
+        {
+          "oldUrl": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-00000000e007/ie-cocoa-sacks-01.jpg",
+          "localFileExists": true
+        }
+      ],
+      "strategy": "Static for legacy cover/gallery filenames; persistent API override with static fallback; designed final placeholder",
+      "action": "Shared storage wiring fixed; historical local records need approved re-import for direct API/Ops consumers"
+    }
+  ],
+  "decodedAssets": 29
+}

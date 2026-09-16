@@ -229,7 +229,7 @@ export function WeddingCampaignPage() {
         </section>
       ) : null}
 
-      {["gallery", "comments", "waiting-music"].includes(tab) && collectionsLoading ? (tab === "gallery" ? <CollectionSkeleton label="Loading wedding media" gridClassName="hamd-wedding-gallery" aspectRatio="1" /> : <ModuleSkeleton variant="list" count={4} />) : null}
+      {["gallery", "comments", "waiting-music"].includes(tab) && collectionsLoading ? (tab === "gallery" ? <CollectionSkeleton label="Loading wedding media" gridClassName="hamd-wedding-gallery-grid" cardClassName="hamd-wedding-gallery-tile" aspectRatio="4 / 3" /> : <ModuleSkeleton variant="list" count={4} />) : null}
       {collectionErrors[tab] && !collectionsLoading ? <OpsAlert>Unable to load {tab}. <button onClick={() => void refresh().catch(() => { setCollectionsLoading(false); setError("Unable to refresh wedding content."); })}>Retry</button></OpsAlert> : null}
       {tab === "waiting-music" && !collectionsLoading && !collectionErrors[tab] ? (
         <WeddingWaitingAudioPanel

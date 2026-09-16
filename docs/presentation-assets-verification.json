@@ -1,0 +1,234 @@
+[
+  {
+    "path": "/media/international/category-beauty-spa-salon.png",
+    "status": 200,
+    "mime": "image/png",
+    "decoded": true,
+    "width": 1536,
+    "height": 1024
+  },
+  {
+    "path": "/media/international/category-fashion-textiles.png",
+    "status": 200,
+    "mime": "image/png",
+    "decoded": true,
+    "width": 1536,
+    "height": 1024
+  },
+  {
+    "path": "/media/international/category-general-procurement.jpg",
+    "status": 200,
+    "mime": "image/jpeg",
+    "decoded": true,
+    "width": 1600,
+    "height": 1067
+  },
+  {
+    "path": "/media/international/category-home-appliances.png",
+    "status": 200,
+    "mime": "image/png",
+    "decoded": true,
+    "width": 1536,
+    "height": 1024
+  },
+  {
+    "path": "/media/international/category-home-garden-wares.jpg",
+    "status": 200,
+    "mime": "image/jpeg",
+    "decoded": true,
+    "width": 1600,
+    "height": 1067
+  },
+  {
+    "path": "/media/international/category-iphones-gadgets.jpg",
+    "status": 200,
+    "mime": "image/jpeg",
+    "decoded": true,
+    "width": 1600,
+    "height": 1600
+  },
+  {
+    "path": "/media/international/category-machineries.jpg",
+    "status": 200,
+    "mime": "image/jpeg",
+    "decoded": true,
+    "width": 1600,
+    "height": 1200
+  },
+  {
+    "path": "/media/international/category-medical-equipments.jpg",
+    "status": 200,
+    "mime": "image/jpeg",
+    "decoded": true,
+    "width": 1600,
+    "height": 1067
+  },
+  {
+    "path": "/media/international/category-office-business.png",
+    "status": 200,
+    "mime": "image/png",
+    "decoded": true,
+    "width": 1536,
+    "height": 1024
+  },
+  {
+    "path": "/media/international/category-retail-store-setup.png",
+    "status": 200,
+    "mime": "image/png",
+    "decoded": true,
+    "width": 1536,
+    "height": 1024
+  },
+  {
+    "path": "/media/ie/commodities/cashew/bulk/ie-cashew-bulk-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1280
+  },
+  {
+    "path": "/media/ie/commodities/cashew/close-up/ie-cashew-close-up-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1920
+  },
+  {
+    "path": "/media/ie/commodities/cashew/hero/ie-cashew-hero-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1280
+  },
+  {
+    "path": "/media/ie/commodities/cashew/whole/ie-cashew-whole-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1920
+  },
+  {
+    "path": "/media/ie/commodities/cocoa/hero/ie-cocoa-hero-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1440
+  },
+  {
+    "path": "/media/ie/commodities/cocoa/sacks/ie-cocoa-sacks-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1280
+  },
+  {
+    "path": "/media/ie/commodities/cocoa/whole/ie-cocoa-whole-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1277
+  },
+  {
+    "path": "/media/ie/commodities/ginger/bulk/ie-ginger-bulk-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1080
+  },
+  {
+    "path": "/media/ie/commodities/ginger/close-up/ie-ginger-close-up-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 819
+  },
+  {
+    "path": "/media/ie/commodities/ginger/hero/ie-ginger-hero-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 2560
+  },
+  {
+    "path": "/media/ie/commodities/ginger/whole/ie-ginger-whole-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1440
+  },
+  {
+    "path": "/media/ie/commodities/hibiscus/hero/ie-hibiscus-hero-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1280
+  },
+  {
+    "path": "/media/ie/commodities/hibiscus/whole/ie-hibiscus-whole-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1728,
+    "height": 918
+  },
+  {
+    "path": "/media/ie/commodities/sesame-seeds/application/ie-sesame-seeds-application-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1280
+  },
+  {
+    "path": "/media/ie/commodities/sesame-seeds/hero/ie-sesame-seeds-hero-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1280
+  },
+  {
+    "path": "/media/ie/commodities/sesame-seeds/sacks/ie-sesame-seeds-sacks-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1280
+  },
+  {
+    "path": "/media/ie/commodities/sesame-seeds/whole/ie-sesame-seeds-whole-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 948,
+    "height": 735
+  },
+  {
+    "path": "/media/ie/commodities/shea/hero/ie-shea-hero-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1136,
+    "height": 852
+  },
+  {
+    "path": "/media/ie/commodities/soybean/hero/ie-soybean-hero-01.webp",
+    "status": 200,
+    "mime": "image/webp",
+    "decoded": true,
+    "width": 1920,
+    "height": 1442
+  }
+]

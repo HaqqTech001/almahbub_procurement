@@ -8,6 +8,7 @@ import {
   type PublicCatalogProduct,
 } from "../api/catalog-api.js";
 import { resolveMediaUrl } from "./media-url.js";
+import { INTERNATIONAL_PRESENTATION_MEDIA, presentationSource } from "../content/presentation-media.js";
 
 export type HomepageProductCategory = {
   id: string;
@@ -66,7 +67,7 @@ const CATEGORY_BLURBS: Record<string, string> = {
 export function toCategoryItem(
   category: PublicCatalogCategory,
 ): ProductCategoryItem {
-  const imageSrc = resolveMediaUrl(category.imageUrl);
+  const imageSrc = presentationSource(category.imageUrl, INTERNATIONAL_PRESENTATION_MEDIA[category.slug]);
   const imageAlt = category.imageAlt?.trim() || category.name;
   return {
     id: category.slug,

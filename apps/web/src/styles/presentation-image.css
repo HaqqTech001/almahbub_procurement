@@ -1,0 +1,15 @@
+:where(.presentation-image) {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: inherit;
+  background: var(--hamd-surface-muted, #87949a18);
+}
+.presentation-image--placeholder {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  color: var(--hamd-text-muted, #657379);
+  font-size: 0.85rem;
+}

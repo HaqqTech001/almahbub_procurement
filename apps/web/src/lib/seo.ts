@@ -31,7 +31,7 @@ function upsertLink(rel: string, href: string, extra?: Record<string, string>) {
 /** Production SEO manager - title, description, OG, Twitter, robots, canonical. */
 export function applyPageSeo(seo: PageSeo): void {
   const brandName =
-    seo.path === "/"
+    seo.path === "/" || seo.path === "/about"
       ? "Almahbub"
       : seo.path.startsWith("/businesses/almahbub-integrated-export")
         ? "Almahbub Integrated Export"

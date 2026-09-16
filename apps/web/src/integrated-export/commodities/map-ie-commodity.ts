@@ -1,11 +1,13 @@
 import { resolveIeMediaSrc, type IeCommodityApiDetail, type IeCommodityApiListItem, type IeCommodityApiMedia } from "./ie-commodity-api.js";
 import type { IeCommodity, IeCommodityMedia } from "./types.js";
+import { canonicalIeMedia, presentationSource } from "../../content/presentation-media.js";
 
 function mapMedia(
   value: IeCommodityApiMedia | null | undefined,
   fallbackAlt: string,
+  slug?: string,
 ): IeCommodityMedia | undefined {
-  const src = resolveIeMediaSrc(value?.src)?.trim();
+  const src = presentationSource(resolveIeMediaSrc(value?.src), canonicalIeMedia(value?.src, slug));
   if (!src) return undefined;
   const alt = value?.alt?.trim() || fallbackAlt;
   return { src, alt };
@@ -37,7 +39,7 @@ export function mapApiCommodityToIeCommodity(
   const shortDescription = omitEmpty(row.shortDescription);
   if (shortDescription) record.shortDescription = shortDescription;
 
-  const heroMedia = mapMedia(row.heroMedia, row.name);
+  const heroMedia = mapMedia(row.heroMedia, row.name, row.slug);
   if (heroMedia) record.heroMedia = heroMedia;
 
   if ("description" in row) {

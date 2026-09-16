@@ -37,7 +37,7 @@ export function IeCommoditiesPage() {
         }
       >
         <Container>
-          {loading ? <CollectionSkeleton label="Loading commodities" gridClassName="hamd-aie-catalogue__grid" cardClassName="hamd-aie-commodity-card" bodyClassName="hamd-aie-commodity-card__body" aspectRatio="4 / 3" /> : error ? (
+          {loading ? <CollectionSkeleton label="Loading commodities" gridClassName="hamd-aie-catalogue__grid" cardClassName="hamd-aie-commodity-card" bodyClassName="hamd-aie-commodity-card__body" aspectRatio="16 / 10" /> : error ? (
             <div className="hamd-aie-catalogue__empty" data-ie-catalogue-source={source}>
               <div className="hamd-aie-catalogue__empty-panel" role="alert">
                 <h2 id="aie-catalogue-empty-title" className="hamd-aie-catalogue__empty-title">

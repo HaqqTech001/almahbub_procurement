@@ -8,7 +8,7 @@ describe("commodity image recovery", () => {
     const image = screen.getByRole("img", { name: "Assigned commodity image" });
     expect(image).toHaveAttribute("src", "https://api.example.test/api/v1/public/catalog-media/id/first.jpg");
     fireEvent.error(image);
-    expect(screen.getByRole("img", { name: "Image unavailable" }).tagName).toBe("DIV");
+    expect(screen.getByRole("img", { name: "Assigned commodity image: image unavailable" }).tagName).toBe("DIV");
     rerender(<IeCommodityImage src="https://storage.example.test/replacement.jpg" alt="Replacement" />);
     expect(screen.getByRole("img", { name: "Replacement" })).toHaveAttribute("src", "https://storage.example.test/replacement.jpg");
   });
