@@ -38,7 +38,7 @@ async function remoteHealth(source: string, redirects = 0): Promise<MediaHealth>
     if (!addresses.length || addresses.some(row => !isPublicIpv4(row.address))) return "unverified";
     return await new Promise<MediaHealth>(resolveResult => {
       const request = (url.protocol === "https:" ? httpsRequest : httpRequest)(url, {
-        method: "GET", family: 4, autoSelectFamily: false,
+        method: "GET", family: 4, 
         headers: { Range: "bytes=0-63", Accept: "image/*" },
         lookup: (_hostname, _options, callback) => callback(null, addresses[0]!.address, 4),
       }, response => {
