@@ -5,6 +5,15 @@ import { DEFAULT_OPS_PERMISSIONS } from "../domain/permission-catalog.js";
 import { ensureAdminBootstrap } from "./admin-bootstrap.js";
 
 describe("ensureAdminBootstrap", () => {
+  it("never starts account writes when the read-only connection check fails", async () => {
+    const env = parseEnvironment({
+      NODE_ENV: "test", ADMIN_NAME: "Test Admin", ADMIN_EMAIL: "admin@example.test", ADMIN_PASSWORD: "StrongPass123!",
+    });
+    const error = { code: "P1000" };
+    const database = { $queryRaw: vi.fn().mockRejectedValue(error), $transaction: vi.fn() };
+    await expect(ensureAdminBootstrap(database as never, env)).rejects.toBe(error);
+    expect(database.$transaction).not.toHaveBeenCalled();
+  });
   it(
     "creates or refreshes the dedicated admin account from environment values",
     async () => {
@@ -21,6 +30,7 @@ describe("ensureAdminBootstrap", () => {
     expect(env.ADMIN_PASSWORD).toBe("StrongPass123!");
 
     const database = {
+      $queryRaw: vi.fn(async () => [{ "?column?": 1 }]),
       permission: {
         createMany: vi.fn(async () => ({ count: 0 })),
         findMany: vi.fn(async () =>

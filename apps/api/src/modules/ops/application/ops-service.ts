@@ -1,4 +1,5 @@
 import type { AuthContext } from "../../../shared/auth/auth-context.js";
+import { prioritizedProductSlugs, restoreProductOrder } from "../../catalog/application/prioritized-product-page.js";
 import type { DatabaseClient } from "../../../shared/database/database-client.js";
 import {
   categoryWriteData,
@@ -181,7 +182,7 @@ const opsProductListInclude = {
   category: true,
   brand: true,
   manufacturer: true,
-  images: { orderBy: { position: "asc" as const }, take: 1 },
+  images: { orderBy: { position: "asc" as const }, take: 3 },
   videos: { take: 0 },
 };
 
@@ -1133,15 +1134,17 @@ export class OpsService {
       ...(query.categoryId ? { categoryId: query.categoryId } : {}),
     };
     const total = await this.database.product.count({ where });
+    const prioritySlugs = !query.sort || query.sort === "recommended"
+      ? await prioritizedProductSlugs(this.database, where, query.page, query.pageSize) : null;
     const rows = await this.database.product.findMany({
-      where,
-      orderBy: { updatedAt: "desc" },
-      skip: (query.page - 1) * query.pageSize,
+      where: prioritySlugs ? { AND: [where, { slug: { in: prioritySlugs } }] } : where,
+      orderBy: query.sort === "name" ? [{ name: "asc" }, { slug: "asc" }] : query.sort === "status" ? [{ status: "asc" }, { name: "asc" }, { slug: "asc" }] : [{ updatedAt: "desc" }, { slug: "asc" }],
+      skip: prioritySlugs ? 0 : (query.page - 1) * query.pageSize,
       take: query.pageSize,
       include: opsProductListInclude,
     });
     return {
-      data: rows.map((row) => mapOpsProduct(row)),
+      data: (prioritySlugs ? restoreProductOrder(rows, prioritySlugs) : rows).map((row) => mapOpsProduct(row)),
       page: pageMeta(total, query.page, query.pageSize),
     };
   }

@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { PresentationImage } from "../components/PresentationImage.js";
+import { BusinessLogo } from "../components/BusinessLogo.js";
 import { COMMERCE } from "../content/commerce.js";
-import { IE_PORTAL_MEDIA } from "../content/media-assets.js";
 import { IE_PATHS } from "../integrated-export/ie-paths.js";
 import { applyPageSeo } from "../lib/seo.js";
 import "../styles/about.css";
@@ -10,11 +9,11 @@ import "../styles/about.css";
 const operations = [
   { ...COMMERCE.international, href: "/businesses/almahbub-international", action: "Explore International",
     copy: "Supporting businesses with international sourcing and procurement across devices, machinery, commercial equipment and general requirements.",
-    image: "/media/international/categories/machineries/hero/intl-machineries-hero-01.webp", alt: "Technical drawings and workshop tools representing specification-led procurement",
+    business: "international" as const,
     steps: ["Requirement", "Sourcing", "Options & Quotation", "Procurement", "Logistics", "Delivery"] },
   { ...COMMERCE.export, href: IE_PATHS.home, action: "Explore Integrated Export",
     copy: "Connecting agricultural commodities with international buyers through specification-led sourcing, quality processes and export coordination.",
-    image: IE_PORTAL_MEDIA.homeHero.src, alt: "An assortment of spices representing agricultural commodity trade",
+    business: "export" as const,
     steps: ["Commodity Enquiry", "Requirement / Specification", "Sourcing", "Quality Coordination", "Documentation", "Export"] },
 ];
 const principles = [
@@ -43,7 +42,7 @@ export function AboutPage() {
       <h2 id="about-operations">Two operations. One commitment to effective trade.</h2>
       <div className="about-operations">
         {operations.map(operation => <article className="about-operation" key={operation.name}>
-          <PresentationImage src={operation.image} alt={operation.alt} className="about-operation__image" />
+          <BusinessLogo business={operation.business} />
           <div className="about-operation__body">
             <h3>{operation.name}</h3>
             <p className="about-operation__positioning">{operation.positioning}</p>

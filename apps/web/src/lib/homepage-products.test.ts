@@ -69,8 +69,8 @@ describe("homepage products adapter", () => {
       imageUrl: "/api/v1/public/catalog-media/cat/medical.png",
       imageAlt: "Medical equipment category",
     });
-    expect(item.imageSrc).toBe("/media/international/category-medical-equipments.jpg");
-    expect(item.imageAlt).toBe("Medical equipment category");
+    expect(item.imageSrc).toBe("/media/presentation/v2/international/medical-equipments.webp");
+    expect(item.imageAlt).toBe("Healthcare and laboratory equipment arranged in a clean professional procurement setting");
     expect(item.href).toContain("medical-equipments");
   });
 

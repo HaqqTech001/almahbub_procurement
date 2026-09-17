@@ -10,6 +10,6 @@
   display: grid;
   place-items: center;
   min-height: 0;
-  color: var(--hamd-text-muted, #657379);
+  color: var(--hamd-color-text, #344054);
   font-size: 0.85rem;
 }

@@ -2,6 +2,7 @@ export const API_V1_PATH = "/api/v1";
 export const DEFAULT_PAGE_SIZE = 25;
 export const MAX_PAGE_SIZE = 100;
 export const HAMD_API_SERVICE_NAME = "hamd-api";
+export { PRODUCT_SHOWCASE_GROUPS, isDeferredShowcaseProduct, productShowcaseGroup, productMediaRoute, orderedProductImages, compareProductPriority, type ProductPriorityCandidate } from "./product-priority.js";
 
 export {
   DEFAULT_WEDDING_CAMPAIGN,

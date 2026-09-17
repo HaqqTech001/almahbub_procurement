@@ -9,6 +9,8 @@ it("presents both operations, informational flows and existing enquiry routes", 
   expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Commerce built around real business needs.");
   expect(screen.getAllByRole("article")).toHaveLength(2);
+  expect(screen.getByRole("img", { name: "Almahbub International logo" })).toHaveAttribute("src", "/almahbub.svg");
+  expect(screen.getByRole("img", { name: "Almahbub Integrated Export Ltd. logo" })).toHaveAttribute("src", "/media/brands/almahbub-integrated-export.jpg");
   for (const name of ["Almahbub International", "Almahbub Integrated Export"]) {
     const process = screen.getByRole("list", { name: `${name} process` });
     expect(within(process).getAllByRole("listitem")).toHaveLength(6);

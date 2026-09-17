@@ -77,6 +77,7 @@ export function usePublishedIeCommodities(): PublishedIeCatalogueState {
 export type PublishedIeCommodityState = {
   commodity: IeCommodity | null;
   source: IeCatalogueSource;
+  loading: boolean;
 };
 
 /**
@@ -91,15 +92,18 @@ export function usePublishedIeCommodity(slug: string): PublishedIeCommodityState
   );
   const [commodity, setCommodity] = useState<IeCommodity | null>(staticRecord);
   const [source, setSource] = useState<IeCatalogueSource>("static");
+  const [loading, setLoading] = useState(Boolean(normalized));
 
   useEffect(() => {
     if (!normalized) {
+      setLoading(false);
       setCommodity(null);
       setSource("static");
       return;
     }
     setCommodity(staticRecord);
     setSource("static");
+    setLoading(true);
     let cancelled = false;
     void getPublishedIeCommodityFromApi(normalized)
       .then((row) => {
@@ -121,11 +125,12 @@ export function usePublishedIeCommodity(slug: string): PublishedIeCommodityState
         }
         setCommodity(staticRecord);
         setSource("static");
-      });
+      })
+      .finally(() => { if (!cancelled) setLoading(false); });
     return () => {
       cancelled = true;
     };
   }, [normalized, staticRecord]);
 
-  return { commodity, source };
+  return { commodity, source, loading };
 }

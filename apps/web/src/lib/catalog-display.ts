@@ -1,5 +1,6 @@
 import type { PublicCatalogProduct } from "../api/catalog-api.js";
 import { resolveMediaUrl } from "./media-url.js";
+import { orderedProductImages } from "@hamd/constants";
 
 export type CatalogCardModel = {
   slug: string;
@@ -12,6 +13,7 @@ export type CatalogCardModel = {
   brandName: string | null;
   manufacturerName: string | null;
   imageSrc?: string;
+  imageSources?: string[];
   imageAlt: string;
   hasVideo: boolean;
 };
@@ -29,9 +31,8 @@ export function toCatalogCard(
   product: PublicCatalogProduct,
   options?: { workspace?: boolean; authenticated?: boolean },
 ): CatalogCardModel {
-  const primary =
-    product.images.find((image) => image.position === 0 && image.url.trim().length > 0) ??
-    product.images.find((image) => image.url.trim().length > 0);
+  const images = orderedProductImages(product.images);
+  const primary = images[0];
   const imageSrc = resolveMediaUrl(primary?.url);
   const maker = product.brandName || product.manufacturerName;
   const hasVideo = (product.videos ?? []).some(
@@ -52,6 +53,7 @@ export function toCatalogCard(
     brandName: product.brandName,
     manufacturerName: product.manufacturerName,
     ...(imageSrc ? { imageSrc } : {}),
+    imageSources: images.map(image => resolveMediaUrl(image.url)).filter((src): src is string => Boolean(src)),
     imageAlt:
       primary?.altText?.trim() ||
       `${product.name}${maker ? ` - ${maker}` : ""}`,

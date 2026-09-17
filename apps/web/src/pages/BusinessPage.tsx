@@ -32,7 +32,7 @@ export function BusinessPage() {
         Source devices, machinery and general merchandise to your
         specifications.
       </p>
-      <InternationalCategories />
+      <InternationalCategories aboveFold />
       <p>
         <Link to="/products">Browse the full product catalogue</Link>
       </p>

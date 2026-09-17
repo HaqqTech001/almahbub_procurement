@@ -23,5 +23,5 @@ function ImageAttempt({ candidates, alt, className, loading, hero, decorative, s
   const [index, setIndex] = useState(0);
   const current = candidates[index];
   if (!current) return <div className={`presentation-image presentation-image--placeholder ${className}`} style={style} role={decorative ? undefined : "img"} aria-label={decorative ? undefined : `${alt}: image unavailable`} aria-hidden={decorative || undefined}><span aria-hidden="true">Image unavailable</span></div>;
-  return <img className={`presentation-image ${className}`} style={style} src={current} alt={decorative ? "" : alt} loading={loading} decoding="async" data-ie-hero={hero || undefined} onError={() => setIndex(value => value + 1)} />;
+  return <img className={`presentation-image ${className}`} style={style} src={current} alt={decorative ? "" : alt} loading={loading} {...{ fetchpriority: hero && loading === "eager" ? "high" : "auto" }} decoding="async" data-ie-hero={hero || undefined} onError={() => setIndex(value => value + 1)} />;
 }

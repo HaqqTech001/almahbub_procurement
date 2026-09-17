@@ -53,12 +53,12 @@ describe("HomePage business gateway", () => {
     expect(sections[1]).toHaveAttribute("id", "international");
     expect(sections[2]).toHaveAttribute("id", "integrated-export");
     expect(
-      await screen.findByRole("link", { name: /Machinery Machinery/ }),
+      await screen.findByRole("link", { name: /Industrial Machinery, Tools/ }),
     ).toHaveAttribute("href", "/products?category=machineries");
     expect(
       within(
         screen.getByRole("list", { name: "Integrated Export commodities" }),
-      ).getByRole("link"),
+      ).getByRole("link", { name: /Sesame Seeds/ }),
     ).toHaveAttribute(
       "href",
       "/businesses/almahbub-integrated-export/commodities/sesame-seeds",
@@ -76,7 +76,7 @@ describe("HomePage business gateway", () => {
     vi.mocked(listPublicCategories).mockRejectedValueOnce(new Error("offline"));
     renderHome();
     expect(
-      await screen.findByText(/catalogue is temporarily unavailable/),
+      screen.getByRole("list", { name: "International categories" }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Explore International" }),

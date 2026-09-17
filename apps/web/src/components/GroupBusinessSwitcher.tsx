@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { GROUP, GROUP_BUSINESSES, INTEGRATED_EXPORT_BRAND, type GroupBusiness } from "../content/group.js";
+import { GROUP, GROUP_BUSINESSES, type GroupBusiness } from "../content/group.js";
+import { BUSINESS_LOGOS } from "../content/business-logos.js";
 import { cx } from "./cx.js";
 
 type Props = {
@@ -94,9 +95,9 @@ export function GroupBusinessMark({
   const isInternational = business.slug === "almahbub-international";
   const isExport = business.slug === "almahbub-integrated-export";
   const logoSrc = isInternational
-    ? "/almahbub.svg"
+    ? BUSINESS_LOGOS.international.src
     : isExport
-      ? INTEGRATED_EXPORT_BRAND.logoSrc
+      ? BUSINESS_LOGOS.export.src
       : null;
   return (
     <div

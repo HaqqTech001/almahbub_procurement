@@ -13,7 +13,7 @@ type IeCommodityImageProps = {
 };
 
 /**
- * Preserves persistent admin imagery with a matching canonical artwork fallback.
+ * Canonical covers/gallery roles use curated artwork; unmapped runtime media is retained.
  */
 export function IeCommodityImage({
   src,

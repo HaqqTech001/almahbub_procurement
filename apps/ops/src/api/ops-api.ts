@@ -607,6 +607,7 @@ export async function fetchOpsProducts(
     pageSize?: number;
     status?: string;
     categoryId?: string;
+    sort?: string;
   } = {},
 ): Promise<{
   data: OpsProductRow[];
@@ -617,6 +618,7 @@ export async function fetchOpsProducts(
     accessToken,
     query: {
       q: query.q,
+      sort: query.sort ?? "recommended",
       page: query.page ?? 1,
       pageSize: query.pageSize ?? 25,
       status: query.status,

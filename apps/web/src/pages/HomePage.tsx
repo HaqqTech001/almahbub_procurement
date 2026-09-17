@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { BusinessLogo } from "../components/BusinessLogo.js";
 import {
   GlobalHeader,
   GlobalFooter,
@@ -73,6 +74,7 @@ export function HomePage() {
             {COMMERCE.international.positioning}
           </p>
           <h2 id="international-title">{COMMERCE.international.name}</h2>
+          <BusinessLogo business="international" />
           <p className="commerce-lead">{COMMERCE.international.description}</p>
           <InternationalCategories />
           <ButtonLink href="/businesses/almahbub-international">
@@ -86,6 +88,7 @@ export function HomePage() {
         >
           <p className="commerce-eyebrow">{COMMERCE.export.positioning}</p>
           <h2 id="export-title">{COMMERCE.export.name}</h2>
+          <BusinessLogo business="export" />
           <p className="commerce-lead">{COMMERCE.export.description}</p>
           <ExportCommodities />
           <ButtonLink href={IE_PATHS.home}>

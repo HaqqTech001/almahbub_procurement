@@ -1,0 +1,423 @@
+[
+  {
+    "business": "International",
+    "slug": "iphones-gadgets",
+    "name": "Electronics, Mobile & Digital Technology",
+    "alt": "Commercial arrangement of smartphones, laptops, networking devices and digital accessories for procurement",
+    "beforeDimensions": [
+      1536,
+      1024
+    ],
+    "beforeFormat": "PNG",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/api/uploads/public/catalog/0190c8a0-1000-7000-8000-000000000001/39f5e29c-d06c-486a-9f98-5cacad73dae6-electronics-mobile-digital-technology-category.png",
+    "canonical": "/media/presentation/v2/international/iphones-gadgets.webp",
+    "beforeBytes": 2053303,
+    "afterBytes": 43994,
+    "format": "WebP",
+    "previousStatic": "/media/international/category-iphones-gadgets.jpg",
+    "previousStaticBytes": 455305,
+    "preferredLocalUrlCandidates": [
+      "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-000000000001/39f5e29c-d06c-486a-9f98-5cacad73dae6-electronics-mobile-digital-technology-category.png"
+    ],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "International",
+    "slug": "medical-equipments",
+    "name": "Medical, Healthcare & Laboratory Equipment",
+    "alt": "Healthcare and laboratory equipment arranged in a clean professional procurement setting",
+    "beforeDimensions": [
+      1536,
+      1024
+    ],
+    "beforeFormat": "PNG",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/api/uploads/public/catalog/0190c8a0-1000-7000-8000-000000000002/ad3d6f5f-87c1-4a0e-8740-b18834f08701-medical-healthcare-laboratory-equipment-category.png",
+    "canonical": "/media/presentation/v2/international/medical-equipments.webp",
+    "beforeBytes": 2045482,
+    "afterBytes": 41084,
+    "format": "WebP",
+    "previousStatic": "/media/international/category-medical-equipments.jpg",
+    "previousStaticBytes": 175637,
+    "preferredLocalUrlCandidates": [
+      "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-000000000002/ad3d6f5f-87c1-4a0e-8740-b18834f08701-medical-healthcare-laboratory-equipment-category.png"
+    ],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "International",
+    "slug": "home-garden-wares",
+    "name": "Home, Garden & Facility Supplies",
+    "alt": "Home, garden and facility equipment arranged in a modern commercial environment",
+    "beforeDimensions": [
+      1536,
+      1024
+    ],
+    "beforeFormat": "PNG",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/api/uploads/public/catalog/0190c8a0-1000-7000-8000-000000000003/9cc8f6c8-0f38-4406-81a3-80a27efe124f-home-garden-facility-supplies-category.png",
+    "canonical": "/media/presentation/v2/international/home-garden-wares.webp",
+    "beforeBytes": 1913098,
+    "afterBytes": 41488,
+    "format": "WebP",
+    "previousStatic": "/media/international/category-home-garden-wares.jpg",
+    "previousStaticBytes": 341254,
+    "preferredLocalUrlCandidates": [
+      "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-000000000003/9cc8f6c8-0f38-4406-81a3-80a27efe124f-home-garden-facility-supplies-category.png"
+    ],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "International",
+    "slug": "machineries",
+    "name": "Industrial Machinery, Tools & Processing Equipment",
+    "alt": "Industrial machines, workshop tools and processing equipment in a professional procurement display",
+    "beforeDimensions": [
+      1536,
+      1024
+    ],
+    "beforeFormat": "PNG",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/api/uploads/public/catalog/0190c8a0-1000-7000-8000-000000000004/ffbf0a53-b110-43fe-83df-02a6b23c8e64-industrial-machinery-tools-processing-equipment-category.png",
+    "canonical": "/media/presentation/v2/international/machineries.webp",
+    "beforeBytes": 2234992,
+    "afterBytes": 49038,
+    "format": "WebP",
+    "previousStatic": "/media/international/category-machineries.jpg",
+    "previousStaticBytes": 472683,
+    "preferredLocalUrlCandidates": [
+      "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-000000000004/ffbf0a53-b110-43fe-83df-02a6b23c8e64-industrial-machinery-tools-processing-equipment-category.png"
+    ],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "International",
+    "slug": "general-procurement",
+    "name": "General Procurement & Custom Sourcing",
+    "alt": "Assorted professional procurement supplies, packaging, safety items and business materials",
+    "beforeDimensions": [
+      1536,
+      1024
+    ],
+    "beforeFormat": "PNG",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/api/uploads/public/catalog/0190c8a0-1000-7000-8000-000000000005/f95c0cfe-10c8-4dfd-96a4-7e0b28455b0d-general-procurement-custom-sourcing-category.png",
+    "canonical": "/media/presentation/v2/international/general-procurement.webp",
+    "beforeBytes": 2544951,
+    "afterBytes": 64604,
+    "format": "WebP",
+    "previousStatic": "/media/international/category-general-procurement.jpg",
+    "previousStaticBytes": 538474,
+    "preferredLocalUrlCandidates": [
+      "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-000000000005/f95c0cfe-10c8-4dfd-96a4-7e0b28455b0d-general-procurement-custom-sourcing-category.png"
+    ],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "International",
+    "slug": "home-appliances",
+    "name": "Home Appliances & Living Equipment",
+    "alt": "Modern refrigeration, laundry, kitchen and household appliances arranged for procurement",
+    "beforeDimensions": [
+      1536,
+      1024
+    ],
+    "beforeFormat": "PNG",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/api/uploads/public/catalog/0190c8c0-1000-7000-8000-000000000001/42ce71ad-5e34-4e20-a33c-2b42159838c3-home-appliances-living-equipment-category.png",
+    "canonical": "/media/presentation/v2/international/home-appliances.webp",
+    "beforeBytes": 1950620,
+    "afterBytes": 24230,
+    "format": "WebP",
+    "previousStatic": "/media/international/category-home-appliances.png",
+    "previousStaticBytes": 1950620,
+    "preferredLocalUrlCandidates": [
+      "/api/v1/public/catalog-media/0190c8c0-1000-7000-8000-000000000001/42ce71ad-5e34-4e20-a33c-2b42159838c3-home-appliances-living-equipment-category.png"
+    ],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "International",
+    "slug": "office-business",
+    "name": "Office, Business & Commercial Technology",
+    "alt": "Professional office furniture, point-of-sale equipment and commercial technology",
+    "beforeDimensions": [
+      1536,
+      1024
+    ],
+    "beforeFormat": "PNG",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/api/uploads/public/catalog/0190c8c0-1000-7000-8000-000000000002/cdd1cfb4-de95-4d1a-a56e-3e48159aa1dd-office-business-commercial-technology-category.png",
+    "canonical": "/media/presentation/v2/international/office-business.webp",
+    "beforeBytes": 2284619,
+    "afterBytes": 37846,
+    "format": "WebP",
+    "previousStatic": "/media/international/category-office-business.png",
+    "previousStaticBytes": 2284619,
+    "preferredLocalUrlCandidates": [
+      "/api/v1/public/catalog-media/0190c8c0-1000-7000-8000-000000000002/cdd1cfb4-de95-4d1a-a56e-3e48159aa1dd-office-business-commercial-technology-category.png"
+    ],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "International",
+    "slug": "fashion-textiles",
+    "name": "Fashion, Textiles, Uniforms & Accessories",
+    "alt": "Professional display of fabrics, uniforms, footwear and fashion accessories for procurement",
+    "beforeDimensions": [
+      1536,
+      1024
+    ],
+    "beforeFormat": "PNG",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/api/uploads/public/catalog/0190c8c0-1000-7000-8000-000000000003/387a6f2e-0485-47e9-8c46-d62e08dbbaf8-fashion-textiles-uniforms-accessories-category.png",
+    "canonical": "/media/presentation/v2/international/fashion-textiles.webp",
+    "beforeBytes": 2545460,
+    "afterBytes": 61450,
+    "format": "WebP",
+    "previousStatic": "/media/international/category-fashion-textiles.png",
+    "previousStaticBytes": 2545460,
+    "preferredLocalUrlCandidates": [
+      "/api/v1/public/catalog-media/0190c8c0-1000-7000-8000-000000000003/387a6f2e-0485-47e9-8c46-d62e08dbbaf8-fashion-textiles-uniforms-accessories-category.png"
+    ],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "International",
+    "slug": "beauty-spa-salon",
+    "name": "Beauty, Salon & Spa Equipment",
+    "alt": "Professional salon and spa chairs, mirrors, hair tools and beauty equipment",
+    "beforeDimensions": [
+      1536,
+      1024
+    ],
+    "beforeFormat": "PNG",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/api/uploads/public/catalog/0190c8c0-1000-7000-8000-000000000004/e49bb469-9255-41e1-814b-401048c49f3e-beauty-salon-spa-equipment-category.png",
+    "canonical": "/media/presentation/v2/international/beauty-spa-salon.webp",
+    "beforeBytes": 2160608,
+    "afterBytes": 42362,
+    "format": "WebP",
+    "previousStatic": "/media/international/category-beauty-spa-salon.png",
+    "previousStaticBytes": 2160608,
+    "preferredLocalUrlCandidates": [
+      "/api/v1/public/catalog-media/0190c8c0-1000-7000-8000-000000000004/e49bb469-9255-41e1-814b-401048c49f3e-beauty-salon-spa-equipment-category.png"
+    ],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "International",
+    "slug": "retail-store-setup",
+    "name": "Retail, Store Setup & Merchandising Equipment",
+    "alt": "Retail shelving, checkout counters, display racks and merchandising equipment in a modern store",
+    "beforeDimensions": [
+      1536,
+      1024
+    ],
+    "beforeFormat": "PNG",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/api/uploads/public/catalog/0190c8c0-1000-7000-8000-000000000005/57f89725-18bf-4c8f-9484-8e80220c0610-retail-store-setup-merchandising-equipment-category.png",
+    "canonical": "/media/presentation/v2/international/retail-store-setup.webp",
+    "beforeBytes": 2267035,
+    "afterBytes": 59630,
+    "format": "WebP",
+    "previousStatic": "/media/international/category-retail-store-setup.png",
+    "previousStaticBytes": 2267035,
+    "preferredLocalUrlCandidates": [
+      "/api/v1/public/catalog-media/0190c8c0-1000-7000-8000-000000000005/57f89725-18bf-4c8f-9484-8e80220c0610-retail-store-setup-merchandising-equipment-category.png"
+    ],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "IE",
+    "slug": "sesame-seeds",
+    "name": "Sesame Seeds",
+    "beforeDimensions": [
+      1920,
+      1280
+    ],
+    "beforeFormat": "WEBP",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/web/public/media/ie/commodities/sesame-seeds/hero/ie-sesame-seeds-hero-01.webp",
+    "canonical": "/media/presentation/v2/ie/sesame-seeds.webp",
+    "beforeBytes": 126052,
+    "afterBytes": 49646,
+    "format": "WebP",
+    "previousStatic": "/media/ie/commodities/sesame-seeds/hero/ie-sesame-seeds-hero-01.webp",
+    "previousStaticBytes": 126052,
+    "preferredLocalUrlCandidates": [],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "IE",
+    "slug": "cashew",
+    "name": "Cashew",
+    "beforeDimensions": [
+      1920,
+      1280
+    ],
+    "beforeFormat": "WEBP",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/web/public/media/ie/commodities/cashew/hero/ie-cashew-hero-01.webp",
+    "canonical": "/media/presentation/v2/ie/cashew.webp",
+    "beforeBytes": 181162,
+    "afterBytes": 68080,
+    "format": "WebP",
+    "previousStatic": "/media/ie/commodities/cashew/hero/ie-cashew-hero-01.webp",
+    "previousStaticBytes": 181162,
+    "preferredLocalUrlCandidates": [],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "IE",
+    "slug": "ginger",
+    "name": "Ginger",
+    "beforeDimensions": [
+      1920,
+      2560
+    ],
+    "beforeFormat": "WEBP",
+    "dimensions": [
+      720,
+      960
+    ],
+    "source": "apps/web/public/media/ie/commodities/ginger/hero/ie-ginger-hero-01.webp",
+    "canonical": "/media/presentation/v2/ie/ginger.webp",
+    "beforeBytes": 382716,
+    "afterBytes": 84046,
+    "format": "WebP",
+    "previousStatic": "/media/ie/commodities/ginger/hero/ie-ginger-hero-01.webp",
+    "previousStaticBytes": 382716,
+    "preferredLocalUrlCandidates": [],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "IE",
+    "slug": "hibiscus",
+    "name": "Hibiscus",
+    "beforeDimensions": [
+      1920,
+      1280
+    ],
+    "beforeFormat": "WEBP",
+    "dimensions": [
+      960,
+      640
+    ],
+    "source": "apps/web/public/media/ie/commodities/hibiscus/hero/ie-hibiscus-hero-01.webp",
+    "canonical": "/media/presentation/v2/ie/hibiscus.webp",
+    "beforeBytes": 290558,
+    "afterBytes": 94448,
+    "format": "WebP",
+    "previousStatic": "/media/ie/commodities/hibiscus/hero/ie-hibiscus-hero-01.webp",
+    "previousStaticBytes": 290558,
+    "preferredLocalUrlCandidates": [],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "IE",
+    "slug": "shea",
+    "name": "Shea",
+    "beforeDimensions": [
+      1136,
+      852
+    ],
+    "beforeFormat": "WEBP",
+    "dimensions": [
+      960,
+      720
+    ],
+    "source": "apps/web/public/media/ie/commodities/shea/hero/ie-shea-hero-01.webp",
+    "canonical": "/media/presentation/v2/ie/shea.webp",
+    "beforeBytes": 327212,
+    "afterBytes": 207700,
+    "format": "WebP",
+    "previousStatic": "/media/ie/commodities/shea/hero/ie-shea-hero-01.webp",
+    "previousStaticBytes": 327212,
+    "preferredLocalUrlCandidates": [],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "IE",
+    "slug": "soybean",
+    "name": "Soybean",
+    "beforeDimensions": [
+      1920,
+      1442
+    ],
+    "beforeFormat": "WEBP",
+    "dimensions": [
+      960,
+      721
+    ],
+    "source": "apps/web/public/media/ie/commodities/soybean/hero/ie-soybean-hero-01.webp",
+    "canonical": "/media/presentation/v2/ie/soybean.webp",
+    "beforeBytes": 353742,
+    "afterBytes": 90400,
+    "format": "WebP",
+    "previousStatic": "/media/ie/commodities/soybean/hero/ie-soybean-hero-01.webp",
+    "previousStaticBytes": 353742,
+    "preferredLocalUrlCandidates": [],
+    "productionSourceVerified": false
+  },
+  {
+    "business": "IE",
+    "slug": "cocoa",
+    "name": "Cocoa",
+    "beforeDimensions": [
+      1920,
+      1440
+    ],
+    "beforeFormat": "WEBP",
+    "dimensions": [
+      960,
+      720
+    ],
+    "source": "apps/web/public/media/ie/commodities/cocoa/hero/ie-cocoa-hero-01.webp",
+    "canonical": "/media/presentation/v2/ie/cocoa.webp",
+    "beforeBytes": 279222,
+    "afterBytes": 91660,
+    "format": "WebP",
+    "previousStatic": "/media/ie/commodities/cocoa/hero/ie-cocoa-hero-01.webp",
+    "previousStaticBytes": 279222,
+    "preferredLocalUrlCandidates": [],
+    "productionSourceVerified": false
+  }
+]

@@ -69,7 +69,7 @@ export type ListPublicProductsQuery = {
   q?: string;
   page?: number;
   pageSize?: number;
-  sort?: "newest" | "name";
+  sort?: "recommended" | "newest" | "name";
 };
 
 function apiBase(): string {

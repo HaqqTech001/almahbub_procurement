@@ -1,6 +1,7 @@
 import type { Environment } from "../../../../config/env.js";
 import type { DatabaseClient } from "../../../../shared/database/database-client.js";
 import { hashPassword, slugifyOrg } from "./auth-crypto.js";
+import { checkDatabaseBeforeBootstrap } from "../../../../composition/database-startup.js";
 import {
   DEFAULT_OPS_PERMISSIONS,
   resolvePermissionRows,
@@ -25,6 +26,10 @@ export async function ensureAdminBootstrap(
   if (!email || !password || !name) {
     return null;
   }
+
+  // Warm/verify the connection before acquiring a transaction. Otherwise the
+  // pool connection timeout races Prisma's maxWait and masks it as P2028.
+  await checkDatabaseBeforeBootstrap(() => database.$queryRaw`SELECT 1`);
 
   const [rawFirstName, ...rest] = name.split(/\s+/);
   const firstName = rawFirstName?.trim() || name;

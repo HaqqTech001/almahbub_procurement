@@ -9,7 +9,7 @@ function mapMedia(
 ): IeCommodityMedia | undefined {
   const src = presentationSource(resolveIeMediaSrc(value?.src), canonicalIeMedia(value?.src, slug));
   if (!src) return undefined;
-  const alt = value?.alt?.trim() || fallbackAlt;
+  const alt = canonicalIeMedia(value?.src, slug) ? fallbackAlt : value?.alt?.trim() || fallbackAlt;
   return { src, alt };
 }
 

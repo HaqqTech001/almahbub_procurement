@@ -1,4 +1,5 @@
 import { useEffect, useState, type KeyboardEvent } from "react";
+import { orderedProductImages } from "@hamd/constants";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { MediaLightbox, OptimizedImage, type MediaLightboxItem } from "@hamd/ui/primitives";
 import { ButtonLink, EmptyState, ErrorState, Section } from "../components/index.js";
@@ -42,6 +43,7 @@ export function ProductDetailPage() {
   const [missing, setMissing] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
   const [imageFailed, setImageFailed] = useState(false);
+  const [failedImages, setFailedImages] = useState<string[]>([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
@@ -51,6 +53,7 @@ export function ProductDetailPage() {
     setMissing(false);
     setProduct(null);
     setActiveImage(0);
+    setFailedImages([]);
     setImageFailed(false);
     void getPublicProduct(slug)
       .then((row) => {
@@ -150,11 +153,12 @@ export function ProductDetailPage() {
     );
   }
 
-  const gallery = product.images.filter((image) => image.url.trim().length > 0);
+  const gallery = orderedProductImages(product.images);
   const videos = (product.videos ?? []).filter(
     (video) => video.url.trim().length > 0,
   );
-  const current = gallery[activeImage] ?? gallery[0];
+  const selected = gallery[activeImage] ?? gallery[0];
+  const current = selected && !failedImages.includes(selected.url) ? selected : gallery.find(image => !failedImages.includes(image.url));
   const imageSrc = resolveMediaUrl(current?.url);
   const showImage = Boolean(imageSrc) && !imageFailed;
   const requestHref = productRequestHref(product.slug, { workspace, authenticated });
@@ -164,6 +168,7 @@ export function ProductDetailPage() {
   const specificationFields = specificationVariant?.typicalSpecificationFields ?? [];
   const sourcingLabel = sourcingStatusLabel(specificationVariant?.sourcingStatus);
   const lightboxItems: MediaLightboxItem[] = gallery.flatMap((image) => {
+    if (failedImages.includes(image.url)) return [];
     const src = resolveMediaUrl(image.url);
     return src
       ? [{ src, kind: "image" as const, alt: image.altText?.trim() || product.name }]
@@ -218,19 +223,23 @@ export function ProductDetailPage() {
                 onClick={() => setLightboxOpen(true)}
               >
                 <OptimizedImage
+                  key={imageSrc}
                   src={imageSrc}
                   alt={current?.altText?.trim() || product.name}
                   className="hamd-product-detail__media"
                   width={960}
                   height={720}
                   priority
-                  onLoadError={() => setImageFailed(true)}
+                  onLoadError={() => {
+                    if (current) setFailedImages(previous => [...previous, current.url]);
+                    setImageFailed(false);
+                  }}
                 />
               </button>
             ) : (
               <div className="hamd-product-detail__ph" role="img" aria-label="Catalogue image placeholder">
-                <span className="hamd-disc-card__ph-mark">Catalogue placeholder</span>
-                <span className="hamd-disc-card__ph-note">Image not available yet</span>
+                <span className="hamd-disc-card__ph-mark">{product.name}</span>
+                <span className="hamd-disc-card__ph-note">Image coming soon</span>
               </div>
             )}
             {gallery.length > 1 ? (
@@ -251,12 +260,11 @@ export function ProductDetailPage() {
                         setImageFailed(false);
                       }}
                     >
-                      <img
+                      <OptimizedImage
                         src={resolveMediaUrl(image.url)}
                         alt=""
                         width={96}
                         height={72}
-                        loading="lazy"
                       />
                     </button>
                   </li>
@@ -343,9 +351,9 @@ export function ProductDetailPage() {
       <MediaLightbox
         open={lightboxOpen && lightboxItems.length > 0}
         items={lightboxItems}
-        index={activeImage}
+        index={Math.max(0, lightboxItems.findIndex(item => item.src === imageSrc))}
         onClose={() => setLightboxOpen(false)}
-        onIndexChange={setActiveImage}
+        onIndexChange={index => setActiveImage(gallery.findIndex(image => resolveMediaUrl(image.url) === lightboxItems[index]?.src))}
       />
     </div>
   );

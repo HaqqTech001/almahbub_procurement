@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { isCancelledRequest } from "@hamd/ui/auth";
 import {
@@ -18,6 +18,7 @@ import {
 import { useAuth } from "../auth/session/AuthProvider.js";
 import { browserApiBase } from "../lib/api-origin.js";
 import { OpsPage } from "../components/OpsChrome.js";
+import { ProductListMedia } from "../components/ProductListMedia.js";
 
 const VIEW_KEY = "hamd.ops.products.view";
 
@@ -73,7 +74,7 @@ export function ProductsPage() {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [sortKey, setSortKey] = useState("newest");
+  const [sortKey, setSortKey] = useState("recommended");
   const [listPage, setListPage] = useState(1);
   const [pageMeta, setPageMeta] = useState({
     page: 1,
@@ -92,6 +93,7 @@ export function ProductsPage() {
       const [products, cats] = await Promise.all([
         fetchOpsProducts(token, {
           q: debouncedQuery.trim() || undefined,
+          sort: sortKey,
           page: listPage,
           pageSize: 25,
           status: statusFilter === "all" ? undefined : statusFilter,
@@ -122,7 +124,7 @@ export function ProductsPage() {
     } finally {
       setLoading(false);
     }
-  }, [auth.ensureSession, categoryFilter, debouncedQuery, listPage, statusFilter]);
+  }, [auth.ensureSession, categoryFilter, debouncedQuery, listPage, statusFilter, sortKey]);
 
   useEffect(() => {
     void refresh();
@@ -135,7 +137,7 @@ export function ProductsPage() {
 
   useEffect(() => {
     setListPage(1);
-  }, [debouncedQuery, categoryFilter, statusFilter]);
+  }, [debouncedQuery, categoryFilter, statusFilter, sortKey]);
 
   const setViewMode = (next: ViewMode) => {
     setView(next);
@@ -151,7 +153,7 @@ export function ProductsPage() {
     setDebouncedQuery("");
     setCategoryFilter("all");
     setStatusFilter("all");
-    setSortKey("newest");
+    setSortKey("recommended");
     setListPage(1);
   };
 
@@ -160,25 +162,7 @@ export function ProductsPage() {
     return categories.find((category) => category.id === id)?.name ?? null;
   };
 
-  const filtered = useMemo(() => {
-    const created = (iso?: string | null) => {
-      const time = iso ? new Date(iso).getTime() : Number.NaN;
-      return Number.isNaN(time) ? 0 : time;
-    };
-    const statusOrder: Record<string, number> = { published: 0, draft: 1, archived: 2 };
-    const sorted = [...rows];
-    sorted.sort((a, b) => {
-      switch (sortKey) {
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "status":
-          return (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9);
-        default:
-          return created(b.updatedAt ?? b.createdAt) - created(a.updatedAt ?? a.createdAt);
-      }
-    });
-    return sorted;
-  }, [rows, sortKey]);
+  const filtered = rows;
 
   const categoryOptions = [
     { value: "all", label: "All categories" },
@@ -193,8 +177,7 @@ export function ProductsPage() {
     },
   ];
 
-  const primaryImage = (row: OpsProductRow) =>
-    row.images?.find((image) => image.url?.trim()) ?? row.images?.[0];
+
 
   return (
     <OpsPage className="hamd-list-queue">
@@ -261,6 +244,7 @@ export function ProductsPage() {
               value: sortKey,
               onChange: setSortKey,
               options: [
+                { value: "recommended", label: "Recommended" },
                 { value: "newest", label: "Newest" },
                 { value: "name", label: "Name" },
                 { value: "status", label: "Status" },
@@ -332,21 +316,10 @@ export function ProductsPage() {
             items={filtered}
             getRowId={(row) => row.id}
             renderCard={(row) => {
-              const image = primaryImage(row);
               return (
                 <Link className="hamd-module-card" to={`/products/${row.id}`}>
                   <span className="hamd-module-card__media">
-                    {image?.url ? (
-                      <img
-                        src={resolveOpsMediaUrl(image.url)}
-                        alt={image.altText || row.name}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <span className="hamd-module-card__media-fallback" aria-hidden="true">
-                        {row.name.trim().slice(0, 1).toUpperCase() || "P"}
-                      </span>
-                    )}
+                    <ProductListMedia name={row.name} images={(row.images ?? []).map(image => ({ ...image, url: resolveOpsMediaUrl(image.url) }))} />
                   </span>
                   <div className="hamd-module-card__body">
                     <span className="hamd-module-card__title" style={{ display: "block" }}>

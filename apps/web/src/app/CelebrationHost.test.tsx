@@ -101,6 +101,7 @@ describe("CelebrationHost", () => {
       "1",
     );
     expect(screen.getByRole("link", { name: /Rowdotul HAMD/ })).toHaveAttribute("href", DEFAULT_WEDDING_CAMPAIGN.sitePath);
+    expect(screen.getByRole("link", { name: /Rowdotul HAMD/ }).querySelector('svg[data-icon="gift"]')).toBeTruthy();
   });
 
   it("does not show when the campaign window has expired", async () => {

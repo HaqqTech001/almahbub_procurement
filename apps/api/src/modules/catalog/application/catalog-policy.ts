@@ -5,7 +5,7 @@ export const PUBLIC_PAGE_SIZE_DEFAULT = 12;
 export const PUBLIC_PAGE_SIZE_MAX = 200;
 export const PUBLIC_SEARCH_MAX_LENGTH = 200;
 
-export const PUBLIC_PRODUCT_SORTS = ["newest", "name"] as const;
+export const PUBLIC_PRODUCT_SORTS = ["recommended", "newest", "name"] as const;
 export type PublicProductSort = (typeof PUBLIC_PRODUCT_SORTS)[number];
 
 /** Keys allowed on the public product DTO. Internal/admin fields must not appear. */

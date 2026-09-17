@@ -1,5 +1,7 @@
 # Permanent catalogue presentation media audit
 
+Historical release review. The canonical priority, cover paths and presentation-grid behavior below are superseded by [the visual consistency report](canonical-presentation-review.md). Retained as provenance for the original files and earlier deployment investigation.
+
 Current database verification was attempted read-only and timed out. This report does not claim live production URLs, HTTP 404s, or Render configuration were verified. International URL candidates come from the explicit category-media-plan and existing local files. Integrated Export URLs come from the committed September 6 import report (18 media rows, HTTP 200 at that historical verification).
 
 WEB_ORIGIN means the deployed Web origin; API_ORIGIN means its configured API origin. Absolute persistent API image overrides remain absolute and fall back to the listed static artwork on error. Missing/legacy local URLs select static artwork immediately. Catalogue publication, names, records and commercial fields remain API-authoritative.
@@ -97,4 +99,3 @@ WEB_ORIGIN means the deployed Web origin; API_ORIGIN means its configured API or
 ?? docs/presentation-media-inventory.json
 ?? scripts/build-presentation-media-audit.mjs
 ```
-

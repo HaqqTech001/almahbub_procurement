@@ -1,4 +1,7 @@
 import { AppError } from "../../../lib/app-error.js";
+import { compareProductPriority, orderedProductImages } from "@hamd/constants";
+import { restoreProductOrder } from "./prioritized-product-page.js";
+import { publicProductMediaHealth, withConcurrency } from "../infrastructure/product-media-health.js";
 import {
   mediaWriteData,
   withCategoryMedia,
@@ -80,7 +83,7 @@ const publicProductListInclude = {
   category: true,
   brand: true,
   manufacturer: true,
-  images: { orderBy: { position: "asc" as const }, take: 1 },
+  images: { orderBy: { position: "asc" as const }, take: 3 },
   videos: { orderBy: { position: "asc" as const }, take: 1 },
   variants: { orderBy: { createdAt: "asc" as const } },
 };
@@ -138,7 +141,7 @@ export function toPublicProduct(row: CatalogProductRow): PublicCatalogProduct {
         : null,
     brandName: row.brand?.name ?? null,
     manufacturerName: row.manufacturer?.legalName ?? null,
-    images: (row.images ?? [])
+    images: orderedProductImages(row.images ?? [])
       .filter((image) => typeof image?.url === "string" && image.url.trim().length > 0)
       .map((image) => ({
         url: image.url,
@@ -170,7 +173,10 @@ export function toPublicProduct(row: CatalogProductRow): PublicCatalogProduct {
  * Never invents images, prices, stock, or unpublished records.
  */
 export class CatalogService {
-  public constructor(private readonly database: DatabaseClient) {}
+  public constructor(
+    private readonly database: DatabaseClient,
+    private readonly mediaHealth = publicProductMediaHealth,
+  ) {}
 
   public async listProducts(query: PublicProductListQuery): Promise<{
     data: PublicCatalogProduct[];
@@ -203,18 +209,27 @@ export class CatalogService {
         : {}),
     };
 
-    const total = await this.database.product.count({ where });
-    const rows = await this.database.product.findMany({
+    const candidates = await this.database.product.findMany({
       where,
+      select: { slug: true, name: true, category: { select: { slug: true } }, images: { select: { url: true, position: true }, orderBy: [{ position: "asc" }, { id: "asc" }], take: 1 } },
+      orderBy: query.sort === "name" ? [{ name: "asc" }, { slug: "asc" }] : [{ createdAt: "desc" }, { slug: "asc" }],
+    });
+    const health = await withConcurrency(candidates, row => this.mediaHealth(row.images[0]?.url));
+    const eligible = candidates.filter((_, index) => health[index] === "valid");
+    if (query.sort === "recommended") eligible.sort(compareProductPriority);
+    const total = eligible.length;
+    const prioritySlugs = eligible.slice((query.page - 1) * query.pageSize, query.page * query.pageSize).map(row => row.slug);
+    const rows = await this.database.product.findMany({
+      where: { AND: [where, { slug: { in: prioritySlugs } }] },
       include: publicProductListInclude,
       orderBy:
-        query.sort === "name" ? { name: "asc" } : { createdAt: "desc" },
-      skip: (query.page - 1) * query.pageSize,
+        query.sort === "name" ? [{ name: "asc" }, { slug: "asc" }] : [{ createdAt: "desc" }, { slug: "asc" }],
+      skip: 0,
       take: query.pageSize,
     });
 
     return {
-      data: rows.map((row) => toPublicProduct(row)),
+      data: restoreProductOrder(rows, prioritySlugs).map((row) => toPublicProduct(row)),
       page: pageMeta(total, query.page, query.pageSize),
     };
   }

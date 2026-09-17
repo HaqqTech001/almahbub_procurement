@@ -1,0 +1,502 @@
+{
+  "source": "Owner media-priority correction, 2026-09-17",
+  "groups": [
+    {
+      "section": 1,
+      "name": "ELECTRONICS, MOBILE & DIGITAL TECHNOLOGY",
+      "requestedPriorities": [
+        "iPhone series",
+        "Samsung Galaxy S series",
+        "Samsung Galaxy Z Fold / Flip series",
+        "Samsung Galaxy A series",
+        "iPads",
+        "Android tablets",
+        "wireless earbuds",
+        "premium earbuds",
+        "smart watches",
+        "headphones",
+        "Bluetooth speakers",
+        "power banks",
+        "wireless chargers",
+        "phone accessories",
+        "smart displays",
+        "monitors",
+        "gaming monitors",
+        "keyboards",
+        "mice",
+        "webcams",
+        "external SSDs",
+        "portable storage",
+        "routers",
+        "Wi-Fi devices",
+        "projectors"
+      ],
+      "existingCategoryCandidates": [
+        "iphones-gadgets"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    },
+    {
+      "section": 2,
+      "name": "LAPTOPS & COMPUTING",
+      "requestedPriorities": [
+        "HP laptops",
+        "HP EliteBook",
+        "HP ProBook",
+        "HP Spectre / premium lines where valid",
+        "Lenovo ThinkPad",
+        "Lenovo IdeaPad",
+        "Lenovo Yoga",
+        "Dell Latitude",
+        "Dell Inspiron",
+        "Dell XPS",
+        "ASUS laptops",
+        "Acer laptops",
+        "modern all-in-one computers",
+        "mini PCs",
+        "desktop workstations",
+        "computer monitors",
+        "docking stations"
+      ],
+      "existingCategoryCandidates": [
+        "iphones-gadgets"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    },
+    {
+      "section": 3,
+      "name": "OFFICE, BUSINESS & COMMERCIAL TECHNOLOGY",
+      "requestedPriorities": [
+        "multifunction office printers",
+        "photocopiers",
+        "high-speed document scanners",
+        "document shredders",
+        "laminating machines",
+        "binding machines",
+        "paper cutting machines",
+        "label printers",
+        "barcode printers",
+        "receipt printers where appropriate",
+        "large-format printers",
+        "plotters",
+        "projectors",
+        "conference-room displays",
+        "interactive presentation displays",
+        "video-conferencing equipment",
+        "office safes",
+        "cash-counting machines",
+        "document counters/sorters",
+        "time-attendance machines",
+        "biometric attendance terminals",
+        "commercial communication equipment",
+        "networking equipment",
+        "office UPS systems"
+      ],
+      "existingCategoryCandidates": [
+        "office-business"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    },
+    {
+      "section": 4,
+      "name": "FASHION, CLOTHING & ACCESSORIES",
+      "requestedPriorities": [
+        "complete native top-and-trouser sets",
+        "modern senator-style top and trouser sets",
+        "kaftan sets",
+        "shirt-and-trouser combinations",
+        "casual shirts",
+        "polo shirts",
+        "T-shirts",
+        "chinos",
+        "jeans",
+        "jackets",
+        "hoodies",
+        "tracksuits",
+        "two-piece casual sets",
+        "formal suits",
+        "blazers",
+        "smart-casual outfits",
+        "two-piece top and trouser sets",
+        "blouse and trouser sets",
+        "skirt-and-top sets",
+        "dresses",
+        "long dresses",
+        "modest dresses",
+        "abayas",
+        "jilbabs",
+        "kaftan dresses",
+        "matching casual sets",
+        "office outfits",
+        "jackets",
+        "cardigans",
+        "stylish ready-made modest fashion",
+        "show the complete outfit clearly"
+      ],
+      "existingCategoryCandidates": [
+        "fashion-textiles"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records.",
+      "presentationRules": [
+        "front or three-quarter product/fashion presentation",
+        "realistic current styling",
+        "no fake designer logo",
+        "clean premium ecommerce presentation",
+        "no unnecessary text/watermarks"
+      ]
+    },
+    {
+      "section": 5,
+      "name": "SHOES & FOOTWEAR",
+      "requestedPriorities": [
+        "men's sneakers",
+        "women's sneakers",
+        "running shoes",
+        "lifestyle sneakers",
+        "loafers",
+        "leather shoes",
+        "formal shoes",
+        "casual shoes",
+        "sandals",
+        "slides",
+        "women's heels",
+        "flats",
+        "boots",
+        "children's footwear",
+        "premium-looking contemporary shoe collections"
+      ],
+      "existingCategoryCandidates": [
+        "fashion-textiles"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    },
+    {
+      "section": 6,
+      "name": "WATCHES & WEARABLE ACCESSORIES",
+      "requestedPriorities": [
+        "modern wrist watches",
+        "men's watches",
+        "women's watches",
+        "premium analog watches",
+        "chronograph-style generic watches",
+        "smart watches",
+        "fitness watches",
+        "watch-and-bracelet gift sets where present"
+      ],
+      "existingCategoryCandidates": [
+        "fashion-textiles",
+        "iphones-gadgets"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    },
+    {
+      "section": 7,
+      "name": "EARBUDS, AUDIO & SMALL DIGITAL ACCESSORIES",
+      "requestedPriorities": [
+        "true wireless earbuds",
+        "charging-case earbuds",
+        "over-ear headphones",
+        "wireless headphones",
+        "portable Bluetooth speakers",
+        "microphones",
+        "conference microphones",
+        "gaming headsets",
+        "modern desktop speakers"
+      ],
+      "existingCategoryCandidates": [
+        "iphones-gadgets"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    },
+    {
+      "section": 8,
+      "name": "BAGS & PERSONAL ACCESSORIES",
+      "requestedPriorities": [
+        "handbags",
+        "crossbody bags",
+        "shoulder bags",
+        "tote bags",
+        "laptop bags",
+        "backpacks",
+        "travel bags",
+        "briefcases",
+        "wallets",
+        "belts",
+        "sunglasses",
+        "fashion accessories"
+      ],
+      "existingCategoryCandidates": [
+        "fashion-textiles"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    },
+    {
+      "section": 9,
+      "name": "HOME APPLIANCES",
+      "requestedPriorities": [
+        "modern chest freezers",
+        "deep freezers",
+        "upright freezers",
+        "refrigerators",
+        "side-by-side refrigerators",
+        "French-door refrigerators",
+        "washing machines",
+        "washer-dryers",
+        "clothes dryers",
+        "dishwashers",
+        "air conditioners",
+        "portable ACs",
+        "air coolers",
+        "microwaves",
+        "electric ovens",
+        "cookers",
+        "induction cookers",
+        "air fryers",
+        "blenders",
+        "stand mixers",
+        "food processors",
+        "coffee machines",
+        "electric kettles",
+        "water dispensers",
+        "vacuum cleaners",
+        "robot vacuums",
+        "irons",
+        "garment steamers",
+        "water heaters",
+        "air purifiers"
+      ],
+      "existingCategoryCandidates": [
+        "home-appliances"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    },
+    {
+      "section": 10,
+      "name": "KITCHEN EQUIPMENT & UTENSILS",
+      "requestedPriorities": [
+        "cookware sets",
+        "non-stick pot sets",
+        "frying pans",
+        "pressure cookers",
+        "stock pots",
+        "chef knives",
+        "knife blocks",
+        "cutlery sets",
+        "dinner sets",
+        "glassware",
+        "food storage containers",
+        "chopping boards",
+        "serving trays",
+        "mixing bowls",
+        "kitchen racks",
+        "dish racks",
+        "kitchen trolleys",
+        "commercial sinks",
+        "stainless-steel work tables",
+        "commercial cookers",
+        "commercial ovens",
+        "bakery mixers",
+        "dough mixers",
+        "meat grinders",
+        "food warmers",
+        "beverage dispensers",
+        "restaurant kitchen equipment"
+      ],
+      "existingCategoryCandidates": [
+        "home-appliances",
+        "home-garden-wares",
+        "machineries"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    },
+    {
+      "section": 11,
+      "name": "HOME, GARDEN & LIVING",
+      "requestedPriorities": [
+        "modern sofa sets",
+        "sectional sofas",
+        "accent chairs",
+        "dining sets",
+        "coffee tables",
+        "TV stands",
+        "wardrobes",
+        "beds",
+        "bedside tables",
+        "bookshelves",
+        "modern shelving systems",
+        "outdoor seating sets",
+        "patio furniture",
+        "garden chairs",
+        "garden tables",
+        "garden storage",
+        "lawn mowers",
+        "grass trimmers",
+        "hedge trimmers",
+        "pressure washers",
+        "garden sprayers",
+        "wheelbarrows",
+        "garden tools",
+        "irrigation accessories"
+      ],
+      "existingCategoryCandidates": [
+        "home-garden-wares"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    },
+    {
+      "section": 12,
+      "name": "INDUSTRIAL MACHINERY, TOOLS & PROCESSING EQUIPMENT",
+      "requestedPriorities": [
+        "generators",
+        "compressors",
+        "welding machines",
+        "drilling machines",
+        "grinders",
+        "bench drills",
+        "industrial pumps",
+        "water pumps",
+        "agricultural pumps",
+        "milling machines",
+        "grinding machines",
+        "packaging machines",
+        "sealing machines",
+        "filling machines",
+        "cutting machines",
+        "processing machines",
+        "food-processing equipment",
+        "workshop equipment",
+        "mechanical machine parts",
+        "bearings",
+        "pulleys",
+        "gears",
+        "shafts",
+        "couplings",
+        "motors",
+        "gear motors",
+        "valves",
+        "industrial hoses",
+        "hydraulic parts",
+        "pneumatic components",
+        "machine tool accessories"
+      ],
+      "existingCategoryCandidates": [
+        "machineries"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    },
+    {
+      "section": 13,
+      "name": "BEAUTY, SALON & SPA",
+      "requestedPriorities": [
+        "salon styling chairs",
+        "shampoo/backwash stations",
+        "manicure tables",
+        "salon mirror stations",
+        "towel warmer cabinets",
+        "facial steamers",
+        "hair steamers",
+        "salon trolleys",
+        "clippers",
+        "trimmers",
+        "wax heaters",
+        "nail lamps",
+        "beauty storage cabinets"
+      ],
+      "existingCategoryCandidates": [
+        "beauty-spa-salon"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    },
+    {
+      "section": 14,
+      "name": "MEDICAL & LABORATORY",
+      "requestedPriorities": [
+        "examination couches",
+        "hospital beds",
+        "patient trolleys",
+        "instrument trolleys",
+        "medical cabinets",
+        "examination lamps",
+        "wheelchairs",
+        "blood-pressure monitors",
+        "thermometers",
+        "pulse oximeters",
+        "laboratory microscopes",
+        "centrifuges",
+        "laboratory refrigerators",
+        "autoclaves",
+        "sterilizers",
+        "laboratory balances",
+        "laboratory glassware equipment",
+        "diagnostic devices",
+        "medical storage equipment"
+      ],
+      "existingCategoryCandidates": [
+        "medical-equipments"
+      ],
+      "mappingRule": "Match an actual product identity first; preserve its existing category. These requests do not create product records."
+    }
+  ],
+  "excludedFirstWave": [
+    "POS terminals",
+    "point-of-sale terminals",
+    "fabric rolls",
+    "obscure long-tail filler"
+  ],
+  "rankingCriteriaInOrder": [
+    "visual attractiveness",
+    "commercial relevance",
+    "current-market appeal",
+    "category coverage",
+    "buyer attraction",
+    "recognizability",
+    "homepage/category promotion suitability"
+  ],
+  "genericRouting": "generation_ready only after matching a real existing generic identity and confirming physical form; otherwise catalogue_gap, never create filler products.",
+  "brandedRouting": "current_product_research; no exact model or image is considered verified by this queue update.",
+  "taxonomyGaps": [
+    {
+      "area": "Ready-made fashion",
+      "existingCategory": "fashion-textiles",
+      "gap": "Existing rows focus on fabrics, uniforms, scrub sets, polo/T-shirt lots and work footwear. Native/senator/kaftan sets, trousers, suits, dresses, abayas, jilbabs and the requested consumer outfit mix need real product identity definitions before mapping. Do not substitute uniform photographs for them."
+    },
+    {
+      "area": "Consumer footwear, watches and bags",
+      "existingCategory": "fashion-textiles",
+      "gap": "Sneakers, heels, sandals, slides, flats, consumer watches, handbags, wallets, belts and sunglasses lack matching rows in this package. Work boots and safety shoes do not fill those identities. Smart watches require identity-based review against Electronics/Wearables."
+    },
+    {
+      "area": "Audio and small digital accessories",
+      "existingCategory": "iphones-gadgets",
+      "gap": "Earbuds, charging-case earbuds, wireless chargers, smart watches/displays, dedicated microphones and consumer headphones need identity matching/new genuine records. Existing headsets are not automatically earbuds or exact branded headphones."
+    },
+    {
+      "area": "Office machines",
+      "existingCategory": "office-business",
+      "gap": "No matching document scanner, paper cutter, large-format printer/plotter, safe, cash/document counter or attendance-terminal rows. Existing multifunction printers/projectors/networking are in Electronics; label printers are in Retail. Flag category review, do not move them silently or equate access-control systems with attendance terminals."
+    },
+    {
+      "area": "Kitchen equipment",
+      "existingCategoryCandidates": [
+        "home-appliances",
+        "home-garden-wares",
+        "machineries"
+      ],
+      "gap": "No standalone Kitchen category. Existing appliances cover ovens, ranges, blenders and coffee machines, but cookware, knives, cutlery, dinnerware, food containers, racks/trolleys, commercial sinks/worktables and mixers require genuine product/category mapping. Do not label assorted appliances as cookware coverage."
+    },
+    {
+      "area": "Mechanical parts",
+      "existingCategory": "machineries",
+      "gap": "No bearings, pulleys, gears, shafts, couplings, motors, gear motors, valves, industrial hoses, hydraulic parts or pneumatic component rows. Keep these requested priorities blocked on identity definition, not fabricated entries."
+    },
+    {
+      "area": "Additional home, garden and medical priorities",
+      "existingCategoryCandidates": [
+        "home-appliances",
+        "home-garden-wares",
+        "medical-equipments"
+      ],
+      "gap": "Washer-dryers, portable ACs, air coolers, induction cookers, air fryers, garment steamers, accent/coffee/bedside tables, TV stands, wheelbarrows, irrigation accessories, examination couches, instrument trolleys, medical cabinets, thermometers and laboratory glassware/balances need product-level matching; near names are not interchangeable."
+    }
+  ]
+}

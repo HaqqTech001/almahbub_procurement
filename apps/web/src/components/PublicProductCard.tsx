@@ -11,8 +11,13 @@ export function PublicProductCard({
   product: CatalogCardModel;
   eager?: boolean;
 }) {
-  const [imageFailed, setImageFailed] = useState(false);
-  const showImage = Boolean(product.imageSrc) && !imageFailed;
+  const [failedSources, setFailedSources] = useState<string[]>([]);
+  const imageSrc = (product.imageSources ?? [product.imageSrc]).find(src => src && !failedSources.includes(src));
+  const showImage = Boolean(imageSrc);
+
+  // Public grids must not turn unavailable media into giant placeholder cards.
+  // Ops and direct product management retain their own recoverable fallback UI.
+  if (!showImage) return null;
 
   return (
     <article className="hamd-disc-card hamd-disc-card--grid">
@@ -20,18 +25,19 @@ export function PublicProductCard({
         <span className="hamd-disc-card__media">
           {showImage ? (
             <OptimizedImage
-              src={product.imageSrc}
+              key={imageSrc}
+              src={imageSrc}
               alt=""
               width={480}
               height={360}
               sizes="(max-width: 640px) 50vw, (max-width: 1200px) 25vw, 220px"
               priority={eager}
-              onLoadError={() => setImageFailed(true)}
+              onLoadError={() => { if (imageSrc) setFailedSources(previous => [...previous, imageSrc]); }}
             />
           ) : (
             <span className="hamd-disc-card__ph" aria-hidden="true">
-              <span className="hamd-disc-card__ph-mark">Catalogue placeholder</span>
-              <span className="hamd-disc-card__ph-note">Image not available yet</span>
+              <span className="hamd-disc-card__ph-mark">{product.name}</span>
+              <span className="hamd-disc-card__ph-note">Image coming soon</span>
             </span>
           )}
           {product.categoryName ? (

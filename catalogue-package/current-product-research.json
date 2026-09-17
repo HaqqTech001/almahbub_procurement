@@ -1,0 +1,486 @@
+{
+  "route": "current_product_research",
+  "tasks": [
+    {
+      "request": "iPhone series",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Samsung Galaxy S series",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Samsung Galaxy Z Fold / Flip series",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Samsung Galaxy A series",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "iPads",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "HP laptops",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "HP EliteBook",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "HP ProBook",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "HP Spectre / premium lines where valid",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Lenovo ThinkPad",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Lenovo IdeaPad",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Lenovo Yoga",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Dell Latitude",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Dell Inspiron",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Dell XPS",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "ASUS laptops",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Acer laptops",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Apple AirPods",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Samsung Galaxy Buds",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Sony exact audio models",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Apple Watch",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Samsung Watch",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Nike exact footwear models",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Adidas exact footwear models",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "New Balance exact footwear models",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Gucci exact footwear models",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Exact luxury watches",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Exact luxury bags and accessories",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Exact manufacturer/model industrial equipment",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    },
+    {
+      "request": "Exact branded medical/laboratory devices",
+      "route": "current_product_research",
+      "status": "awaiting_research",
+      "productSlug": null,
+      "verifiedModel": null,
+      "sourceUrls": [],
+      "generationAllowed": false,
+      "requiredEvidence": [
+        "Official manufacturer listing identifying a real current model and region",
+        "Exact physical identity and existing catalogue/category match; report missing records",
+        "Approved or licensed photography with source URL and usage rights",
+        "Owner/editorial review before any new product mapping or import"
+      ],
+      "note": "Research brief only. A family name is not a verified current model, an available product, or permission to generate branded lookalikes."
+    }
+  ],
+  "exactModelPolicy": "All exact branded/model products, including later discoveries, use this route. Never generate fake canonical photography."
+}

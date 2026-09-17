@@ -67,11 +67,10 @@ describe("catalog service", () => {
       products: [publishedPhone],
       productCount: 1,
     });
-    const result = await new CatalogService(database).listProducts(
+    const result = await new CatalogService(database, async () => "valid").listProducts(
       publicProductListQuerySchema.parse({}),
     );
 
-    expect(product.count.mock.calls[0]?.[0]?.where.status).toBe("published");
     expect(product.findMany.mock.calls[0]?.[0]?.where.status).toBe("published");
     expect(result.data).toHaveLength(1);
     expect(result.data[0]?.slug).toBe("iphone-15-pro");
@@ -85,7 +84,7 @@ describe("catalog service", () => {
 
   it("excludes unpublished products from the public query", async () => {
     const { database, product } = createDatabase({ products: [], productCount: 0 });
-    await new CatalogService(database).listProducts(
+    await new CatalogService(database, async () => "valid").listProducts(
       publicProductListQuerySchema.parse({}),
     );
 
@@ -102,7 +101,7 @@ describe("catalog service", () => {
       products: [publishedPhone],
       productCount: 1,
     });
-    await new CatalogService(database).listProducts(
+    await new CatalogService(database, async () => "valid").listProducts(
       publicProductListQuerySchema.parse({ category: "iphones-gadgets" }),
     );
 
@@ -118,7 +117,7 @@ describe("catalog service", () => {
 
   it("returns 404 for an unknown or unpublished category slug", async () => {
     const { database } = createDatabase({ publishedCategory: null });
-    const error = await new CatalogService(database)
+    const error = await new CatalogService(database, async () => "valid")
       .listProducts(
         publicProductListQuerySchema.parse({ category: "does-not-exist" }),
       )
@@ -130,7 +129,7 @@ describe("catalog service", () => {
 
   it("searches name, description, and category name", async () => {
     const { database, product } = createDatabase({ products: [], productCount: 0 });
-    await new CatalogService(database).listProducts(
+    await new CatalogService(database, async () => "valid").listProducts(
       publicProductListQuerySchema.parse({ q: "hospital" }),
     );
 
@@ -141,17 +140,17 @@ describe("catalog service", () => {
     ]);
   });
 
-  it("paginates with skip/take and hasMore metadata", async () => {
+  it("filters media before pagination and calculates eligible totals", async () => {
     const { database, product } = createDatabase({
-      products: [publishedPhone],
+      products: Array.from({ length: 25 }, (_, index) => ({ ...publishedPhone, slug: `phone-${index}` })),
       productCount: 25,
     });
-    const result = await new CatalogService(database).listProducts(
-      publicProductListQuerySchema.parse({ page: 2, pageSize: 12 }),
+    const result = await new CatalogService(database, async () => "valid").listProducts(
+      publicProductListQuerySchema.parse({ page: 2, pageSize: 12, sort: "newest" }),
     );
 
-    expect(product.findMany.mock.calls[0]?.[0]).toMatchObject({
-      skip: 12,
+    expect(product.findMany.mock.calls[1]?.[0]).toMatchObject({
+      skip: 0,
       take: 12,
     });
     expect(result.page).toEqual({
@@ -162,16 +161,16 @@ describe("catalog service", () => {
     });
   });
 
-  it("loads only the primary image on list queries", async () => {
+  it("loads at most three assigned image candidates on list queries", async () => {
     const { database, product } = createDatabase({
       products: [publishedPhone],
       productCount: 1,
     });
-    await new CatalogService(database).listProducts(
+    await new CatalogService(database, async () => "valid").listProducts(
       publicProductListQuerySchema.parse({}),
     );
-    expect(product.findMany.mock.calls[0]?.[0]?.include.images.take).toBe(1);
-    expect(product.findMany.mock.calls[0]?.[0]?.include.videos.take).toBe(1);
+    expect(product.findMany.mock.calls[1]?.[0]?.include.images.take).toBe(3);
+    expect(product.findMany.mock.calls[1]?.[0]?.include.videos.take).toBe(1);
   });
 
   it("returns a published product by slug and 404s otherwise", async () => {
@@ -195,7 +194,7 @@ describe("catalog service", () => {
 
   it("returns an empty catalogue without inventing rows", async () => {
     const { database } = createDatabase({ products: [], productCount: 0 });
-    const result = await new CatalogService(database).listProducts(
+    const result = await new CatalogService(database, async () => "valid").listProducts(
       publicProductListQuerySchema.parse({}),
     );
     expect(result.data).toEqual([]);
@@ -305,7 +304,7 @@ describe("catalog service", () => {
       categories: [{ slug: "machineries", name: "Machineries" }],
       categoryCount: 1,
     });
-    const result = await new CatalogService(database).listCategories({
+    const result = await new CatalogService(database, async () => "valid").listCategories({
       page: 1,
       pageSize: 12,
     });

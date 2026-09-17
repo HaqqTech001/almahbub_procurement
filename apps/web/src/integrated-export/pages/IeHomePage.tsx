@@ -12,7 +12,7 @@ export function IeHomePage() {
         Browse agricultural commodities and discuss grades, packaging and export
         requirements with our team.
       </p>
-      <ExportCommodities />
+      <ExportCommodities aboveFold />
       <section>
         <h2>Before you request a quotation</h2>
         <p>

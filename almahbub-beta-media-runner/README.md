@@ -4,7 +4,7 @@ This package removes the need to upload product images one by one.
 
 ## What it does
 
-1. Reads the 100-product beta manifest.
+1. Reads the ranked 250-product first-wave manifest in `globalPriority` order.
 2. Searches Wikimedia Commons for each product.
 3. Accepts only conservative reusable-photo candidates with Commons licensing metadata.
 4. Rejects obvious logos, diagrams, screenshots, tiny files and duplicate binaries.
@@ -14,6 +14,10 @@ This package removes the need to upload product images one by one.
 8. Creates `review.html` so you can rapidly inspect the batch in a browser.
 
 A product that cannot be matched confidently is **not** assigned a random image. It remains on the existing category fallback and is listed as `needs_review`.
+
+The active queue excludes POS terminals and fabric-first presentation, prioritizing office machines and high-impact finished goods. See `../catalogue-package/high-priority-media-queue.md` for ranks and coverage gaps. Exact branded/model research tasks live separately in `../catalogue-package/current-product-research.json`; they must not be sent to generic image generation. The runner still acquires source photographs; `mediaRoute: generation_ready` permits a separate reviewed generic-generation workflow, not automatic generation by this script.
+
+Existing `provenance.json`, `media-import-mapping.json` and `review.html` are historical acquisition outputs, not the updated priority queue. This queue revision does not regenerate them, acquire images, import anything or modify published products.
 
 ## Put it in the repo
 

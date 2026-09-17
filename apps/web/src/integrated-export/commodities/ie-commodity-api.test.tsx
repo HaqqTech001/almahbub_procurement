@@ -46,7 +46,7 @@ describe("mapApiCommodityToIeCommodity", () => {
       sortOrder: 10,
     };
     const mapped = mapApiCommodityToIeCommodity(dto);
-    expect(mapped.heroMedia).toEqual(API_HERO);
+    expect(mapped.heroMedia).toEqual({ src: "/media/presentation/v2/ie/sesame-seeds.webp", alt: "Sesame Seeds" });
     expect(mapped).not.toHaveProperty("markets");
     expect(mapped).not.toHaveProperty("specifications");
     expect(mapped).not.toHaveProperty("price");
@@ -65,18 +65,28 @@ describe("mapApiCommodityToIeCommodity", () => {
       sortOrder: 20,
     });
     expect(mapped.heroMedia).toEqual({
-      src: "/media/ie/commodities/cashew/hero/ie-cashew-hero-01.webp",
+      src: "/media/presentation/v2/ie/cashew.webp",
       alt: "Cashew",
     });
   });
 });
 
-describe("IE catalogue prefers public API media", () => {
+describe("IE catalogue uses API records with canonical artwork", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
-  it("replaces the static snapshot with API heroMedia when the list endpoint succeeds", async () => {
+  it.each(["/businesses/almahbub-integrated-export/commodities", "/businesses/almahbub-integrated-export/commodities/sesame-seeds"])("renders canonical artwork before API startup at %s", (path) => {
+    vi.stubGlobal("fetch", vi.fn().mockReturnValue(new Promise(() => {})));
+    render(<MemoryRouter initialEntries={[path]}><AppProviders><Routes>
+      <Route path="/businesses/almahbub-integrated-export/commodities" element={<IeCommoditiesPage />} />
+      <Route path="/businesses/almahbub-integrated-export/commodities/:slug" element={<IeCommodityDetailPage />} />
+    </Routes></AppProviders></MemoryRouter>);
+    expect(screen.getByRole("img", { name: "Sesame Seeds" })).toHaveAttribute("src", "/media/presentation/v2/ie/sesame-seeds.webp");
+    expect(screen.queryByText("Published commodities")).toBeNull();
+  });
+
+  it("keeps API publication authority with a canonical cover", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue(
@@ -113,13 +123,13 @@ describe("IE catalogue prefers public API media", () => {
     await waitFor(() => {
       expect(document.querySelector("[data-ie-catalogue-source='api']")).toBeTruthy();
     });
-    const hero = screen.getByRole("img", { name: API_HERO.alt });
-    expect(hero).toHaveAttribute("src", API_HERO.src);
+    const hero = screen.getByRole("img", { name: "Sesame Seeds" });
+    expect(hero).toHaveAttribute("src", "/media/presentation/v2/ie/sesame-seeds.webp");
     expect(hero).toHaveAttribute("data-ie-hero", "true");
     expect(screen.queryByRole("link", { name: "Cashew", exact: true })).not.toBeInTheDocument();
   });
 
-  it("renders API detail heroMedia for a published slug", async () => {
+  it("renders canonical detail artwork for a published slug", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue(
@@ -163,7 +173,7 @@ describe("IE catalogue prefers public API media", () => {
     await waitFor(() => {
       expect(document.querySelector("[data-ie-catalogue-source='api']")).toBeTruthy();
     });
-    expect(screen.getByRole("img", { name: API_HERO.alt })).toHaveAttribute("src", API_HERO.src);
+    expect(screen.getByRole("img", { name: "Sesame Seeds" })).toHaveAttribute("src", "/media/presentation/v2/ie/sesame-seeds.webp");
     expect(screen.queryByText(/not Almahbub facilities/i)).not.toBeInTheDocument();
   });
 });

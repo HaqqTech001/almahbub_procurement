@@ -35,7 +35,10 @@ if (dependencies.database) {
       { err: error },
       "Failed to ensure the configured platform admin bootstrap account",
     );
-    throw error;
+    await disconnectDependencies(dependencies).catch((disconnectError: unknown) => {
+      logger.error({ err: disconnectError }, "Failed to disconnect after startup failure");
+    });
+    process.exit(1);
   }
 }
 

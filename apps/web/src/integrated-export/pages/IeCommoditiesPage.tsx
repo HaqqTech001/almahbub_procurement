@@ -1,4 +1,4 @@
-import { CollectionSkeleton } from "@hamd/ui/primitives";
+import { CANONICAL_PRESENTATION } from "../../content/canonical-presentation.js";
 import { ButtonLink, Container } from "../../components/index.js";
 import { INTEGRATED_EXPORT_PORTAL } from "../../content/group.js";
 import { usePublishedIeCommodities } from "../commodities/use-published-ie-catalogue.js";
@@ -37,7 +37,15 @@ export function IeCommoditiesPage() {
         }
       >
         <Container>
-          {loading ? <CollectionSkeleton label="Loading commodities" gridClassName="hamd-aie-catalogue__grid" cardClassName="hamd-aie-commodity-card" bodyClassName="hamd-aie-commodity-card__body" aspectRatio="16 / 10" /> : error ? (
+          {loading ? <>
+            <h2 id="aie-catalogue-list-title" className="hamd-sr-only">Explore agricultural commodities</h2>
+            <p role="status">Loading published commodity details…</p>
+            <ul className="hamd-aie-catalogue__grid" aria-label="Commodity range">
+              {CANONICAL_PRESENTATION.filter(item => item.business === "IE").map(item => <li key={item.slug}>
+                <IeCommodityCard commodity={{ slug: item.slug, name: item.name, imageSrc: item.src, imageAlt: item.alt }} headingLevel={3} />
+              </li>)}
+            </ul>
+          </> : error ? (
             <div className="hamd-aie-catalogue__empty" data-ie-catalogue-source={source}>
               <div className="hamd-aie-catalogue__empty-panel" role="alert">
                 <h2 id="aie-catalogue-empty-title" className="hamd-aie-catalogue__empty-title">

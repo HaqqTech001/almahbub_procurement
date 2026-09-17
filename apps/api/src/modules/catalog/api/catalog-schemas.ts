@@ -37,7 +37,7 @@ export const publicProductListQuerySchema = z.object({
     .min(1)
     .max(PUBLIC_PAGE_SIZE_MAX)
     .default(PUBLIC_PAGE_SIZE_DEFAULT),
-  sort: z.enum(PUBLIC_PRODUCT_SORTS).default("newest"),
+  sort: z.enum(PUBLIC_PRODUCT_SORTS).default("recommended"),
 });
 
 export const publicCategoryListQuerySchema = z.object({

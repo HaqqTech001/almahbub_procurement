@@ -9,6 +9,7 @@ import {
 } from "../api/catalog-api.js";
 import { resolveMediaUrl } from "./media-url.js";
 import { INTERNATIONAL_PRESENTATION_MEDIA, presentationSource } from "../content/presentation-media.js";
+import { CANONICAL_PRESENTATION } from "../content/canonical-presentation.js";
 
 export type HomepageProductCategory = {
   id: string;
@@ -68,7 +69,7 @@ export function toCategoryItem(
   category: PublicCatalogCategory,
 ): ProductCategoryItem {
   const imageSrc = presentationSource(category.imageUrl, INTERNATIONAL_PRESENTATION_MEDIA[category.slug]);
-  const imageAlt = category.imageAlt?.trim() || category.name;
+  const imageAlt = CANONICAL_PRESENTATION.find(row => row.business === "International" && row.slug === category.slug)?.alt || category.imageAlt?.trim() || category.name;
   return {
     id: category.slug,
     name: category.name,
@@ -93,7 +94,7 @@ export function listInternationalCategoryCards(
 export async function loadHomepageProducts(): Promise<HomepageProductsResult> {
   try {
     const [productsResult, categoriesResult] = await Promise.all([
-      listPublicProducts({ page: 1, pageSize: 6, sort: "newest" }),
+      listPublicProducts({ page: 1, pageSize: 6, sort: "recommended" }),
       listPublicCategories({ page: 1, pageSize: 50 }),
     ]);
     const products = productsResult.data.map(toHomepageCatalogProduct);

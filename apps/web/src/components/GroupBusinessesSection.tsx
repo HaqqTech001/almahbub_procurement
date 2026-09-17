@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ButtonLink, Section } from "./index.js";
-import { GroupBusinessMark } from "./GroupBusinessSwitcher.js";
+import { BusinessLogo } from "./BusinessLogo.js";
 import {
   GROUP,
   GROUP_BUSINESSES,
@@ -17,10 +17,7 @@ export function GroupBusinessCard({
   return (
     <article className="hamd-group-card">
       {showMedia ? (
-        <div className="hamd-group-card__media" aria-hidden="true">
-          <GroupBusinessMark business={business} size="lg" />
-          <p className="hamd-group-card__media-label">{business.mediaLabel}</p>
-        </div>
+        <BusinessLogo business={business.slug === "almahbub-international" ? "international" : "export"} />
       ) : null}
       <p className="hamd-group-card__eyebrow">{GROUP.endorsement}</p>
       <h3 className="hamd-group-card__title">

@@ -11,7 +11,7 @@ describe("catalog schemas", () => {
     const parsed = publicProductListQuerySchema.parse({});
     expect(parsed.page).toBe(1);
     expect(parsed.pageSize).toBe(12);
-    expect(parsed.sort).toBe("newest");
+    expect(parsed.sort).toBe("recommended");
     expect(parsed.category).toBeUndefined();
     expect(parsed.q).toBeUndefined();
   });

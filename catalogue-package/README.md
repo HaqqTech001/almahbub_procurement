@@ -48,6 +48,17 @@ Products are described as available for procurement/sourcing. The dataset does n
 
 ## Media
 
+### Active first-wave priority queue
+
+`../almahbub-beta-media-runner/beta-product-media-manifest.json` now ranks 250 existing generic product identities. Use its `globalPriority` order, not alphabetical order or the order of `product-media-plan.json`.
+
+- `current-product-research.json` contains separate, unverified branded-family research tasks. They are not catalogue rows or generation jobs.
+- `priority-media-requested-coverage.json` preserves all 14 requested product groups and records taxonomy/product gaps.
+- `high-priority-media-queue.md` explains selection, exclusions, coverage and the ranked first wave.
+- Run `python scripts/update-priority-media-queue.py` from the repository root to rebuild the generic queue deterministically. It does not contact services or import media.
+
+No POS terminals or fabric products are in the first wave. `generation_ready` means ready for a generic imagery brief, subject to physical-identity confirmation and review; it does not mean files exist, images are approved, or products are live in the database. Preserve real model identity and existing categories when resolving gaps.
+
 The catalogue package deliberately does not create fake product image/video binaries.
 
 `product-media-plan.json` gives a clean target naming convention and metadata for every product:

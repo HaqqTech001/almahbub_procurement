@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { GiftIcon } from "../components/GiftIcon.js";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { CelebrationExperienceModal } from "@hamd/ui/marketing";
 
@@ -192,7 +193,7 @@ export function CelebrationHost() {
     <>
     {!open && campaign.modalEnabled === true && isPublicCampaignRoute(location.pathname) ? (
       <Link className="hamd-wedding-reentry" title="Return to Rowdotul HAMD'26" aria-label="Return to Rowdotul HAMD'26" to={campaign.sitePath}>
-        <span aria-hidden="true">&#10022;</span><span className="hamd-wedding-reentry__text">Rowdotul HAMD'26</span>
+        <GiftIcon /><span className="hamd-wedding-reentry__text">Rowdotul HAMD'26</span>
       </Link>
     ) : null}
     <CelebrationExperienceModal

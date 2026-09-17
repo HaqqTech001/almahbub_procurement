@@ -29,7 +29,7 @@ export function ProductsPage() {
   const [params, setParams] = useSearchParams();
   const category = (params.get("category") ?? "").trim();
   const q = (params.get("q") ?? "").trim();
-  const sort = params.get("sort") === "name" ? "name" : "newest";
+  const sort = params.get("sort") === "name" ? "name" : params.get("sort") === "newest" ? "newest" : "recommended";
   const page = Math.max(1, Number(params.get("page") ?? "1") || 1);
 
   const [draftQuery, setDraftQuery] = useState(q);
@@ -127,8 +127,8 @@ export function ProductsPage() {
     const nextParams = new URLSearchParams(params);
     if (next.category === null) nextParams.delete("category");
     else if (next.category) nextParams.set("category", next.category);
-    if (next.sort && next.sort !== "newest") nextParams.set("sort", next.sort);
-    else if (next.sort === "newest") nextParams.delete("sort");
+    if (next.sort && next.sort !== "recommended") nextParams.set("sort", next.sort);
+    else if (next.sort === "recommended") nextParams.delete("sort");
     if (next.page && next.page > 1) nextParams.set("page", String(next.page));
     else nextParams.delete("page");
     setParams(nextParams);
@@ -159,6 +159,7 @@ export function ProductsPage() {
       value: sort,
       onChange: (value: string) => setFilter({ sort: value }),
       options: [
+        { value: "recommended", label: "Recommended" },
         { value: "newest", label: "Newest" },
         { value: "name", label: "Name" },
       ],

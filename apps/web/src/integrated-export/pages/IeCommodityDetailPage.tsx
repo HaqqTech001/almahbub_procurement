@@ -5,6 +5,8 @@ import { usePublishedIeCommodity } from "../commodities/use-published-ie-catalog
 import { IeEmptyState } from "../IeEmptyState.js";
 import { IE_PATHS } from "../ie-paths.js";
 import { IeCommodityDetailView } from "./IeCommodityDetailView.js";
+import { CANONICAL_PRESENTATION } from "../../content/canonical-presentation.js";
+import { IeCommodityImage } from "../IeCommodityImage.js";
 
 /**
  * Commodity detail - published records only from the authoritative IE source.
@@ -13,7 +15,23 @@ import { IeCommodityDetailView } from "./IeCommodityDetailView.js";
 export function IeCommodityDetailPage() {
   const { slug = "" } = useParams();
   const safeSlug = slug.trim();
-  const { commodity, source } = usePublishedIeCommodity(safeSlug);
+  const { commodity, source, loading } = usePublishedIeCommodity(safeSlug);
+  const artwork = CANONICAL_PRESENTATION.find(item => item.business === "IE" && item.slug === safeSlug.toLowerCase());
+
+  // Present known artwork while fetching publication/commercial details; never invent a record.
+  if (loading && artwork) return <article className="hamd-aie-commodity-detail" aria-labelledby="aie-commodity-loading-title">
+    <Container>
+      <header className="hamd-aie-commodity-detail__hero-block">
+        <div className="hamd-aie-commodity-detail__hero-copy">
+          <h1 id="aie-commodity-loading-title" className="hamd-aie-commodity-detail__title">{artwork.name}</h1>
+          <p role="status">Loading commodity details…</p>
+        </div>
+        <div className="hamd-aie-commodity-detail__hero-media">
+          <IeCommodityImage className="hamd-aie-commodity-detail__hero" slug={artwork.slug} src={artwork.src} alt={artwork.alt} loading="eager" hero />
+        </div>
+      </header>
+    </Container>
+  </article>;
 
   if (!commodity) {
     return (
