@@ -7,7 +7,7 @@ import { REPRESENTATIVE_MEDIA_CAPTION } from "../../content/media-assets.js";
 import type { IeCommodity } from "../commodities/index.js";
 import { IeCommodityImage } from "../IeCommodityImage.js";
 import { IeCommodityMediaPlaceholder } from "../IeCommodityMediaPlaceholder.js";
-import { IE_CTA, IE_PATHS } from "../ie-paths.js";
+import { IE_PATHS } from "../ie-paths.js";
 
 type IeCommodityDetailViewProps = {
   commodity: IeCommodity;
@@ -188,7 +188,7 @@ export function IeCommodityDetailView({ commodity }: IeCommodityDetailViewProps)
             variant="primary"
             className="hamd-aie-portal__cta"
           >
-            {IE_CTA.label}
+            Request Export Supply
           </ButtonLink>
           <Link className="hamd-btn hamd-btn--secondary" to={IE_PATHS.commodities}>
             All Commodities

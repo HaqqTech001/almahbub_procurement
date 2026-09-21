@@ -1,3 +1,5 @@
+import { userFacingError, validateDocumentFiles, DOCUMENT_UPLOAD_MAX_BYTES } from "@hamd/ui/auth";
+import { sessionFetch } from "../auth/session/session-http.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   EnterpriseChat,
@@ -82,9 +84,10 @@ async function uploadOpsFiles(
   files: File[],
 ): Promise<ChatAttachment[]> {
   if (!files.length) return [];
+  validateDocumentFiles(files);
   const form = new FormData();
-  for (const file of files.slice(0, 5)) form.append("files", file, file.name);
-  const response = await fetch(opsApiUrl("/documents"), {
+  for (const file of files) form.append("files", file, file.name);
+  const response = await sessionFetch(opsApiUrl("/documents"), {
     method: "POST",
     headers: {
       Accept: "application/json",
@@ -98,7 +101,7 @@ async function uploadOpsFiles(
     error?: { message?: string };
   };
   if (!response.ok) {
-    throw new Error(payload.error?.message ?? "Unable to upload files.");
+    throw new Error(userFacingError({ ...payload, status: response.status }, "We couldn't upload this file. Please try again.", DOCUMENT_UPLOAD_MAX_BYTES));
   }
   return (payload.data ?? []).map((document) => ({
     id: document.id,
@@ -153,7 +156,7 @@ async function hydrateChatAttachments(
         };
       }
       try {
-        const response = await fetch(documentFetchUrl(href, documentId), {
+        const response = await sessionFetch(documentFetchUrl(href, documentId), {
           headers: { Authorization: `Bearer ${accessToken}` },
           credentials: "include",
         });
@@ -178,6 +181,7 @@ async function hydrateChatAttachments(
  */
 export function SupportPage() {
   const auth = useAuth();
+  const uploadedFiles = useRef(new WeakMap<File, ChatAttachment>());
   const currentUserId = auth.user?.id ?? "ops";
   const [threads, setThreads] = useState<ThreadSummary[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -270,7 +274,10 @@ export function SupportPage() {
     const files = draft.attachments
       .map((attachment) => attachment.file)
       .filter((file): file is File => Boolean(file));
-    const uploaded = await uploadOpsFiles(token, files);
+    const missing = files.filter(file => !uploadedFiles.current.has(file));
+    const fresh = await uploadOpsFiles(token, missing);
+    fresh.forEach((document, index) => uploadedFiles.current.set(missing[index]!, document));
+    const uploaded = files.map(file => uploadedFiles.current.get(file)!);
     const leftover = draft.attachments.filter((attachment) => !attachment.file);
     const body = encodeChatMessageBody(draft.body.trim(), [
       ...uploaded,
@@ -282,8 +289,8 @@ export function SupportPage() {
       accessToken: token,
       body: { threadId: roomId, body },
     });
-    await openThread(roomId);
-    await refreshThreads();
+    await openThread(roomId).catch(() => {});
+    await refreshThreads().catch(() => {});
   };
 
   const onOpenAttachment = async (attachment: ChatAttachment) => {

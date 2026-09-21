@@ -1,0 +1,22 @@
+{
+  "mode": "intercepted API fixtures, no production writes",
+  "passed": [
+    "Sign in returns to exact internal path/query/hash",
+    "Reload restores session through refresh",
+    "Expired access token: one refresh, one accepted upload, one message, no redirect",
+    "Image and document uploads carry current bearer and browser multipart boundary",
+    "Unsupported file rejected locally with friendly message",
+    "True expiry redirects, preserves draft and exact route, never replays message after login",
+    "Disabled wedding has no trigger/modal or modal-only media requests",
+    "Persisted enable restores trigger/modal; disable removes both on next poll",
+    "Hero 390px light: image loaded, no horizontal overflow, reduced motion disabled, no visible em dash",
+    "Hero 390px dark: image loaded, no horizontal overflow, reduced motion disabled, no visible em dash",
+    "Hero 1440px light: image loaded, no horizontal overflow, reduced motion disabled, no visible em dash",
+    "Hero 1440px dark: image loaded, no horizontal overflow, reduced motion disabled, no visible em dash"
+  ],
+  "uploads": 2,
+  "uploadAttempts": 3,
+  "messages": 2,
+  "refreshes": 8,
+  "pageErrors": []
+}

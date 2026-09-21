@@ -347,10 +347,12 @@ export function WeddingCampaignPage() {
               <span>
                 <input
                   type="checkbox"
+                  role="switch"
+                  aria-label="Enable wedding experience"
                   checked={campaign.modalEnabled}
                   onChange={(e) => setCampaign({ ...campaign, modalEnabled: e.target.checked })}
                 />{" "}
-                Wedding promotion: {campaign.modalEnabled ? "Enabled" : "Disabled"}
+                Wedding experience: {campaign.modalEnabled ? "Enabled" : "Disabled"}
                 <small> Controls the public wedding invitation and floating wedding entry. Save invitation to apply.</small>
               </span>
             </label>

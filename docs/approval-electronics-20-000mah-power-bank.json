@@ -1,0 +1,11 @@
+{
+  "productId": "01a0b3b6-5d73-7228-9d64-44b306fb99b8",
+  "productSlug": "electronics-20-000mah-power-bank",
+  "productName": "20,000mAh Power Bank",
+  "execute": false,
+  "eligibleForPublicApproval": false,
+  "blockingReasons": [
+    "durable_storage_required"
+  ],
+  "status": "blocked"
+}

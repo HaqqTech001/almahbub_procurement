@@ -1,3 +1,5 @@
+import { userFacingError, validateDocumentFiles, DOCUMENT_UPLOAD_MAX_BYTES } from "@hamd/ui/auth";
+import { safeErrorMessage } from "@hamd/ui/auth";
 import type {
   ProcurementCommand,
   ProcurementDraftPatch,
@@ -135,7 +137,7 @@ export class ProcurementApiError extends Error {
   readonly details: Array<{ field?: string; message?: string }>;
 
   constructor(message: string, status: number, code: string, details: Array<{ field?: string; message?: string }> = []) {
-    super(message);
+    super(safeErrorMessage(message, status));
     this.name = "ProcurementApiError";
     this.status = status;
     this.code = code;
@@ -374,8 +376,9 @@ export async function uploadProcurementFiles(
   accessToken: string,
   files: File[],
 ): Promise<UploadedDocument[]> {
-  const validFiles = sanitizeUploadFiles(files).slice(0, 5);
+  const validFiles = sanitizeUploadFiles(files);
   if (validFiles.length === 0) return [];
+  validateDocumentFiles(validFiles);
   const form = new FormData();
   for (const file of validFiles) {
     form.append("files", file, file.name);
@@ -396,9 +399,7 @@ export async function uploadProcurementFiles(
       message?: string;
     } | null;
     throw new ProcurementApiError(
-      envelope?.error?.message ??
-        envelope?.message ??
-        "Unable to upload attachments.",
+      userFacingError({ ...body as object, status: response.status }, "We couldn't upload this file. Please try again.", DOCUMENT_UPLOAD_MAX_BYTES),
       response.status,
       envelope?.error?.code ?? "UPLOAD_ERROR",
     );

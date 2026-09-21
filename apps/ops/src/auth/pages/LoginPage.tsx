@@ -1,6 +1,6 @@
 import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { LoginScreen, safeInternalPath, type LoginFormValues } from "@hamd/ui/auth";
+import { LoginScreen, useRequestCooldown, safeInternalPath, type LoginFormValues } from "@hamd/ui/auth";
 import { ThemeToggle } from "../../components/ThemeToggle.js";
 import { AuthApiError, formatAuthError } from "../api/auth-errors.js";
 import { AuthBoot } from "../guards/RequireAuth.js";
@@ -8,6 +8,7 @@ import { useAuth } from "../session/AuthProvider.js";
 
 export function LoginPage() {
   const auth = useAuth();
+  const cooldown = useRequestCooldown();
   const navigate = useNavigate();
   const location = useLocation();
   const [params] = useSearchParams();
@@ -25,7 +26,8 @@ export function LoginPage() {
 
   useEffect(() => {
     const oauthError = params.get("oauthError");
-    if (oauthError) setError(oauthError);
+    if (oauthError) setError("Google sign-in could not be completed. Please try again.");
+    else if (params.get("reason") === "session-expired") setError("Your session has expired. Sign in again to continue.");
   }, [params]);
 
   if (auth.bootstrapping) {
@@ -46,6 +48,11 @@ export function LoginPage() {
       await auth.login(values);
       navigate(returnTo, { replace: true });
     } catch (err) {
+      if (err instanceof AuthApiError && err.isRateLimited) {
+        cooldown.start(err.retryAfterSeconds);
+        if (!err.retryAfterSeconds) setError(formatAuthError(err, "Sign-in requests are temporarily limited."));
+        return;
+      }
       if (err instanceof AuthApiError && err.isLocked) {
         navigate("/account-locked", { replace: true });
         return;
@@ -76,6 +83,7 @@ export function LoginPage() {
         registerHref={null}
         {...(initialEmail ? { initialEmail } : {})}
         errorMessage={error}
+      requestCooldownMessage={cooldown.message}
         successMessage={
           verified
             ? "Email verified. Sign in to continue."

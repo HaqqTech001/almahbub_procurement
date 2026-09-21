@@ -48,7 +48,7 @@ export function RequireAuth({ children }: { children: ReactNode }) {
     const returnTo = `${location.pathname}${location.search}${location.hash}`;
     return (
       <Navigate
-        to={`/login?returnTo=${encodeURIComponent(returnTo)}`}
+        to={`/login?returnTo=${encodeURIComponent(returnTo)}${status === "expired" ? "&reason=session-expired" : ""}`}
         replace
         state={{ from: location }}
       />

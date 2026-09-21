@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { GiftIcon } from "../components/GiftIcon.js";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { WeddingMonogram } from "../components/WeddingMonogram.js";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CelebrationExperienceModal } from "@hamd/ui/marketing";
 
 import {
@@ -111,6 +111,7 @@ export function CelebrationHost() {
   const navigate = useNavigate();
   const [campaign, setCampaign] = useState<WeddingCampaignRecord>({ ...DEFAULT_WEDDING_CAMPAIGN, modalEnabled: false });
   const [open, setOpen] = useState(false);
+  const manuallyOpenedCampaign = useRef<string | null>(null);
   const campaignRef = useRef<WeddingCampaignRecord>({ ...DEFAULT_WEDDING_CAMPAIGN, modalEnabled: false });
   const pathRef = useRef(location.pathname);
   pathRef.current = location.pathname;
@@ -158,6 +159,15 @@ export function CelebrationHost() {
     refresh();
     const interval = window.setInterval(refresh, 10_000);
 
+    return () => { cancelled = true; clearInterval(interval); };
+  }, []);
+
+  useEffect(() => {
+    if (!campaign.modalEnabled || !isPublicCampaignRoute(location.pathname)) {
+      resetCelebrationHostTimerForTests();
+      setOpen(false);
+      return;
+    }
     const releaseTimer = ensurePublicModalTimer(() => {
       const row = resolveCampaign(campaignRef.current);
       const reason = suppressionReason(pathRef.current, row);
@@ -171,9 +181,8 @@ export function CelebrationHost() {
       if (reason) return;
       setOpen(true);
     });
-
-    return () => { cancelled = true; clearInterval(interval); releaseTimer(); };
-  }, []);
+    return releaseTimer;
+  }, [campaign.modalEnabled, location.pathname]);
 
   useEffect(() => {
     if (!isPublicCampaignRoute(location.pathname)) {
@@ -183,7 +192,7 @@ export function CelebrationHost() {
 
   useEffect(() => {
     if (!open) return;
-    if (readDismissed(campaign.id)) {
+    if (readDismissed(campaign.id) && manuallyOpenedCampaign.current !== campaign.id) {
       debugWedding({ lateClose: "session-dismissed", campaignId: campaign.id });
       setOpen(false);
     }
@@ -192,14 +201,15 @@ export function CelebrationHost() {
   return (
     <>
     {!open && campaign.modalEnabled === true && isPublicCampaignRoute(location.pathname) ? (
-      <Link className="hamd-wedding-reentry" title="Return to Rowdotul HAMD'26" aria-label="Return to Rowdotul HAMD'26" to={campaign.sitePath}>
-        <GiftIcon /><span className="hamd-wedding-reentry__text">Rowdotul HAMD'26</span>
-      </Link>
+      <button type="button" className="hamd-wedding-reentry hamd-wedding-reentry--monogram" title="Open Rowdotul HAMD'26 invitation" aria-label="Open Rowdotul HAMD'26 invitation" onClick={() => { manuallyOpenedCampaign.current = campaign.id; setOpen(true); }}>
+        <WeddingMonogram /><span className="hamd-wedding-reentry__caption">Rowdotul HAMD'26</span>
+      </button>
     ) : null}
-    <CelebrationExperienceModal
+    {campaign.modalEnabled && open && isPublicCampaignRoute(location.pathname) ? <CelebrationExperienceModal
       open={open && campaign.modalEnabled === true && isPublicCampaignRoute(location.pathname)}
       campaign={campaign}
       onNavigate={(href) => {
+        manuallyOpenedCampaign.current = null;
         writeDismissed(campaign.id);
         setOpen(false);
         const live = href.includes("/live");
@@ -210,10 +220,11 @@ export function CelebrationHost() {
         navigate(href);
       }}
       onDismiss={() => {
+        manuallyOpenedCampaign.current = null;
         writeDismissed(campaign.id);
         setOpen(false);
       }}
-    />
+    /> : null}
     </>
   );
 }

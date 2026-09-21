@@ -1,3 +1,5 @@
+import { safeErrorMessage } from "@hamd/ui/auth";
+import { sessionFetch } from "../auth/session/session-http.js";
 import { readResponseBody, toCancelledRequestError, unwrapEnvelopeData, fetchWithTransientRetry } from "@hamd/ui/auth";
 
 import { browserApiBase } from "../lib/api-origin.js";
@@ -18,7 +20,7 @@ function apiUrl(path: string): string {
 export class ParityApiError extends Error {
   readonly status: number;
   constructor(message: string, status: number) {
-    super(message);
+    super(safeErrorMessage(message, status));
     this.name = "ParityApiError";
     this.status = status;
   }
@@ -38,7 +40,7 @@ async function parityFetch<T>(
 
   let response: Response;
   try {
-    response = await fetchWithTransientRetry(apiUrl(path), {
+    response = await (options.accessToken ? sessionFetch : fetchWithTransientRetry)(apiUrl(path), {
       method: options.method ?? (options.body !== undefined ? "POST" : "GET"),
       headers,
       body: options.body !== undefined ? JSON.stringify(options.body) : undefined,

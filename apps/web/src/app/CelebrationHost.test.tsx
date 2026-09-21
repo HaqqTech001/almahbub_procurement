@@ -39,10 +39,10 @@ describe("CelebrationHost", () => {
   it("removes the dismissed re-entry link when Ops disables promotion", async () => {
     sessionStorage.setItem(weddingModalDismissKey(DEFAULT_WEDDING_CAMPAIGN.id), "1");
     render(<HostApp />);
-    expect(await screen.findByRole("link", { name: /Rowdotul HAMD/ })).toBeTruthy();
+    expect(await screen.findByRole("button", { name: /Rowdotul HAMD/ })).toBeTruthy();
     fetchWeddingCampaign.mockResolvedValue({ ...DEFAULT_WEDDING_CAMPAIGN, modalEnabled: false });
     vi.advanceTimersByTime(10_100);
-    await waitFor(() => expect(screen.queryByRole("link", { name: /Rowdotul HAMD/ })).toBeNull());
+    await waitFor(() => expect(screen.queryByRole("button", { name: /Rowdotul HAMD/ })).toBeNull());
     expect(screen.queryByRole("dialog")).toBeNull();
   });
   beforeEach(() => {
@@ -64,9 +64,11 @@ describe("CelebrationHost", () => {
   it("does not show on first paint, then appears after the public delay", async () => {
     render(<HostApp />);
     expect(screen.queryByRole("dialog")).toBeNull();
-    vi.advanceTimersByTime(WEDDING_MODAL_PUBLIC_DELAY_MS - 50);
+    await screen.findByRole("button", { name: /Open Rowdotul/ });
+    await act(async () => {});
+    await act(async () => { vi.advanceTimersByTime(WEDDING_MODAL_PUBLIC_DELAY_MS - 50); });
     expect(screen.queryByRole("dialog")).toBeNull();
-    vi.advanceTimersByTime(100);
+    await act(async () => { vi.advanceTimersByTime(100); });
     expect(await screen.findByRole("dialog")).toBeTruthy();
     expect(screen.getByText("Rowdotul HAMD'26")).toBeTruthy();
     expect(screen.getByRole("button", { name: "View Wedding" })).toBeTruthy();
@@ -91,7 +93,9 @@ describe("CelebrationHost", () => {
   it("stays dismissed for the browsing session including later login", async () => {
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<HostApp />);
-    vi.advanceTimersByTime(WEDDING_MODAL_PUBLIC_DELAY_MS + 50);
+    await screen.findByRole("button", { name: /Open Rowdotul/ });
+    await act(async () => {});
+    await act(async () => { vi.advanceTimersByTime(WEDDING_MODAL_PUBLIC_DELAY_MS + 50); });
     expect(await screen.findByRole("dialog")).toBeTruthy();
     await user.click(screen.getByRole("button", { name: "Close invitation" }));
     await waitFor(() => {
@@ -100,8 +104,15 @@ describe("CelebrationHost", () => {
     expect(sessionStorage.getItem(weddingModalDismissKey(DEFAULT_WEDDING_CAMPAIGN.id))).toBe(
       "1",
     );
-    expect(screen.getByRole("link", { name: /Rowdotul HAMD/ })).toHaveAttribute("href", DEFAULT_WEDDING_CAMPAIGN.sitePath);
-    expect(screen.getByRole("link", { name: /Rowdotul HAMD/ }).querySelector('svg[data-icon="gift"]')).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Rowdotul HAMD/ }).querySelector("svg")).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: /Rowdotul HAMD/ }));
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+    await act(async () => { vi.advanceTimersByTime(11000); });
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(sessionStorage.getItem(weddingModalDismissKey(DEFAULT_WEDDING_CAMPAIGN.id))).toBe("1");
+    await user.click(screen.getByRole("button", { name: "Close invitation" }));
+    await act(async () => { vi.advanceTimersByTime(11000); });
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 
   it("does not show when the campaign window has expired", async () => {
@@ -122,22 +133,24 @@ describe("CelebrationHost", () => {
     const {unmount}=render(<HostApp />);
     await act(async () => { vi.advanceTimersByTime(11000); });
     expect(screen.queryByRole("dialog")).toBeNull();
-    expect(screen.queryByRole("link", {name:/Return to Rowdotul/})).toBeNull();
+    expect(screen.queryByRole("button", {name:/Open Rowdotul/})).toBeNull();
     unmount(); resetCelebrationHostTimerForTests();
     fetchWeddingCampaign.mockResolvedValue({...DEFAULT_WEDDING_CAMPAIGN,modalEnabled:false});
     render(<HostApp />);
     await act(async () => { vi.advanceTimersByTime(11000); });
     expect(screen.queryByRole("dialog")).toBeNull();
-    expect(screen.queryByRole("link", {name:/Return to Rowdotul/})).toBeNull();
+    expect(screen.queryByRole("button", {name:/Open Rowdotul/})).toBeNull();
     fetchWeddingCampaign.mockResolvedValue({...DEFAULT_WEDDING_CAMPAIGN,modalEnabled:true});
     await act(async () => { vi.advanceTimersByTime(11000); });
+    expect(screen.queryByRole("dialog")).toBeNull();
+    await act(async () => { vi.advanceTimersByTime(WEDDING_MODAL_PUBLIC_DELAY_MS + 50); });
     expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
   it("does not promote inside the wedding experience", async () => {
     render(<HostApp initialPath="/rowdotul-hamd-26/live" />);
     await act(async () => { vi.advanceTimersByTime(11000); });
     expect(screen.queryByRole("dialog")).toBeNull();
-    expect(screen.queryByRole("link", {name:/Return to Rowdotul/})).toBeNull();
+    expect(screen.queryByRole("button", {name:/Open Rowdotul/})).toBeNull();
   });
 
 });

@@ -1,3 +1,4 @@
+import { safeErrorMessage } from "@hamd/ui/auth";
 /** Auth API error codes mapped from the enterprise API envelope. */
 
 export class AuthApiError extends Error {
@@ -73,16 +74,16 @@ export function formatAuthError(error: unknown, fallback: string): string {
     if (error.isRateLimited) {
       const wait = error.retryAfterSeconds;
       if (wait && wait > 0) {
-        return `Too many attempts. Try again in ${wait} seconds.`;
+        return `Requests from this network are temporarily limited. Try again in ${wait} seconds.`;
       }
-      return error.message || "Too many attempts. Wait briefly and try again.";
+      return "Requests from this network are temporarily limited. Wait briefly and try again. This is not an account lock.";
     }
     if (error.code === "NETWORK_ERROR") {
       return "Unable to reach the authentication service.";
     }
-    return error.message || fallback;
+    return safeErrorMessage(error.message || fallback);
   }
-  if (error instanceof Error && error.message) return error.message;
+  if (error instanceof Error && error.message) return safeErrorMessage(error.message);
   return fallback;
 }
 

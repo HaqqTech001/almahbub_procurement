@@ -1,0 +1,11 @@
+{
+  "productId": "01a0b3b6-6d73-7469-99d8-aa289f1d647c",
+  "productSlug": "electronics-wireless-earbuds",
+  "productName": "Wireless Earbuds",
+  "execute": false,
+  "eligibleForPublicApproval": false,
+  "blockingReasons": [
+    "durable_storage_required"
+  ],
+  "status": "blocked"
+}

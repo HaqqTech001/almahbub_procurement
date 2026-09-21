@@ -1,3 +1,5 @@
+import { reviewed, fixtureHash } from "./publication-fixtures.js";
+import { type ReviewProduct } from "../application/product-publication-review.js";
 import { describe, expect, it, vi } from "vitest";
 
 import { AppError } from "../../../lib/app-error.js";
@@ -34,13 +36,20 @@ function createDatabase(overrides: {
     findFirst: vi.fn().mockResolvedValue(overrides.publishedCategory ?? null),
   };
   return {
-    database: { product, productCategory } as unknown as DatabaseClient,
+    database: {
+      product,
+      productCategory,
+      productVariant: { findMany: vi.fn().mockResolvedValue([]) },
+      productImage: { findMany: vi.fn().mockResolvedValue([]) },
+    } as unknown as DatabaseClient,
     product,
     productCategory,
   };
 }
 
 const publishedPhone = {
+  id: "phone",
+  status: "published",
   slug: "iphone-15-pro",
   name: "iPhone 15 Pro",
   description: "Latest iPhone models for institutional procurement.",
@@ -53,6 +62,7 @@ const publishedPhone = {
   manufacturer: { legalName: "Apple Inc." },
   images: [
     {
+      id: "image",
       url: "https://cdn.example/iphone.jpg",
       altText: "iPhone 15 Pro",
       position: 0,
@@ -62,14 +72,28 @@ const publishedPhone = {
 };
 
 describe("catalog service", () => {
+  it("loads persisted approvals for public listings without a process restart", async () => {
+    const { database } = createDatabase({ products: [publishedPhone] });
+    const service = new CatalogService(database, async () => "valid", undefined, fixtureHash);
+    const query = publicProductListQuerySchema.parse({});
+    expect((await service.listProducts(query)).data).toHaveLength(0);
+    vi.mocked(database.productVariant.findMany).mockResolvedValueOnce([
+      { id: "variant", productId: publishedPhone.id, specifications: { publicationReview: reviewed(publishedPhone) } },
+    ] as never);
+    expect((await service.listProducts(query)).data.map((row) => row.slug)).toEqual([publishedPhone.slug]);
+  });
+
   it("returns published products and always queries status=published", async () => {
     const { database, product } = createDatabase({
       products: [publishedPhone],
       productCount: 1,
     });
-    const result = await new CatalogService(database, async () => "valid").listProducts(
-      publicProductListQuerySchema.parse({}),
-    );
+    const result = await new CatalogService(
+      database,
+      async () => "valid",
+      [reviewed(publishedPhone)],
+      fixtureHash,
+    ).listProducts(publicProductListQuerySchema.parse({}));
 
     expect(product.findMany.mock.calls[0]?.[0]?.where.status).toBe("published");
     expect(result.data).toHaveLength(1);
@@ -83,10 +107,16 @@ describe("catalog service", () => {
   });
 
   it("excludes unpublished products from the public query", async () => {
-    const { database, product } = createDatabase({ products: [], productCount: 0 });
-    await new CatalogService(database, async () => "valid").listProducts(
-      publicProductListQuerySchema.parse({}),
-    );
+    const { database, product } = createDatabase({
+      products: [],
+      productCount: 0,
+    });
+    await new CatalogService(
+      database,
+      async () => "valid",
+      [reviewed(publishedPhone)],
+      fixtureHash,
+    ).listProducts(publicProductListQuerySchema.parse({}));
 
     const where = product.findMany.mock.calls[0]?.[0]?.where as {
       status: string;
@@ -101,7 +131,12 @@ describe("catalog service", () => {
       products: [publishedPhone],
       productCount: 1,
     });
-    await new CatalogService(database, async () => "valid").listProducts(
+    await new CatalogService(
+      database,
+      async () => "valid",
+      [reviewed(publishedPhone)],
+      fixtureHash,
+    ).listProducts(
       publicProductListQuerySchema.parse({ category: "iphones-gadgets" }),
     );
 
@@ -117,7 +152,12 @@ describe("catalog service", () => {
 
   it("returns 404 for an unknown or unpublished category slug", async () => {
     const { database } = createDatabase({ publishedCategory: null });
-    const error = await new CatalogService(database, async () => "valid")
+    const error = await new CatalogService(
+      database,
+      async () => "valid",
+      [reviewed(publishedPhone)],
+      fixtureHash,
+    )
       .listProducts(
         publicProductListQuerySchema.parse({ category: "does-not-exist" }),
       )
@@ -128,10 +168,16 @@ describe("catalog service", () => {
   });
 
   it("searches name, description, and category name", async () => {
-    const { database, product } = createDatabase({ products: [], productCount: 0 });
-    await new CatalogService(database, async () => "valid").listProducts(
-      publicProductListQuerySchema.parse({ q: "hospital" }),
-    );
+    const { database, product } = createDatabase({
+      products: [],
+      productCount: 0,
+    });
+    await new CatalogService(
+      database,
+      async () => "valid",
+      [reviewed(publishedPhone)],
+      fixtureHash,
+    ).listProducts(publicProductListQuerySchema.parse({ q: "hospital" }));
 
     expect(product.findMany.mock.calls[0]?.[0]?.where.OR).toEqual([
       { name: { contains: "hospital", mode: "insensitive" } },
@@ -142,11 +188,49 @@ describe("catalog service", () => {
 
   it("filters media before pagination and calculates eligible totals", async () => {
     const { database, product } = createDatabase({
-      products: Array.from({ length: 25 }, (_, index) => ({ ...publishedPhone, slug: `phone-${index}` })),
+      products: Array.from({ length: 25 }, (_, index) => ({
+        ...publishedPhone,
+        id: `phone-${index}`,
+        slug: `phone-${index}`,
+        name: `iPhone fixture model ${index}`,
+        images: [
+          {
+            id: `image-${index}`,
+            url: `/phone-${index}.png`,
+            position: 0,
+            altText: "phone",
+          },
+        ],
+      })),
       productCount: 25,
     });
-    const result = await new CatalogService(database, async () => "valid").listProducts(
-      publicProductListQuerySchema.parse({ page: 2, pageSize: 12, sort: "newest" }),
+    const approvals = Array.from({ length: 25 }, (_, index) =>
+      reviewed({
+        ...publishedPhone,
+        id: `phone-${index}`,
+        slug: `phone-${index}`,
+        name: `iPhone fixture model ${index}`,
+        images: [
+          {
+            id: `image-${index}`,
+            url: `/phone-${index}.png`,
+            position: 0,
+            altText: "phone",
+          },
+        ],
+      } as ReviewProduct),
+    );
+    const result = await new CatalogService(
+      database,
+      async () => "valid",
+      approvals,
+      fixtureHash,
+    ).listProducts(
+      publicProductListQuerySchema.parse({
+        page: 2,
+        pageSize: 12,
+        sort: "newest",
+      }),
     );
 
     expect(product.findMany.mock.calls[1]?.[0]).toMatchObject({
@@ -166,9 +250,12 @@ describe("catalog service", () => {
       products: [publishedPhone],
       productCount: 1,
     });
-    await new CatalogService(database, async () => "valid").listProducts(
-      publicProductListQuerySchema.parse({}),
-    );
+    await new CatalogService(
+      database,
+      async () => "valid",
+      [reviewed(publishedPhone)],
+      fixtureHash,
+    ).listProducts(publicProductListQuerySchema.parse({}));
     expect(product.findMany.mock.calls[1]?.[0]?.include.images.take).toBe(3);
     expect(product.findMany.mock.calls[1]?.[0]?.include.videos.take).toBe(1);
   });
@@ -178,7 +265,12 @@ describe("catalog service", () => {
     const missing = createDatabase({ productDetail: null });
 
     await expect(
-      new CatalogService(found.database).getProduct("iphone-15-pro"),
+      new CatalogService(
+        found.database,
+        async () => "valid",
+        [reviewed(publishedPhone)],
+        fixtureHash,
+      ).getProduct("iphone-15-pro"),
     ).resolves.toMatchObject({ slug: "iphone-15-pro" });
     expect(found.product.findFirst).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -194,9 +286,12 @@ describe("catalog service", () => {
 
   it("returns an empty catalogue without inventing rows", async () => {
     const { database } = createDatabase({ products: [], productCount: 0 });
-    const result = await new CatalogService(database, async () => "valid").listProducts(
-      publicProductListQuerySchema.parse({}),
-    );
+    const result = await new CatalogService(
+      database,
+      async () => "valid",
+      [reviewed(publishedPhone)],
+      fixtureHash,
+    ).listProducts(publicProductListQuerySchema.parse({}));
     expect(result.data).toEqual([]);
     expect(result.page.total).toBe(0);
     expect(result.page.hasMore).toBe(false);
@@ -268,9 +363,9 @@ describe("catalog service", () => {
         },
       ],
     });
-    expect(mapped.variants[0] && Object.keys(mapped.variants[0]).sort()).toEqual(
-      [...PUBLIC_VARIANT_KEYS].sort(),
-    );
+    expect(
+      mapped.variants[0] && Object.keys(mapped.variants[0]).sort(),
+    ).toEqual([...PUBLIC_VARIANT_KEYS].sort());
     expect(mapped.variants[0]).toEqual({
       name: "Standard sourcing",
       unit: "unit",
@@ -304,7 +399,12 @@ describe("catalog service", () => {
       categories: [{ slug: "machineries", name: "Machineries" }],
       categoryCount: 1,
     });
-    const result = await new CatalogService(database, async () => "valid").listCategories({
+    const result = await new CatalogService(
+      database,
+      async () => "valid",
+      [reviewed(publishedPhone)],
+      fixtureHash,
+    ).listCategories({
       page: 1,
       pageSize: 12,
     });
@@ -313,7 +413,14 @@ describe("catalog service", () => {
       "published",
     );
     expect(result.data).toEqual([
-      { slug: "machineries", name: "Machineries", imageUrl: null, imageAlt: null },
+      {
+        id: undefined,
+        description: null,
+        slug: "machineries",
+        name: "Machineries",
+        imageUrl: null,
+        imageAlt: null,
+      },
     ]);
   });
 });

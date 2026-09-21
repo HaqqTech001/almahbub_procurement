@@ -1,3 +1,5 @@
+import { userFacingError } from "@hamd/ui/auth";
+import { safeErrorMessage } from "@hamd/ui/auth";
 import { readResponseBody, toCancelledRequestError, unwrapEnvelopeData } from "@hamd/ui/auth";
 
 import { sessionFetch } from "../auth/session/session-http.js";
@@ -8,7 +10,7 @@ export class OpsApiError extends Error {
   readonly code: string;
 
   constructor(message: string, status: number, code: string) {
-    super(message);
+    super(safeErrorMessage(message, status));
     this.name = "OpsApiError";
     this.status = status;
     this.code = code;
@@ -99,7 +101,7 @@ function throwIfFailed(status: number, body: unknown): void {
     message?: string;
   } | null;
   throw new OpsApiError(
-    envelope?.error?.message ?? envelope?.message ?? "Request failed.",
+    userFacingError({ ...body as object, status }),
     status,
     envelope?.error?.code ?? "OPS_ERROR",
   );

@@ -1,3 +1,4 @@
+import { AUTH_SESSION_MAX_SECONDS } from "../../config/auth-session-policy.js";
 import { TextEncoder } from "node:util";
 
 import { jwtVerify } from "jose";
@@ -29,15 +30,8 @@ export function createAuthenticate(
       request.auth = context;
       next();
     } catch (error) {
-      next(
-        error instanceof AppError
-          ? error
-          : new AppError({
-              statusCode: 401,
-              code: "UNAUTHENTICATED",
-              message: "Authentication is required.",
-            }),
-      );
+      // Database/transport failures are not evidence of an expired credential.
+      next(error);
     }
   };
 }
@@ -92,7 +86,7 @@ export async function verifyAccessToken(
       issuer: environment.JWT_ISSUER,
       audience: environment.JWT_AUDIENCE,
     },
-  );
+  ).catch(() => { throw new AppError({ statusCode: 401, code: "UNAUTHENTICATED", message: "Authentication is required." }); });
   const { sub, org, sid, ver } = verified.payload;
 
   if (
@@ -127,6 +121,7 @@ async function resolveAuthContext(
       userId: claims.sub,
       status: "active",
       expiresAt: { gt: new Date() },
+      createdAt: { gt: new Date(Date.now() - AUTH_SESSION_MAX_SECONDS * 1000) },
       user: { status: "active", tokenVersion: claims.ver },
     },
     select: { id: true },

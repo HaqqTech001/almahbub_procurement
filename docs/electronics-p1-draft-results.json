@@ -1,0 +1,117 @@
+{
+  "checkedAt": "2026-09-18T08:51:15.244Z",
+  "execute": true,
+  "storageDriver": "local",
+  "generationProviderConfigured": true,
+  "selected": 12,
+  "results": [
+    {
+      "proposedName": "Apple iPhone 17",
+      "productId": "01a0b3b6-0a68-7518-bc7d-8ab656961d62",
+      "name": "Apple iPhone 17",
+      "slug": "electronics-apple-iphone-17",
+      "status": "draft_created",
+      "publicationStatus": "draft",
+      "mediaStrategy": "current_product_research"
+    },
+    {
+      "proposedName": "Apple iPhone 18 Pro",
+      "productId": "01a0b3b6-182b-767f-8c5b-526a4f9924b0",
+      "name": "Apple iPhone 18 Pro",
+      "slug": "electronics-apple-iphone-18-pro",
+      "status": "draft_created",
+      "publicationStatus": "draft",
+      "mediaStrategy": "current_product_research"
+    },
+    {
+      "proposedName": "Apple iPad Air family",
+      "productId": "01a0b3b6-23c9-750c-bd2c-1804c853f113",
+      "name": "Apple iPad Air 11-inch (M4)",
+      "slug": "electronics-apple-ipad-air-11-inch-m4",
+      "status": "draft_created",
+      "publicationStatus": "draft",
+      "mediaStrategy": "current_product_research"
+    },
+    {
+      "proposedName": "Apple AirPods family",
+      "productId": "01a0b3b6-2c3f-7433-8d23-d7940537b397",
+      "name": "Apple AirPods 5",
+      "slug": "electronics-apple-airpods-5",
+      "status": "draft_created",
+      "publicationStatus": "draft",
+      "mediaStrategy": "current_product_research"
+    },
+    {
+      "proposedName": "Samsung Galaxy S26 Ultra",
+      "productId": "01a0b3b6-3878-760c-8229-092a07ff7df4",
+      "name": "Samsung Galaxy S26 Ultra",
+      "slug": "electronics-samsung-galaxy-s26-ultra",
+      "status": "draft_created",
+      "publicationStatus": "draft",
+      "mediaStrategy": "current_product_research"
+    },
+    {
+      "proposedName": "Samsung Galaxy Z Fold8",
+      "productId": "01a0b3b6-4491-754f-a6f0-79a23bae9f1f",
+      "name": "Samsung Galaxy Z Fold8",
+      "slug": "electronics-samsung-galaxy-z-fold8",
+      "status": "draft_created",
+      "publicationStatus": "draft",
+      "mediaStrategy": "current_product_research"
+    },
+    {
+      "proposedName": "Samsung Galaxy Tab S11",
+      "productId": "01a0b3b6-4e3f-721c-bcd6-5151d54ed54e",
+      "name": "Samsung Galaxy Tab S11",
+      "slug": "electronics-samsung-galaxy-tab-s11",
+      "status": "draft_created",
+      "publicationStatus": "draft",
+      "mediaStrategy": "current_product_research"
+    },
+    {
+      "proposedName": "Samsung Galaxy Watch family",
+      "productId": "01a0b3b6-5640-7051-9a86-ada4eb4c6d6d",
+      "name": "Samsung Galaxy Watch9",
+      "slug": "electronics-samsung-galaxy-watch9",
+      "status": "draft_created",
+      "publicationStatus": "draft",
+      "mediaStrategy": "current_product_research"
+    },
+    {
+      "proposedName": "20,000mAh Power Bank",
+      "productId": "01a0b3b6-5d73-7228-9d64-44b306fb99b8",
+      "name": "20,000mAh Power Bank",
+      "slug": "electronics-20-000mah-power-bank",
+      "status": "draft_created",
+      "publicationStatus": "draft",
+      "mediaStrategy": "generated_generic"
+    },
+    {
+      "proposedName": "USB-C Fast Charger",
+      "productId": "01a0b3b6-6573-72ff-ac66-00c6e24498a5",
+      "name": "USB-C Fast Charger",
+      "slug": "electronics-usb-c-fast-charger",
+      "status": "draft_created",
+      "publicationStatus": "draft",
+      "mediaStrategy": "generated_generic"
+    },
+    {
+      "proposedName": "Wireless Earbuds",
+      "productId": "01a0b3b6-6d73-7469-99d8-aa289f1d647c",
+      "name": "Wireless Earbuds",
+      "slug": "electronics-wireless-earbuds",
+      "status": "draft_created",
+      "publicationStatus": "draft",
+      "mediaStrategy": "generated_generic"
+    },
+    {
+      "proposedName": "Smartphone Gimbal",
+      "productId": "01a0b3b6-74f3-753d-95d5-0ec8614fd364",
+      "name": "Smartphone Gimbal",
+      "slug": "electronics-smartphone-gimbal",
+      "status": "draft_created",
+      "publicationStatus": "draft",
+      "mediaStrategy": "generated_generic"
+    }
+  ]
+}

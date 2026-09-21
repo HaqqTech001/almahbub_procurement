@@ -8,48 +8,6 @@ const environment = {
   REFRESH_TOKEN_TTL_SECONDS: 60 * 60 * 24,
 } as any;
 
-describe("AuthController.googleSignIn", () => {
-  it("issues the normal session cookies from a GIS credential", async () => {
-    const service = {
-      completeGoogleCredentialSignIn: vi.fn().mockResolvedValue({
-        refreshToken: "google-refresh",
-        accessToken: "google-access",
-        expiresIn: 900,
-        rememberMe: false,
-        user: { id: "user-1", email: "buyer@example.com" },
-        organizationId: "org-1",
-      }),
-    } as any;
-
-    const controller = new AuthController(service, environment);
-    const request = {
-      body: { credential: "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIn0.signature" },
-      ip: "127.0.0.1",
-      get: vi.fn(() => "vitest"),
-    } as any;
-    const response = {
-      json: vi.fn(),
-      cookie: vi.fn(),
-      status: vi.fn().mockReturnThis(),
-    } as any;
-
-    await controller.googleSignIn(request, response, vi.fn());
-
-    expect(service.completeGoogleCredentialSignIn).toHaveBeenCalledWith({
-      credential: "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxIn0.signature",
-      otpCode: undefined,
-      email: undefined,
-      ip: "127.0.0.1",
-      userAgent: "vitest",
-    });
-    expect(response.status).toHaveBeenCalledWith(200);
-    expect(response.json).toHaveBeenCalledWith({
-      data: expect.objectContaining({ accessToken: "google-access" }),
-    });
-    expect(response.cookie).toHaveBeenCalled();
-  });
-});
-
 describe("AuthController.refresh", () => {
   it("accepts the CSRF token from the request body when the header is absent", async () => {
     const service = {

@@ -1,5 +1,5 @@
 import { PresentationImage } from "../components/PresentationImage.js";
-import { canonicalIeMedia, presentationSource } from "../content/presentation-media.js";
+
 
 type IeCommodityImageProps = {
   src: string;
@@ -13,17 +13,17 @@ type IeCommodityImageProps = {
 };
 
 /**
- * Canonical covers/gallery roles use curated artwork; unmapped runtime media is retained.
+ * Render the assigned commodity media; never substitute artwork by slug.
  */
 export function IeCommodityImage({
   src,
-  slug,
+
   alt,
   className,
   loading = "lazy",
   hero = false,
   decorative = false,
 }: IeCommodityImageProps) {
-  const fallback = canonicalIeMedia(src, slug);
-  return <PresentationImage src={presentationSource(src, fallback)} fallbackSrc={fallback} alt={alt} className={className} loading={loading} hero={hero} decorative={decorative} />;
+
+  return <PresentationImage src={src} alt={alt} className={className} loading={loading} hero={hero} decorative={decorative} />;
 }

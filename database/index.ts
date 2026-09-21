@@ -44,7 +44,12 @@ export function isStaleConnectionError(error: unknown): boolean {
   if (candidate.meta?.driverAdapterError?.cause?.kind === "ConnectionClosed") {
     return true;
   }
-  return errorText(error).includes("Server has closed the connection");
+  const text = errorText(error);
+  return (
+    text.includes("Server has closed the connection") ||
+    text.includes("Connection terminated unexpectedly") ||
+    text.includes("Connection terminated")
+  );
 }
 
 export function isPoolExhaustedError(error: unknown): boolean {
@@ -85,19 +90,29 @@ export function createDatabaseClient(connectionString: string): PrismaClient {
 
   pool.on("error", (error: Error) => {
     // Prevent unhandled 'error' on idle clients from crashing the process.
-    console.error("[database-pool]", error.message);
+    console.error("[database-pool] idle connection error", {
+      code: (error as Error & { code?: string }).code ?? "UNKNOWN",
+    });
   });
 
   const client = new PrismaClient({
-    adapter: new PrismaPg(pool),
+    adapter: new PrismaPg(pool, { disposeExternalPool: true }),
   });
 
   return client.$extends({
     query: {
-      async $allOperations({ args, query }) {
+      async $allOperations({ args, query, operation }) {
         try {
           return await query(args);
         } catch (error) {
+          // A connection can disappear after a write committed. Never replay
+          // mutations or raw SQL with an unknown outcome.
+          if (
+            !/^(findUnique|findUniqueOrThrow|findFirst|findFirstOrThrow|findMany|count|aggregate|groupBy)$/.test(
+              operation,
+            )
+          )
+            throw error;
           if (isPoolExhaustedError(error)) {
             await sleep(250);
             try {
@@ -109,7 +124,14 @@ export function createDatabaseClient(connectionString: string): PrismaClient {
             }
           }
           if (!isStaleConnectionError(error)) throw error;
-          return query(args);
+          await sleep(250);
+          try {
+            return await query(args);
+          } catch (retryError) {
+            if (!isStaleConnectionError(retryError)) throw retryError;
+            await sleep(750);
+            return query(args);
+          }
         }
       },
     },

@@ -166,7 +166,6 @@ export function TestimonialsSection({
   const [visibleCount, setVisibleCount] = useState(3);
   const reduced = useRef(false);
   const count = testimonials.length;
-  const multi = count > 1;
 
   useEffect(() => {
     reduced.current =
@@ -189,23 +188,26 @@ export function TestimonialsSection({
   }, []);
 
   const step = Math.max(1, Math.min(visibleCount, count));
+  const positions = Math.max(1, count - step + 1);
+  const multi = positions > 1;
+  const visibleIndex = Math.min(index, positions - 1);
 
   useEffect(() => {
-    setIndex((current) => (count === 0 ? 0 : current % count));
-  }, [count]);
+    setIndex((current) => Math.min(current, positions - 1));
+  }, [positions]);
 
   useEffect(() => {
     if (!multi || paused || autoRotateMs <= 0) return;
     const timer = window.setInterval(() => {
-      setIndex((current) => (current + 1) % count);
+      setIndex((current) => (current + 1) % positions);
     }, autoRotateMs);
     return () => window.clearInterval(timer);
-  }, [autoRotateMs, count, cycleKey, multi, paused]);
+  }, [autoRotateMs, positions, cycleKey, multi, paused]);
 
   if (count === 0) return null;
 
   const go = (delta: number) => {
-    setIndex((current) => (current + delta + count) % count);
+    setIndex((current) => (current + delta + positions) % positions);
     setCycleKey((value) => value + 1);
   };
 
@@ -232,7 +234,7 @@ export function TestimonialsSection({
             className="hamd-testimonials__track"
             style={{
               width: `${(count / step) * 100}%`,
-              transform: `translateX(-${(index * 100) / count}%)`,
+              transform: `translateX(-${(visibleIndex * 100) / count}%)`,
               transition: reduced.current ? "none" : "transform 420ms cubic-bezier(0.2, 0, 0, 1)",
             }}
           >
@@ -292,7 +294,7 @@ export function TestimonialsSection({
               </svg>
             </button>
             <span className="hamd-testimonials__status" aria-live="polite">
-              Showing {index + 1} of {count}
+              Showing {visibleIndex + 1} to {visibleIndex + step} of {count}
             </span>
             <button
               type="button"

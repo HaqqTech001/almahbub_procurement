@@ -15,6 +15,7 @@ export function createCatalogRouters(service: CatalogService): {
 
   const categories = Router();
   categories.get("/", controller.listCategories);
+  categories.get("/:slug", controller.getCategoryPreview);
 
   return { products, categories };
 }

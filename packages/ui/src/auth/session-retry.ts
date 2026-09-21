@@ -18,6 +18,7 @@ const EXPIRY_CODES = new Set([
   "UNAUTHENTICATED",
   "SESSION_REVOKED",
   "INVALID_REFRESH_TOKEN",
+  "MISSING_BEARER_TOKEN",
 ]);
 
 const refreshInflight = new WeakMap<object, Promise<SessionRefreshResult>>();
@@ -40,15 +41,16 @@ export async function peekErrorCode(response: Response): Promise<string | null> 
     const body = (await response.clone().json()) as {
       error?: { code?: string };
       code?: string;
+      errors?: Array<{ code?: string }>;
     };
-    return body.error?.code ?? body.code ?? null;
+    return body.error?.code ?? body.code ?? body.errors?.[0]?.code ?? null;
   } catch {
     return null;
   }
 }
 
 function unauthenticatedError(): Error {
-  const error = new Error("Authentication required.");
+  const error = new Error("Your session has expired. Please sign in again to continue.");
   Object.assign(error, { status: 401, code: "UNAUTHENTICATED" });
   return error;
 }
@@ -76,6 +78,7 @@ export async function runWithSessionRetry(
   let token = hooks.getAccessToken();
   if (!token) token = await hooks.ensureSession();
   if (!token) {
+    hooks.onSessionLost();
     throw unauthenticatedError();
   }
 
@@ -85,7 +88,9 @@ export async function runWithSessionRetry(
   const code = await peekErrorCode(first);
   if (!isAuthExpiryResponse(401, code)) return first;
 
-  const refreshed = await sharedRefresh(hooks);
+  // A concurrent request may already have refreshed the rejected credential.
+  const current = hooks.getAccessToken();
+  const refreshed = current && current !== token ? true : await sharedRefresh(hooks);
   if (refreshed === "transient") {
     return first;
   }
@@ -94,7 +99,11 @@ export async function runWithSessionRetry(
     hooks.onSessionLost();
     return first;
   }
-  return execute(next);
+  const retried = await execute(next);
+  if (retried.status === 401 && isAuthExpiryResponse(401, await peekErrorCode(retried))) {
+    hooks.onSessionLost();
+  }
+  return retried;
 }
 
 export async function sessionAwareFetch(
@@ -102,22 +111,29 @@ export async function sessionAwareFetch(
   init: RequestInit = {},
   hooks: SessionRetryHooks | null,
 ): Promise<Response> {
-  const method = typeof init.method === "string" ? init.method : "GET";
+  const request = typeof Request !== "undefined" && input instanceof Request ? input : null;
+  const method = init.method ?? request?.method ?? "GET";
+  const headers = new Headers(request?.headers);
+  new Headers(init.headers).forEach((value, key) => headers.set(key, value));
+  if (typeof FormData !== "undefined" && init.body instanceof FormData) headers.delete("Content-Type");
   const nextInit: RequestInit = {
     credentials: "include",
     ...init,
+    method,
+    headers,
     signal: signalWithTimeout(init.signal ?? undefined, timeoutMsForMethod(method)),
   };
 
   try {
     if (!hooks) {
+      if (!headers.get("Authorization")) throw unauthenticatedError();
       return await fetchWithTransientRetry(input, nextInit);
     }
     return await runWithSessionRetry((accessToken) => {
       const headers = new Headers(nextInit.headers);
       headers.set("Authorization", `Bearer ${accessToken}`);
       if (!headers.has("Accept")) headers.set("Accept", "application/json");
-      return fetchWithTransientRetry(input, { ...nextInit, headers });
+      return fetchWithTransientRetry(request ? request.clone() : input, { ...nextInit, headers });
     }, hooks);
   } catch (error) {
     const cancelled = toCancelledRequestError(error);

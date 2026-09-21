@@ -1,6 +1,6 @@
 import { Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
-import { LoginScreen, safeInternalPath, type LoginFormValues } from "@hamd/ui/auth";
+import { LoginScreen, useRequestCooldown, safeInternalPath, type LoginFormValues } from "@hamd/ui/auth";
 import { googleOAuthStatusRequest } from "../api/auth-client.js";
 import { AuthApiError, formatAuthError } from "../api/auth-errors.js";
 import {
@@ -12,6 +12,8 @@ import { useAuth } from "../session/AuthProvider.js";
 
 export function LoginPage() {
   const auth = useAuth();
+  const cooldown = useRequestCooldown();
+  const googleCooldown = useRequestCooldown("Google sign-in");
   const navigate = useNavigate();
   const location = useLocation();
   const [params] = useSearchParams();
@@ -32,7 +34,8 @@ export function LoginPage() {
 
   useEffect(() => {
     const oauthError = params.get("oauthError");
-    if (oauthError) setError(oauthError);
+    if (oauthError) setError("Google sign-in could not be completed. Please try again.");
+    else if (params.get("reason") === "session-expired") setError("Your session has expired. Sign in again to continue.");
   }, [params]);
 
   useEffect(() => {
@@ -52,12 +55,18 @@ export function LoginPage() {
 
   const onGoogleCredential = useCallback(
     async (credential: string) => {
+      if (googleCooldown.remainingSeconds > 0) return;
       setError(null);
       setGoogleFailed(false);
       try {
         await auth.loginWithGoogle(credential);
         navigate(returnTo, { replace: true });
       } catch (err) {
+        if (err instanceof AuthApiError && err.isRateLimited) {
+          googleCooldown.start(err.retryAfterSeconds);
+          if (!err.retryAfterSeconds) setError(formatAuthError(err, GOOGLE_SIGN_IN_FAILURE));
+          return;
+        }
         if (err instanceof AuthApiError && err.isGoogleLinkRequired) {
           const email = err.linkedEmail;
           const otp = new URLSearchParams();
@@ -71,7 +80,7 @@ export function LoginPage() {
         setError(GOOGLE_SIGN_IN_FAILURE);
       }
     },
-    [auth, navigate, returnTo],
+    [auth, navigate, returnTo, googleCooldown.remainingSeconds, googleCooldown.start],
   );
 
   if (auth.bootstrapping) {
@@ -92,6 +101,11 @@ export function LoginPage() {
       await auth.login(values);
       navigate(returnTo, { replace: true });
     } catch (err) {
+      if (err instanceof AuthApiError && err.isRateLimited) {
+        cooldown.start(err.retryAfterSeconds);
+        if (!err.retryAfterSeconds) setError(formatAuthError(err, "Sign-in requests are temporarily limited."));
+        return;
+      }
       if (err instanceof AuthApiError && err.isLocked) {
         navigate("/account-locked", { replace: true });
         return;
@@ -116,6 +130,7 @@ export function LoginPage() {
       onSubmit={onSubmit}
       {...(initialEmail ? { initialEmail } : {})}
       errorMessage={error}
+      requestCooldownMessage={cooldown.message}
       successMessage={
         verified
           ? "Email verified. Sign in to continue."
@@ -126,7 +141,7 @@ export function LoginPage() {
       {...(showGoogle
         ? {
             googleSlot: (
-              <GoogleSignInButton
+              googleCooldown.message ? <p role="status">{googleCooldown.message}</p> : <GoogleSignInButton
                 key={googleRetryKey}
                 text="signin_with"
                 onCredential={onGoogleCredential}

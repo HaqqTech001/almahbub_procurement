@@ -1,3 +1,4 @@
+import { safeErrorMessage } from "@hamd/ui/auth";
 import type {
   ShipmentCommand,
   ShipmentConfirmDeliveryInput,
@@ -96,7 +97,7 @@ export class ShipmentApiError extends Error {
   readonly status: number;
   readonly code: string;
   constructor(message: string, status: number, code: string) {
-    super(message);
+    super(safeErrorMessage(message, status));
     this.name = "ShipmentApiError";
     this.status = status;
     this.code = code;

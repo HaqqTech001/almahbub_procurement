@@ -28,7 +28,7 @@ export const PUBLIC_VARIANT_KEYS = [
   "sourcingStatus",
 ] as const;
 
-export const PUBLIC_CATEGORY_KEYS = ["slug", "name", "imageUrl", "imageAlt"] as const;
+export const PUBLIC_CATEGORY_KEYS = ["id", "slug", "name", "description", "imageUrl", "imageAlt"] as const;
 
 export const PUBLIC_IMAGE_KEYS = ["url", "altText", "position"] as const;
 

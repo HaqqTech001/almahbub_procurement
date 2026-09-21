@@ -8,44 +8,18 @@ import type {
 
 import { useOptionalAuth } from "../auth/session/AuthProvider.js";
 import { homepageHeader } from "../content/homepage.js";
+import { INTEGRATED_EXPORT_BRAND } from "../content/group.js";
+import { PROCUREMENT_HOME, publicLinks, publicServiceMenus } from "../content/public-navigation.js";
 import { IE_PATHS } from "../integrated-export/ie-paths.js";
 
-export const AUTHENTICATED_IE_HEADER_LINK = {
-  id: "integrated-export",
-  label: "Almahbub Integrated Export",
-  href: IE_PATHS.home,
-} as const;
-
-/** Both operations are discoverable for guests and signed-in buyers. */
+/** Public navigation remains public for signed-in buyers. */
 export function buildAuthenticatedPublicHeaderLinks(
   links: readonly NavLinkItem[],
-  authenticated: boolean,
+  _authenticated: boolean,
 ): NavLinkItem[] {
-  const mapped: NavLinkItem[] = links
-    .filter(
-      (link, index) =>
-        links.findIndex((item) => item.href === link.href) === index,
-    )
-    .map((link) =>
-      authenticated && link.href === "/"
-        ? {
-            ...link,
-            href: "/app",
-            label: link.id === "home" ? "Dashboard" : link.label,
-          }
-        : { ...link },
-    );
-  if (!authenticated) return mapped;
-  if (mapped.some((link) => link.href === AUTHENTICATED_IE_HEADER_LINK.href)) {
-    return mapped;
-  }
-  const productsIndex = mapped.findIndex((link) => link.id === "products");
-  const insertAt = productsIndex >= 0 ? productsIndex + 1 : mapped.length;
-  return [
-    ...mapped.slice(0, insertAt),
-    { ...AUTHENTICATED_IE_HEADER_LINK },
-    ...mapped.slice(insertAt),
-  ];
+  void _authenticated; // Session state must not change public destinations.
+  return links.filter((link, index) => links.findIndex((item) => item.href === link.href) === index)
+    .map((link) => link.id === "home" ? { ...link, label: "Home", href: "/" } : { ...link });
 }
 
 type Options = {
@@ -99,13 +73,20 @@ export function usePublicHeaderProps(options: Options = {}): GlobalHeaderProps {
       auth?.user?.email?.split("@")[0] ||
       "Account";
 
+    const exporting = location.pathname.startsWith(IE_PATHS.home);
+    const procurement = location.pathname.startsWith(PROCUREMENT_HOME) || /^\/(global-procurement|products|product)(\/|$)/.test(location.pathname);
     return {
       ...homepageHeader,
-      brandLogoSrc: "/almahbub.svg",
-      brandLogoAlt: "Almahbub International",
-      brandHref: authenticated ? "/app" : (homepageHeader.brandHref ?? "/"),
+      className: "hamd-header--public",
+      megaMenus: publicServiceMenus,
+      brandName: exporting ? INTEGRATED_EXPORT_BRAND.wordmark : procurement ? "Almahbub International" : "Almahbub Multi-Commerce",
+      brandAffiliation: exporting ? "Nigerian export supply" : procurement ? "Global procurement" : "Import & Export",
+      brandAffiliationHref: exporting ? IE_PATHS.home : procurement ? PROCUREMENT_HOME : "/",
+      brandLogoSrc: exporting ? INTEGRATED_EXPORT_BRAND.logoSrc : "/almahbub.svg",
+      brandLogoAlt: exporting ? INTEGRATED_EXPORT_BRAND.logoAlt : "Almahbub International",
+      brandHref: exporting ? IE_PATHS.home : procurement ? PROCUREMENT_HOME : "/",
       links: buildAuthenticatedPublicHeaderLinks(
-        homepageHeader.links ?? [],
+        publicLinks,
         authenticated,
       ),
       requestCta: null,

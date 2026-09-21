@@ -1,7 +1,5 @@
 import { AuthApiError, readCookie } from "./auth-errors.js";
 import { getCsrfToken, setCsrfToken } from "../session/token-store.js";
-import { browserApiBase } from "../../lib/api-origin.js";
-import { AUTH_BOOTSTRAP_TIMEOUT_MS, signalWithTimeout } from "@hamd/ui/auth";
 
 export type AuthUser = {
   id: string;
@@ -11,9 +9,6 @@ export type AuthUser = {
   displayName: string | null;
   locale: string;
   timeZone: string | null;
-  lastAuthenticatedAt?: string | null;
-  createdAt?: string | null;
-  emailVerifiedAt?: string | null;
 };
 
 export type AuthSessionPayload = {
@@ -28,7 +23,6 @@ export type AuthSessionPayload = {
 export type AuthMePayload = {
   user: AuthUser;
   organizationId: string;
-  organizationName?: string | null;
   permissions: string[];
 };
 
@@ -77,7 +71,12 @@ export type InvitationPreview = {
 type Envelope<T> = { data: T; error?: { code?: string; message?: string } };
 
 function apiBase(): string {
-  return browserApiBase();
+  const base = (
+    typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL
+      ? String(import.meta.env.VITE_API_URL)
+      : ""
+  ).replace(/\/$/, "");
+  return base;
 }
 
 function authUrl(path: string): string {
@@ -115,18 +114,11 @@ function toAuthError(response: Response, body: unknown): AuthApiError {
       : response.status === 401
         ? "Invalid email or password."
         : "Authentication request failed.");
-  const retryAfterHeader = response.headers.get("Retry-After");
-  const retryAfterSeconds = retryAfterHeader
-    ? Number.parseInt(retryAfterHeader, 10)
-    : Number.NaN;
   return new AuthApiError({
     message,
     status: response.status,
     code,
     details: envelope?.error?.details,
-    ...(Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
-      ? { retryAfterSeconds }
-      : {}),
   });
 }
 
@@ -167,7 +159,7 @@ export async function authFetch<T>(
       headers,
       body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
       credentials: "include",
-      signal: signalWithTimeout(options.signal, AUTH_BOOTSTRAP_TIMEOUT_MS),
+      signal: options.signal,
     });
   } catch {
     throw new AuthApiError({
@@ -229,6 +221,7 @@ export function refreshRequest(accessToken?: string | null): Promise<AuthSession
     body: csrf ? { csrfToken: csrf } : {},
     csrf: true,
     accessToken: accessToken ?? null,
+    signal: AbortSignal.timeout(8_000),
   });
 }
 
@@ -237,19 +230,6 @@ export function logoutRequest(accessToken: string): Promise<void> {
     method: "POST",
     accessToken,
   });
-}
-
-export async function googleOAuthStatusRequest(): Promise<{ enabled: boolean }> {
-  return authFetch<{ enabled: boolean }>("/google/status", {
-    method: "GET",
-  });
-}
-
-/** Absolute URL that starts the real Google OAuth redirect flow. */
-export function googleOAuthStartUrl(returnTo = "/"): string {
-  const target =
-    returnTo.startsWith("/") && !returnTo.startsWith("//") ? returnTo : "/";
-  return authUrl(`/google?returnTo=${encodeURIComponent(target)}`);
 }
 
 export function meRequest(accessToken: string): Promise<AuthMePayload> {
@@ -402,16 +382,5 @@ export function updateProfileRequest(
     method: "PATCH",
     accessToken,
     body,
-  });
-}
-
-export function changePasswordRequest(
-  accessToken: string,
-  input: { currentPassword: string; newPassword: string },
-): Promise<{ changed: true }> {
-  return authFetch("/password", {
-    method: "PATCH",
-    accessToken,
-    body: input,
   });
 }

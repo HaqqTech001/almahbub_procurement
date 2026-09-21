@@ -20,7 +20,6 @@ import {
   changePasswordSchema,
   verifyEmailBodySchema,
 } from "./auth-schemas.js";
-import { sanitizeReturnTo } from "./return-to.js";
 
 const refreshCookieName = "hamd_refresh";
 const csrfCookieName = "hamd_csrf";
@@ -53,7 +52,6 @@ export class AuthController {
         response,
         result.refreshToken,
         this.environment,
-        result.rememberMe,
       );
       response.status(200).json({
         data: { ...withoutRefreshToken(result), csrfToken },
@@ -81,18 +79,14 @@ export class AuthController {
         response,
         result.refreshToken,
         this.environment,
-        result.rememberMe,
       );
       response.json({
         data: { ...withoutRefreshToken(result), csrfToken },
       });
     } catch (error) {
-      const code = error instanceof AppError ? error.code : "";
-      const terminal =
-        code === "INVALID_REFRESH_TOKEN" ||
-        code === "SESSION_REVOKED" ||
-        code === "UNAUTHENTICATED";
-      if (terminal) {
+      const csrfFailed =
+        error instanceof AppError && error.code === "CSRF_VALIDATION_FAILED";
+      if (!csrfFailed) {
         clearRefreshCookies(response, this.environment);
       }
       next(error);
@@ -144,7 +138,7 @@ export class AuthController {
           message: "A verification token or code is required.",
         });
       }
-      const result = await this.service.verifyEmail(token, body.email);
+      const result = await this.service.verifyEmail(token);
       response.json({ data: result });
     } catch (error) {
       next(error);
@@ -168,7 +162,7 @@ export class AuthController {
   public readonly verifyOtp: RequestHandler = async (request, response, next) => {
     try {
       const input = otpVerifySchema.parse(request.body);
-      const result = await this.service.verifyEmail(input.code, input.email);
+      const result = await this.service.verifyEmail(input.code);
       response.json({ data: result });
     } catch (error) {
       next(error);
@@ -205,7 +199,6 @@ export class AuthController {
         response,
         result.refreshToken,
         this.environment,
-        result.rememberMe,
       );
       response.status(201).json({
         data: { ...withoutRefreshToken(result), csrfToken },
@@ -384,9 +377,7 @@ export class AuthController {
     try {
       const input = googleCredentialSchema.parse(request.body);
       const result = await this.service.completeGoogleCredentialSignIn({
-        credential: input.credential,
-        otpCode: input.code,
-        email: input.email,
+        ...input,
         ip: request.ip,
         userAgent: request.get("user-agent") ?? undefined,
       });
@@ -394,9 +385,8 @@ export class AuthController {
         response,
         result.refreshToken,
         this.environment,
-        result.rememberMe,
       );
-      response.status(200).json({
+      response.json({
         data: { ...withoutRefreshToken(result), csrfToken },
       });
     } catch (error) {
@@ -406,7 +396,7 @@ export class AuthController {
 
   public readonly googleStart: RequestHandler = (request, response, next) => {
     try {
-      if (!this.service.googleRedirectEnabled()) {
+      if (!this.service.googleOAuthEnabled()) {
         throw new AppError({
           statusCode: 503,
           code: "GOOGLE_OAUTH_NOT_CONFIGURED",
@@ -478,12 +468,7 @@ export class AuthController {
         ip: request.ip,
         userAgent: request.get("user-agent") ?? undefined,
       });
-      setRefreshCookies(
-        response,
-        result.refreshToken,
-        this.environment,
-        result.rememberMe,
-      );
+      setRefreshCookies(response, result.refreshToken, this.environment);
       response.clearCookie(googleStateCookieName, {
         path: "/api/v1/auth",
       });
@@ -527,18 +512,20 @@ export class AuthController {
 
 const googleStateCookieName = "hamd_google_oauth";
 
+function sanitizeReturnTo(value: string): string {
+  if (!value.startsWith("/") || value.startsWith("//")) return "/app";
+  if (value === "/") return "/app";
+  return value;
+}
+
 function setRefreshCookies(
   response: Response,
   refreshToken: string,
   environment: Environment,
-  rememberMe = false,
 ): string {
   const secure =
     environment.COOKIE_SECURE ?? environment.NODE_ENV === "production";
-  const ttlSeconds = rememberMe
-    ? environment.REFRESH_TOKEN_TTL_SECONDS
-    : Math.min(environment.REFRESH_TOKEN_TTL_SECONDS, 43_200);
-  const maxAge = ttlSeconds * 1000;
+  const maxAge = environment.REFRESH_TOKEN_TTL_SECONDS * 1000;
   const csrfToken = randomBytes(32).toString("base64url");
   response.cookie(refreshCookieName, refreshToken, {
     httpOnly: true,

@@ -1,19 +1,20 @@
+import { fetchAuthenticatedMedia, isPrivateDocument } from "../auth/media-request.js";
+import { userFacingError } from "../auth/user-facing-error.js";
+
 export async function openAuthenticatedResource(
   href: string,
-  getAccessToken?: (() => Promise<string | null>) | undefined,
+  _getAccessToken?: (() => Promise<string | null>) | undefined,
 ): Promise<void> {
-  if (!getAccessToken) {
+  // Retained for compatibility; the configured host session supplies current credentials.
+  void _getAccessToken;
+  if (!isPrivateDocument(href)) {
+    if (!/^(blob:|https?:|\/)/.test(href)) throw new Error("We couldn't open this file.");
     window.open(href, "_blank", "noopener,noreferrer");
     return;
   }
-  const token = await getAccessToken();
-  const response = await fetch(href, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-    credentials: "include",
-  });
+  const response = await fetchAuthenticatedMedia(href);
   if (!response.ok) {
-    window.open(href, "_blank", "noopener,noreferrer");
-    return;
+    throw new Error(userFacingError({ status: response.status }, "We couldn't open this file. Please try again."));
   }
   const blob = await response.blob();
   const objectUrl = URL.createObjectURL(blob);

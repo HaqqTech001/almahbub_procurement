@@ -1,3 +1,4 @@
+import { commodityPublicationApproved } from "./commodity-publication-review.js";
 import { Prisma } from "@hamd/database";
 
 import { AppError } from "../../../lib/app-error.js";
@@ -115,9 +116,17 @@ function asMedia(value: Prisma.JsonValue | null): IeCommodityMediaDto | null {
     return null;
   }
   const altFromRecord = typeof record.alt === "string" ? record.alt.trim() : "";
-  const fromPath = src.split("/").pop()?.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ") ?? "Commodity image";
+  const fromPath =
+    src
+      .split("/")
+      .pop()
+      ?.replace(/\.[^.]+$/, "")
+      .replace(/[-_]/g, " ") ?? "Commodity image";
   const dto: IeCommodityMediaDto = { src, alt: altFromRecord || fromPath };
-  if (typeof record.sortOrder === "number" && Number.isFinite(record.sortOrder)) {
+  if (
+    typeof record.sortOrder === "number" &&
+    Number.isFinite(record.sortOrder)
+  ) {
     dto.sortOrder = record.sortOrder;
   }
   return dto;
@@ -195,7 +204,9 @@ export function toIeCommodityDto(row: CommodityRow): IeCommodityDto {
   };
 }
 
-export function toIeCommodityListItem(row: CommodityRow): IeCommodityListItemDto {
+export function toIeCommodityListItem(
+  row: CommodityRow,
+): IeCommodityListItemDto {
   return {
     id: row.id,
     slug: row.slug,
@@ -232,6 +243,7 @@ export class IeCommodityService {
     private readonly catalogMedia: CatalogMediaStore = createCatalogMediaStore({
       uploadRoot: "uploads",
     }),
+    private readonly publicationApproved = commodityPublicationApproved,
   ) {}
 
   public async list(
@@ -368,7 +380,9 @@ export class IeCommodityService {
         data.applications = toJsonInput(input.applications);
       }
 
-      const row = await this.database.integratedExportCommodity.create({ data });
+      const row = await this.database.integratedExportCommodity.create({
+        data,
+      });
       return toIeCommodityDto(row as CommodityRow);
     } catch (error) {
       this.rethrowUniqueSlug(error);
@@ -475,7 +489,8 @@ export class IeCommodityService {
       throw new AppError({
         statusCode: 409,
         code: "CONFLICT",
-        message: "An Integrated Export commodity with this slug already exists.",
+        message:
+          "An Integrated Export commodity with this slug already exists.",
         details: [
           {
             code: "SLUG_NOT_UNIQUE",
@@ -496,7 +511,8 @@ export class IeCommodityService {
       throw new AppError({
         statusCode: 409,
         code: "CONFLICT",
-        message: "An Integrated Export commodity with this slug already exists.",
+        message:
+          "An Integrated Export commodity with this slug already exists.",
         details: [
           {
             code: "SLUG_NOT_UNIQUE",

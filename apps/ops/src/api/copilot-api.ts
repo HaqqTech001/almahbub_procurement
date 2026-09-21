@@ -1,3 +1,5 @@
+import { safeErrorMessage } from "@hamd/ui/auth";
+import { sessionFetch } from "../auth/session/session-http.js";
 import { browserApiBase } from "../lib/api-origin.js";
 
 export type CopilotResponse = {
@@ -22,7 +24,7 @@ export class CopilotApiError extends Error {
   readonly status: number;
   readonly code: string;
   constructor(message: string, status: number, code = "COPILOT_ERROR") {
-    super(message);
+    super(safeErrorMessage(message, status));
     this.name = "CopilotApiError";
     this.status = status;
     this.code = code;
@@ -36,7 +38,7 @@ async function copilotFetch<T>(
 ): Promise<T> {
   const base = apiBase();
   const url = `${base}/api/v1${path}`;
-  const response = await fetch(url, {
+  const response = await sessionFetch(url, {
     method: body === undefined ? "GET" : "POST",
     headers: {
       Accept: "application/json",

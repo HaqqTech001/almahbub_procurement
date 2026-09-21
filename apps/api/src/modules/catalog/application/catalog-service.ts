@@ -1,7 +1,13 @@
+import { persistedPublicationReviews } from "./persisted-publication-review.js";
+import { resolveCategorySlug } from "./category-alias.js";
+import { reviewedMediaHash } from "../infrastructure/reviewed-media-hash.js";
 import { AppError } from "../../../lib/app-error.js";
 import { compareProductPriority, orderedProductImages } from "@hamd/constants";
 import { restoreProductOrder } from "./prioritized-product-page.js";
-import { publicProductMediaHealth, withConcurrency } from "../infrastructure/product-media-health.js";
+import {
+  publicProductMediaHealth,
+  withConcurrency,
+} from "../infrastructure/product-media-health.js";
 import {
   mediaWriteData,
   withCategoryMedia,
@@ -12,6 +18,15 @@ import type {
   PublicProductListQuery,
 } from "../api/catalog-schemas.js";
 import { PUBLIC_CATALOG_STATUS } from "./catalog-policy.js";
+import {
+  productPublicationReviews,
+  primaryImage,
+  reviewIsCurrent,
+  legitimateSharedMedia,
+  conceptIdentity,
+  type PublicationReview,
+  type ReviewProduct,
+} from "./product-publication-review.js";
 
 type Meta = {
   page: number;
@@ -34,6 +49,8 @@ export type PublicCatalogVideo = {
 };
 
 export type PublicCatalogCategory = {
+  id?: string | undefined;
+  description?: string | null;
   slug: string;
   name: string;
   imageUrl: string | null;
@@ -63,7 +80,13 @@ type CatalogProductRow = {
   slug: string;
   name: string;
   description: string | null;
-  category: { slug: string; name: string; status: string } | null;
+  category: {
+    id?: string;
+    description?: string | null;
+    slug: string;
+    name: string;
+    status: string;
+  } | null;
   brand: { name: string } | null;
   manufacturer: { legalName: string } | null;
   images: { url: string; altText: string | null; position: number }[];
@@ -83,7 +106,10 @@ const publicProductListInclude = {
   category: true,
   brand: true,
   manufacturer: true,
-  images: { orderBy: { position: "asc" as const }, take: 3 },
+  images: {
+    orderBy: [{ isPrimary: "desc" as const }, { position: "asc" as const }],
+    take: 3,
+  },
   videos: { orderBy: { position: "asc" as const }, take: 1 },
   variants: { orderBy: { createdAt: "asc" as const } },
 };
@@ -110,9 +136,15 @@ function parseVariantSpecifications(value: unknown): {
   const record = asRecord(value);
   const fields = record?.typicalSpecificationFields;
   return {
-    unit: typeof record?.unit === "string" && record.unit.trim() ? record.unit : null,
+    unit:
+      typeof record?.unit === "string" && record.unit.trim()
+        ? record.unit
+        : null,
     typicalSpecificationFields: Array.isArray(fields)
-      ? fields.filter((item): item is string => typeof item === "string" && item.trim().length > 0)
+      ? fields.filter(
+          (item): item is string =>
+            typeof item === "string" && item.trim().length > 0,
+        )
       : [],
     sourcingStatus:
       typeof record?.sourcingStatus === "string" && record.sourcingStatus.trim()
@@ -137,19 +169,32 @@ export function toPublicProduct(row: CatalogProductRow): PublicCatalogProduct {
     description: row.description,
     category:
       row.category?.status === PUBLIC_CATALOG_STATUS
-        ? { slug: row.category.slug, name: row.category.name, imageUrl: null, imageAlt: null }
+        ? {
+            id: row.category.id,
+            description: row.category.description ?? null,
+            slug: row.category.slug,
+            name: row.category.name,
+            imageUrl: null,
+            imageAlt: null,
+          }
         : null,
     brandName: row.brand?.name ?? null,
     manufacturerName: row.manufacturer?.legalName ?? null,
     images: orderedProductImages(row.images ?? [])
-      .filter((image) => typeof image?.url === "string" && image.url.trim().length > 0)
+      .filter(
+        (image) =>
+          typeof image?.url === "string" && image.url.trim().length > 0,
+      )
       .map((image) => ({
         url: image.url,
         altText: image.altText,
         position: image.position,
       })),
     videos: (row.videos ?? [])
-      .filter((video) => typeof video?.url === "string" && video.url.trim().length > 0)
+      .filter(
+        (video) =>
+          typeof video?.url === "string" && video.url.trim().length > 0,
+      )
       .map((video) => ({
         url: video.url,
         title: video.title,
@@ -176,18 +221,143 @@ export class CatalogService {
   public constructor(
     private readonly database: DatabaseClient,
     private readonly mediaHealth = publicProductMediaHealth,
+    private readonly reviews: readonly PublicationReview[] = productPublicationReviews,
+    private readonly mediaHash = reviewedMediaHash,
+    private readonly loadedReviews = false,
   ) {}
+
+  private async reviewedService(): Promise<CatalogService> {
+    if (this.loadedReviews || this.reviews !== productPublicationReviews) return this;
+    const saved = await persistedPublicationReviews(this.database);
+    return new CatalogService(this.database, this.mediaHealth, [...this.reviews, ...saved], this.mediaHash, true);
+  }
+
+  /** Technical validity never substitutes for a recorded visual/editorial review. */
+  private async isApproved(product: ReviewProduct): Promise<boolean> {
+    const review = this.reviews.find((item) => item.productId === product.id);
+    if (!reviewIsCurrent(product, review)) return false;
+    const image = primaryImage(product)!;
+    const associations = await this.database.productImage.findMany({
+      where: {
+        productId: { not: product.id },
+        OR: [
+          { url: image.url },
+          ...(image.storageKey ? [{ storageKey: image.storageKey }] : []),
+        ],
+      },
+      select: { productId: true },
+      take: 101,
+    });
+    if (associations.length > 100) return false;
+    const conflicts = new Set(associations.map((row) => row.productId));
+    for (const other of this.reviews) {
+      if (
+        other.productId !== product.id &&
+        (other.sha256 === review!.sha256 ||
+          conceptIdentity(other.productName) === conceptIdentity(product.name))
+      )
+        conflicts.add(other.productId);
+    }
+    for (const id of conflicts) {
+      if (
+        !legitimateSharedMedia(
+          review,
+          this.reviews.find((item) => item.productId === id),
+        )
+      )
+        return false;
+    }
+    return (
+      (await this.mediaHealth(image.url)) === "valid" &&
+      (await this.mediaHash(image.url)) === review!.sha256
+    );
+  }
+
+  private reviewedPublicProduct(
+    row: CatalogProductRow & ReviewProduct,
+  ): PublicCatalogProduct {
+    const image = primaryImage(row)!;
+    // Only the reviewed primary binary is approved, not every legacy gallery row.
+    return toPublicProduct({
+      ...row,
+      images: [{ url: image.url, altText: image.altText ?? null, position: 0 }],
+    });
+  }
+
+  public async getCategoryPreview(slug: string): Promise<{ category: { id: string; slug: string; name: string; description: string | null; imageUrl: string | null; imageAlt: string | null }; products: (PublicCatalogProduct & { id: string })[]; limit: number }> {
+    const service = await this.reviewedService();
+    if (service !== this) return service.getCategoryPreview(slug);
+    const row = await this.database.productCategory.findFirst({
+      where: { slug: resolveCategorySlug(slug), status: PUBLIC_CATALOG_STATUS },
+    });
+    if (!row)
+      throw new AppError({
+        statusCode: 404,
+        code: "NOT_FOUND",
+        message: "Category not found.",
+      });
+    const category = withCategoryMedia(row);
+    // Page only reviewed identities, not the first 16 legacy rows. Rank after validation.
+    const products: (PublicCatalogProduct & { id: string })[] = [];
+    const reviews = [...this.reviews].sort(
+      (a, b) =>
+        a.priorityTier.localeCompare(b.priorityTier) ||
+        a.slug.localeCompare(b.slug),
+    );
+    for (
+      let offset = 0;
+      offset < reviews.length && products.length < 16;
+      offset += 100
+    ) {
+      const batch = reviews.slice(offset, offset + 100);
+      const candidates = await this.database.product.findMany({
+        where: {
+          categoryId: row.id,
+          status: PUBLIC_CATALOG_STATUS,
+          slug: { in: batch.map((item) => item.slug) },
+        },
+        take: 100,
+        orderBy: { slug: "asc" },
+        include: publicProductInclude,
+      });
+      const approved = await withConcurrency(candidates, (product) =>
+        this.isApproved(product),
+      );
+      for (const review of batch) {
+        const index = candidates.findIndex(
+          (product) => product.id === review.productId,
+        );
+        if (index >= 0 && approved[index] && products.length < 16)
+          products.push({ ...this.reviewedPublicProduct(candidates[index]!), id: candidates[index]!.id });
+      }
+    }
+    return {
+      category: {
+        id: row.id,
+        slug: row.slug,
+        name: row.name,
+        description: category.description,
+        imageUrl: category.imageUrl,
+        imageAlt: category.imageAlt ?? null,
+      },
+      products,
+      limit: 16,
+    };
+  }
 
   public async listProducts(query: PublicProductListQuery): Promise<{
     data: PublicCatalogProduct[];
     page: Meta;
   }> {
+    const service = await this.reviewedService();
+    if (service !== this) return service.listProducts(query);
     const categoryFilter = query.category
       ? await this.requirePublishedCategory(query.category)
       : undefined;
 
     const where = {
       status: PUBLIC_CATALOG_STATUS,
+      slug: { in: this.reviews.map((review) => review.slug) },
       ...(categoryFilter ? { categoryId: categoryFilter.id } : {}),
       ...(query.q
         ? {
@@ -211,30 +381,54 @@ export class CatalogService {
 
     const candidates = await this.database.product.findMany({
       where,
-      select: { slug: true, name: true, category: { select: { slug: true } }, images: { select: { url: true, position: true }, orderBy: [{ position: "asc" }, { id: "asc" }], take: 1 } },
-      orderBy: query.sort === "name" ? [{ name: "asc" }, { slug: "asc" }] : [{ createdAt: "desc" }, { slug: "asc" }],
+      include: publicProductInclude,
+      orderBy:
+        query.sort === "name"
+          ? [{ name: "asc" }, { slug: "asc" }]
+          : [{ createdAt: "desc" }, { slug: "asc" }],
     });
-    const health = await withConcurrency(candidates, row => this.mediaHealth(row.images[0]?.url));
-    const eligible = candidates.filter((_, index) => health[index] === "valid");
-    if (query.sort === "recommended") eligible.sort(compareProductPriority);
+    const approved = await withConcurrency(candidates, (row) =>
+      this.isApproved(row),
+    );
+    const eligible = candidates.filter((_row, index) => approved[index]);
+    if (query.sort === "recommended")
+      eligible.sort((a, b) => {
+        const tier = (id: string) =>
+          this.reviews.find((review) => review.productId === id)!.priorityTier;
+        return (
+          tier(a.id).localeCompare(tier(b.id)) || compareProductPriority(a, b)
+        );
+      });
     const total = eligible.length;
-    const prioritySlugs = eligible.slice((query.page - 1) * query.pageSize, query.page * query.pageSize).map(row => row.slug);
+    const prioritySlugs = eligible
+      .slice((query.page - 1) * query.pageSize, query.page * query.pageSize)
+      .map((row) => row.slug);
     const rows = await this.database.product.findMany({
       where: { AND: [where, { slug: { in: prioritySlugs } }] },
       include: publicProductListInclude,
       orderBy:
-        query.sort === "name" ? [{ name: "asc" }, { slug: "asc" }] : [{ createdAt: "desc" }, { slug: "asc" }],
+        query.sort === "name"
+          ? [{ name: "asc" }, { slug: "asc" }]
+          : [{ createdAt: "desc" }, { slug: "asc" }],
       skip: 0,
       take: query.pageSize,
     });
 
+    const currentApprovals = await withConcurrency(rows, (row) =>
+      this.isApproved(row),
+    );
     return {
-      data: restoreProductOrder(rows, prioritySlugs).map((row) => toPublicProduct(row)),
+      data: restoreProductOrder(
+        rows.filter((_row, index) => currentApprovals[index]),
+        prioritySlugs,
+      ).map((row) => this.reviewedPublicProduct(row)),
       page: pageMeta(total, query.page, query.pageSize),
     };
   }
 
   public async getProduct(slug: string): Promise<PublicCatalogProduct> {
+    const service = await this.reviewedService();
+    if (service !== this) return service.getProduct(slug);
     const row = await this.database.product.findFirst({
       where: { slug, status: PUBLIC_CATALOG_STATUS },
       include: publicProductInclude,
@@ -247,8 +441,23 @@ export class CatalogService {
         message: "Product not found.",
       });
     }
+    if (!(await this.isApproved(row)))
+      throw new AppError({
+        statusCode: 404,
+        code: "NOT_FOUND",
+        message: "Product not found.",
+      });
 
-    return toPublicProduct(row);
+    const primary = primaryImage(row);
+    if ((await this.mediaHealth(primary?.url)) !== "valid") {
+      throw new AppError({
+        statusCode: 404,
+        code: "NOT_FOUND",
+        message: "Product not found.",
+      });
+    }
+
+    return this.reviewedPublicProduct(row);
   }
 
   public async listCategories(query: PublicCategoryListQuery): Promise<{
@@ -264,6 +473,8 @@ export class CatalogService {
         skip: (query.page - 1) * query.pageSize,
         take: query.pageSize,
         select: {
+          id: true,
+          description: true,
           slug: true,
           name: true,
           imageUrl: true,
@@ -276,6 +487,8 @@ export class CatalogService {
       data: rows.map((row) => {
         const media = withCategoryMedia(row);
         return {
+          id: media.id,
+          description: media.description ?? null,
           slug: media.slug,
           name: media.name,
           imageUrl: media.imageUrl ?? null,
@@ -286,9 +499,11 @@ export class CatalogService {
     };
   }
 
-  private async requirePublishedCategory(slug: string): Promise<{ id: string }> {
+  private async requirePublishedCategory(
+    slug: string,
+  ): Promise<{ id: string }> {
     const category = await this.database.productCategory.findFirst({
-      where: { slug, status: PUBLIC_CATALOG_STATUS },
+      where: { slug: resolveCategorySlug(slug), status: PUBLIC_CATALOG_STATUS },
       select: { id: true },
     });
 

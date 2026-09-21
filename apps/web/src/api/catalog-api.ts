@@ -1,4 +1,5 @@
 import { browserApiBase } from "../lib/api-origin.js";
+import { catalogueCopy } from "../lib/catalogue-copy.js";
 import { BROWSER_REQUEST_TIMEOUT_MS, fetchWithTransientRetry, isAbortError, signalWithTimeout } from "@hamd/ui/auth";
 
 export type PublicCatalogImage = {
@@ -15,6 +16,8 @@ export type PublicCatalogVideo = {
 };
 
 export type PublicCatalogCategory = {
+  id?: string;
+  description?: string | null;
   slug: string;
   name: string;
   imageUrl?: string | null;
@@ -51,6 +54,13 @@ export type CatalogListResult<T> = {
   data: T[];
   page: CatalogPageMeta;
 };
+
+function categoryCopy(row: PublicCatalogCategory): PublicCatalogCategory {
+  return { ...row, name: catalogueCopy(row.name), description: row.description ? catalogueCopy(row.description) : null };
+}
+function productCopy(row: PublicCatalogProduct): PublicCatalogProduct {
+  return { ...row, name: catalogueCopy(row.name), description: row.description ? catalogueCopy(row.description) : null, category: row.category ? categoryCopy(row.category) : null };
+}
 
 export class CatalogApiError extends Error {
   readonly status: number;
@@ -134,6 +144,7 @@ async function catalogGet<T>(
   const envelope = body as {
     data?: T;
     meta?: Partial<CatalogPageMeta>;
+    page?: Partial<CatalogPageMeta>;
     error?: { message?: string; code?: string };
     message?: string;
   } | null;
@@ -149,10 +160,10 @@ async function catalogGet<T>(
   return {
     data: (envelope?.data ?? body) as T,
     page: {
-      page: Number(envelope?.meta?.page) || 1,
-      pageSize: Number(envelope?.meta?.pageSize) || 12,
-      total: Number(envelope?.meta?.total) || 0,
-      hasMore: Boolean(envelope?.meta?.hasMore),
+      page: Number((envelope?.page ?? envelope?.meta)?.page) || 1,
+      pageSize: Number((envelope?.page ?? envelope?.meta)?.pageSize) || 12,
+      total: Number((envelope?.page ?? envelope?.meta)?.total) || 0,
+      hasMore: Boolean((envelope?.page ?? envelope?.meta)?.hasMore),
     },
   };
 }
@@ -169,7 +180,7 @@ export async function listPublicProducts(
   });
   return {
     data: (Array.isArray(result.data) ? result.data : []).map((row) => ({
-      ...row,
+      ...productCopy(row),
       images: Array.isArray(row.images) ? row.images : [],
       videos: Array.isArray(row.videos) ? row.videos : [],
       variants: Array.isArray(row.variants) ? row.variants : [],
@@ -188,7 +199,7 @@ export async function getPublicProduct(
   );
   const data = result.data;
   return {
-    ...data,
+    ...productCopy(data),
     images: Array.isArray(data?.images) ? data.images : [],
     videos: Array.isArray(data?.videos) ? data.videos : [],
     variants: Array.isArray(data?.variants) ? data.variants : [],
@@ -204,7 +215,13 @@ export async function listPublicCategories(query: {
     pageSize: query.pageSize ?? 50,
   });
   return {
-    data: Array.isArray(result.data) ? result.data : [],
+    data: Array.isArray(result.data) ? result.data.map(categoryCopy) : [],
     page: result.page,
   };
+}
+
+export type CategoryPreview = { category: PublicCatalogCategory; products: PublicCatalogProduct[]; limit: number };
+export async function getPublicCategoryPreview(slug: string): Promise<CategoryPreview> {
+  const data = (await catalogGet<CategoryPreview>(`/categories/${encodeURIComponent(slug)}`)).data;
+  return { ...data, category: categoryCopy(data.category), products: data.products.map(productCopy) };
 }

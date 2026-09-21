@@ -3,7 +3,7 @@ import { Router } from "express";
 import type { RequestHandler } from "express";
 
 import type { Environment } from "../../../../config/env.js";
-import { authAbuseLimiter } from "../../../../middleware/rate-limit.js";
+import { createAuthAbuseLimiter } from "../../../../middleware/rate-limit.js";
 import type { AuthService } from "../application/auth-service.js";
 import { AuthController } from "./auth-controller.js";
 
@@ -11,7 +11,7 @@ export function createAuthRouter(
   authenticate: RequestHandler,
   service: AuthService,
   environment: Environment,
-  abuseLimiter: RequestHandler = authAbuseLimiter,
+  abuseLimiter: RequestHandler = createAuthAbuseLimiter(),
 ): Router {
   const router = Router();
   const controller = new AuthController(service, environment);

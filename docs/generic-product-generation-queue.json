@@ -1,0 +1,1817 @@
+{
+  "generatedAt": "2026-09-18",
+  "products": [
+    {
+      "productName": "Colour laser multifunction printer",
+      "category": "Office, Business & Commercial Technology",
+      "physicalIdentity": "Colour laser multifunction printer",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Monochrome laser printer",
+      "category": "Office, Business & Commercial Technology",
+      "physicalIdentity": "Monochrome laser printer",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Document scanner",
+      "category": "Office, Business & Commercial Technology",
+      "physicalIdentity": "Document scanner",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Office projector",
+      "category": "Office, Business & Commercial Technology",
+      "physicalIdentity": "Office projector",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Document laminator",
+      "category": "Office, Business & Commercial Technology",
+      "physicalIdentity": "Document laminator",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Document binding machine",
+      "category": "Office, Business & Commercial Technology",
+      "physicalIdentity": "Document binding machine",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Document shredder",
+      "category": "Office, Business & Commercial Technology",
+      "physicalIdentity": "Document shredder",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Conference camera",
+      "category": "Office, Business & Commercial Technology",
+      "physicalIdentity": "Conference camera",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Laptop docking station",
+      "category": "Office, Business & Commercial Technology",
+      "physicalIdentity": "Laptop docking station",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Conference speakerphone",
+      "category": "Office, Business & Commercial Technology",
+      "physicalIdentity": "Conference speakerphone",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Interactive meeting display",
+      "category": "Office, Business & Commercial Technology",
+      "physicalIdentity": "Interactive meeting display",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Chest freezer",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Chest freezer",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Upright refrigerator",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Upright refrigerator",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Dishwasher",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Dishwasher",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Clothes dryer",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Clothes dryer",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Electric oven",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Electric oven",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Gas cooker",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Gas cooker",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Air fryer",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Air fryer",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Countertop blender",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Countertop blender",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Stand mixer",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Stand mixer",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Rice cooker",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Rice cooker",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Electric iron",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Electric iron",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Induction cooker",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Induction cooker",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Cooker hood",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Cooker hood",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Espresso machine",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Espresso machine",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Food processor",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Food processor",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Ice maker",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Ice maker",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Air purifier",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Air purifier",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Dehumidifier",
+      "category": "Home Appliances & Living Equipment",
+      "physicalIdentity": "Dehumidifier",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Kaftan",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Kaftan",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Senator outfit",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Senator outfit",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Agbada outfit",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Agbada outfit",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Corporate suit",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Corporate suit",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Abaya",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Abaya",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Formal shirt",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Formal shirt",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Coordinated casual set",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Coordinated casual set",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Maxi dress",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Maxi dress",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Modest gown",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Modest gown",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Women's two-piece set",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Women's two-piece set",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Women's tailored suit",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Women's tailored suit",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Occasion gown",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Occasion gown",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Knit cardigan",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Knit cardigan",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Tailored trousers",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Tailored trousers",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Polo shirt",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Polo shirt",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Trench coat",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Trench coat",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Lifestyle sneaker",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Lifestyle sneaker",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Running sneaker",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Running sneaker",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Leather sneaker",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Leather sneaker",
+      "importantVisualModifiers": [
+        "Leather"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Leather loafer",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Leather loafer",
+      "importantVisualModifiers": [
+        "Leather"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Oxford shoe",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Oxford shoe",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Derby shoe",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Derby shoe",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Chelsea boot",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Chelsea boot",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Safety boot",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Safety boot",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Heeled court shoe",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Heeled court shoe",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Ballet flat",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Ballet flat",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Leather sandal",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Leather sandal",
+      "importantVisualModifiers": [
+        "Leather"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Slide sandal",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Slide sandal",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Palm slipper",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Palm slipper",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Structured handbag",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Structured handbag",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Leather shoulder bag",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Leather shoulder bag",
+      "importantVisualModifiers": [
+        "Leather"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Tote bag",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Tote bag",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Crossbody bag",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Crossbody bag",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Business briefcase",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Business briefcase",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Leather belt",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Leather belt",
+      "importantVisualModifiers": [
+        "Leather"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Leather wallet",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Leather wallet",
+      "importantVisualModifiers": [
+        "Leather"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Passport holder",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Passport holder",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Wheeled luggage case",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Wheeled luggage case",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Cosmetic bag",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Cosmetic bag",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Card holder",
+      "category": "Fashion, Textiles, Uniforms & Accessories",
+      "physicalIdentity": "Card holder",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Industrial centrifugal pump",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Industrial centrifugal pump",
+      "importantVisualModifiers": [
+        "centrifugal"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Submersible pump",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Submersible pump",
+      "importantVisualModifiers": [
+        "Submersible"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Electric motor",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Electric motor",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Industrial gearbox",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Industrial gearbox",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Drill press",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Drill press",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Bench grinder",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Bench grinder",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Workshop lathe",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Workshop lathe",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Milling machine",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Milling machine",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Metal cutting bandsaw",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Metal cutting bandsaw",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Packaging machine",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Packaging machine",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Liquid filling machine",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Liquid filling machine",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Heat sealing machine",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Heat sealing machine",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Pallet jack",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Pallet jack",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Hydraulic press",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Hydraulic press",
+      "importantVisualModifiers": [
+        "Hydraulic"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Industrial pressure washer",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Industrial pressure washer",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Belt conveyor",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Belt conveyor",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Deep-groove ball bearing",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Deep-groove ball bearing",
+      "importantVisualModifiers": [
+        "Deep-groove"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Tapered roller bearing",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Tapered roller bearing",
+      "importantVisualModifiers": [
+        "Tapered"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Spherical roller bearing",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Spherical roller bearing",
+      "importantVisualModifiers": [
+        "Spherical"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Thrust bearing",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Thrust bearing",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Pillow-block bearing",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Pillow-block bearing",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "V-belt",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "V-belt",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Timing belt",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Timing belt",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Roller chain",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Roller chain",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Sprocket",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Sprocket",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Pulley",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Pulley",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Flexible coupling",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Flexible coupling",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Drive shaft",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Drive shaft",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Mechanical seal",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Mechanical seal",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Oil seal",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Oil seal",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Ball valve",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Ball valve",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Gate valve",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Gate valve",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Butterfly valve",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Butterfly valve",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Check valve",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Check valve",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Globe valve",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Globe valve",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Solenoid valve",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Solenoid valve",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Pipe flange",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Pipe flange",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Pipe elbow",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Pipe elbow",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Pipe tee",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Pipe tee",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Pipe reducer",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Pipe reducer",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Industrial gasket",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Industrial gasket",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Industrial hose",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Industrial hose",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Hydraulic hose",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Hydraulic hose",
+      "importantVisualModifiers": [
+        "Hydraulic"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Pipe fitting",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Pipe fitting",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Hydraulic gear pump",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Hydraulic gear pump",
+      "importantVisualModifiers": [
+        "Hydraulic"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Hydraulic cylinder",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Hydraulic cylinder",
+      "importantVisualModifiers": [
+        "Hydraulic"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Hydraulic valve",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Hydraulic valve",
+      "importantVisualModifiers": [
+        "Hydraulic"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Hydraulic fitting",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Hydraulic fitting",
+      "importantVisualModifiers": [
+        "Hydraulic"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Pneumatic cylinder",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Pneumatic cylinder",
+      "importantVisualModifiers": [
+        "Pneumatic"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Pneumatic valve",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Pneumatic valve",
+      "importantVisualModifiers": [
+        "Pneumatic"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Air regulator",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Air regulator",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Pneumatic fitting",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Pneumatic fitting",
+      "importantVisualModifiers": [
+        "Pneumatic"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Gear motor",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Gear motor",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Pressure switch",
+      "category": "Industrial Machinery, Tools & Processing Equipment",
+      "physicalIdentity": "Pressure switch",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P3_EXPANSION"
+    },
+    {
+      "productName": "Hospital trolley",
+      "category": "Medical, Healthcare & Laboratory Equipment",
+      "physicalIdentity": "Hospital trolley",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Wheelchair",
+      "category": "Medical, Healthcare & Laboratory Equipment",
+      "physicalIdentity": "Wheelchair",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Laboratory microscope",
+      "category": "Medical, Healthcare & Laboratory Equipment",
+      "physicalIdentity": "Laboratory microscope",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Laboratory centrifuge",
+      "category": "Medical, Healthcare & Laboratory Equipment",
+      "physicalIdentity": "Laboratory centrifuge",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Medical suction machine",
+      "category": "Medical, Healthcare & Laboratory Equipment",
+      "physicalIdentity": "Medical suction machine",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Laboratory refrigerator",
+      "category": "Medical, Healthcare & Laboratory Equipment",
+      "physicalIdentity": "Laboratory refrigerator",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Examination lamp",
+      "category": "Medical, Healthcare & Laboratory Equipment",
+      "physicalIdentity": "Examination lamp",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Medical weighing scale",
+      "category": "Medical, Healthcare & Laboratory Equipment",
+      "physicalIdentity": "Medical weighing scale",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Laboratory pipette",
+      "category": "Medical, Healthcare & Laboratory Equipment",
+      "physicalIdentity": "Laboratory pipette",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Salon mirror workstation",
+      "category": "Beauty, Salon & Spa Equipment",
+      "physicalIdentity": "Salon mirror workstation",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Professional salon shampoo station",
+      "category": "Beauty, Salon & Spa Equipment",
+      "physicalIdentity": "Professional salon shampoo station",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P1_SHOWCASE"
+    },
+    {
+      "productName": "Salon hair steamer",
+      "category": "Beauty, Salon & Spa Equipment",
+      "physicalIdentity": "Salon hair steamer",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Depilatory wax heater",
+      "category": "Beauty, Salon & Spa Equipment",
+      "physicalIdentity": "Depilatory wax heater",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "UV/LED nail curing lamp",
+      "category": "Beauty, Salon & Spa Equipment",
+      "physicalIdentity": "UV/LED nail curing lamp",
+      "importantVisualModifiers": [
+        "UV/LED"
+      ],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Beauty storage cabinet",
+      "category": "Beauty, Salon & Spa Equipment",
+      "physicalIdentity": "Beauty storage cabinet",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Hot-towel warmer cabinet",
+      "category": "Beauty, Salon & Spa Equipment",
+      "physicalIdentity": "Hot-towel warmer cabinet",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Salon hood dryer",
+      "category": "Beauty, Salon & Spa Equipment",
+      "physicalIdentity": "Salon hood dryer",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "productName": "Beauty treatment bed",
+      "category": "Beauty, Salon & Spa Equipment",
+      "physicalIdentity": "Beauty treatment bed",
+      "importantVisualModifiers": [],
+      "negativeConstraints": [
+        "No invented brand, logo, text or exact-model representation",
+        "No accessories or features not established by the product identity"
+      ],
+      "priorityTier": "P2_CORE"
+    },
+    {
+      "proposedName": "20,000mAh Power Bank",
+      "brand": null,
+      "model": null,
+      "family": "20,000mAh Power Bank",
+      "productType": "power bank",
+      "priorityTier": "P1_SHOWCASE",
+      "mediaStrategy": "generated_generic",
+      "researchRequired": false,
+      "shortDescription": "20,000mAh Power Bank for practical mobile-device use, with specifications confirmed for the buyer.",
+      "validationStatus": "APPROVED_FOR_LATER_GENERATION",
+      "duplicateRisk": "Existing legacy concept must be reconciled before draft creation; approval here is not permission to insert.",
+      "notes": "Capacity is an intentional procurement specification; certify actual capacity and transport compliance before offering.",
+      "creationApproved": false,
+      "category": "Electronics, Mobile & Digital Technology",
+      "categorySlug": "iphones-gadgets",
+      "identityStatus": "approved",
+      "executionScope": "P1 only; P2 deferred",
+      "publicationStatus": "draft",
+      "slug": "electronics-20-000mah-power-bank",
+      "mediaStatus": "generated_draft_visual_approved",
+      "publicationBlocked": "durable_storage_required"
+    },
+    {
+      "proposedName": "USB-C Fast Charger",
+      "brand": null,
+      "model": null,
+      "family": "USB-C Fast Charger",
+      "productType": "charger",
+      "priorityTier": "P1_SHOWCASE",
+      "mediaStrategy": "generated_generic",
+      "researchRequired": false,
+      "shortDescription": "USB-C Fast Charger for practical mobile-device use, with specifications confirmed for the buyer.",
+      "validationStatus": "APPROVED_FOR_LATER_GENERATION",
+      "duplicateRisk": "Existing legacy concept must be reconciled before draft creation; approval here is not permission to insert.",
+      "notes": "Verify requested power profile, regional plug and electrical compliance.",
+      "creationApproved": false,
+      "category": "Electronics, Mobile & Digital Technology",
+      "categorySlug": "iphones-gadgets",
+      "identityStatus": "approved",
+      "executionScope": "P1 only; P2 deferred",
+      "publicationStatus": "draft",
+      "slug": "electronics-usb-c-fast-charger",
+      "mediaStatus": "generated_draft_visual_approved",
+      "publicationBlocked": "durable_storage_required"
+    },
+    {
+      "proposedName": "Multi-port USB-C Charger",
+      "brand": null,
+      "model": null,
+      "family": "Multi-port USB-C Charger",
+      "productType": "charger",
+      "priorityTier": "P2_CORE",
+      "mediaStrategy": "generated_generic",
+      "researchRequired": false,
+      "shortDescription": "Multi-port USB-C Charger for practical mobile-device use, with specifications confirmed for the buyer.",
+      "validationStatus": "APPROVED_FOR_LATER_GENERATION",
+      "duplicateRisk": "Existing legacy concept must be reconciled before draft creation; approval here is not permission to insert.",
+      "notes": "Distinct multi-device desktop use; avoid duplicate single-port imagery.",
+      "creationApproved": false,
+      "category": "Electronics, Mobile & Digital Technology",
+      "categorySlug": "iphones-gadgets",
+      "identityStatus": "approved",
+      "executionScope": "P1 only; P2 deferred",
+      "publicationStatus": "draft",
+      "slug": "electronics-multi-port-usb-c-charger"
+    },
+    {
+      "proposedName": "Wireless Charging Pad",
+      "brand": null,
+      "model": null,
+      "family": "Wireless Charging Pad",
+      "productType": "wireless charger",
+      "priorityTier": "P2_CORE",
+      "mediaStrategy": "generated_generic",
+      "researchRequired": false,
+      "shortDescription": "Wireless Charging Pad for practical mobile-device use, with specifications confirmed for the buyer.",
+      "validationStatus": "APPROVED_FOR_LATER_GENERATION",
+      "duplicateRisk": "Existing legacy concept must be reconciled before draft creation; approval here is not permission to insert.",
+      "notes": "Verify supported charging standard; no fake brand or model compatibility claims.",
+      "creationApproved": false,
+      "category": "Electronics, Mobile & Digital Technology",
+      "categorySlug": "iphones-gadgets",
+      "identityStatus": "approved",
+      "executionScope": "P1 only; P2 deferred",
+      "publicationStatus": "draft",
+      "slug": "electronics-wireless-charging-pad"
+    },
+    {
+      "proposedName": "Wireless Earbuds",
+      "brand": null,
+      "model": null,
+      "family": "Wireless Earbuds",
+      "productType": "earbuds",
+      "priorityTier": "P1_SHOWCASE",
+      "mediaStrategy": "generated_generic",
+      "researchRequired": false,
+      "shortDescription": "Wireless Earbuds for practical mobile-device use, with specifications confirmed for the buyer.",
+      "validationStatus": "APPROVED_FOR_LATER_GENERATION",
+      "duplicateRisk": "Existing legacy concept must be reconciled before draft creation; approval here is not permission to insert.",
+      "notes": "Unbranded representative design; do not mimic an exact AirPods or Galaxy Buds model.",
+      "creationApproved": false,
+      "category": "Electronics, Mobile & Digital Technology",
+      "categorySlug": "iphones-gadgets",
+      "identityStatus": "approved",
+      "executionScope": "P1 only; P2 deferred",
+      "publicationStatus": "draft",
+      "slug": "electronics-wireless-earbuds",
+      "mediaStatus": "generated_draft_visual_approved",
+      "publicationBlocked": "durable_storage_required"
+    },
+    {
+      "proposedName": "Over-ear Wireless Headphones",
+      "brand": null,
+      "model": null,
+      "family": "Over-ear Wireless Headphones",
+      "productType": "headphones",
+      "priorityTier": "P2_CORE",
+      "mediaStrategy": "generated_generic",
+      "researchRequired": false,
+      "shortDescription": "Over-ear Wireless Headphones for practical mobile-device use, with specifications confirmed for the buyer.",
+      "validationStatus": "APPROVED_FOR_LATER_GENERATION",
+      "duplicateRisk": "Existing legacy concept must be reconciled before draft creation; approval here is not permission to insert.",
+      "notes": "Whole headphone set and headband visible; unbranded design.",
+      "creationApproved": false,
+      "category": "Electronics, Mobile & Digital Technology",
+      "categorySlug": "iphones-gadgets",
+      "identityStatus": "approved",
+      "executionScope": "P1 only; P2 deferred",
+      "publicationStatus": "draft",
+      "slug": "electronics-over-ear-wireless-headphones"
+    },
+    {
+      "proposedName": "Smartphone Gimbal",
+      "brand": null,
+      "model": null,
+      "family": "Smartphone Gimbal",
+      "productType": "camera stabilizer",
+      "priorityTier": "P1_SHOWCASE",
+      "mediaStrategy": "generated_generic",
+      "researchRequired": false,
+      "shortDescription": "Smartphone Gimbal for practical mobile-device use, with specifications confirmed for the buyer.",
+      "validationStatus": "APPROVED_FOR_LATER_GENERATION",
+      "duplicateRisk": "Existing legacy concept must be reconciled before draft creation; approval here is not permission to insert.",
+      "notes": "Show actual phone stabilizer form and handle; compatibility specified separately.",
+      "creationApproved": false,
+      "category": "Electronics, Mobile & Digital Technology",
+      "categorySlug": "iphones-gadgets",
+      "identityStatus": "approved",
+      "executionScope": "P1 only; P2 deferred",
+      "publicationStatus": "draft",
+      "slug": "electronics-smartphone-gimbal",
+      "mediaStatus": "attached_visually_reviewed_replacement",
+      "productImageId": "4c91aa28-76a3-403f-a9eb-758957b41594",
+      "publicationBlocked": "durable_storage_required"
+    },
+    {
+      "proposedName": "Mobile Tripod",
+      "brand": null,
+      "model": null,
+      "family": "Mobile Tripod",
+      "productType": "tripod",
+      "priorityTier": "P2_CORE",
+      "mediaStrategy": "generated_generic",
+      "researchRequired": false,
+      "shortDescription": "Mobile Tripod for practical mobile-device use, with specifications confirmed for the buyer.",
+      "validationStatus": "APPROVED_FOR_LATER_GENERATION",
+      "duplicateRisk": "Existing legacy concept must be reconciled before draft creation; approval here is not permission to insert.",
+      "notes": "Show phone holder and complete tripod. Distinct from motorized gimbal.",
+      "creationApproved": false,
+      "category": "Electronics, Mobile & Digital Technology",
+      "categorySlug": "iphones-gadgets",
+      "identityStatus": "approved",
+      "executionScope": "P1 only; P2 deferred",
+      "publicationStatus": "draft",
+      "slug": "electronics-mobile-tripod"
+    },
+    {
+      "proposedName": "USB-C Hub",
+      "brand": null,
+      "model": null,
+      "family": "USB-C Hub",
+      "productType": "hub",
+      "priorityTier": "P2_CORE",
+      "mediaStrategy": "generated_generic",
+      "researchRequired": false,
+      "shortDescription": "USB-C Hub for practical mobile-device use, with specifications confirmed for the buyer.",
+      "validationStatus": "APPROVED_FOR_LATER_GENERATION",
+      "duplicateRisk": "Existing legacy concept must be reconciled before draft creation; approval here is not permission to insert.",
+      "notes": "Specify intended port mix in a later approved draft; no adjective variants.",
+      "creationApproved": false,
+      "category": "Electronics, Mobile & Digital Technology",
+      "categorySlug": "iphones-gadgets",
+      "identityStatus": "approved",
+      "executionScope": "P1 only; P2 deferred",
+      "publicationStatus": "draft",
+      "slug": "electronics-usb-c-hub"
+    },
+    {
+      "proposedName": "Portable Bluetooth Speaker",
+      "brand": null,
+      "model": null,
+      "family": "Portable Bluetooth Speaker",
+      "productType": "speaker",
+      "priorityTier": "P2_CORE",
+      "mediaStrategy": "generated_generic",
+      "researchRequired": false,
+      "shortDescription": "Portable Bluetooth Speaker for practical mobile-device use, with specifications confirmed for the buyer.",
+      "validationStatus": "APPROVED_FOR_LATER_GENERATION",
+      "duplicateRisk": "Existing legacy concept must be reconciled before draft creation; approval here is not permission to insert.",
+      "notes": "Generic speaker form, no invented brand; do not depict unrelated household appliances.",
+      "creationApproved": false,
+      "category": "Electronics, Mobile & Digital Technology",
+      "categorySlug": "iphones-gadgets",
+      "identityStatus": "approved",
+      "executionScope": "P1 only; P2 deferred",
+      "publicationStatus": "draft",
+      "slug": "electronics-portable-bluetooth-speaker"
+    }
+  ]
+}

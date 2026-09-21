@@ -27,7 +27,8 @@ export function ProductsPage() {
   const workspace = location.pathname.startsWith("/app/products");
   const authenticated = auth?.status === "authenticated";
   const [params, setParams] = useSearchParams();
-  const category = (params.get("category") ?? "").trim();
+  const requestedCategory = (params.get("category") ?? "").trim();
+  const category = requestedCategory === "electronics-mobile-digital-technology" ? "iphones-gadgets" : requestedCategory;
   const q = (params.get("q") ?? "").trim();
   const sort = params.get("sort") === "name" ? "name" : params.get("sort") === "newest" ? "newest" : "recommended";
   const page = Math.max(1, Number(params.get("page") ?? "1") || 1);
@@ -148,6 +149,7 @@ export function ProductsPage() {
           setFilter({ category: value === "all" ? null : value }),
         options: [
           { value: "all", label: "All categories" },
+          ...(category && !categories.some(item => item.slug === category) ? [{ value: category, label: category === "iphones-gadgets" ? "Electronics, Mobile & Digital Technology" : category }] : []),
           ...categories.map((item) => ({
             value: item.slug,
             label: item.name,

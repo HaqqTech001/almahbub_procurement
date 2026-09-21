@@ -544,7 +544,7 @@ async function main(): Promise<void> {
               url: stored.publicUrl,
               altText: `Representative licensed photograph of a ${coreType} for catalogue illustration. Not a photograph of warehouse stock.`,
               caption:
-                "Primary catalogue view illustrating the procurement type. Licensed still — not Almahbub inventory.",
+                "Primary catalogue view illustrating the procurement type. Licensed photograph; not Almahbub inventory.",
               storageKey: stored.filename,
               mimeType: mime,
               fileSize: bytes.length,

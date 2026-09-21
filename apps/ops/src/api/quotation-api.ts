@@ -1,3 +1,4 @@
+import { safeErrorMessage } from "@hamd/ui/auth";
 import type {
   QuotationCommand,
   QuotationCreateInput,
@@ -92,7 +93,7 @@ export class QuotationApiError extends Error {
   readonly code: string;
 
   constructor(message: string, status: number, code: string) {
-    super(message);
+    super(safeErrorMessage(message, status));
     this.name = "QuotationApiError";
     this.status = status;
     this.code = code;

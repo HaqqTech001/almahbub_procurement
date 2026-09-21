@@ -27,6 +27,9 @@ export type MegaMenuColumn = {
 };
 
 export type MegaMenuConfig = {
+  /** Separate service-home link and compact disclosure control. */
+  href?: string;
+  compact?: boolean;
   id: string;
   label: string;
   columns: readonly MegaMenuColumn[];
@@ -246,6 +249,7 @@ export function GlobalHeader({
   const rootRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
+  const hoverOpenedMenu = useRef<string | null>(null);
   const menuButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const drawerCloseRef = useRef<HTMLButtonElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -308,9 +312,19 @@ export function GlobalHeader({
     if (open === null) return;
 
     const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Tab" && open === "mobile") {
+        const nodes = Array.from(rootRef.current?.querySelectorAll<HTMLElement>(".hamd-header__drawer a[href], .hamd-header__drawer button, .hamd-header__drawer input, .hamd-header__drawer select") ?? [])
+          .filter((node) => !node.closest("[hidden]") && !node.hasAttribute("disabled"));
+        const first = nodes[0];
+        const last = nodes[nodes.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
       if (event.key === "Escape") {
         const previous = open;
         setOpen(null);
+        if (previous === "mobile") rootRef.current?.querySelector<HTMLButtonElement>(".hamd-header__menu-btn")?.focus();
+        if (previous === "search") rootRef.current?.querySelector<HTMLButtonElement>(".hamd-header__icon-btn--search")?.focus();
         if (
           typeof previous === "string" &&
           previous !== "search" &&
@@ -328,6 +342,8 @@ export function GlobalHeader({
         setOpen(null);
         return;
       }
+      const activeMenu = menuButtonRefs.current[open]?.closest(".hamd-header__mega");
+      if (activeMenu && !activeMenu.contains(target)) setOpen(null);
       if (open === "account") {
         const accountRoot = rootRef.current.querySelector(".hamd-header__account");
         if (accountRoot && !accountRoot.contains(target)) {
@@ -355,7 +371,9 @@ export function GlobalHeader({
   }, [open]);
 
   const toggleMega = (id: string) => {
-    setOpen((current) => (current === id ? null : id));
+    const hovered = hoverOpenedMenu.current === id;
+    hoverOpenedMenu.current = null;
+    setOpen((current) => (current === id && !hovered ? null : id));
   };
 
   const submitSearch = (event: FormEvent) => {
@@ -390,6 +408,7 @@ export function GlobalHeader({
       ref={rootRef}
       className={cx(
         "hamd-header-root",
+        className === "hamd-header--public" && "hamd-public-navigation",
         open === "mobile" && "hamd-header-root--drawer-open",
       )}
     >
@@ -445,11 +464,19 @@ export function GlobalHeader({
         </div>
 
         <nav className="hamd-header__nav" aria-label="Primary" data-guide="public-nav">
+          {links.filter((link) => link.id === "home").map((link) => (
+            <a key={link.id} href={link.href} className={cx("hamd-header__nav-link", pathMatches(currentPath, link.href) && "is-current")} aria-current={pathMatches(currentPath, link.href) ? "page" : undefined}>{link.label}</a>
+          ))}
           {megaMenus.map((menu) => {
             const expanded = open === menu.id;
             const panelId = `mega-${menu.id}`;
             return (
-              <div key={menu.id} className="hamd-header__mega">
+              <div key={menu.id} className={cx("hamd-header__mega", menu.compact && "hamd-header__mega--compact")}
+                onPointerEnter={(event) => { if (menu.compact && event.pointerType === "mouse" && open !== menu.id) { hoverOpenedMenu.current = menu.id; setOpen(menu.id); } }}
+                onPointerLeave={(event) => { if (menu.compact && event.pointerType === "mouse" && !event.currentTarget.contains(document.activeElement)) setOpen((value) => value === menu.id ? null : value); }}
+                onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen((value) => value === menu.id ? null : value); }}
+              >
+                {menu.href ? <a href={menu.href} className="hamd-header__nav-link hamd-header__service-link" onClick={closeAll}>{menu.label}</a> : null}
                 <button
                   type="button"
                   className={cx(
@@ -459,14 +486,21 @@ export function GlobalHeader({
                       column.items.some((item) => pathMatches(currentPath, item.href)),
                     ) && "is-current",
                   )}
+                  aria-label={menu.href ? `${menu.label} menu` : undefined}
                   aria-expanded={expanded}
                   aria-controls={panelId}
                   ref={(node) => {
                     menuButtonRefs.current[menu.id] = node;
                   }}
                   onClick={() => toggleMega(menu.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowDown") {
+                      event.preventDefault(); setOpen(menu.id);
+                      requestAnimationFrame(() => document.getElementById(panelId)?.querySelector<HTMLAnchorElement>("a")?.focus());
+                    }
+                  }}
                 >
-                  {menu.label}
+                  {menu.href ? <svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14" fill="none"><path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" /></svg> : menu.label}
                 </button>
                 <div
                   id={panelId}
@@ -474,6 +508,13 @@ export function GlobalHeader({
                   className="hamd-header__mega-panel"
                   role="region"
                   aria-label={menu.label}
+                  onKeyDown={(event) => {
+                    if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+                    const entries = Array.from(event.currentTarget.querySelectorAll<HTMLAnchorElement>("a"));
+                    const index = entries.indexOf(document.activeElement as HTMLAnchorElement);
+                    const next = event.key === "Home" ? 0 : event.key === "End" ? entries.length - 1 : (index + (event.key === "ArrowDown" ? 1 : -1) + entries.length) % entries.length;
+                    event.preventDefault(); entries[next]?.focus();
+                  }}
                 >
                   <div className="hamd-header__mega-grid">
                     {menu.columns.map((column) => (
@@ -493,6 +534,7 @@ export function GlobalHeader({
                                 }
                                 onClick={closeAll}
                               >
+                                {menu.compact ? <span className="hamd-header__menu-symbol" aria-hidden="true"><MenuItemIcon id={item.id} /></span> : null}
                                 <span className="hamd-header__mega-link-label">{item.label}</span>
                                 {item.description ? (
                                   <span className="hamd-header__mega-link-desc">
@@ -527,7 +569,7 @@ export function GlobalHeader({
             );
           })}
 
-          {links.map((link) => (
+          {links.filter((link) => link.id !== "home").map((link) => (
             <a
               key={link.id}
               href={link.href}
@@ -787,6 +829,7 @@ export function GlobalHeader({
 
       <nav
         id={drawerId}
+        hidden={open !== "mobile"}
         className={cx("hamd-header__drawer", open === "mobile" && "is-open")}
         aria-label="Mobile navigation"
         aria-hidden={open !== "mobile"}
@@ -804,11 +847,12 @@ export function GlobalHeader({
           </button>
         </div>
         <div className="hamd-header__drawer-body">
+          <ul className="hamd-header__drawer-links">{links.filter((link) => link.id === "home").map((link) => <li key={link.id}><a href={link.href} onClick={closeAll}>{link.label}</a></li>)}</ul>
           {megaMenus.map((menu) => (
             <MobileAccordion key={menu.id} menu={menu} onNavigate={closeAll} />
           ))}
           <ul className="hamd-header__drawer-links">
-            {links.map((link) => (
+            {links.filter((link) => link.id !== "home").map((link) => (
               <li key={link.id}>
                 <a
                   href={link.href}
@@ -939,6 +983,15 @@ function CloseIcon() {
   );
 }
 
+function MenuItemIcon({ id }: { id: string }) {
+  const path = id === "categories" || id === "commodities" || id === "catalogue"
+    ? "M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM15 15h6v6h-6z"
+    : id === "request" || id === "consultation" ? "M4 5h16v12H9l-5 4V5m4 4h8m-8 4h5"
+    : id === "quality" ? "M12 3l8 3v6c0 4-5 8-8 9-3-1-8-5-8-9V6l8-3m-4 9 3 3 5-6"
+    : "M4 12h16m-6-6 6 6-6 6M4 5v14";
+  return <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d={path} /></svg>;
+}
+
 function MobileAccordion({
   menu,
   onNavigate,
@@ -951,15 +1004,19 @@ function MobileAccordion({
 
   return (
     <div className="hamd-header__accordion">
+      <div className="hamd-header__accordion-heading">
+      {menu.href ? <a href={menu.href} onClick={onNavigate}>{menu.label}</a> : null}
       <button
         type="button"
         className="hamd-header__accordion-trigger"
+        aria-label={menu.href ? `${menu.label} menu` : undefined}
         aria-expanded={expanded}
         aria-controls={panelId}
         onClick={() => setExpanded((value) => !value)}
       >
-        {menu.label}
+        {menu.href ? <svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14" fill="none"><path d="m4 6 4 4 4-4" stroke="currentColor" strokeWidth="1.5" /></svg> : menu.label}
       </button>
+      </div>
       <div id={panelId} hidden={!expanded} className="hamd-header__accordion-panel">
         {menu.columns.map((column) => (
           <div key={column.id}>

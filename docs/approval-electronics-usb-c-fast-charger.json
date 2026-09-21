@@ -1,0 +1,11 @@
+{
+  "productId": "01a0b3b6-6573-72ff-ac66-00c6e24498a5",
+  "productSlug": "electronics-usb-c-fast-charger",
+  "productName": "USB-C Fast Charger",
+  "execute": false,
+  "eligibleForPublicApproval": false,
+  "blockingReasons": [
+    "durable_storage_required"
+  ],
+  "status": "blocked"
+}

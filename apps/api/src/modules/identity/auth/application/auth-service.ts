@@ -355,7 +355,7 @@ export class AuthService {
       userId: user.id,
       familyId: randomUUID(),
       refreshTokenHash: hashToken(refreshToken),
-      expiresAt: refreshExpiry(this.environment, Boolean(input.rememberMe)),
+      expiresAt: refreshExpiry(this.environment),
       ipHash,
       userAgent: input.userAgent,
       deviceId,
@@ -731,13 +731,14 @@ export class AuthService {
       input.organizationId,
     );
     await this.repository.touchSession(session.id);
-    return this.createTokenResponse(
+    const result = await this.createTokenResponse(
       session.user,
       membership,
       session.id,
       input.refreshToken,
       session.rememberDevice,
     );
+    return { ...result, refreshExpiresIn: Math.max(0, Math.floor((session.expiresAt.getTime() - Date.now()) / 1000)) };
   }
 
   private async handleRefreshReuse(refreshTokenHash: string): Promise<void> {
@@ -1130,11 +1131,8 @@ function serializeUser(user: {
   };
 }
 
-function refreshExpiry(environment: Environment, rememberMe = false): Date {
-  const seconds = rememberMe
-    ? environment.REFRESH_TOKEN_TTL_SECONDS
-    : Math.min(environment.REFRESH_TOKEN_TTL_SECONDS, 43_200);
-  return new Date(Date.now() + seconds * 1000);
+function refreshExpiry(environment: Environment): Date {
+  return new Date(Date.now() + environment.REFRESH_TOKEN_TTL_SECONDS * 1000);
 }
 
 function newRefreshToken(): string {

@@ -79,6 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshPromise = useRef<Promise<boolean> | null>(null);
   const lastRefreshKind = useRef<"ok" | "transient" | "expired">("ok");
   const bootstrapGeneration = useRef(0);
+  const sessionEpoch = useRef(0);
 
   useEffect(() => {
     if (lockUntil === null) return;
@@ -101,16 +102,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const applySession = useCallback(
     async (token: string, expiresIn: number, nextUser?: AuthUser, orgId?: string) => {
+      const epoch = sessionEpoch.current;
       setAccessToken(token, expiresIn);
       if (nextUser) setUser(nextUser);
       if (orgId) setOrganizationId(orgId);
       try {
         const me = await hydrateMe(token);
+        if (epoch !== sessionEpoch.current) return;
         setUser(me.user);
         setOrganizationId(me.organizationId);
         setOrganizationName(me.organizationName ?? null);
         setPermissions(me.permissions);
-      } catch {
+      } catch (error) {
+        if (epoch !== sessionEpoch.current) return;
+        if (error instanceof AuthApiError && error.status === 401) throw error;
         if (nextUser) {
           setPermissions([]);
         } else {
@@ -121,6 +126,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           });
         }
       }
+      if (epoch !== sessionEpoch.current) return;
       clearLoginFailures();
       setLockUntil(null);
       setStatus("authenticated");
@@ -132,37 +138,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshSession = useCallback(async (): Promise<boolean> => {
     if (refreshPromise.current) return refreshPromise.current;
+    const epoch = sessionEpoch.current;
     refreshPromise.current = withRefreshLock(async () => {
-      if (isAccessTokenFresh()) {
-        lastRefreshKind.current = "ok";
-        const token = getAccessToken();
-        if (token) {
-          try {
-            const me = await hydrateMe(token);
-            setUser(me.user);
-            setOrganizationId(me.organizationId);
-            setOrganizationName(me.organizationName ?? null);
-            setPermissions(me.permissions);
-          } catch {
-            /* keep the current profile if /me is temporarily unavailable */
-          }
-        }
-        setStatus("authenticated");
-        return true;
-      }
       try {
         logSessionEvent("refresh_attempted");
         const session = await refreshRequest(getAccessToken());
+        if (epoch !== sessionEpoch.current) return false;
         await applySession(
           session.accessToken,
           session.expiresIn,
           session.user,
           session.organizationId,
         );
+        if (epoch !== sessionEpoch.current) return false;
         lastRefreshKind.current = "ok";
         logSessionEvent("refresh_succeeded");
         return true;
       } catch (error) {
+        if (epoch !== sessionEpoch.current) return false;
         const category = classifyRefreshFailure(error);
         lastRefreshKind.current = category;
         logSessionEvent("refresh_failed", { category });
@@ -174,7 +167,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setOrganizationId(null);
           setOrganizationName(null);
           setPermissions([]);
-          setStatus("anonymous");
+          setStatus("expired");
         }
         return false;
       }
@@ -185,6 +178,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [applySession]);
 
   const ensureSession = useCallback(async (): Promise<string | null> => {
+    if (!getAccessToken() && !hasSessionHint()) return null;
     if (isAccessTokenFresh()) return getAccessToken();
     const ok = await refreshSession();
     if (ok) return getAccessToken();
@@ -229,8 +223,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               void refreshSessionRef.current();
             }, 2000);
           } else {
-            setSessionHint(false);
-            setStatus("anonymous");
+            if (lastRefreshKind.current === "expired") setSessionHint(false);
+            setStatus(hadSession && lastRefreshKind.current === "expired" ? "expired" : "anonymous");
           }
         }
       } finally {
@@ -286,7 +280,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const logout = useCallback(async () => {
+    sessionEpoch.current += 1;
     const token = getAccessToken();
+    clearAccessToken();
+    setSessionHint(false);
+    setUser(null);
+    setStatus("anonymous");
     try {
       if (token) await logoutRequest(token);
     } catch {
@@ -302,7 +301,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logoutEverywhere = useCallback(async () => {
+    sessionEpoch.current += 1;
     const token = getAccessToken();
+    clearAccessToken();
+    setSessionHint(false);
+    setUser(null);
+    setStatus("anonymous");
     try {
       if (token) await logoutEverywhereRequest(token);
     } catch {
@@ -335,7 +339,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setOrganizationId(null);
         setOrganizationName(null);
         setPermissions([]);
-        setStatus("anonymous");
+        setStatus("expired");
       },
     });
     return () => configureOpsSession(null);

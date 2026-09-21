@@ -136,7 +136,7 @@ describe("public products page", () => {
 
   it("filters by category in the URL", async () => {
     mockCatalog({
-      products: [published],
+      products: [{ ...published, images: [{ url: "/media/test-hospital-bed.webp", altText: "Hospital Beds", position: 0 }] }],
       categories: [{ slug: "medical-equipments", name: "Medical Equipments" }],
     });
     render(
@@ -163,13 +163,14 @@ describe("public products page", () => {
         </AppProviders>
       </MemoryRouter>,
     );
-    expect(await screen.findByRole("heading", { name: /unable to load products/i })).toBeInTheDocument();
+    // The public API client exhausts bounded transient retries before showing the error.
+    expect(await screen.findByRole("heading", { name: /unable to load products/i }, { timeout: 4000 })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /try again/i })).toBeInTheDocument();
   });
 
   it("does not wait on a private session before listing public products", async () => {
     mockCatalog({
-      products: [published],
+      products: [{ ...published, images: [{ url: "/media/test-hospital-bed.webp", altText: "Hospital Beds", position: 0 }] }],
       categories: [{ slug: "medical-equipments", name: "Medical Equipments" }],
     });
     render(

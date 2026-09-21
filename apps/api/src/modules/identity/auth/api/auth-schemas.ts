@@ -20,6 +20,12 @@ export const refreshSchema = z.object({
   csrfToken: z.string().trim().min(1).max(512).optional(),
 });
 
+export const googleCredentialSchema = z.object({
+  credential: z.string().trim().min(20).max(10_000),
+  otpCode: z.string().trim().min(4).max(12).optional(),
+  email: z.string().trim().email().max(320).optional(),
+}).strict();
+
 export const updateProfileSchema = z
   .object({
     firstName: z.string().trim().min(1).max(100).optional(),
@@ -120,26 +126,3 @@ export const createInvitationSchema = z.object({
     .max(320)
     .transform((value) => value.toLowerCase()),
 });
-
-/** GIS ID token only. Never accept client-sent profile or role objects. */
-export const googleCredentialSchema = z
-  .object({
-    credential: z
-      .string()
-      .trim()
-      .min(10)
-      .max(8_192)
-      .regex(
-        /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/,
-        "A signed Google ID token is required.",
-      ),
-    code: z.string().trim().min(4).max(12).optional(),
-    email: z
-      .string()
-      .trim()
-      .email()
-      .max(320)
-      .transform((value) => value.toLowerCase())
-      .optional(),
-  })
-  .strict();

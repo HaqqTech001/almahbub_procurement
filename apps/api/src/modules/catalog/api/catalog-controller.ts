@@ -10,6 +10,13 @@ import {
 export class CatalogController {
   public constructor(private readonly service: CatalogService) {}
 
+  public readonly getCategoryPreview: RequestHandler = async (request, response, next) => {
+    try {
+      const { slug } = publicProductIdentifierSchema.parse(request.params);
+      response.json({ data: await this.service.getCategoryPreview(slug) });
+    } catch (error) { next(error); }
+  };
+
   public readonly listProducts: RequestHandler = async (
     request,
     response,

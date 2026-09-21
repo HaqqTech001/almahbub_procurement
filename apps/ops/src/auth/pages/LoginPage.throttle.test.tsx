@@ -1,0 +1,24 @@
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import { afterEach, expect, it, vi } from "vitest";
+import { LoginPage } from "./LoginPage.js";
+import { AuthApiError } from "../api/auth-errors.js";
+const login = vi.hoisted(() => vi.fn());
+vi.mock("../session/AuthProvider.js", () => ({ useAuth: () => ({ login, status: "anonymous", bootstrapping: false, lockUntil: null, rememberedEmail: "", rememberMe: false, googleSignInAvailable: false }) }));
+vi.mock("../api/auth-client.js", () => ({ googleOAuthStatusRequest: async () => ({ enabled: false }) }));
+vi.mock("../../components/ThemeToggle.js", () => ({ ThemeToggle: () => null }));
+afterEach(() => { cleanup(); vi.useRealTimers(); vi.resetAllMocks(); });
+it("shows a request countdown for 429 and automatically restores sign-in without account-lock navigation", async () => {
+  vi.useFakeTimers();
+  login.mockRejectedValue(new AuthApiError({ status: 429, code: "API_RATE_LIMITED", message: "requests", retryAfterSeconds: 50 }));
+  render(<MemoryRouter><LoginPage /></MemoryRouter>);
+  fireEvent.change(screen.getByLabelText("Email"), { target: { value: "buyer@example.com" } });
+  fireEvent.change(screen.getByLabelText("Password"), { target: { value: "SecurePass1" } });
+  await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Sign in" })); });
+  expect(screen.getByText(/Try again in 50 seconds/)).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Sign in" })).toBeDisabled();
+  act(() => { vi.advanceTimersByTime(50000); });
+  expect(screen.getByRole("button", { name: "Sign in" })).toBeEnabled();
+  expect(screen.queryByText(/Try again in/)).not.toBeInTheDocument();
+  expect(login).toHaveBeenCalledTimes(1);
+});

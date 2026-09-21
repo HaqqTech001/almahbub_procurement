@@ -1,3 +1,5 @@
+import { safeErrorMessage } from "@hamd/ui/auth";
+import { sessionFetch } from "../auth/session/session-http.js";
 import { browserApiBase } from "../lib/api-origin.js";
 
 export type CopilotMode = "explain" | "assist" | "recommend";
@@ -46,7 +48,7 @@ export class CopilotApiError extends Error {
   readonly code: string;
 
   constructor(message: string, status: number, code = "COPILOT_ERROR") {
-    super(message);
+    super(safeErrorMessage(message, status));
     this.name = "CopilotApiError";
     this.status = status;
     this.code = code;
@@ -67,7 +69,8 @@ async function copilotFetch<T>(
     headers.Authorization = `Bearer ${options.accessToken}`;
   }
 
-  const response = await fetch(apiUrl(path), {
+  const request = path === "/ai/copilot/status" ? fetch : sessionFetch;
+  const response = await request(apiUrl(path), {
     method: options.method ?? (options.body !== undefined ? "POST" : "GET"),
     headers,
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,

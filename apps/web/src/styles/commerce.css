@@ -43,8 +43,7 @@
   scroll-margin-top: 100px;
   border-bottom: 1px solid #87949a40;
 }
-.commerce-operation h2,
-.commerce-final h2 {
+.commerce-operation h2 {
   font-size: clamp(1.6rem, 2.5vw, 2.3rem);
   line-height: 1.2;
   margin: 0;
@@ -87,15 +86,87 @@
 .commerce-grid a:hover h3 {
   text-decoration: underline;
 }
-.commerce-final {
-  padding-block: 32px 40px;
+/* Reuse the V2 marketing components within the commerce page's container rhythm. */
+.commerce-home main > .hamd-section {
+  padding-block: clamp(36px, 5vw, 64px);
 }
-.commerce-final p {
-  max-width: 780px;
-  margin: 14px 0 20px;
+.commerce-home .hamd-section > .hamd-container {
+  width: min(1200px, calc(100% - 40px));
+  min-width: 0;
+}
+.commerce-home .hamd-section__title {
+  max-width: 28ch;
+}
+.commerce-home #faq > .hamd-container {
+  max-width: 900px;
+}
+.commerce-home .hamd-testimonials__card {
+  box-sizing: border-box;
+}
+.commerce-home .hamd-faq__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 56px;
+}
+.commerce-home .hamd-faq__trigger::after {
+  content: "";
+  flex: 0 0 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+.commerce-home .hamd-faq__trigger[aria-expanded="true"]::after {
+  transform: rotate(225deg);
+}
+.commerce-home .hamd-faq__trigger:hover {
+  background: var(--hamd-color-surface-subtle);
+}
+.commerce-home .hamd-faq__trigger:focus-visible {
+  outline: 2px solid var(--hamd-color-action);
+  outline-offset: -4px;
+  border-radius: var(--hamd-radius-lg);
+}
+.commerce-home #request-cta {
+  background: #102f35;
+  border: 0;
+}
+.commerce-home #request-cta .hamd-section__title {
+  color: #fff;
+}
+.commerce-home #request-cta .hamd-section__description {
+  color: #dce8e8;
+}
+.commerce-home #request-cta .hamd-btn {
+  background: #fff;
+  color: #102f35;
+  border-color: #fff;
+}
+.commerce-home #request-cta .hamd-btn--secondary {
+  background: transparent;
+  color: #fff;
+}
+.commerce-home #request-cta .hamd-btn:hover {
+  background: #e3eeee;
+  color: #102f35;
 }
 .commerce-page {
   padding-block: 28px;
+}
+.commerce-category-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 32px;
+  align-items: center;
+  margin-block: 28px;
+}
+.commerce-category-hero img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 12px; }
+.commerce-category-products { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.commerce-category-empty { padding-block: 24px; }
+@media (max-width: 700px) {
+  .commerce-category-hero { grid-template-columns: minmax(0, 1fr); }
 }
 .commerce-page h1 {
   font-size: clamp(1.8rem, 3vw, 2.8rem);

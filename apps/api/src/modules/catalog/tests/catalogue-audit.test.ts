@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { reviewed, fixtureHash } from "./publication-fixtures.js";
 import { auditCatalogue, type AuditProduct } from "../application/catalogue-audit.js";
 import { CatalogService } from "../application/catalog-service.js";
 import { publicProductListQuerySchema } from "../api/catalog-schemas.js";
@@ -32,11 +33,15 @@ describe("safe catalogue audit", () => {
 
 describe("public media visibility", () => {
   it.each(["recommended", "name", "newest"])("filters broken/missing primary before %s pagination while leaving direct management alone", async sort => {
-    const candidates = [product("a", "Laptop"), product("b", "Phone", { images: [{ url: "broken", position: 0 }] }), product("c", "Scanner", { images: [{ url: "ok", position: 0 }] })];
-    const findMany = vi.fn().mockResolvedValueOnce(candidates).mockResolvedValueOnce([{ ...candidates[2], category: null, brand: null, manufacturer: null }]);
-    const database = { product: { findMany } } as unknown as DatabaseClient;
-    const health = vi.fn(async (source: string | undefined) => source === "ok" ? "valid" as const : source ? "broken" as const : "missing" as const);
-    const result = await new CatalogService(database, health).listProducts(publicProductListQuerySchema.parse({ sort, pageSize: 1 }));
+    const candidates = ["Laptop", "Printer", "Scanner"].map((name, index) => ({
+      id: ["a", "b", "c"][index]!, slug: ["a", "b", "c"][index]!, name, status: "published", description: null,
+      category: { slug: "office-business", name: "Office", status: "published" }, brand: null, manufacturer: null,
+      images: [{ id: `image-${index}`, url: `/${["a", "b", "c"][index]}.png`, position: 0, isPrimary: true }],
+    }));
+    const findMany = vi.fn().mockResolvedValueOnce(candidates).mockResolvedValueOnce([candidates[2]]);
+    const database = { product: { findMany }, productImage: { findMany: vi.fn().mockResolvedValue([]) } } as unknown as DatabaseClient;
+    const health = vi.fn(async (source: string | undefined) => source === "/c.png" ? "valid" as const : source === "/b.png" ? "broken" as const : "missing" as const);
+    const result = await new CatalogService(database, health, candidates.map(row => reviewed(row)), fixtureHash).listProducts(publicProductListQuerySchema.parse({ sort, pageSize: 1 }));
     expect(result.data.map(row => row.slug)).toEqual(["c"]);
     expect(result.page).toMatchObject({ total: 1, hasMore: false });
     expect(findMany.mock.calls[0]?.[0]?.where.status).toBe("published");

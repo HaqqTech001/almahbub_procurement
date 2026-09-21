@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 
@@ -24,31 +24,26 @@ function renderPortal() {
 }
 
 describe("Integrated Export layout chrome", () => {
-  it("uses icon navigation controls with accessible names, not Menu/Close text", () => {
+  it("shares the public navbar, exact export identity and root Home", () => {
     renderPortal();
-    const open = screen.getByRole("button", { name: "Open navigation" });
-    expect(open).toBeInTheDocument();
-    expect(open).toHaveAttribute("title", "Open navigation");
-    expect(open.textContent?.trim()).toBe("");
-    expect(screen.queryByRole("button", { name: /^menu$/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /^close$/i })).not.toBeInTheDocument();
-
+    const header = document.querySelector("header")!;
+    expect(within(header).getByRole("link", { name: "Almahbub Integrated Export Ltd.", exact: true })).toHaveAttribute("href", "/businesses/almahbub-integrated-export");
+    expect(header.querySelector("img")).toHaveAttribute("src", "/media/brands/almahbub-integrated-export.jpg");
+    expect(within(header).getByRole("link", { name: "Home", exact: true })).toHaveAttribute("href", "/");
+    expect(within(header).getByRole("link", { name: "Global Procurement", exact: true })).toHaveAttribute("href", "/businesses/almahbub-international");
+    const open = screen.getByRole("button", { name: "Open menu" });
     fireEvent.click(open);
-    const drawer = screen.getByRole("dialog", { name: /integrated export menu/i });
+    const drawer = screen.getByRole("navigation", { name: "Mobile navigation" });
     expect(drawer).toBeVisible();
-    const closeButtons = screen.getAllByRole("button", { name: "Close navigation" });
-    expect(closeButtons.length).toBeGreaterThan(0);
-    for (const button of closeButtons) {
-      expect(button.textContent?.trim()).toBe("");
-    }
-
-    fireEvent.keyDown(window, { key: "Escape" });
+    fireEvent.click(within(drawer).getByRole("button", { name: "Nigerian Export menu" }));
+    expect(within(drawer).getByRole("link", { name: "Commodities", exact: true })).toHaveAttribute("href", "/businesses/almahbub-integrated-export/commodities");
+    fireEvent.keyDown(document, { key: "Escape" });
     expect(drawer).not.toBeVisible();
   });
 
   it("sends Almahbub International brand links to the public profile, not home", () => {
     renderPortal();
-    fireEvent.click(screen.getByRole("button", { name: "Open navigation" }));
+    fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
     const links = screen.getAllByRole("link", { name: "Almahbub International" });
     expect(links.length).toBeGreaterThan(0);
     for (const link of links) {

@@ -25,7 +25,6 @@ export type CatalogMediaImportStatus =
 
 export type CatalogMediaMappingRow = {
   filename: string;
-  sourcePath?: string | null;
   productId?: string | null;
   productSlug?: string | null;
   kind?: CatalogMediaKind | null;
@@ -79,12 +78,7 @@ export type CatalogMediaImportDeps = {
     productId: string;
     url: string;
     altText?: string | null;
-    caption?: string | null;
     position?: number | null;
-    storageKey?: string | null;
-    mimeType?: string | null;
-    fileSize?: number | null;
-    isPrimary?: boolean;
   }) => Promise<{ id: string }>;
   createVideo: (input: {
     productId: string;
@@ -174,7 +168,6 @@ export function classifyCatalogMediaAsset(input: {
     mimeType: mime,
     sizeBytes: asset.sizeBytes,
     kind,
-    ...(asset.bytes ? { bytes: asset.bytes } : {}),
   });
   if (issues.length > 0) {
     return {
@@ -187,7 +180,6 @@ export function classifyCatalogMediaAsset(input: {
 
   const mapped =
     mappingByFilename.get(asset.filename) ??
-    mappingByFilename.get(asset.relativePath.replace(/\\/g, "/")) ??
     mappingByFilename.get(basename(asset.relativePath));
   if (!mapped) {
     return {
@@ -248,23 +240,6 @@ export function summarizeCatalogMediaImport(
   return report;
 }
 
-export function duplicateCatalogMediaPositions(
-  rows: CatalogMediaMappingRow[],
-): string[] {
-  const seen = new Set<string>();
-  const duplicates: string[] = [];
-  for (const row of rows) {
-    const product = row.productSlug?.trim() || row.productId?.trim() || "";
-    if (!product) continue;
-    const kind = row.kind ?? "image";
-    const position = row.position ?? 0;
-    const key = `${product}:${kind}:${position}`;
-    if (seen.has(key)) duplicates.push(key);
-    seen.add(key);
-  }
-  return duplicates;
-}
-
 export function parseCatalogMediaMappingJson(
   raw: unknown,
 ): CatalogMediaMappingRow[] {
@@ -288,8 +263,6 @@ export function parseCatalogMediaMappingJson(
         : undefined;
     const mapped: CatalogMediaMappingRow = {
       filename,
-      sourcePath:
-        record.sourcePath == null ? null : String(record.sourcePath).trim(),
       productId:
         record.productId == null ? null : String(record.productId).trim(),
       productSlug:
@@ -331,7 +304,6 @@ export async function executeCatalogMediaImport(input: {
 
     const mapped =
       input.mappingByFilename.get(asset.filename) ??
-      input.mappingByFilename.get(asset.relativePath.replace(/\\/g, "/")) ??
       input.mappingByFilename.get(basename(asset.relativePath));
     if (!mapped) {
       rows.push({
@@ -414,12 +386,7 @@ export async function executeCatalogMediaImport(input: {
               productId: product.id,
               url: stored.publicUrl,
               altText: mapped.altText ?? null,
-              caption: mapped.caption ?? null,
               position: mapped.position ?? null,
-              storageKey: stored.filename,
-              mimeType: mime,
-              fileSize: asset.sizeBytes,
-              isPrimary: (mapped.position ?? 0) === 0,
             })
           : await input.deps.createVideo({
               productId: product.id,

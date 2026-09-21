@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import { BusinessLogo } from "../components/BusinessLogo.js";
 import {
   GlobalHeader,
   GlobalFooter,
   FooterSeoJsonLd,
 } from "@hamd/ui/navigation";
+import { WhyChooseUsSection, TestimonialsSection, FaqSection, CtaSection } from "@hamd/ui/homepage";
 import { ButtonLink } from "@hamd/ui/primitives";
 import { useTheme } from "../app/providers/ThemeProvider.js";
-import { homepageFooter, homepageSeo } from "../content/homepage.js";
+import { homepageFooter, homepageSeo, homepageBelowFold } from "../content/homepage.js";
 import { COMMERCE } from "../content/commerce.js";
 import {
   InternationalCategories,
@@ -39,11 +39,16 @@ export function HomePage() {
       />
       <GlobalHeader
         {...header}
-        brandName="Almahbub Multi-Commerce"
-        brandAffiliation="Import & Export"
       />
       <main id="main-content">
-        <section className="commerce-hero">
+        <section className="commerce-hero commerce-hero--global">
+          <div className="commerce-hero__visual" aria-hidden="true">
+            <span className="commerce-hero__orb commerce-hero__orb--one" />
+            <span className="commerce-hero__orb commerce-hero__orb--two" />
+            <span className="commerce-hero__grid" />
+            <span className="commerce-hero__signal commerce-hero__signal--one" />
+            <span className="commerce-hero__signal commerce-hero__signal--two" />
+          </div>
           <div className="commerce-wrap">
             <p className="commerce-eyebrow">{COMMERCE.eyebrow}</p>
             <h1>
@@ -57,10 +62,10 @@ export function HomePage() {
               aria-label="Explore our operations"
             >
               <ButtonLink href="#international" variant="secondary">
-                Almahbub International
+                Global Procurement
               </ButtonLink>
               <ButtonLink href="#integrated-export" variant="secondary">
-                Almahbub Integrated Export
+                Nigerian Export
               </ButtonLink>
             </nav>
           </div>
@@ -74,11 +79,10 @@ export function HomePage() {
             {COMMERCE.international.positioning}
           </p>
           <h2 id="international-title">{COMMERCE.international.name}</h2>
-          <BusinessLogo business="international" />
           <p className="commerce-lead">{COMMERCE.international.description}</p>
           <InternationalCategories />
           <ButtonLink href="/businesses/almahbub-international">
-            Explore International
+            Explore Global Procurement
           </ButtonLink>
         </section>
         <section
@@ -88,31 +92,24 @@ export function HomePage() {
         >
           <p className="commerce-eyebrow">{COMMERCE.export.positioning}</p>
           <h2 id="export-title">{COMMERCE.export.name}</h2>
-          <BusinessLogo business="export" />
           <p className="commerce-lead">{COMMERCE.export.description}</p>
           <ExportCommodities />
           <ButtonLink href={IE_PATHS.home}>
-            Explore Integrated Export
+            Explore Nigerian Export
           </ButtonLink>
         </section>
-        <section
-          className="commerce-final commerce-wrap"
-          aria-labelledby="trade-request-title"
-        >
-          <h2 id="trade-request-title">Tell us what you need.</h2>
-          <p>
-            Share the item or commodity, quantity, specifications and
-            destination so our team can prepare your quotation.
-          </p>
-          <div className="commerce-actions">
-            <ButtonLink href="/app/requests/new">
-              Request import procurement
-            </ButtonLink>
-            <ButtonLink href={IE_PATHS.request} variant="secondary">
-              Request an export quotation
-            </ButtonLink>
-          </div>
-        </section>
+        {homepageBelowFold.whyChooseUs && <WhyChooseUsSection {...homepageBelowFold.whyChooseUs} />}
+        {homepageBelowFold.testimonials && <TestimonialsSection {...homepageBelowFold.testimonials} autoRotateMs={0} />}
+        {homepageBelowFold.faq && <FaqSection
+          {...homepageBelowFold.faq}
+          items={homepageBelowFold.faq.items.slice(0, 6)}
+        />}
+        <CtaSection
+          title="Tell us what you need."
+          description="Share the item or commodity, quantity, specifications and destination so our team can prepare your quotation."
+          primaryCta={{ href: "/app/requests/new", label: "Request import procurement" }}
+          secondaryCta={{ href: IE_PATHS.request, label: "Request an export quotation" }}
+        />
       </main>
       <GlobalFooter
         {...homepageFooter}

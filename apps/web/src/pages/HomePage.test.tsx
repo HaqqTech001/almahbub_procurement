@@ -8,6 +8,7 @@ vi.mock("../api/catalog-api.js", () => ({
   listPublicCategories: vi
     .fn()
     .mockResolvedValue({
+      page: { hasMore: false },
       data: [
         {
           slug: "machineries",
@@ -21,11 +22,12 @@ vi.mock(
   "../integrated-export/commodities/use-published-ie-catalogue.js",
   () => ({
     usePublishedIeCommodities: () => ({
-      previews: [
+      commodities: [
         {
           slug: "sesame-seeds",
           name: "Sesame Seeds",
-          imageSrc: "/media/category-industrial.svg",
+          id: "sesame",
+          heroMedia: { src: "/media/category-industrial.svg", alt: "Sesame Seeds" },
         },
       ],
       loading: false,
@@ -49,25 +51,38 @@ describe("HomePage business gateway", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Commerce Across Borders.",
     );
+    const hero = document.querySelector(".commerce-hero")!;
+    expect(within(hero).getByRole("link", { name: "Global Procurement" })).toHaveAttribute(
+      "href",
+      "#international",
+    );
+    expect(within(hero).getByRole("link", { name: "Nigerian Export" })).toHaveAttribute(
+      "href",
+      "#integrated-export",
+    );
+    expect(within(hero).queryByRole("heading", { name: "Almahbub International" })).toBeNull();
+    expect(within(hero).queryByRole("heading", { name: "Almahbub Integrated Export" })).toBeNull();
+    expect(within(hero).queryByRole("link", { name: "Explore International" })).toBeNull();
+    expect(within(hero).queryByRole("link", { name: "Explore Integrated Export" })).toBeNull();
     const sections = document.querySelectorAll("main > section");
     expect(sections[1]).toHaveAttribute("id", "international");
     expect(sections[2]).toHaveAttribute("id", "integrated-export");
     expect(
-      await screen.findByRole("link", { name: /Industrial Machinery, Tools/ }),
-    ).toHaveAttribute("href", "/products?category=machineries");
+      await screen.findByRole("link", { name: /Machinery/ }),
+    ).toHaveAttribute("href", "/global-procurement/category/machineries");
     expect(
       within(
-        screen.getByRole("list", { name: "Integrated Export commodities" }),
+        screen.getByRole("list", { name: "Nigerian Export commodities" }),
       ).getByRole("link", { name: /Sesame Seeds/ }),
     ).toHaveAttribute(
       "href",
       "/businesses/almahbub-integrated-export/commodities/sesame-seeds",
     );
     expect(
-      screen.getByRole("link", { name: "Explore International" }),
+      screen.getByRole("link", { name: "Explore Global Procurement" }),
     ).toHaveAttribute("href", "/businesses/almahbub-international");
     expect(
-      screen.getByRole("link", { name: "Explore Integrated Export" }),
+      screen.getByRole("link", { name: "Explore Nigerian Export" }),
     ).toHaveAttribute("href", "/businesses/almahbub-integrated-export");
     expect(document.querySelector('a[href="/group"]')).toBeNull();
     expect(document.querySelector('[type="application/ld+json"]')).toBeTruthy();
@@ -76,14 +91,36 @@ describe("HomePage business gateway", () => {
     vi.mocked(listPublicCategories).mockRejectedValueOnce(new Error("offline"));
     renderHome();
     expect(
-      screen.getByRole("list", { name: "International categories" }),
+      await screen.findByRole("alert"),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: "Explore International" }),
+      screen.getByRole("link", { name: "Explore Global Procurement" }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Request an export quotation" }),
     ).toBeInTheDocument();
     expect(screen.queryByText(/Rowdotul HAMD'26/i)).toBeNull();
+  });
+  it("keeps service introductions free of logos and retains the full landing journey", async () => {
+    renderHome();
+    await screen.findByRole("list", { name: "Global Procurement categories" });
+    for (const id of ["international", "integrated-export"]) {
+      const section = document.getElementById(id)!;
+      expect(section.querySelector(".commerce-business-logo")).toBeNull();
+      expect(section.querySelector("h2")?.nextElementSibling).toHaveClass("commerce-lead");
+      expect(section.querySelector("ul img")).not.toBeNull();
+    }
+    expect(screen.getByRole("heading", { name: "What Our Customers Say" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Common procurement questions" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Tell us what you need." })).toBeInTheDocument();
+    expect(document.querySelector(".hamd-why__grid")).not.toBeNull();
+    expect(document.querySelectorAll(".hamd-why__card")).toHaveLength(4);
+    expect(document.querySelector(".hamd-testimonials__viewport")).not.toBeNull();
+    expect(screen.getByRole("button", { name: "Next testimonial" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Do you publish live stock and checkout prices?" })).toHaveAttribute("aria-expanded", "true");
+    const header = document.querySelector("header")!;
+    expect(within(header).getByRole("link", { name: "Services", exact: true })).toHaveAttribute("href", "/services");
+    expect(within(header).getByRole("link", { name: "Global Procurement", exact: true })).toHaveAttribute("href", "/businesses/almahbub-international");
+    expect(document.querySelector("main")?.textContent).not.toMatch(/\u2014|\u00e2\u20ac\u201d/);
   });
 });

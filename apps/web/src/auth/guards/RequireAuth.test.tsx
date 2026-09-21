@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 
 import { RequireAuth } from "./RequireAuth.js";
@@ -27,11 +27,13 @@ vi.mock("@hamd/ui/primitives", () => ({
   LoadingSkeleton: () => <div>loading</div>,
 }));
 
+function LoginProbe() { const location = useLocation(); return <div>Login page<span data-testid="return-route">{location.search}</span></div>; }
+
 function renderJourney(path: string) {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
-        <Route path="/login" element={<div>Login page</div>} />
+        <Route path="/login" element={<LoginProbe />} />
         <Route path="/unauthorized" element={<div>Unauthorized page</div>} />
         <Route path="/session-expired" element={<div>Session expired page</div>} />
         <Route
@@ -68,8 +70,11 @@ describe("RequireAuth client journey", () => {
 
   it("sends expired sessions to login with returnTo", async () => {
     authState.status = "expired";
-    renderJourney("/app/requests");
+    renderJourney("/app/requests/123?tab=files#document");
     expect(await screen.findByText("Login page")).toBeInTheDocument();
+    const query = new URLSearchParams(screen.getByTestId("return-route").textContent!);
+    expect(query.get("returnTo")).toBe("/app/requests/123?tab=files#document");
+    expect(query.get("reason")).toBe("session-expired");
     expect(screen.queryByText("Client workspace")).not.toBeInTheDocument();
     expect(screen.queryByText("Session expired page")).not.toBeInTheDocument();
   });
@@ -77,8 +82,11 @@ describe("RequireAuth client journey", () => {
   it("does not keep the skeleton after hydration if status is still booting", async () => {
     authState.bootstrapping = false;
     authState.status = "booting";
-    renderJourney("/app/requests");
+    renderJourney("/app/requests/123?tab=files#document");
     expect(await screen.findByText("Login page")).toBeInTheDocument();
+    const query = new URLSearchParams(screen.getByTestId("return-route").textContent!);
+    expect(query.get("returnTo")).toBe("/app/requests/123?tab=files#document");
+    expect(query.get("reason")).toBeNull();
     expect(screen.queryByText("Client workspace")).not.toBeInTheDocument();
   });
 

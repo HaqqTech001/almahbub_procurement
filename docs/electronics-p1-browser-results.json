@@ -1,0 +1,53 @@
+[
+  {
+    "width": 1440,
+    "alias": true,
+    "hero": [
+      {
+        "src": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-000000000001/39f5e29c-d06c-486a-9f98-5cacad73dae6-electronics-mobile-digital-technology-category.png",
+        "loaded": true
+      }
+    ],
+    "cards": 0,
+    "viewMore": "/products?category=electronics-mobile-digital-technology",
+    "selected": [
+      {
+        "value": "iphones-gadgets",
+        "text": "Electronics, Mobile & Digital Technology"
+      },
+      {
+        "value": "recommended",
+        "text": "Recommended"
+      }
+    ],
+    "filterUrlPersistsAfterReload": true,
+    "horizontalOverflow": false
+  },
+  {
+    "width": 390,
+    "alias": true,
+    "hero": [
+      {
+        "src": "/api/v1/public/catalog-media/0190c8a0-1000-7000-8000-000000000001/39f5e29c-d06c-486a-9f98-5cacad73dae6-electronics-mobile-digital-technology-category.png",
+        "loaded": true
+      }
+    ],
+    "cards": 0,
+    "viewMore": "/products?category=electronics-mobile-digital-technology",
+    "selected": [
+      {
+        "value": "iphones-gadgets",
+        "text": "Electronics, Mobile & Digital Technology"
+      },
+      {
+        "value": "recommended",
+        "text": "Recommended"
+      }
+    ],
+    "filterUrlPersistsAfterReload": true,
+    "horizontalOverflow": false
+  },
+  {
+    "draftDetailHttpStatus": 404
+  }
+]

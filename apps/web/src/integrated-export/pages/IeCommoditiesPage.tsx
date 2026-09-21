@@ -1,4 +1,4 @@
-import { CANONICAL_PRESENTATION } from "../../content/canonical-presentation.js";
+
 import { ButtonLink, Container } from "../../components/index.js";
 import { INTEGRATED_EXPORT_PORTAL } from "../../content/group.js";
 import { usePublishedIeCommodities } from "../commodities/use-published-ie-catalogue.js";
@@ -22,7 +22,7 @@ export function IeCommoditiesPage() {
         aria-labelledby="aie-catalogue-title"
       >
         <Container>
-          <p className="hamd-aie-catalogue__eyebrow">Integrated Export</p>
+          <p className="hamd-aie-catalogue__eyebrow">Nigerian Export</p>
           <h1 id="aie-catalogue-title" className="hamd-aie-catalogue__title">
             {home.commoditiesPreview.title}
           </h1>
@@ -40,11 +40,7 @@ export function IeCommoditiesPage() {
           {loading ? <>
             <h2 id="aie-catalogue-list-title" className="hamd-sr-only">Explore agricultural commodities</h2>
             <p role="status">Loading published commodity details…</p>
-            <ul className="hamd-aie-catalogue__grid" aria-label="Commodity range">
-              {CANONICAL_PRESENTATION.filter(item => item.business === "IE").map(item => <li key={item.slug}>
-                <IeCommodityCard commodity={{ slug: item.slug, name: item.name, imageSrc: item.src, imageAlt: item.alt }} headingLevel={3} />
-              </li>)}
-            </ul>
+
           </> : error ? (
             <div className="hamd-aie-catalogue__empty" data-ie-catalogue-source={source}>
               <div className="hamd-aie-catalogue__empty-panel" role="alert">
@@ -52,7 +48,7 @@ export function IeCommoditiesPage() {
                   We couldn't load commodities.
                 </h2>
                 <p className="hamd-aie-catalogue__empty-copy">
-                  The published Integrated Export catalogue did not load.
+                  The published Nigerian Export catalogue did not load.
                 </p>
                 <button type="button" className="hamd-btn hamd-btn--primary" onClick={retry}>
                   Try Again

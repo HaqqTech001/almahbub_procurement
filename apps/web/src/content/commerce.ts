@@ -4,16 +4,16 @@ export const COMMERCE = {
   sourcing: "Sourcing What Businesses Need.",
   supplying: "Supplying What the World Needs.",
   description:
-    "Our import and export operations connect international sourcing with agricultural commodity trade across China, USA, UK, UAE, Korea and other markets.",
+    "From iPhones, digital devices, machinery and general items to agricultural products and commodities, our import and export operations connect businesses with sourcing and supply opportunities across China, USA, UK, UAE, Korea and other global markets.",
   international: {
     name: "Almahbub International",
-    positioning: "Devices, Machinery & General Items Import",
+    positioning: "Source Globally. Procure With Confidence.",
     description:
       "International sourcing and procurement of devices, machinery and general merchandise from major markets including China, USA, UK, UAE and Korea.",
   },
   export: {
     name: "Almahbub Integrated Export",
-    positioning: "Agricultural Commodity Export",
+    positioning: "Export Supply from Nigeria",
     description:
       "Connecting quality agricultural commodities to international buyers, supporting trade that provides sustenance to the world.",
   },

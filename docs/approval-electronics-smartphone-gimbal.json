@@ -1,0 +1,11 @@
+{
+  "productId": "01a0b3b6-74f3-753d-95d5-0ec8614fd364",
+  "productSlug": "electronics-smartphone-gimbal",
+  "productName": "Smartphone Gimbal",
+  "execute": false,
+  "eligibleForPublicApproval": false,
+  "blockingReasons": [
+    "durable_storage_required"
+  ],
+  "status": "blocked"
+}

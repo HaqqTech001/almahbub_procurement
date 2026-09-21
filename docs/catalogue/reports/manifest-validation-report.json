@@ -1,0 +1,16 @@
+{
+  "manifestVersion": "2.0-starter",
+  "entryCount": 100,
+  "categoryCount": 10,
+  "typeCounts": {
+    "PRODUCT_FAMILY": 19,
+    "STANDARD_PRODUCT": 70,
+    "PROCUREMENT_SERVICE": 10,
+    "CONFIGURABLE_PRODUCT": 1
+  },
+  "duplicateCount": 0,
+  "errors": [],
+  "warnings": [
+    "Entry ALM-100: configurable product has no predefined variants and is specification-driven."
+  ]
+}

@@ -1,3 +1,4 @@
+import { userFacingError } from "@hamd/ui/auth";
 import {
   DEFAULT_WEDDING_CAMPAIGN,
   WEDDING_GALLERY_MAX_BYTES,
@@ -5,7 +6,7 @@ import {
   type WeddingCampaignRecord,
   type WeddingWaitingTrack,
 } from "@hamd/constants";
-import { readResponseBody, unwrapEnvelopeData } from "@hamd/ui/auth";
+import { BROWSER_REQUEST_TIMEOUT_MS, fetchWithTransientRetry, readResponseBody, signalWithTimeout, unwrapEnvelopeData } from "@hamd/ui/auth";
 
 import { browserApiBase } from "../lib/api-origin.js";
 import { resolveMediaUrl } from "../lib/media-url.js";
@@ -29,18 +30,15 @@ async function weddingFetch<T>(
   if (init.body && !(init.body instanceof FormData) && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
-  const response = await sessionFetch(apiUrl(path), {
+  const publicRead = (!init.method || init.method === "GET") && ["/wedding/comments", "/wedding/gallery", "/wedding/waiting-audio", "/wedding/live/status"].includes(path);
+  const response = await (publicRead ? fetchWithTransientRetry : sessionFetch)(apiUrl(path), {
     ...init,
     headers,
     credentials: "include",
   });
   const body = await readResponseBody(response);
   if (!response.ok) {
-    const message =
-      body && typeof body === "object" && "error" in body
-        ? String((body as { error?: { message?: string } }).error?.message ?? "Request failed.")
-        : "Request failed.";
-    throw new Error(message);
+    throw new Error(userFacingError({ ...body as object, status: response.status }));
   }
   return unwrapEnvelopeData<T>(body);
 }
@@ -49,7 +47,15 @@ export async function fetchWeddingCampaign(): Promise<WeddingCampaignRecord> {
   let lastError: unknown;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
-      const row = await weddingFetch<WeddingCampaignRecord>("/wedding/campaign");
+      // Campaign promotion is public. Session initialization must not turn a
+      // later anonymous refresh into an authenticated request and disable it.
+      const response = await fetchWithTransientRetry(apiUrl("/wedding/campaign"), {
+        headers: { Accept: "application/json" },
+        credentials: "include",
+        signal: signalWithTimeout(undefined, BROWSER_REQUEST_TIMEOUT_MS),
+      });
+      if (!response.ok) throw new Error("Unable to load the public wedding campaign.");
+      const row = unwrapEnvelopeData<WeddingCampaignRecord>(await readResponseBody(response));
       if (!row || typeof row.modalEnabled !== "boolean") throw new Error("Invalid wedding campaign response.");
       return { ...DEFAULT_WEDDING_CAMPAIGN, ...row };
     } catch (error) {

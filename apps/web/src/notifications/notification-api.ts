@@ -1,3 +1,4 @@
+import { safeErrorMessage } from "@hamd/ui/auth";
 import type {
   InboxNotification,
   NotificationPreference,
@@ -48,7 +49,7 @@ export class NotificationApiError extends Error {
   readonly status: number;
   readonly code: string;
   constructor(message: string, status: number, code: string) {
-    super(message);
+    super(safeErrorMessage(message, status));
     this.name = "NotificationApiError";
     this.status = status;
     this.code = code;

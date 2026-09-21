@@ -46,7 +46,7 @@ describe("mapApiCommodityToIeCommodity", () => {
       sortOrder: 10,
     };
     const mapped = mapApiCommodityToIeCommodity(dto);
-    expect(mapped.heroMedia).toEqual({ src: "/media/presentation/v2/ie/sesame-seeds.webp", alt: "Sesame Seeds" });
+    expect(mapped.heroMedia).toEqual({ src: API_HERO.src, alt: API_HERO.alt });
     expect(mapped).not.toHaveProperty("markets");
     expect(mapped).not.toHaveProperty("specifications");
     expect(mapped).not.toHaveProperty("price");
@@ -65,7 +65,7 @@ describe("mapApiCommodityToIeCommodity", () => {
       sortOrder: 20,
     });
     expect(mapped.heroMedia).toEqual({
-      src: "/media/presentation/v2/ie/cashew.webp",
+      src: "/media/ie/commodities/cashew/hero/ie-cashew-hero-01.webp",
       alt: "Cashew",
     });
   });
@@ -76,17 +76,17 @@ describe("IE catalogue uses API records with canonical artwork", () => {
     vi.unstubAllGlobals();
   });
 
-  it.each(["/businesses/almahbub-integrated-export/commodities", "/businesses/almahbub-integrated-export/commodities/sesame-seeds"])("renders canonical artwork before API startup at %s", (path) => {
+  it.each(["/businesses/almahbub-integrated-export/commodities", "/businesses/almahbub-integrated-export/commodities/sesame-seeds"])("does not invent commodity records before API startup at %s", (path) => {
     vi.stubGlobal("fetch", vi.fn().mockReturnValue(new Promise(() => {})));
     render(<MemoryRouter initialEntries={[path]}><AppProviders><Routes>
       <Route path="/businesses/almahbub-integrated-export/commodities" element={<IeCommoditiesPage />} />
       <Route path="/businesses/almahbub-integrated-export/commodities/:slug" element={<IeCommodityDetailPage />} />
     </Routes></AppProviders></MemoryRouter>);
-    expect(screen.getByRole("img", { name: "Sesame Seeds" })).toHaveAttribute("src", "/media/presentation/v2/ie/sesame-seeds.webp");
+    expect(screen.queryByRole("img")).toBeNull();
     expect(screen.queryByText("Published commodities")).toBeNull();
   });
 
-  it("keeps API publication authority with a canonical cover", async () => {
+  it("keeps API publication and media authority", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue(
@@ -123,13 +123,13 @@ describe("IE catalogue uses API records with canonical artwork", () => {
     await waitFor(() => {
       expect(document.querySelector("[data-ie-catalogue-source='api']")).toBeTruthy();
     });
-    const hero = screen.getByRole("img", { name: "Sesame Seeds" });
-    expect(hero).toHaveAttribute("src", "/media/presentation/v2/ie/sesame-seeds.webp");
+    const hero = screen.getByRole("img", { name: API_HERO.alt });
+    expect(hero).toHaveAttribute("src", API_HERO.src);
     expect(hero).toHaveAttribute("data-ie-hero", "true");
     expect(screen.queryByRole("link", { name: "Cashew", exact: true })).not.toBeInTheDocument();
   });
 
-  it("renders canonical detail artwork for a published slug", async () => {
+  it("renders stored detail artwork for a published slug", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue(
@@ -173,7 +173,7 @@ describe("IE catalogue uses API records with canonical artwork", () => {
     await waitFor(() => {
       expect(document.querySelector("[data-ie-catalogue-source='api']")).toBeTruthy();
     });
-    expect(screen.getByRole("img", { name: "Sesame Seeds" })).toHaveAttribute("src", "/media/presentation/v2/ie/sesame-seeds.webp");
+    expect(screen.getByRole("img", { name: API_HERO.alt })).toHaveAttribute("src", API_HERO.src);
     expect(screen.queryByText(/not Almahbub facilities/i)).not.toBeInTheDocument();
   });
 });

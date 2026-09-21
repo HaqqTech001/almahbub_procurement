@@ -10,6 +10,10 @@ export type AuditProduct = {
 };
 export type Classification = "KEEP_PRIORITY" | "KEEP_NEEDS_MEDIA" | "ARCHIVE" | "DELETE_CANDIDATE";
 
+export function isPublicCatalogueFiller(name: string): boolean {
+  return /fabric\s+roll|stationery\s+bundle|assorted\s+(supplies|items)|general\s+supplies|pos\s+terminal/i.test(name);
+}
+
 const normalized = (text: string) => text.trim().toLowerCase().replace(/\s+/g, " ");
 function stable(value: unknown): string {
   if (Array.isArray(value)) return JSON.stringify(value.map(stable).sort());
@@ -52,7 +56,7 @@ export function auditCatalogue(products: AuditProduct[], health: ReadonlyMap<str
     } else if (duplicateOf.has(row.id)) {
       classification = "DELETE_CANDIDATE";
       classificationReason = `Possible duplicate with identical name/category/brand/manufacturer/description/specifications of ${duplicateOf.get(row.id)}; human confirmation required.`;
-    } else if (row.status === "archived" || /\bpos\b|point.of.sale|fabric roll|textile roll|consumables bundle|stationery bundle|custom.*bundle|assorted.*(?:items|products)|general.*(?:supplies|bundle)/i.test(row.name)) {
+    } else if (row.status === "archived" || isPublicCatalogueFiller(row.name) || /\bpos\b|point.of.sale|textile roll|consumables bundle|custom.*bundle|assorted.*(?:items|products)|general.*(?:supplies|bundle)/i.test(row.name)) {
       classification = "ARCHIVE";
       classificationReason = row.status === "archived" ? "Already archived; retain recoverably in Ops." : "Low-priority showcase family or vague bundle; proposed reversible archive, not deletion.";
     } else if (mediaHealth !== "valid") {

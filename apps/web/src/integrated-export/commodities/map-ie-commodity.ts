@@ -1,21 +1,22 @@
 import { resolveIeMediaSrc, type IeCommodityApiDetail, type IeCommodityApiListItem, type IeCommodityApiMedia } from "./ie-commodity-api.js";
 import type { IeCommodity, IeCommodityMedia } from "./types.js";
-import { canonicalIeMedia, presentationSource } from "../../content/presentation-media.js";
+import { catalogueCopy } from "../../lib/catalogue-copy.js";
+
 
 function mapMedia(
   value: IeCommodityApiMedia | null | undefined,
   fallbackAlt: string,
-  slug?: string,
+
 ): IeCommodityMedia | undefined {
-  const src = presentationSource(resolveIeMediaSrc(value?.src), canonicalIeMedia(value?.src, slug));
+  const src = resolveIeMediaSrc(value?.src);
   if (!src) return undefined;
-  const alt = canonicalIeMedia(value?.src, slug) ? fallbackAlt : value?.alt?.trim() || fallbackAlt;
+  const alt = catalogueCopy(value?.alt?.trim() || fallbackAlt);
   return { src, alt };
 }
 
 function omitEmpty(value: string | null | undefined): string | undefined {
   const trimmed = value?.trim();
-  return trimmed ? trimmed : undefined;
+  return trimmed ? catalogueCopy(trimmed) : undefined;
 }
 
 /**
@@ -28,7 +29,7 @@ export function mapApiCommodityToIeCommodity(
   const record: IeCommodity = {
     id: row.id,
     slug: row.slug,
-    name: row.name,
+    name: catalogueCopy(row.name),
     published: row.published,
     sortOrder: row.sortOrder,
   };
@@ -39,7 +40,7 @@ export function mapApiCommodityToIeCommodity(
   const shortDescription = omitEmpty(row.shortDescription);
   if (shortDescription) record.shortDescription = shortDescription;
 
-  const heroMedia = mapMedia(row.heroMedia, row.name, row.slug);
+  const heroMedia = mapMedia(row.heroMedia, row.name);
   if (heroMedia) record.heroMedia = heroMedia;
 
   if ("description" in row) {
@@ -57,8 +58,8 @@ export function mapApiCommodityToIeCommodity(
   if ("specifications" in row && Array.isArray(row.specifications) && row.specifications.length > 0) {
     record.specifications = row.specifications
       .map((item) => ({
-        label: item.label.trim(),
-        value: item.value.trim(),
+        label: catalogueCopy(item.label.trim()),
+        value: catalogueCopy(item.value.trim()),
       }))
       .filter((item) => item.label && item.value);
   }
@@ -74,7 +75,7 @@ export function mapApiCommodityToIeCommodity(
   }
 
   if ("applications" in row && Array.isArray(row.applications) && row.applications.length > 0) {
-    record.applications = row.applications.map((item) => item.trim()).filter(Boolean);
+    record.applications = row.applications.map((item) => catalogueCopy(item.trim())).filter(Boolean);
   }
 
   if ("markets" in row) {

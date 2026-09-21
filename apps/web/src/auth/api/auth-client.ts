@@ -1,19 +1,5 @@
-import { AUTH_BOOTSTRAP_TIMEOUT_MS, signalWithTimeout } from "@hamd/ui/auth";
 import { AuthApiError, readCookie } from "./auth-errors.js";
 import { getCsrfToken, setCsrfToken } from "../session/token-store.js";
-import { browserApiBase } from "../../lib/api-origin.js";
-
-function safeOAuthReturnTo(returnTo: string, fallback: string): string {
-  const trimmed = returnTo.trim();
-  if (!trimmed.startsWith("/") || trimmed.startsWith("//") || trimmed.startsWith("/\\")) {
-    return fallback;
-  }
-  if (trimmed === "/") return fallback;
-  if (trimmed.includes("://") || trimmed.includes("\\") || trimmed.includes("@")) {
-    return fallback;
-  }
-  return trimmed;
-}
 
 export type AuthUser = {
   id: string;
@@ -23,9 +9,9 @@ export type AuthUser = {
   displayName: string | null;
   locale: string;
   timeZone: string | null;
-  lastAuthenticatedAt?: string | null;
-  createdAt?: string | null;
   emailVerifiedAt?: string | null;
+  createdAt?: string | null;
+  lastAuthenticatedAt?: string | null;
 };
 
 export type AuthSessionPayload = {
@@ -89,7 +75,12 @@ export type InvitationPreview = {
 type Envelope<T> = { data: T; error?: { code?: string; message?: string } };
 
 function apiBase(): string {
-  return browserApiBase();
+  const base = (
+    typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL
+      ? String(import.meta.env.VITE_API_URL)
+      : ""
+  ).replace(/\/$/, "");
+  return base;
 }
 
 function authUrl(path: string): string {
@@ -127,18 +118,11 @@ function toAuthError(response: Response, body: unknown): AuthApiError {
       : response.status === 401
         ? "Invalid email or password."
         : "Authentication request failed.");
-  const retryAfterHeader = response.headers.get("Retry-After");
-  const retryAfterSeconds = retryAfterHeader
-    ? Number.parseInt(retryAfterHeader, 10)
-    : Number.NaN;
   return new AuthApiError({
     message,
     status: response.status,
     code,
     details: envelope?.error?.details,
-    ...(Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
-      ? { retryAfterSeconds }
-      : {}),
   });
 }
 
@@ -179,7 +163,7 @@ export async function authFetch<T>(
       headers,
       body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
       credentials: "include",
-      signal: signalWithTimeout(options.signal, AUTH_BOOTSTRAP_TIMEOUT_MS),
+      signal: options.signal,
     });
   } catch {
     throw new AuthApiError({
@@ -234,6 +218,17 @@ export function loginRequest(input: {
   });
 }
 
+export function googleSignInRequest(input: {
+  credential: string;
+  code?: string;
+  email?: string;
+}): Promise<AuthSessionPayload> {
+  return authFetch<AuthSessionPayload>("/google", {
+    method: "POST",
+    body: input,
+  });
+}
+
 export function refreshRequest(accessToken?: string | null): Promise<AuthSessionPayload> {
   const csrf = getCsrfToken() ?? readCookie("hamd_csrf") ?? undefined;
   return authFetch<AuthSessionPayload>("/refresh", {
@@ -257,24 +252,11 @@ export async function googleOAuthStatusRequest(): Promise<{ enabled: boolean }> 
   });
 }
 
-export function googleSignInRequest(input: {
-  credential: string;
-  code?: string;
-  email?: string;
-}): Promise<AuthSessionPayload> {
-  return authFetch<AuthSessionPayload>("/google", {
-    method: "POST",
-    body: {
-      credential: input.credential,
-      ...(input.code ? { code: input.code } : {}),
-      ...(input.email ? { email: input.email } : {}),
-    },
-  });
-}
-
 /** Absolute URL that starts the real Google OAuth redirect flow. */
 export function googleOAuthStartUrl(returnTo = "/app"): string {
-  const target = safeOAuthReturnTo(returnTo, "/app");
+  const target = returnTo.startsWith("/") && !returnTo.startsWith("//")
+    ? returnTo
+    : "/app";
   return authUrl(`/google?returnTo=${encodeURIComponent(target)}`);
 }
 

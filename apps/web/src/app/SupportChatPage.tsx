@@ -1,3 +1,4 @@
+import { sessionFetch } from "../auth/session/session-http.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   EnterpriseChat,
@@ -81,7 +82,7 @@ async function hydrateAttachments(
       const cached = cache.get(documentId);
       if (cached) return { ...attachment, previewUrl: cached };
       try {
-        const response = await fetch(`${documentsUrl()}/${documentId}`, {
+        const response = await sessionFetch(`${documentsUrl()}/${documentId}`, {
           headers: { Authorization: `Bearer ${accessToken}` },
           credentials: "include",
         });
@@ -105,6 +106,7 @@ export function SupportChatPage() {
   const { push: pushToast } = useToast();
   const currentUserId = auth.user?.id ?? "self";
   const blobCache = useRef(new Map<string, string>());
+  const uploadedFiles = useRef(new WeakMap<File, Awaited<ReturnType<typeof uploadProcurementFiles>>[number]>());
   const [thread, setThread] = useState<SupportThreadPayload | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -181,9 +183,10 @@ export function SupportChatPage() {
     const files = draft.attachments
       .map((attachment) => attachment.file)
       .filter((file): file is File => Boolean(file));
-    const uploaded = files.length
-      ? await uploadProcurementFiles(token, files)
-      : [];
+    const missing = files.filter(file => !uploadedFiles.current.has(file));
+    const fresh = missing.length ? await uploadProcurementFiles(token, missing) : [];
+    fresh.forEach((document, index) => uploadedFiles.current.set(missing[index]!, document));
+    const uploaded = files.map(file => uploadedFiles.current.get(file)!);
     const attachments: ChatAttachment[] = uploaded.map((document) => ({
       id: document.id,
       name: document.name,
@@ -212,7 +215,7 @@ export function SupportChatPage() {
         blobCache.current,
       );
     }
-    await refresh();
+    await refresh().catch(() => { /* message already sent */ });
     return mapped;
   };
 

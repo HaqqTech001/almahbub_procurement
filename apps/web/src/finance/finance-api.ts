@@ -1,3 +1,4 @@
+import { safeErrorMessage } from "@hamd/ui/auth";
 import { getAccessToken } from "../auth/session/token-store.js";
 import { sessionFetch } from "../auth/session/session-http.js";
 import { browserApiBase } from "../lib/api-origin.js";
@@ -41,7 +42,7 @@ export class FinanceApiError extends Error {
   readonly status: number;
   readonly code: string;
   constructor(message: string, status: number, code: string) {
-    super(message);
+    super(safeErrorMessage(message, status));
     this.name = "FinanceApiError";
     this.status = status;
     this.code = code;

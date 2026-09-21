@@ -1,3 +1,4 @@
+import { AUTH_SESSION_MAX_SECONDS } from "../../../../config/auth-session-policy.js";
 import { Prisma } from "@hamd/database";
 import type { DatabaseClient } from "../../../../shared/database/database-client.js";
 import { passwordLockUntil } from "../application/password-lockout.js";
@@ -132,6 +133,7 @@ export class AuthRepository {
         refreshTokenHash,
         status: "active",
         expiresAt: { gt: new Date() },
+        createdAt: { gt: new Date(Date.now() - AUTH_SESSION_MAX_SECONDS * 1000) },
       },
       select: {
         id: true,

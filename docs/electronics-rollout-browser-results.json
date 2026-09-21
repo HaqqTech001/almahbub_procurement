@@ -1,0 +1,38 @@
+[
+  {
+    "width": 1440,
+    "canonicalUrl": "http://127.0.0.1:4197/global-procurement/category/electronics-mobile-digital-technology",
+    "heroLoaded": true,
+    "cards": 0,
+    "placeholderText": false,
+    "horizontalOverflow": false,
+    "viewMore": "/products?category=electronics-mobile-digital-technology",
+    "filterPersists": true
+  },
+  {
+    "width": 390,
+    "canonicalUrl": "http://127.0.0.1:4197/global-procurement/category/electronics-mobile-digital-technology",
+    "heroLoaded": true,
+    "cards": 0,
+    "placeholderText": false,
+    "horizontalOverflow": false,
+    "viewMore": "/products?category=electronics-mobile-digital-technology",
+    "filterPersists": true
+  },
+  {
+    "slug": "electronics-20-000mah-power-bank",
+    "draftDetailHttpStatus": 404
+  },
+  {
+    "slug": "electronics-usb-c-fast-charger",
+    "draftDetailHttpStatus": 404
+  },
+  {
+    "slug": "electronics-wireless-earbuds",
+    "draftDetailHttpStatus": 404
+  },
+  {
+    "slug": "electronics-smartphone-gimbal",
+    "draftDetailHttpStatus": 404
+  }
+]

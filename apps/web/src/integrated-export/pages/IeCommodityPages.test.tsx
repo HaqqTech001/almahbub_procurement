@@ -207,7 +207,7 @@ describe("IE-3B catalogue and detail UI", () => {
     expect(screen.queryByRole("heading", { name: /specifications/i })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: /additional details/i })).not.toBeInTheDocument();
     expect(screen.queryByText(/nigeria/i)).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /^Request a Quote$/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /^Request Export Supply$/i })).toHaveAttribute(
       "href",
       `/login?returnTo=${encodeURIComponent(`/app/requests/new?ieCommodity=${encodeURIComponent(FIXTURE_MINIMAL.slug)}`)}`,
     );

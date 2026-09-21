@@ -47,15 +47,6 @@ const environmentSchema = z
     RESEND_API_KEY: z.string().min(1).optional(),
     EMAIL_FROM: z.string().email().optional(),
     EMAIL_FROM_NAME: z.string().min(1).optional(),
-    /** Reply-To for transactional mail. Defaults to EMAIL_CONTACT. */
-    EMAIL_REPLY_TO: z.string().email().optional(),
-    /**
-     * Public HTTPS URL for the email header logo (PNG/JPG preferred for Outlook).
-     * Defaults to `{APP_PUBLIC_URL}/almahbub.svg`.
-     */
-    EMAIL_LOGO_URL: z.string().url().optional(),
-    /** Public contact address shown in footers. Defaults to almahbubinternational@gmail.com. */
-    EMAIL_CONTACT: z.string().email().optional(),
     /** Public web origin for auth email links (verify / reset). */
     APP_PUBLIC_URL: z.string().url().optional(),
     /** Runtime bootstrap account for the platform admin. */
@@ -67,13 +58,8 @@ const environmentSchema = z
     ALMAHBUB_ADMIN_EMAIL: z.string().email().optional(),
     ALMAHBUB_ADMIN_PASSWORD: z.string().min(8).optional(),
     /**
-     * Google Sign-In (GIS ID-token). Client ID only — never a browser secret.
-     * GOOGLE_OAUTH_CLIENT_ID is accepted as an alias.
-     */
-    GOOGLE_CLIENT_ID: z.string().min(1).optional(),
-    /**
-     * Legacy authorization-code redirect. Secret stays server-side only.
-     * Required only for GET /api/v1/auth/google (not GIS POST).
+     * Google OAuth (optional). When CLIENT_ID + CLIENT_SECRET are set,
+     * `/api/v1/auth/google` is enabled. Redirect URI must match Google Console.
      */
     GOOGLE_OAUTH_CLIENT_ID: z.string().min(1).optional(),
     GOOGLE_OAUTH_CLIENT_SECRET: z.string().min(1).optional(),
@@ -93,10 +79,6 @@ const environmentSchema = z
       .default("none"),
     OPENAI_API_KEY: z.string().min(1).optional(),
     AI_OPENAI_MODEL: z.string().min(1).default("gpt-4o-mini"),
-    CATALOG_IMAGE_PROVIDER: z.enum(["none", "openai"]).default("none"),
-    AI_OPENAI_IMAGE_MODEL: z.string().min(1).default("gpt-image-2"),
-    AI_OPENAI_IMAGE_SIZE: z.string().min(1).default("1024x1024"),
-    AI_OPENAI_IMAGE_QUALITY: z.enum(["low", "medium", "high"]).default("medium"),
     ANTHROPIC_API_KEY: z.string().min(1).optional(),
     AI_ANTHROPIC_MODEL: z.string().min(1).default("claude-sonnet-4-20250514"),
     GEMINI_API_KEY: z.string().min(1).optional(),
@@ -119,32 +101,6 @@ const environmentSchema = z
     CATALOG_MEDIA_SUPABASE_URL: z.string().url().optional(),
     CATALOG_MEDIA_SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
     CATALOG_MEDIA_SUPABASE_BUCKET: z.string().min(1).default("catalog-public"),
-    LIVEKIT_URL: z
-      .string()
-      .min(1)
-      .refine((value) => {
-        try {
-          const parsed = new URL(value);
-          return ["ws:", "wss:", "http:", "https:"].includes(parsed.protocol);
-        } catch {
-          return false;
-        }
-      }, "LIVEKIT_URL must be a ws, wss, http, or https URL")
-      .optional(),
-    LIVEKIT_API_KEY: z.string().min(1).optional(),
-    LIVEKIT_API_SECRET: z.string().min(1).optional(),
-    WEDDING_TEST_CONTROLS: z
-      .enum(["true", "false"])
-      .optional()
-      .transform((value) => value === "true"),
-    TERMII_API_KEY: z.string().min(1).optional(),
-    TERMII_BASE_URL: z.string().url().optional(),
-    TERMII_SENDER_ID: z.string().min(1).max(11).optional(),
-    /** Comma-separated E.164 numbers allowed to receive wedding SMS in non-production. */
-    WEDDING_SMS_ALLOWLIST: z
-      .string()
-      .optional()
-      .transform((value) => (value ? splitCommaSeparated(value) : [])),
   })
   .superRefine((environment, context) => {
     if (environment.NODE_ENV !== "production") {
@@ -308,16 +264,8 @@ export function parseEnvironment(
     ADMIN_EMAIL: source.ADMIN_EMAIL ?? source.ALMAHBUB_ADMIN_EMAIL,
     ADMIN_PASSWORD: source.ADMIN_PASSWORD ?? source.ALMAHBUB_ADMIN_PASSWORD,
   };
-  const googleClientId = source.GOOGLE_CLIENT_ID ?? source.GOOGLE_OAUTH_CLIENT_ID;
-  const googleAliases = {
-    GOOGLE_CLIENT_ID: googleClientId,
-    GOOGLE_OAUTH_CLIENT_ID: source.GOOGLE_OAUTH_CLIENT_ID ?? source.GOOGLE_CLIENT_ID,
-    GOOGLE_OAUTH_CLIENT_SECRET:
-      source.GOOGLE_OAUTH_CLIENT_SECRET ?? source.GOOGLE_CLIENT_SECRET,
-  };
   return parseSharedEnvironment(environmentSchema, {
     ...source,
     ...adminAliases,
-    ...googleAliases,
   });
 }

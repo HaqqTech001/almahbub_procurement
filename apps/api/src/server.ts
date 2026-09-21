@@ -8,10 +8,6 @@ import {
 import { parseEnvironment } from "./config/env.js";
 import { createLogger } from "./config/logger.js";
 import { ensureAdminBootstrap } from "./modules/identity/auth/application/admin-bootstrap.js";
-import { createTransactionalEmailGateway } from "./modules/identity/auth/application/auth-email.js";
-import { NotificationService } from "./modules/communication/notification/application/notification-service.js";
-import { createEmailBrand } from "./modules/communication/email/email-brand.js";
-import { startNotificationRelay } from "./workers/start-notification-relay.js";
 
 const environment = parseEnvironment();
 const logger = createLogger(environment);
@@ -35,27 +31,11 @@ if (dependencies.database) {
       { err: error },
       "Failed to ensure the configured platform admin bootstrap account",
     );
-    await disconnectDependencies(dependencies).catch((disconnectError: unknown) => {
-      logger.error({ err: disconnectError }, "Failed to disconnect after startup failure");
-    });
-    process.exit(1);
+    throw error;
   }
 }
 
 const app = createApp(environment, dependencies);
-
-let stopNotificationRelay: (() => void) | undefined;
-if (dependencies.database) {
-  const emailGateway = createTransactionalEmailGateway(environment);
-  stopNotificationRelay = startNotificationRelay(
-    dependencies.database,
-    new NotificationService(
-      dependencies.database,
-      emailGateway,
-      createEmailBrand(environment),
-    ),
-  );
-}
 
 const server = app.listen(environment.API_PORT, environment.API_HOST, () => {
   logger.info(
@@ -78,7 +58,6 @@ function shutdown(signal: NodeJS.Signals): void {
     }
 
     try {
-      stopNotificationRelay?.();
       await disconnectDependencies(dependencies);
     } catch (disconnectError) {
       logger.error(
@@ -99,4 +78,3 @@ function shutdown(signal: NodeJS.Signals): void {
 
 process.once("SIGINT", shutdown);
 process.once("SIGTERM", shutdown);
-process.once("SIGUSR2", shutdown);

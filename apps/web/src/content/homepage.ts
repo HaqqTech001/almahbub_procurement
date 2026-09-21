@@ -49,7 +49,7 @@ export const homepageHero: NonNullable<HomepageProps["hero"]> = {
   groupExploreLabel: "Explore our businesses",
   headline: "Commerce Across Borders. Sourcing What Businesses Need. Supplying What the World Needs.",
   supportingText:
-    "Our import and export operations connect international sourcing with agricultural commodity trade across China, USA, UK, UAE, Korea and other markets.",
+    "From phones, gadgets and office devices to appliances, machinery, fashion and Nigerian agricultural produce, Almahbub International connects businesses with sourcing and supply opportunities across China, the USA, UK, UAE, Korea and other global markets.",
   primaryCta: { href: "/app/requests/new", label: "Start a procurement request" },
   secondaryCta: { href: "/services", label: "Explore Services" },
   searchLabel: "Search products and capabilities",
@@ -400,9 +400,9 @@ export const homepageHeader: NonNullable<HomepageProps["header"]> = {
   megaMenus: [],
   links: [
     { id: "home", label: "Home", href: "/" },
-    { id: "products", label: "International", href: "/businesses/almahbub-international" },
-    { id: "integrated-export", label: "Integrated Export", href: "/businesses/almahbub-integrated-export" },
-    { id: "services", label: "Services", href: "/services" },
+    { id: "global-procurement", label: "Global Procurement", href: "/businesses/almahbub-international" },
+    { id: "integrated-export", label: "Nigerian Export", href: "/businesses/almahbub-integrated-export" },
+    { id: "products", label: "Products", href: "/products" },
     { id: "about", label: "About", href: "/about" },
     { id: "contact", label: "Contact", href: "/contact" },
   ],

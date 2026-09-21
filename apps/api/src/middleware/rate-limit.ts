@@ -1,6 +1,7 @@
 import type { NextFunction, Request, RequestHandler, Response } from "express";
 
 import { AppError } from "../lib/app-error.js";
+import { authRateLimitKey } from "./auth-rate-limit-scope.js";
 
 export type RateLimitOptions = {
   /** Maximum allowed requests in the window. */
@@ -36,6 +37,7 @@ export function createRateLimiter(options: RateLimitOptions): RequestHandler {
   const maxKeys = 10_000;
 
   return (request: Request, response: Response, next: NextFunction) => {
+    if (request.method === "OPTIONS") { next(); return; }
     const now = Date.now();
     const key = keyFn(request);
     const bucket = buckets.get(key) ?? { timestamps: [] };
@@ -79,10 +81,11 @@ export function createRateLimiter(options: RateLimitOptions): RequestHandler {
   };
 }
 
-/** Auth login/refresh defaults: 20 attempts / 15 minutes per IP. */
-export const authAbuseLimiter: RequestHandler = createRateLimiter({
+/** Separate operation budgets, including an unchanged 20/15min password IP cap. */
+export const createAuthAbuseLimiter = (): RequestHandler => createRateLimiter({
   limit: 20,
   windowMs: 15 * 60_000,
+  key: authRateLimitKey,
   code: "AUTH_RATE_LIMITED",
-  message: "Too many authentication attempts. Please retry shortly.",
+  message: "Requests to this authentication endpoint are temporarily limited. Please retry shortly.",
 });

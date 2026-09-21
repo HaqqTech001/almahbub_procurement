@@ -31,6 +31,7 @@ export type LoginScreenProps = {
   /** Legacy OAuth start URL (ops redirect). Ignored when googleSlot is set. */
   googleSignInHref?: string | null;
   googleLoading?: boolean;
+  requestCooldownMessage?: string | null;
 };
 
 export function LoginScreen({
@@ -47,6 +48,7 @@ export function LoginScreen({
   googleSlot = null,
   googleSignInHref = null,
   googleLoading = false,
+  requestCooldownMessage = null,
 }: LoginScreenProps) {
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
@@ -69,6 +71,7 @@ export function LoginScreen({
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    if (submitting || requestCooldownMessage) return;
     if (!validate()) return;
     setSubmitting(true);
     setFormError(null);
@@ -103,6 +106,7 @@ export function LoginScreen({
       }
     >
       <form className="hamd-auth-form" onSubmit={handleSubmit} noValidate>
+        {requestCooldownMessage ? <AuthAlert tone="info" title="Please wait">{requestCooldownMessage}</AuthAlert> : null}
         {successMessage ? (
           <AuthAlert tone="success" title="Ready">
             {successMessage}
@@ -155,7 +159,7 @@ export function LoginScreen({
             Forgot password?
           </a>
         </div>
-        <AuthSubmitButton loading={submitting}>Sign in</AuthSubmitButton>
+        <AuthSubmitButton loading={submitting} disabled={Boolean(requestCooldownMessage)}>Sign in</AuthSubmitButton>
         {googleSlot || googleSignInHref ? (
           <>
             <div className="hamd-auth-divider" role="separator" aria-label="Or">

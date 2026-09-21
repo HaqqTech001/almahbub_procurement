@@ -1,37 +1,20 @@
 import { describe, expect, it } from "vitest";
-
-import { homepageHeader } from "../content/homepage.js";
+import { publicLinks, publicServiceMenus, PROCUREMENT_HOME } from "../content/public-navigation.js";
 import { IE_PATHS } from "../integrated-export/ie-paths.js";
 import { buildAuthenticatedPublicHeaderLinks } from "./use-public-header-props.js";
 
-const guestLinks = homepageHeader.links ?? [];
-
-describe("authenticated public header links", () => {
-  it("shows both operations to guests", () => {
-    const links = buildAuthenticatedPublicHeaderLinks(guestLinks, false);
-    expect(links.some((link) => link.href === IE_PATHS.home)).toBe(true);
-    expect(links.find((link) => link.id === "home")?.href).toBe("/");
-    expect(links.map((link) => link.id)).toEqual(guestLinks.map((link) => link.id));
+describe("public service navigation", () => {
+  it.each([false, true])("keeps Home at the umbrella landing for authenticated=%s", (authenticated) => {
+    const links = buildAuthenticatedPublicHeaderLinks(publicLinks, authenticated);
+    expect(links.find((link) => link.id === "home")).toEqual({ id: "home", label: "Home", href: "/" });
+    expect(links.some((link) => link.href === "/app")).toBe(false);
   });
-
-  it("inserts Almahbub Integrated Export after Products once the buyer is signed in", () => {
-    const links = buildAuthenticatedPublicHeaderLinks(guestLinks, true);
-    const ie = links.find((link) => link.id === "integrated-export");
-    expect(ie?.href).toBe("/businesses/almahbub-integrated-export");
-    expect(ie?.label).toBe("Integrated Export");
-    const productsIndex = links.findIndex((link) => link.id === "products");
-    expect(links[productsIndex + 1]?.id).toBe("integrated-export");
-    expect(links.filter((link) => link.href === IE_PATHS.home)).toHaveLength(1);
-    expect(links.find((link) => link.id === "home")?.href).toBe("/app");
-    expect(links.find((link) => link.id === "home")?.label).toBe("Dashboard");
+  it("exposes both service homes and actual export routes", () => {
+    expect(publicServiceMenus.map((menu) => menu.href)).toEqual([PROCUREMENT_HOME, IE_PATHS.home, "/services"]);
+    const exported = publicServiceMenus[1]!.columns.flatMap((column) => column.items.map((item) => item.href));
+    expect(exported).toEqual([IE_PATHS.home, IE_PATHS.commodities, IE_PATHS.process, IE_PATHS.quality, IE_PATHS.markets, IE_PATHS.request]);
   });
-
-  it("does not duplicate an existing Integrated Export href", () => {
-    const withIe = [
-      ...guestLinks,
-      { id: "integrated-export", label: "Almahbub Integrated Export", href: IE_PATHS.home },
-    ];
-    const links = buildAuthenticatedPublicHeaderLinks(withIe, true);
-    expect(links.filter((link) => link.href === IE_PATHS.home)).toHaveLength(1);
+  it("removes duplicate hrefs", () => {
+    expect(buildAuthenticatedPublicHeaderLinks([...publicLinks, publicLinks[0]!], true)).toHaveLength(publicLinks.length);
   });
 });

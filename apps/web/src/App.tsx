@@ -4,7 +4,6 @@ import { Navigate, Outlet, Route, Routes, useLocation, useParams } from "react-r
 import { CelebrationHost } from "./app/CelebrationHost.js";
 import { RootLayout } from "./app/RootLayout.js";
 import { RequireAuth } from "./auth/guards/RequireAuth.js";
-import { RedirectIfAuthenticated } from "./auth/guards/RedirectIfAuthenticated.js";
 import {
   WorkspaceShell,
 } from "./auth/onboarding/WorkspaceShell.js";
@@ -54,6 +53,7 @@ const ProductDetailPage = lazy(() =>
     default: m.ProductDetailPage,
   })),
 );
+const ProcurementCategoryPage = lazy(() => import("./pages/ProcurementCategoryPage.js").then(m => ({ default: m.ProcurementCategoryPage })));
 const ProductsPage = lazy(() =>
   import("./pages/ProductsPage.js").then((m) => ({ default: m.ProductsPage })),
 );
@@ -409,9 +409,9 @@ export function App() {
         <Route
           path="/"
           element={
-            <RedirectIfAuthenticated>
+            <>
               {page(HomePage)}
-            </RedirectIfAuthenticated>
+            </>
           }
         />
       </Route>
@@ -488,6 +488,8 @@ export function App() {
         <Route path="/services" element={page(ServicesPage)} />
         <Route path="/services/:slug" element={page(ServiceDetailPage)} />
         <Route path="/products" element={page(ProductsPage)} />
+        <Route path="/global-procurement/category/iphones-gadgets" element={<Navigate to="/global-procurement/category/electronics-mobile-digital-technology" replace />} />
+        <Route path="/global-procurement/category/:slug" element={page(ProcurementCategoryPage)} />
         <Route path="/product/:slug" element={page(ProductDetailPage)} />
         <Route path="/industries" element={page(IndustriesPage)} />
         <Route path="/industries/:slug" element={page(IndustryDetailPage)} />

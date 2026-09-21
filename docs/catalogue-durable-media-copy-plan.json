@@ -1,0 +1,90 @@
+{
+  "checkedAt": "2026-09-18",
+  "currentDriver": "local",
+  "productionIntendedDriver": "not_configured",
+  "supportedDurableDrivers": [
+    "supabase",
+    "s3"
+  ],
+  "requiresConfiguration": true,
+  "mutationsPerformed": false,
+  "steps": [
+    "Configure one existing public catalogue storage provider outside source control; never reuse private StoredDocument storage.",
+    "Verify public bucket/origin access and bounded upload/download of a probe without logging credentials.",
+    "Copy each original to targetObjectKey, preserving storageKey and MIME. Current put() creates a new UUID, so use a reviewed key-preserving copy extension before executing this plan, not a new vendor or ad-hoc hotlink.",
+    "Download and fully validate copied bytes, MIME and SHA-256; record provider and durable URL beside old reference.",
+    "Compare-and-swap each ProductImage URL only if old id/key/url/hash still matches; keep product draft and old binary.",
+    "Carry forward exact-binary visual/provenance reviews; rerun single-product approval dry-run.",
+    "Publish individually only after every gate passes. No automatic deletion; old binary cleanup is separate explicit work."
+  ],
+  "products": [
+    {
+      "productId": "01a0b3b6-5d73-7228-9d64-44b306fb99b8",
+      "productSlug": "electronics-20-000mah-power-bank",
+      "productImageId": "01a0b3bb-17eb-7710-aecc-19c6da27b421",
+      "sourceUrl": "/api/v1/public/catalog-media/01a0b3b6-5d73-7228-9d64-44b306fb99b8/9ce9772e-c833-4243-bbbb-276dbcc8d90c-electronics-20-000mah-power-bank-generated.png",
+      "storageKey": "9ce9772e-c833-4243-bbbb-276dbcc8d90c-electronics-20-000mah-power-bank-generated.png",
+      "targetObjectKey": "catalog/01a0b3b6-5d73-7228-9d64-44b306fb99b8/9ce9772e-c833-4243-bbbb-276dbcc8d90c-electronics-20-000mah-power-bank-generated.png",
+      "mimeType": "image/png",
+      "sha256": "7d85ba7aaa5b262eb37072677236fc20b086b070c2cefd96aa633d7c5ae2e912",
+      "dimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "thumbnailPolicy": "Current cards use original image URL; original copy also preserves current thumbnail source. Any new resized derivative requires its own key/hash and source link.",
+      "copyStatus": "planned_only",
+      "deleteSource": false
+    },
+    {
+      "productId": "01a0b3b6-6573-72ff-ac66-00c6e24498a5",
+      "productSlug": "electronics-usb-c-fast-charger",
+      "productImageId": "01a0b3bc-29a5-7759-bc6a-ba8ecff0cb5a",
+      "sourceUrl": "/api/v1/public/catalog-media/01a0b3b6-6573-72ff-ac66-00c6e24498a5/d512d800-bbe5-4111-b99a-f2930b21d0ce-electronics-usb-c-fast-charger-generated.png",
+      "storageKey": "d512d800-bbe5-4111-b99a-f2930b21d0ce-electronics-usb-c-fast-charger-generated.png",
+      "targetObjectKey": "catalog/01a0b3b6-6573-72ff-ac66-00c6e24498a5/d512d800-bbe5-4111-b99a-f2930b21d0ce-electronics-usb-c-fast-charger-generated.png",
+      "mimeType": "image/png",
+      "sha256": "6bfb57a36b5d7a7b19a2f179043075f72aa7f05ac953f522b11f02559d7c39b0",
+      "dimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "thumbnailPolicy": "Current cards use original image URL; original copy also preserves current thumbnail source. Any new resized derivative requires its own key/hash and source link.",
+      "copyStatus": "planned_only",
+      "deleteSource": false
+    },
+    {
+      "productId": "01a0b3b6-6d73-7469-99d8-aa289f1d647c",
+      "productSlug": "electronics-wireless-earbuds",
+      "productImageId": "01a0b3bd-e257-752d-af2c-252eefa58cd5",
+      "sourceUrl": "/api/v1/public/catalog-media/01a0b3b6-6d73-7469-99d8-aa289f1d647c/8e4be601-ce5d-47e5-b086-63a7ba5b6f3e-electronics-wireless-earbuds-generated.png",
+      "storageKey": "8e4be601-ce5d-47e5-b086-63a7ba5b6f3e-electronics-wireless-earbuds-generated.png",
+      "targetObjectKey": "catalog/01a0b3b6-6d73-7469-99d8-aa289f1d647c/8e4be601-ce5d-47e5-b086-63a7ba5b6f3e-electronics-wireless-earbuds-generated.png",
+      "mimeType": "image/png",
+      "sha256": "9fcde24f8d6262b9475934ca208e4e8037ee42c8b7f58967fc2d92c58b94cee3",
+      "dimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "thumbnailPolicy": "Current cards use original image URL; original copy also preserves current thumbnail source. Any new resized derivative requires its own key/hash and source link.",
+      "copyStatus": "planned_only",
+      "deleteSource": false
+    },
+    {
+      "productId": "01a0b3b6-74f3-753d-95d5-0ec8614fd364",
+      "productSlug": "electronics-smartphone-gimbal",
+      "productImageId": "4c91aa28-76a3-403f-a9eb-758957b41594",
+      "sourceUrl": "/api/v1/public/catalog-media/01a0b3b6-74f3-753d-95d5-0ec8614fd364/82995d4f-a157-47dc-9e48-95c52a80f4a9-electronics-smartphone-gimbal-generated.png",
+      "storageKey": "82995d4f-a157-47dc-9e48-95c52a80f4a9-electronics-smartphone-gimbal-generated.png",
+      "targetObjectKey": "catalog/01a0b3b6-74f3-753d-95d5-0ec8614fd364/82995d4f-a157-47dc-9e48-95c52a80f4a9-electronics-smartphone-gimbal-generated.png",
+      "mimeType": "image/png",
+      "sha256": "cc2b8b4fb0b712bfc2946330bfd44b7a8d1bbe40e89f4996428263ccc2b482bc",
+      "dimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "thumbnailPolicy": "Current cards use original image URL; original copy also preserves current thumbnail source. Any new resized derivative requires its own key/hash and source link.",
+      "copyStatus": "planned_only",
+      "deleteSource": false
+    }
+  ]
+}

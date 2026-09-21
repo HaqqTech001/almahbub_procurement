@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import { reviewed, fixtureHash } from "./publication-fixtures.js";
 import { compareProductPriority, orderedProductImages, productMediaRoute, productShowcaseGroup } from "@hamd/constants";
 import { CatalogService } from "../application/catalog-service.js";
 import { publicProductListQuerySchema } from "../api/catalog-schemas.js";
@@ -23,19 +24,20 @@ describe("V2 product priority", () => {
   });
 
   it("ranks all filtered records before paginating and restores hydration order", async () => {
-    const candidates = [
-      { slug: "pos", name: "POS Terminal", images: [] },
-      { slug: "phone", name: "Smartphone", images: [] },
-      { slug: "freezer", name: "Chest Freezer", images: [] },
-    ];
-    const findMany = vi.fn().mockResolvedValueOnce(candidates).mockResolvedValueOnce([{ ...candidates[2], description: null, category: null, brand: null, manufacturer: null }]);
-    const database = { product: { count: vi.fn().mockResolvedValue(3), findMany } } as unknown as DatabaseClient;
-    const result = await new CatalogService(database, async () => "valid").listProducts(publicProductListQuerySchema.parse({ page: 2, pageSize: 1, q: "request" }));
+    const candidates = ["Printer", "Laptop", "Scanner"].map((name, index) => ({
+      id: ["printer", "laptop", "scanner"][index]!, slug: ["printer", "laptop", "scanner"][index]!, name, status: "published", description: null,
+      category: { slug: "office-business", name: "Office", status: "published" }, brand: null, manufacturer: null,
+      images: [{ id: `image-${index}`, url: `/${["printer", "laptop", "scanner"][index]}.png`, position: 0, isPrimary: true }],
+    }));
+    const findMany = vi.fn().mockResolvedValueOnce(candidates).mockResolvedValueOnce([candidates[2]]);
+    const database = { product: { count: vi.fn().mockResolvedValue(3), findMany }, productImage: { findMany: vi.fn().mockResolvedValue([]) } } as unknown as DatabaseClient;
+    const reviews = candidates.map((row, index) => reviewed(row, index === 1 ? "P1_SHOWCASE" : index === 2 ? "P2_CORE" : "P3_EXPANSION"));
+    const result = await new CatalogService(database, async () => "valid", reviews, fixtureHash).listProducts(publicProductListQuerySchema.parse({ page: 2, pageSize: 1, q: "request" }));
     expect(findMany.mock.calls[0]?.[0]).not.toHaveProperty("take");
     expect(findMany.mock.calls[0]?.[0]?.where.status).toBe("published");
-    expect(findMany.mock.calls[1]?.[0]?.where.AND[1]).toEqual({ slug: { in: ["freezer"] } });
+    expect(findMany.mock.calls[1]?.[0]?.where.AND[1]).toEqual({ slug: { in: ["scanner"] } });
     expect(findMany.mock.calls[1]?.[0]?.where.AND[0].OR).toBeTruthy();
-    expect(result.data.map(row => row.slug)).toEqual(["freezer"]);
+    expect(result.data.map(row => row.slug)).toEqual(["scanner"]);
     expect(result.page).toEqual({ page: 2, pageSize: 1, total: 3, hasMore: true });
   });
 });

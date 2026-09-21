@@ -86,7 +86,7 @@ export function classifyProductPrimaryMatch(
     return {
       kind: "needs_review",
       coreType,
-      reason: "Abstract sourcing/bundle type — no confident physical photograph.",
+      reason: "Abstract sourcing/bundle type: no confident physical photograph.",
     };
   }
   return {

@@ -65,12 +65,30 @@ describe("IeCommodityService", () => {
       ]),
     };
     const database = { integratedExportCommodity } as unknown as DatabaseClient;
-    const result = await new IeCommodityService(database).list(
+    const result = await new IeCommodityService(database, undefined, async () => true).list(
       ieCommodityListQuerySchema.parse({}),
     );
     expect(integratedExportCommodity.findMany.mock.calls[0]?.[0]?.where).toEqual(
       expect.objectContaining({ published: true, archivedAt: null }),
     );
+    expect(result.data[0]?.slug).toBe("test-commodity-only");
+  });
+
+  it("does not hide published commodities when optional media review data is absent", async () => {
+    const integratedExportCommodity = {
+      count: vi.fn().mockResolvedValue(1),
+      findMany: vi.fn().mockResolvedValue([
+        fixtureRow({ published: true, heroMedia: null, gallery: null }),
+      ]),
+    };
+    const database = { integratedExportCommodity } as unknown as DatabaseClient;
+    const result = await new IeCommodityService(
+      database,
+      undefined,
+      async () => false,
+    ).list(ieCommodityListQuerySchema.parse({}));
+
+    expect(result.data).toHaveLength(1);
     expect(result.data[0]?.slug).toBe("test-commodity-only");
   });
 
@@ -80,7 +98,7 @@ describe("IeCommodityService", () => {
       findMany: vi.fn().mockResolvedValue([]),
     };
     const database = { integratedExportCommodity } as unknown as DatabaseClient;
-    const service = new IeCommodityService(database);
+    const service = new IeCommodityService(database, undefined, async () => true);
 
     await service.list(
       ieCommodityListQuerySchema.parse({ includeUnpublished: "true" }),
@@ -112,7 +130,7 @@ describe("IeCommodityService", () => {
     };
     const database = { integratedExportCommodity } as unknown as DatabaseClient;
     await expect(
-      new IeCommodityService(database).getBySlug("test-commodity-only"),
+      new IeCommodityService(database, undefined, async () => true).getBySlug("test-commodity-only"),
     ).rejects.toMatchObject({ statusCode: 404, code: "NOT_FOUND" });
     expect(integratedExportCommodity.findFirst.mock.calls[0]?.[0]?.where).toEqual(
       {
@@ -128,7 +146,7 @@ describe("IeCommodityService", () => {
       findFirst: vi.fn().mockResolvedValue(fixtureRow({ published: false })),
     };
     const database = { integratedExportCommodity } as unknown as DatabaseClient;
-    const dto = await new IeCommodityService(database).getBySlug(
+    const dto = await new IeCommodityService(database, undefined, async () => true).getBySlug(
       "test-commodity-only",
       opsAuth(),
     );
@@ -156,7 +174,7 @@ describe("IeCommodityService", () => {
       ),
     };
     const database = { integratedExportCommodity } as unknown as DatabaseClient;
-    const service = new IeCommodityService(database);
+    const service = new IeCommodityService(database, undefined, async () => true);
     const listed = await service.list(ieCommodityListQuerySchema.parse({}));
     expect(listed.data[0]?.heroMedia).toEqual(hero);
 
@@ -170,7 +188,7 @@ describe("IeCommodityService", () => {
       create: vi.fn().mockResolvedValue(fixtureRow({ published: false })),
     };
     const database = { integratedExportCommodity } as unknown as DatabaseClient;
-    const created = await new IeCommodityService(database).create(
+    const created = await new IeCommodityService(database, undefined, async () => true).create(
       opsAuth(),
       createIeCommoditySchema.parse({
         name: "TEST COMMODITY ONLY",
@@ -188,7 +206,7 @@ describe("IeCommodityService", () => {
       integratedExportCommodity: {},
     } as unknown as DatabaseClient;
     await expect(
-      new IeCommodityService(database).create(
+      new IeCommodityService(database, undefined, async () => true).create(
         buyerAuth(),
         createIeCommoditySchema.parse({
           name: "TEST COMMODITY ONLY",
@@ -205,7 +223,7 @@ describe("IeCommodityService", () => {
     };
     const database = { integratedExportCommodity } as unknown as DatabaseClient;
     await expect(
-      new IeCommodityService(database).create(
+      new IeCommodityService(database, undefined, async () => true).create(
         opsAuth(),
         createIeCommoditySchema.parse({
           name: "TEST COMMODITY ONLY",
@@ -225,7 +243,7 @@ describe("IeCommodityService", () => {
       update: vi.fn().mockResolvedValue(fixtureRow({ published: true })),
     };
     const database = { integratedExportCommodity } as unknown as DatabaseClient;
-    const updated = await new IeCommodityService(database).update(
+    const updated = await new IeCommodityService(database, undefined, async () => true).update(
       opsAuth(),
       "0190c8a0-1000-7000-8000-00000000c001",
       { published: true },
@@ -245,7 +263,7 @@ describe("IeCommodityService", () => {
       delete: vi.fn(),
     };
     const database = { integratedExportCommodity } as unknown as DatabaseClient;
-    const archived = await new IeCommodityService(database).archive(
+    const archived = await new IeCommodityService(database, undefined, async () => true).archive(
       opsAuth(),
       "0190c8a0-1000-7000-8000-00000000c001",
     );
@@ -269,7 +287,7 @@ describe("IeCommodityService", () => {
       productCategory,
       integratedExportCommodity,
     } as unknown as DatabaseClient;
-    await new IeCommodityService(database).list(
+    await new IeCommodityService(database, undefined, async () => true).list(
       ieCommodityListQuerySchema.parse({}),
     );
     expect(product.findMany).not.toHaveBeenCalled();

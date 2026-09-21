@@ -20,6 +20,7 @@
     "seed": "prisma db seed",
     "seed:ie-drafts": "tsx --env-file=.env prisma/seed/ie-owner-approved-commodity-drafts.ts",
     "seed:ie-publish": "tsx --env-file=.env prisma/seed/ie-publish-commodities.ts",
+    "catalogue:map": "tsx prisma/seed/map-master-catalogue.ts",
     "studio": "prisma studio",
     "validate": "prisma validate",
     "format": "prisma format"

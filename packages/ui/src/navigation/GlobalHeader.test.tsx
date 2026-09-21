@@ -185,3 +185,41 @@ describe("GlobalHeader", () => {
     expect(menuToggle).toHaveAttribute("aria-label", "Open menu");
   });
 });
+
+
+describe("attached public service menus", () => {
+  const menu = { id: "procurement", label: "Global Procurement", href: "/businesses/almahbub-international", compact: true, columns: [{ id: "one", title: "Procurement", items: [{ id: "overview", label: "Overview", href: "/businesses/almahbub-international" }, { id: "categories", label: "Categories", href: "/businesses/almahbub-international#categories" }] }] };
+  it("keeps the label navigable and supports keyboard disclosure, arrows, Escape and outside click", async () => {
+    const user = userEvent.setup();
+    render(<><GlobalHeader theme="light" megaMenus={[menu]} links={[{ id: "home", label: "Home", href: "/" }]} /><button>Outside</button></>);
+    expect(screen.getByRole("link", { name: "Global Procurement", exact: true })).toHaveAttribute("href", menu.href);
+    const toggle = screen.getByRole("button", { name: "Global Procurement menu" });
+    toggle.focus();
+    await user.keyboard("{Enter}{Tab}");
+    expect(screen.getByRole("link", { name: "Overview" })).toHaveFocus();
+    await user.keyboard("{ArrowDown}");
+    expect(screen.getByRole("link", { name: "Categories" })).toHaveFocus();
+    await user.keyboard("{Escape}");
+    expect(toggle).toHaveFocus();
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    await user.click(screen.getByRole("button", { name: "Outside" }));
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+  });
+  it("keeps mobile Home first and cycles focus inside the open drawer", async () => {
+    const user = userEvent.setup();
+    render(<GlobalHeader theme="light" megaMenus={[menu]} links={[{ id: "home", label: "Home", href: "/" }]} />);
+    await user.click(screen.getByRole("button", { name: "Open menu" }));
+    const drawer = screen.getByRole("navigation", { name: "Mobile navigation" });
+    const close = within(drawer).getByRole("button", { name: "Close menu" });
+    expect(close).toHaveFocus();
+    await user.keyboard("{Shift>}{Tab}{/Shift}");
+    expect(within(drawer).getByRole("link", { name: "Sign Up" })).toHaveFocus();
+    await user.keyboard("{Tab}");
+    expect(close).toHaveFocus();
+    expect(drawer.querySelector("a")).toHaveAttribute("href", "/");
+    await user.click(within(drawer).getByRole("button", { name: "Global Procurement menu" }));
+    expect(within(drawer).getByRole("link", { name: "Categories" })).toBeVisible();
+  });
+});

@@ -1,0 +1,47 @@
+{
+    "beforeGeneratedAt":  "2026-09-18T19:20:53.901Z",
+    "afterGeneratedAt":  "2026-09-18T19:58:04.148Z",
+    "beforeSummary":  {
+                          "totalProducts":  1134,
+                          "canSafelyRemain":  1024,
+                          "validProductsWithMedia":  174,
+                          "validProductsMissingMedia":  850,
+                          "archivedProducts":  48,
+                          "proposedArchiveProducts":  110,
+                          "newlyProposedArchives":  62,
+                          "duplicateProducts":  0,
+                          "deleteCandidates":  0,
+                          "confirmedDeletions":  0,
+                          "brokenStaleMediaRows":  0,
+                          "unverifiedMediaRows":  0
+                      },
+    "afterSummary":  {
+                         "totalProducts":  1134,
+                         "canSafelyRemain":  1024,
+                         "validProductsWithMedia":  175,
+                         "validProductsMissingMedia":  849,
+                         "archivedProducts":  48,
+                         "proposedArchiveProducts":  110,
+                         "newlyProposedArchives":  62,
+                         "duplicateProducts":  0,
+                         "deleteCandidates":  0,
+                         "confirmedDeletions":  0,
+                         "brokenStaleMediaRows":  0,
+                         "unverifiedMediaRows":  0
+                     },
+    "changedRows":  [
+                        {
+                            "productId":  "01a0b3b6-74f3-753d-95d5-0ec8614fd364",
+                            "productName":  "Smartphone Gimbal",
+                            "slug":  "electronics-smartphone-gimbal",
+                            "category":  "Electronics, Mobile \u0026 Digital Technology",
+                            "publishedStatus":  "draft",
+                            "hasValidPrimaryImage":  true,
+                            "mediaHealth":  "valid",
+                            "classification":  "KEEP_PRIORITY",
+                            "classificationReason":  "Relevant product family with usable primary media; retain. Model currency/authenticity still require editorial verification.",
+                            "duplicateOf":  null
+                        }
+                    ],
+    "mutations":  "One reviewed gimbal ProductImage attached to an existing draft; no publication, archival or deletion."
+}

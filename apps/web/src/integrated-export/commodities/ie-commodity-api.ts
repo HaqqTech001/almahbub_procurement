@@ -73,10 +73,18 @@ export function unwrapCommodityListPayload(body: unknown): IeCommodityApiListIte
 }
 
 export async function listPublishedIeCommoditiesFromApi(): Promise<IeCommodityApiListItem[]> {
-  const payload = await ieFetch<unknown>(
-    "/integrated-export/commodities?page=1&pageSize=100&sort=sortOrder",
-  );
-  return unwrapCommodityListPayload(payload).filter((row) => row.published !== false);
+  const rows: IeCommodityApiListItem[] = [];
+  const seen = new Set<string>();
+  for (let page = 1; ; page += 1) {
+    const payload = await ieFetch<unknown>(`/integrated-export/commodities?page=${page}&pageSize=100&sort=sortOrder`);
+    const batch = unwrapCommodityListPayload(payload);
+    for (const row of batch) {
+      if (seen.has(row.id)) throw new IeCommodityApiError("Invalid commodity pagination.", 500);
+      seen.add(row.id);
+      if (row.published === true) rows.push(row);
+    }
+    if (batch.length < 100) return rows;
+  }
 }
 
 export async function getPublishedIeCommodityFromApi(slug: string): Promise<IeCommodityApiDetail> {

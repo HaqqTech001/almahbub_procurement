@@ -1,8 +1,28 @@
 import type { NextFunction, Request, RequestHandler, Response } from "express";
+import { randomUUID } from "node:crypto";
 
 import { AppError } from "../lib/app-error.js";
 import type { RedisClient } from "../shared/cache/redis-client.js";
 import { createRateLimiter, type RateLimitOptions } from "./rate-limit.js";
+import { apiRateLimitKey, authRateLimitKey } from "./auth-rate-limit-scope.js";
+
+/** Atomic sliding window. Rejected requests neither add an entry nor renew TTL. */
+export const RATE_LIMIT_SCRIPT = `
+local key = KEYS[1]
+local clock = redis.call('TIME')
+local now = tonumber(clock[1]) * 1000 + math.floor(tonumber(clock[2]) / 1000)
+local window = tonumber(ARGV[1])
+local maximum = tonumber(ARGV[2])
+redis.call('ZREMRANGEBYSCORE', key, '-inf', now - window)
+local count = redis.call('ZCARD', key)
+if count >= maximum then
+  local oldest = redis.call('ZRANGE', key, 0, 0, 'WITHSCORES')
+  return {0, math.max(1, math.ceil((tonumber(oldest[2]) + window - now) / 1000))}
+end
+redis.call('ZADD', key, now, ARGV[3])
+redis.call('PEXPIRE', key, window)
+return {1, 0}
+`;
 
 export type RedisRateLimitOptions = RateLimitOptions & {
   /** Redis client; falls back to in-memory when unavailable. */
@@ -32,22 +52,15 @@ export function createRedisRateLimiter(
       request.ip || request.socket.remoteAddress || "unknown");
 
   return async (request: Request, response: Response, next: NextFunction) => {
+    if (request.method === "OPTIONS") { next(); return; }
     const key = `${prefix}:${keyFn(request)}`;
     try {
-      const now = Date.now();
-      const windowStart = now - options.windowMs;
-      const multi = redis.multi();
-      multi.zremrangebyscore(key, 0, windowStart);
-      multi.zadd(key, now, `${now}:${Math.random().toString(36).slice(2)}`);
-      multi.zcard(key);
-      multi.pexpire(key, options.windowMs);
-      const results = await multi.exec();
-      const count = Number(results?.[2]?.[1] ?? 0);
-
-      if (count > options.limit) {
+      const result = await redis.eval(RATE_LIMIT_SCRIPT, 1, key, options.windowMs, options.limit, randomUUID());
+      if (!Array.isArray(result) || result.length !== 2 || ![0, 1].includes(Number(result[0])) || !Number.isFinite(Number(result[1]))) throw new Error("Invalid rate-limit result");
+      if (Number(result[0]) === 0) {
         response.setHeader(
           "Retry-After",
-          String(Math.ceil(options.windowMs / 1000)),
+          String(Math.max(1, Number(result[1]))),
         );
         next(
           new AppError({
@@ -58,7 +71,8 @@ export function createRedisRateLimiter(
         );
         return;
       }
-      next();
+      // Keep the process fallback warm; Redis remains authoritative across nodes.
+      memory(request, response, next);
     } catch {
       memory(request, response, next);
     }
@@ -74,15 +88,17 @@ export function createApiAbuseLimiters(redis?: RedisClient): {
   return {
     auth: createRedisRateLimiter({
       redis,
-      prefix: "rl:auth",
+      prefix: "rl:auth:v2",
+      key: authRateLimitKey,
       limit: 20,
       windowMs: 15 * 60_000,
       code: "AUTH_RATE_LIMITED",
-      message: "Too many authentication attempts. Please retry shortly.",
+      message: "Requests to this authentication endpoint are temporarily limited. Please retry shortly.",
     }),
     api: createRedisRateLimiter({
       redis,
-      prefix: "rl:api",
+      prefix: "rl:api:v2",
+      key: apiRateLimitKey,
       limit: 300,
       windowMs: 60_000,
       code: "API_RATE_LIMITED",

@@ -535,6 +535,9 @@ describe("AuthService user lifecycle", () => {
     const verified = await service.verifyEmail(codes.otp());
     expect(verified.status).toBe("active");
 
+    await service.login({ email: "buyer@example.com", password: "SecurePass1", rememberMe: false });
+    const normalExpiry = vi.mocked(repository.createSession).mock.calls.at(-1)![0].expiresAt.getTime();
+    expect(normalExpiry - Date.now()).toBeGreaterThan(604_700_000);
     const login = await service.login({
       email: "buyer@example.com",
       password: "SecurePass1",
@@ -545,11 +548,16 @@ describe("AuthService user lifecycle", () => {
     });
     expect(login.accessToken).toBeTruthy();
     expect(login.refreshToken).toBeTruthy();
+    expect(environment.REFRESH_TOKEN_TTL_SECONDS).toBe(604800);
+    const initialExpiry = vi.mocked(repository.createSession).mock.calls.at(-1)![0].expiresAt.getTime();
+    expect(initialExpiry - Date.now()).toBeGreaterThan(604_700_000);
 
     const refreshed = await service.refresh({
       refreshToken: login.refreshToken,
     });
     expect(refreshed.refreshToken).toBe(login.refreshToken);
+    expect(refreshed.refreshExpiresIn).toBeLessThanOrEqual(604800);
+    expect(vi.mocked(repository.createSession).mock.calls.at(-1)![0].expiresAt.getTime()).toBe(initialExpiry);
 
     const refreshedAgain = await service.refresh({
       refreshToken: login.refreshToken,
@@ -714,4 +722,34 @@ describe("AuthService user lifecycle", () => {
   },
   30_000,
   );
+  it("isolates shared-IP accounts and never counts refresh, Google or infrastructure errors as password failures", async () => {
+    const repository = createMemoryRepository();
+    const email = { send: vi.fn(async () => ({ providerMessageId: "mail-test" })) };
+    const codes = captureCodes(email.send);
+    const service = new AuthService(repository, environment, email);
+    for (const address of ["first@example.com", "second@example.com"]) {
+      email.send.mockClear();
+      await service.register({ email: address, password: "SecurePass1", firstName: "Test", lastName: "Buyer", companyName: "Test Co" });
+      await service.verifyEmail(codes.otp());
+    }
+    const first = { email: "first@example.com", password: "SecurePass1", ip: "127.0.0.1" };
+    const second = { ...first, email: "second@example.com" };
+    await expect(service.login(first)).resolves.toBeDefined();
+    for (let i = 0; i < 3; i++) await expect(service.login({ ...first, password: "WrongPass1" })).rejects.toMatchObject({ code: "INVALID_CREDENTIALS" });
+    await expect(service.login(first)).rejects.toMatchObject({ code: "ACCOUNT_LOCKED" });
+    await expect(service.login(second)).resolves.toBeDefined();
+    const check = vi.mocked(repository.checkPasswordAttempt);
+    check.mockClear();
+    for (let i = 0; i < 5; i++) await expect(service.refresh({ refreshToken: "expired-or-revoked" })).rejects.toBeDefined();
+    await expect(service.completeGoogleCredentialSignIn({ credential: "bad-google-token" })).rejects.toBeDefined();
+    expect(check).not.toHaveBeenCalled();
+    vi.mocked(repository.findUserForLogin).mockRejectedValueOnce(new Error("database unavailable"));
+    await expect(service.login(second)).rejects.toThrow("database unavailable");
+    expect(check).not.toHaveBeenCalled();
+    vi.mocked(repository.createSession).mockRejectedValueOnce(new Error("session storage unavailable"));
+    await expect(service.login(second)).rejects.toThrow("session storage unavailable");
+    expect(check).toHaveBeenLastCalledWith(expect.objectContaining({ passwordValid: true }));
+    await expect(service.login(second)).resolves.toBeDefined();
+  }, 30000);
+
 });

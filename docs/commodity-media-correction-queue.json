@@ -1,0 +1,101 @@
+{
+  "checkedAt": "2026-09-18",
+  "commodities": [
+    {
+      "commodity": "Cashew",
+      "commodityId": "0190c8a0-1000-7000-8000-00000000e002",
+      "currentMediaStatus": "rejected",
+      "issue": "Mixed nuts and dried-fruit mixture, not isolated cashew kernels. Misleading hero for this commodity.",
+      "requiredCorrection": "Acquire and inspect a commodity-specific image with documented source and usage permission.",
+      "sourceVerificationRequired": true,
+      "replacementRequired": true,
+      "currentSha256": "7663317f533977a6adb70673491bc230c3fcfc689c4e62531f157d5742166f6c",
+      "noAutomaticReplacement": true,
+      "replacementCandidate": {
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Raw_cashew_nuts.JPG",
+        "sourceType": "licensed_repository",
+        "author": "Sakurai Midori",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+        "checkedAt": "2026-09-18",
+        "candidateSha256": "f198c668d20e6381422805dac4ea586c6df69045675d75f95202a384fea6808b",
+        "candidateMimeType": "image/jpeg",
+        "candidateDimensions": {
+          "width": 3616,
+          "height": 2712
+        },
+        "reviewQuarantinePath": "apps/api/uploads/catalogue-review/cashew.jpg",
+        "candidateStorageKey": null,
+        "reviewStatus": "MEDIA_CANDIDATE_FOUND",
+        "reviewNotes": "Raw cashew kernels visibly isolated in a transparent bag; no unrelated nuts. Suitable subject candidate; final hero composition, attribution and durable-storage review pending.",
+        "durableImportStatus": "blocked_no_provider_configuration",
+        "commodityMappingVerified": "0190c8a0-1000-7000-8000-00000000e002",
+        "published": false
+      }
+    },
+    {
+      "commodity": "Cocoa",
+      "commodityId": "0190c8a0-1000-7000-8000-00000000e007",
+      "currentMediaStatus": "rejected",
+      "issue": "Image renders with severe dark/red blocks and does not provide a clear cocoa subject. Replace after source and decoder review.",
+      "requiredCorrection": "Acquire and inspect a commodity-specific image with documented source and usage permission.",
+      "sourceVerificationRequired": true,
+      "replacementRequired": true,
+      "currentSha256": "73ab79a9f94d4b46016ddcf0cb4bb2bfde9ec30ee30ad1600808aa55d4f2892a",
+      "noAutomaticReplacement": true,
+      "replacementCandidate": {
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cocoa_beans.jpg",
+        "sourceType": "licensed_repository",
+        "author": "Mikkel Houmoller",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "checkedAt": "2026-09-18",
+        "candidateSha256": "48cb99cdda09a91bf89dbfeaad59fc85ed92bbe11e3f4d7912943e493d3499be",
+        "candidateMimeType": "image/jpeg",
+        "candidateDimensions": {
+          "width": 2218,
+          "height": 1680
+        },
+        "reviewQuarantinePath": "apps/api/uploads/catalogue-review/cocoa.jpg",
+        "candidateStorageKey": null,
+        "reviewStatus": "MEDIA_CANDIDATE_FOUND",
+        "reviewNotes": "Browser decoder confirms cocoa beans in a sack; initial viewer gray output was a rendering artifact. Source/subject candidate verified, not a certification of bean grade or quality. Attribution/share-alike compliance and durable import pending.",
+        "durableImportStatus": "blocked_no_provider_configuration",
+        "commodityMappingVerified": "0190c8a0-1000-7000-8000-00000000e007",
+        "published": false
+      }
+    },
+    {
+      "commodity": "Shea",
+      "commodityId": "0190c8a0-1000-7000-8000-00000000e005",
+      "currentMediaStatus": "manual_review",
+      "issue": "Reddish nuts with dark fibrous patches; botanical identity is not confidently confirmed as shea. Require verified source identification.",
+      "requiredCorrection": "Verify botanical identity and source; replace if identity cannot be established.",
+      "sourceVerificationRequired": true,
+      "replacementRequired": false,
+      "currentSha256": "bc4f913a7c75454d552769bf3e71c1668ad641f3d91e23b530716b0fd5c59449",
+      "noAutomaticReplacement": true,
+      "replacementCandidate": {
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Larabanga_Shea_Nut.jpg",
+        "sourceType": "licensed_repository",
+        "author": "Dieu-Donne Gameli",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "checkedAt": "2026-09-18",
+        "candidateSha256": "e159b5f38c50197ece5b5a72f0727d8078a0f9930bec5b9fd92e283abd8041fc",
+        "candidateMimeType": "image/jpeg",
+        "candidateDimensions": {
+          "width": 2048,
+          "height": 1536
+        },
+        "reviewQuarantinePath": "apps/api/uploads/catalogue-review/shea.jpg",
+        "candidateStorageKey": null,
+        "reviewStatus": "REFERENCE_ONLY",
+        "reviewNotes": "Source identifies shea nuts in Larabanga; image shows nuts drying on ground with a person foot visible. Useful botanical/source reference, not approved as a polished product hero. Seek cleaner commodity-focused composition.",
+        "durableImportStatus": "blocked_no_provider_configuration",
+        "commodityMappingVerified": "0190c8a0-1000-7000-8000-00000000e005",
+        "published": false
+      }
+    }
+  ]
+}

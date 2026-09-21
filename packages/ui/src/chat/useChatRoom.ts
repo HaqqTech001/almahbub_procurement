@@ -6,6 +6,7 @@ import type {
   ChatRoom,
 } from "./types.js";
 import { emptyComposerDraft } from "./types.js";
+import { safeErrorMessage, userFacingError, validateDocumentFiles, DOCUMENT_UPLOAD_MAX_BYTES } from "../auth/user-facing-error.js";
 
 export type ChatRealtimeEvent =
   | { type: "message"; message: ChatMessage }
@@ -71,6 +72,11 @@ export function useChatRoom(
   const [announce, setAnnounce] = useState("");
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const typingActive = useRef(false);
+  const sending = useRef(false);
+  const draftKey = `hamd.chat.draft:${currentUserId}:${activeRoomId}`;
+  useEffect(() => {
+    try { setDraft({ ...emptyComposerDraft(), body: sessionStorage.getItem(draftKey) ?? "" }); } catch { /* storage unavailable */ }
+  }, [draftKey]);
 
   useEffect(() => {
     setRooms(initialRooms);
@@ -155,6 +161,7 @@ export function useChatRoom(
 
   const onComposerChange = useCallback(
     (body: string) => {
+      try { sessionStorage.setItem(draftKey, body); } catch { /* storage unavailable */ }
       setDraft((prev) => ({ ...prev, body }));
       if (!body.trim()) {
         emitTyping(false);
@@ -165,13 +172,14 @@ export function useChatRoom(
       if (typingTimer.current) clearTimeout(typingTimer.current);
       typingTimer.current = setTimeout(() => emitTyping(false), 1_800);
     },
-    [emitTyping],
+    [emitTyping, draftKey],
   );
 
   const addAttachments = useCallback(
     async (files: FileList | File[]) => {
       setError(null);
       try {
+        validateDocumentFiles([...draft.attachments.flatMap(item => item.file ? [item.file] : []), ...Array.from(files)]);
         let next: ChatAttachment[];
         if (options?.onAttachFiles) {
           next = await options.onAttachFiles(files);
@@ -201,10 +209,10 @@ export function useChatRoom(
           attachments: [...prev.attachments, ...next],
         }));
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Attachment failed.");
+        setError(userFacingError(err, "We couldn't attach this file. Please try again.", DOCUMENT_UPLOAD_MAX_BYTES));
       }
     },
-    [options],
+    [options, draft.attachments],
   );
 
   const removeAttachment = useCallback((id: string) => {
@@ -219,8 +227,11 @@ export function useChatRoom(
   }, []);
 
   const send = useCallback(async () => {
+    if (sending.current) return;
     if (!activeRoomId) return;
     if (!draft.body.trim() && draft.attachments.length === 0) return;
+    sending.current = true;
+    setError(null);
     const snapshot = draft;
     const tempId = `temp-${Date.now()}`;
     const optimistic: ChatMessage = {
@@ -244,12 +255,13 @@ export function useChatRoom(
         : {}),
       ...(snapshot.replyToId ? { replyToId: snapshot.replyToId } : {}),
     };
-    setDraft(emptyComposerDraft());
     emitTyping(false);
     setMessages((prev) => [...prev, optimistic]);
     setAnnounce("Message sent");
     try {
       const result = await options?.onSend?.(snapshot, activeRoomId);
+      setDraft(current => current === snapshot ? emptyComposerDraft() : current);
+      try { if (sessionStorage.getItem(draftKey) === snapshot.body) sessionStorage.removeItem(draftKey); } catch { /* storage unavailable */ }
       if (result) {
         setMessages((prev) =>
           prev.map((m) => (m.id === tempId ? result : m)),
@@ -267,9 +279,12 @@ export function useChatRoom(
           m.id === tempId ? { ...m, delivery: "failed" as const } : m,
         ),
       );
-      setError(err instanceof Error ? err.message : "Send failed.");
+      setMessages(prev => prev.filter(message => message.id !== tempId));
+      setError(err instanceof Error ? safeErrorMessage(err.message, (err as { status?: number }).status) : "We couldn't send your message. Please try again.");
+    } finally {
+      sending.current = false;
     }
-  }, [activeRoomId, currentUserId, draft, emitTyping, options]);
+  }, [activeRoomId, currentUserId, draft, draftKey, emitTyping, options]);
 
   const markVisibleRead = useCallback(async () => {
     if (!activeRoomId) return;

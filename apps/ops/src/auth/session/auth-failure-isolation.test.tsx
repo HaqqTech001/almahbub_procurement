@@ -1,3 +1,4 @@
+import { StrictMode } from "react";
 import { act, cleanup, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { AuthProvider, useAuth } from "./AuthProvider.js";
@@ -21,4 +22,16 @@ it.each([new Error("network unavailable"), new AuthApiError({ status: 500, code:
  api.loginRequest.mockRejectedValue(error); await mount();
  await act(async () => { await expect(auth.login({ email: "buyer@example.com", password: "password", rememberMe: false })).rejects.toBe(error); });
  expect(auth.status).not.toBe("locked"); expect(getLoginLockUntil()).toBeNull();
+});
+
+it("repeated login-page restoration under StrictMode never submits credentials", async () => {
+ api.refreshRequest.mockRejectedValue(new AuthApiError({ status: 401, code: "INVALID_REFRESH_TOKEN", message: "expired" }));
+ for (let i = 0; i < 3; i++) {
+  setSessionHint(true);
+  render(<StrictMode><AuthProvider><Probe /></AuthProvider></StrictMode>);
+  await waitFor(() => expect(auth.bootstrapping).toBe(false));
+  expect(api.loginRequest).not.toHaveBeenCalled();
+  expect(getLoginLockUntil()).toBeNull();
+  cleanup();
+ }
 });

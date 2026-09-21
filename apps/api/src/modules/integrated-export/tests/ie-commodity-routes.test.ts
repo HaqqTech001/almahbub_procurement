@@ -205,7 +205,8 @@ describe("IE commodity International isolation (HTTP)", () => {
       $queryRaw: vi.fn(),
       $disconnect: vi.fn(),
       product,
-      productCategory: {
+      productVariant: { findMany: vi.fn().mockResolvedValue([]) },
+    productCategory: {
         count: vi.fn().mockResolvedValue(0),
         findMany: vi.fn().mockResolvedValue([]),
         findFirst: vi.fn().mockResolvedValue(null),
@@ -237,6 +238,7 @@ describe("IE commodity International isolation (HTTP)", () => {
       .expect(200);
     expect(ie.body.data).toHaveLength(1);
     expect(ie.body.data[0]?.slug).toBe("test-commodity-only");
+
     expect(integratedExportCommodity.findMany).toHaveBeenCalled();
   });
 });

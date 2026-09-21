@@ -38,6 +38,7 @@ describe("runWithSessionRetry", () => {
       getAccessToken: vi
         .fn()
         .mockReturnValueOnce("expired")
+        .mockReturnValueOnce("expired")
         .mockReturnValue("fresh"),
       ensureSession: vi.fn(),
       refreshSession: vi.fn().mockResolvedValue(true),
@@ -93,6 +94,7 @@ describe("runWithSessionRetry", () => {
       .mockResolvedValueOnce(jsonResponse(401, { error: { code: "UNAUTHENTICATED" } }))
       .mockResolvedValueOnce(jsonResponse(401, { error: { code: "UNAUTHENTICATED" } }))
       .mockResolvedValue(jsonResponse(200, { data: { ok: true } }));
+    let currentToken = "expired";
     let resolveRefresh: ((value: boolean) => void) | undefined;
     const refreshSession = vi.fn(
       () =>
@@ -101,12 +103,7 @@ describe("runWithSessionRetry", () => {
         }),
     );
     const hooks = {
-      getAccessToken: vi
-        .fn()
-        .mockReturnValueOnce("expired")
-        .mockReturnValueOnce("expired")
-        .mockReturnValueOnce("expired")
-        .mockReturnValue("fresh"),
+      getAccessToken: vi.fn(() => currentToken),
       ensureSession: vi.fn(),
       refreshSession,
       onSessionLost: vi.fn(),
@@ -118,13 +115,14 @@ describe("runWithSessionRetry", () => {
       runWithSessionRetry(execute, hooks),
     ]);
     await vi.waitFor(() => expect(refreshSession).toHaveBeenCalledOnce());
+    currentToken = "fresh";
     resolveRefresh?.(true);
     const responses = await pending;
     expect(responses.map((item) => item.status)).toEqual([200, 200, 200]);
     expect(hooks.onSessionLost).not.toHaveBeenCalled();
   });
 
-  it("does not log the user out when no access token is in memory yet", async () => {
+  it("requests re-authentication when restoration cannot recover a credential", async () => {
     const execute = vi.fn();
     const hooks = {
       getAccessToken: vi.fn().mockReturnValue(null),
@@ -137,7 +135,7 @@ describe("runWithSessionRetry", () => {
       status: 401,
       code: "UNAUTHENTICATED",
     });
-    expect(hooks.onSessionLost).not.toHaveBeenCalled();
+    expect(hooks.onSessionLost).toHaveBeenCalledOnce();
     expect(execute).not.toHaveBeenCalled();
   });
 

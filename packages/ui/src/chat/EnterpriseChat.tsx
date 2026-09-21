@@ -1,3 +1,6 @@
+import { DOCUMENT_UPLOAD_ACCEPT } from "../auth/user-facing-error.js";
+import { isPrivateDocument } from "../auth/media-request.js";
+import { openAuthenticatedResource } from "../media/open-authenticated-resource.js";
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from "react";
 import { cx } from "../utils/cx.js";
 import { InitialsAvatar } from "../primitives/InitialsAvatar.js";
@@ -211,6 +214,7 @@ function AttachmentChip({
 
 function MediaBody({
   message,
+  onOpenAttachment,
 }: {
   message: ChatMessage;
   onOpenAttachment?:
@@ -222,6 +226,10 @@ function MediaBody({
     <div className="hamd-chat-media">
       {attachments.length > 0 ? (
         <AttachmentBoard
+          onOpen={file => {
+            const attachment = attachments.find(item => item.id === file.id);
+            if (attachment && onOpenAttachment) return onOpenAttachment(attachment);
+          }}
           compact
           mediaTitle=""
           documentsTitle=""
@@ -353,6 +361,7 @@ export function EnterpriseChat({
 
   const openMediaAttachment = (attachment: ChatAttachment) => {
     const href = attachment.previewUrl || attachment.url;
+    if (href && isPrivateDocument(href)) return onOpenAttachment ? onOpenAttachment(attachment) : openAuthenticatedResource(href);
     if (
       href &&
       (attachment.kind === "image" || attachment.kind === "video")
@@ -363,7 +372,7 @@ export function EnterpriseChat({
       });
       return;
     }
-    void onOpenAttachment?.(attachment);
+    return onOpenAttachment?.(attachment);
   };
 
   useEffect(() => {
@@ -759,7 +768,7 @@ export function EnterpriseChat({
                   type="file"
                   className="hamd-sr-only"
                   multiple
-                  accept="image/*,audio/*,video/*,.pdf,.doc,.docx,.txt,.xls,.xlsx"
+                  accept={DOCUMENT_UPLOAD_ACCEPT}
                   onChange={(e) => {
                     if (e.target.files?.length) {
                       void chat.addAttachments(e.target.files);

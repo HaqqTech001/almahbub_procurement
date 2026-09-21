@@ -1,4 +1,5 @@
 import "../load-env.js";
+import { generateApprovedDraft } from "../modules/catalog/media/draft-catalogue-media.js";
 import { writeFile } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -88,6 +89,7 @@ const makePrompt = (p: { name: string; description?: string | null }, category: 
 };
 const invalidPrompt = (prompt: string) => /with and|and \.|on the ,|not a ed-|does not confirm|quantity|destination|warehouse stock|procurement|buyers request|can be procured|\bprovide\b|\bspecify\b/i.test(prompt);
 async function main() {
+  if (process.argv.some(arg => arg.startsWith("--draft-product="))) return generateApprovedDraft(process.argv.slice(2));
   const env = parseEnvironment(process.env); if (!env.DATABASE_URL) throw new Error("DATABASE_URL is required.");
   const limit = Number(value("--limit") ?? 100); if (!Number.isInteger(limit) || limit <= 0) throw new Error("--limit must be positive");
   const execute = flag("--execute"); const db = createDatabaseClient(env.DATABASE_URL); const products = await db.product.findMany({ where: { status: "published" }, orderBy: { slug: "asc" }, select: { id: true, slug: true, name: true, description: true, category: { select: { slug: true, name: true } }, images: { select: { id: true, url: true, storageKey: true, position: true, isPrimary: true } } } });

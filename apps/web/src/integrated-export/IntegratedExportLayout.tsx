@@ -1,10 +1,11 @@
-import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
-import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { useEffect, useLayoutEffect } from "react";
+import { Link, Outlet, useLocation } from "react-router-dom";
 
 import { useTheme } from "../app/providers/ThemeProvider.js";
 import { useOptionalAuth } from "../auth/session/AuthProvider.js";
-import { ButtonLink, Container } from "../components/index.js";
-import { cx } from "../components/cx.js";
+import { Container } from "../components/index.js";
+import { GlobalHeader } from "@hamd/ui/navigation";
+import { usePublicHeaderProps } from "../lib/use-public-header-props.js";
 import {
   ALMAHBUB_INTEGRATED_EXPORT,
   ALMAHBUB_INTERNATIONAL,
@@ -20,7 +21,6 @@ import {
   IE_PATHS,
   IE_PRIMARY_NAV,
   ieQuoteActionHref,
-  isIePathActive,
 } from "./ie-paths.js";
 
 function applyBrandCssVars(root: HTMLElement, mode: "light" | "dark") {
@@ -30,77 +30,10 @@ function applyBrandCssVars(root: HTMLElement, mode: "light" | "dark") {
   }
 }
 
-function PortalThemeToggle() {
-  const { theme, setTheme, resolved } = useTheme();
-  const isDark = (theme === "system" ? resolved : theme) === "dark";
-  return (
-    <button
-      type="button"
-      className={cx("hamd-aie-portal__theme", isDark && "is-dark")}
-      aria-pressed={isDark}
-      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
-      title={isDark ? "Switch to light theme" : "Switch to dark theme"}
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-    >
-      {isDark ? <SunIcon /> : <MoonIcon />}
-    </button>
-  );
-}
-
-function MenuIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
-      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function CloseIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
-      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function SunIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" />
-      <path
-        d="M12 3v2M12 19v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M3 12h2M19 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function MoonIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
-      <path
-        d="M17 14.5A7 7 0 1 1 9.5 7 5.5 5.5 0 0 0 17 14.5Z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-/**
- * Dedicated IE portal shell: navbar, outlet, footer.
- * Does not wrap International GlobalHeader/GlobalFooter.
- */
+/** Shared public navigation with the existing export identity and footer. */
 export function IntegratedExportLayout() {
-  const drawerId = useId();
-  const backdropId = useId();
-  const closeRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLButtonElement>(null);
-  const [navOpen, setNavOpen] = useState(false);
-  const { resolved } = useTheme();
+  const { resolved, theme, setTheme } = useTheme();
+  const header = usePublicHeaderProps({ theme, onThemeChange: setTheme, transparentUntilScroll: false });
   const location = useLocation();
   const auth = useOptionalAuth();
   const quoteHref = ieQuoteActionHref({
@@ -130,198 +63,10 @@ export function IntegratedExportLayout() {
     };
   }, [resolved]);
 
-  useEffect(() => {
-    setNavOpen(false);
-  }, [location.pathname]);
-
-  useEffect(() => {
-    if (!navOpen) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setNavOpen(false);
-    };
-    window.addEventListener("keydown", onKey);
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    closeRef.current?.focus();
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = previousOverflow;
-      menuRef.current?.focus();
-    };
-  }, [navOpen]);
-
   return (
-    <div className={cx("hamd-aie-portal", navOpen && "is-nav-open")}>
+    <div className="hamd-aie-portal">
       <IeHashRedirect />
-      <a className="hamd-skip-link" href="#main-content">
-        Skip to content
-      </a>
-
-      {navOpen ? (
-        <button
-          type="button"
-          id={backdropId}
-          className="hamd-aie-portal__backdrop"
-          aria-label="Close navigation"
-          onClick={() => setNavOpen(false)}
-        />
-      ) : null}
-
-      <header className="hamd-aie-portal__header">
-        <Container className="hamd-aie-portal__header-inner">
-          <div className="hamd-aie-portal__brand">
-            <Link
-              to={IE_PATHS.home}
-              className="hamd-aie-portal__wordmark"
-              aria-label={INTEGRATED_EXPORT_BRAND.wordmark}
-            >
-              {INTEGRATED_EXPORT_BRAND.logoSrc ? (
-                <img
-                  src={INTEGRATED_EXPORT_BRAND.logoSrc}
-                  alt={INTEGRATED_EXPORT_BRAND.logoAlt}
-                  decoding="async"
-                />
-              ) : null}
-              <span aria-hidden="true">
-                <span className="hamd-aie-portal__wordmark-main hamd-aie-portal__wordmark-main--full">
-                  Almahbub Integrated Export
-                </span>
-                <span className="hamd-aie-portal__wordmark-main hamd-aie-portal__wordmark-main--short">
-                  {INTEGRATED_EXPORT_BRAND.wordmarkShort}
-                </span>
-                <span className="hamd-aie-portal__wordmark-sub">Ltd.</span>
-              </span>
-            </Link>
-            <p className="hamd-aie-portal__endorsement">
-              <Link to={GROUP.href}>{INTEGRATED_EXPORT_BRAND.endorsement}</Link>
-            </p>
-          </div>
-
-          <nav className="hamd-aie-portal__nav" aria-label="Integrated Export">
-            {IE_PRIMARY_NAV.map((item) => (
-              <NavLink
-                key={item.id}
-                to={item.href}
-                end={item.id === "home"}
-                className={({ isActive }) =>
-                  cx(
-                    "hamd-aie-portal__nav-link",
-                    (isActive || isIePathActive(location.pathname, item)) &&
-                      "is-active",
-                  )
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-
-          <div className="hamd-aie-portal__actions">
-            <Link to={GROUP.href} className="hamd-aie-portal__group-link">
-              Almahbub Group
-            </Link>
-            <PortalThemeToggle />
-            <ButtonLink
-              href={quoteHref}
-              variant="primary"
-              className="hamd-aie-portal__enquire"
-            >
-              {IE_CTA.label}
-            </ButtonLink>
-            <button
-              ref={menuRef}
-              type="button"
-              className="hamd-aie-portal__menu"
-              aria-expanded={navOpen}
-              aria-controls={drawerId}
-              aria-label={navOpen ? "Close navigation" : "Open navigation"}
-              title={navOpen ? "Close navigation" : "Open navigation"}
-              onClick={() => setNavOpen((open) => !open)}
-            >
-              {navOpen ? <CloseIcon /> : <MenuIcon />}
-            </button>
-          </div>
-        </Container>
-
-        <div
-          id={drawerId}
-          className={cx("hamd-aie-portal__drawer", navOpen && "is-open")}
-          hidden={!navOpen}
-          role="dialog"
-          aria-modal={navOpen}
-          aria-label="Integrated Export menu"
-        >
-          <Container className="hamd-aie-portal__drawer-inner">
-            <div className="hamd-aie-portal__drawer-top">
-              <p className="hamd-aie-portal__drawer-title">Integrated Export</p>
-              <button
-                ref={closeRef}
-                type="button"
-                className="hamd-aie-portal__drawer-close"
-                aria-label="Close navigation"
-                title="Close navigation"
-                onClick={() => setNavOpen(false)}
-              >
-                <CloseIcon />
-              </button>
-            </div>
-            <nav aria-label="Integrated Export mobile">
-              <ul className="hamd-aie-portal__drawer-list">
-                {IE_PRIMARY_NAV.map((item) => (
-                  <li key={item.id}>
-                    <NavLink
-                      to={item.href}
-                      end={item.id === "home"}
-                      className={({ isActive }) =>
-                        cx(
-                          "hamd-aie-portal__drawer-link",
-                          (isActive ||
-                            isIePathActive(location.pathname, item)) &&
-                            "is-active",
-                        )
-                      }
-                      onClick={() => setNavOpen(false)}
-                    >
-                      {item.label}
-                    </NavLink>
-                    {item.id === "commodities" ? (
-                      <ul className="hamd-aie-portal__drawer-sub">
-                        <li>
-                          <NavLink
-                            to={IE_PATHS.commodities}
-                            className="hamd-aie-portal__drawer-sublink"
-                            onClick={() => setNavOpen(false)}
-                          >
-                            All Commodities
-                          </NavLink>
-                        </li>
-                      </ul>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            </nav>
-            <div className="hamd-aie-portal__drawer-cta">
-              <Link
-                to={quoteHref}
-                className="hamd-btn hamd-btn--primary hamd-aie-portal__cta"
-                onClick={() => setNavOpen(false)}
-              >
-                {IE_CTA.label}
-              </Link>
-            </div>
-            <p className="hamd-aie-portal__drawer-meta">
-              <Link to={GROUP.href} onClick={() => setNavOpen(false)}>
-                Almahbub Group
-              </Link>
-              {" · "}
-              <Link to={ALMAHBUB_INTERNATIONAL.href} onClick={() => setNavOpen(false)}>
-                Almahbub International
-              </Link>
-            </p>
-          </Container>
-        </div>
-      </header>
+      <GlobalHeader {...header} />
 
       <main id="main-content" className="hamd-aie-portal__main">
         <Outlet />
@@ -346,7 +91,7 @@ export function IntegratedExportLayout() {
               <ul>
                 {IE_PRIMARY_NAV.map((item) => (
                   <li key={item.id}>
-                    <Link to={item.href}>{item.label}</Link>
+                    <Link to={item.href}>{item.id === "home" ? "Export overview" : item.label}</Link>
                   </li>
                 ))}
               </ul>

@@ -19,6 +19,7 @@ export type {
   AuthPasswordFieldProps,
 } from "./AuthFields.js";
 export { usePrefersReducedMotion } from "./usePrefersReducedMotion.js";
+export { useRequestCooldown } from "./useRequestCooldown.js";
 export {
   isStrongEnough,
   isValidEmail,
@@ -110,3 +111,5 @@ export const authLazyScreens = {
   OtpAndResendScreens: () => import("./screens/OtpAndResendScreens.js"),
   StatusScreens: () => import("./screens/StatusScreens.js"),
 } as const;
+export { userFacingError, safeErrorMessage, validateDocumentFiles, DOCUMENT_UPLOAD_MAX_BYTES, DOCUMENT_UPLOAD_ACCEPT } from "./user-facing-error.js";
+export { configureMediaSession, fetchAuthenticatedMedia, isPrivateDocument } from "./media-request.js";

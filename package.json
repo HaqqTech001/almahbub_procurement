@@ -26,7 +26,14 @@
     "db:migrate": "corepack pnpm --filter @hamd/database migrate:deploy",
     "db:studio": "corepack pnpm --filter @hamd/database studio",
     "media:acquire": "corepack pnpm --filter @hamd/api exec tsx src/scripts/acquire-product-primary-media.ts",
-    "media:generate": "corepack pnpm --filter @hamd/api exec tsx src/scripts/generate-product-primary-media.ts"
+    "media:generate": "corepack pnpm --filter @hamd/api exec tsx src/scripts/generate-product-primary-media.ts",
+    "catalogue:prepare-electronics": "corepack pnpm --filter @hamd/api exec tsx src/scripts/prepare-electronics-p1.ts",
+    "catalogue:validate": "corepack pnpm --filter @hamd/api exec tsx src/scripts/validate-product-catalogue.ts",
+    "catalogue:plan-new": "corepack pnpm --filter @hamd/api exec tsx src/scripts/build-new-product-catalogue.ts",
+    "catalogue:audit": "corepack pnpm --filter @hamd/api exec tsx src/scripts/audit-product-catalogue.ts",
+    "catalogue:cleanup-audit": "corepack pnpm --filter @hamd/api exec tsx src/scripts/audit-public-catalogue-cleanup.ts",
+    "catalogue:approve-product": "corepack pnpm --filter @hamd/api exec tsx src/scripts/approve-catalogue-product.ts",
+    "catalogue:db-health": "corepack pnpm --filter @hamd/api exec tsx src/scripts/catalogue-db-health.ts"
   },
   "devDependencies": {
     "@types/dom-mediacapture-record": "^1.0.22",

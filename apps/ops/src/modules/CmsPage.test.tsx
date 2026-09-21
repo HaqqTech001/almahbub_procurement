@@ -1,4 +1,3 @@
-import { MemoryRouter } from "react-router-dom";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -41,14 +40,9 @@ describe("CmsPage", () => {
   it("asks for inline confirmation before deleting an announcement", async () => {
     const confirmSpy = vi.spyOn(window, "confirm").mockImplementation(() => true);
 
-    render(
-      <MemoryRouter>
-        <CmsPage />
-      </MemoryRouter>,
-    );
+    render(<CmsPage />);
 
-    await screen.findByRole("link", { name: /create announcement/i });
-    expect(screen.queryByRole("heading", { name: /create announcement/i })).not.toBeInTheDocument();
+    await screen.findByText("Q4 trading update");
     fireEvent.click(screen.getByRole("button", { name: /delete/i }));
 
     expect(screen.getByRole("alertdialog")).toHaveTextContent(/delete this announcement/i);
