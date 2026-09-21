@@ -25,6 +25,7 @@ export type CatalogMediaImportStatus =
 
 export type CatalogMediaMappingRow = {
   filename: string;
+  sourcePath?: string | null;
   productId?: string | null;
   productSlug?: string | null;
   kind?: CatalogMediaKind | null;
@@ -78,7 +79,12 @@ export type CatalogMediaImportDeps = {
     productId: string;
     url: string;
     altText?: string | null;
+    caption?: string | null;
+    storageKey?: string | null;
+    mimeType?: string | null;
+    fileSize?: number | null;
     position?: number | null;
+    isPrimary?: boolean | null;
   }) => Promise<{ id: string }>;
   createVideo: (input: {
     productId: string;
@@ -124,6 +130,24 @@ export function shouldIgnoreDuplicateVideoPath(
 export function isBlockedTestBedProduct(slug: string): boolean {
   const normalized = slug.toLowerCase();
   return BLOCKED_SLUG_PREFIXES.some((prefix) => normalized.startsWith(prefix));
+}
+
+export function duplicateCatalogMediaPositions(
+  rows: CatalogMediaMappingRow[],
+): string[] {
+  const seen = new Set<string>();
+  const duplicates = new Set<string>();
+
+  for (const row of rows) {
+    const productIdentity = row.productId?.trim() || row.productSlug?.trim();
+    if (!productIdentity || row.position == null) continue;
+    const kind = row.kind ?? "image";
+    const key = `${productIdentity}|${kind}|${row.position}`;
+    if (seen.has(key)) duplicates.add(key);
+    else seen.add(key);
+  }
+
+  return [...duplicates].sort();
 }
 
 export function classifyCatalogMediaAsset(input: {
@@ -263,6 +287,8 @@ export function parseCatalogMediaMappingJson(
         : undefined;
     const mapped: CatalogMediaMappingRow = {
       filename,
+      sourcePath:
+        record.sourcePath == null ? null : String(record.sourcePath).trim(),
       productId:
         record.productId == null ? null : String(record.productId).trim(),
       productSlug:
@@ -386,7 +412,12 @@ export async function executeCatalogMediaImport(input: {
               productId: product.id,
               url: stored.publicUrl,
               altText: mapped.altText ?? null,
+              caption: mapped.caption ?? null,
+              storageKey: stored.filename,
+              mimeType: mime,
+              fileSize: asset.sizeBytes,
               position: mapped.position ?? null,
+              isPrimary: mapped.position === 0,
             })
           : await input.deps.createVideo({
               productId: product.id,
