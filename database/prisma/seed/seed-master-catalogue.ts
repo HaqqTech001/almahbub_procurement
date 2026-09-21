@@ -255,7 +255,7 @@ async function main(): Promise<void> {
              end,
              status = 'draft',
              updated_at = now()
-           where id = $16`,
+           where id = $17`,
           [
             entry.catalogueId,
             categoryId,
