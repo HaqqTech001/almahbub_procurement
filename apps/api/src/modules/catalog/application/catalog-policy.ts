@@ -13,6 +13,11 @@ export const PUBLIC_PRODUCT_KEYS = [
   "slug",
   "name",
   "description",
+  "summary",
+  "entryType",
+  "availabilityStatus",
+  "keySpecifications",
+  "releaseDate",
   "category",
   "brandName",
   "manufacturerName",
@@ -26,6 +31,7 @@ export const PUBLIC_VARIANT_KEYS = [
   "unit",
   "typicalSpecificationFields",
   "sourcingStatus",
+  "specifications",
 ] as const;
 
 export const PUBLIC_CATEGORY_KEYS = ["id", "slug", "name", "description", "imageUrl", "imageAlt"] as const;
