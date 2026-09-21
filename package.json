@@ -33,7 +33,8 @@
     "catalogue:audit": "corepack pnpm --filter @hamd/api exec tsx src/scripts/audit-product-catalogue.ts",
     "catalogue:cleanup-audit": "corepack pnpm --filter @hamd/api exec tsx src/scripts/audit-public-catalogue-cleanup.ts",
     "catalogue:approve-product": "corepack pnpm --filter @hamd/api exec tsx src/scripts/approve-catalogue-product.ts",
-    "catalogue:db-health": "corepack pnpm --filter @hamd/api exec tsx src/scripts/catalogue-db-health.ts"
+    "catalogue:db-health": "corepack pnpm --filter @hamd/api exec tsx src/scripts/catalogue-db-health.ts",
+    "catalogue:media-audit": "corepack pnpm --filter @hamd/api exec tsx src/scripts/audit-production-media.ts"
   },
   "devDependencies": {
     "@types/dom-mediacapture-record": "^1.0.22",
