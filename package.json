@@ -34,12 +34,9 @@
     "catalogue:cleanup-audit": "corepack pnpm --filter @hamd/api exec tsx src/scripts/audit-public-catalogue-cleanup.ts",
     "catalogue:approve-product": "corepack pnpm --filter @hamd/api exec tsx src/scripts/approve-catalogue-product.ts",
     "catalogue:db-health": "corepack pnpm --filter @hamd/api exec tsx src/scripts/catalogue-db-health.ts",
-<<<<<<< HEAD
     "catalogue:map-master": "corepack pnpm --filter @hamd/database catalogue:map",
-    "catalogue:seed-master": "corepack pnpm --filter @hamd/database catalogue:seed-master"
-=======
+    "catalogue:seed-master": "corepack pnpm --filter @hamd/database catalogue:seed-master",
     "catalogue:media-audit": "corepack pnpm --filter @hamd/api exec tsx src/scripts/audit-production-media.ts"
->>>>>>> 2f61a61e76ccd0153153e7eaec5a2442517e9338
   },
   "devDependencies": {
     "@types/dom-mediacapture-record": "^1.0.22",
