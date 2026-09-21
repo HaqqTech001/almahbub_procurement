@@ -115,7 +115,9 @@ describe("ProductFormPage", () => {
       screen.getByDisplayValue("https://manufacturer.example/gate-valve"),
     ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: /save changes/i }));
+    fireEvent.click(
+      screen.getAllByRole("button", { name: /save changes/i })[0]!,
+    );
     await waitFor(() =>
       expect(updateOpsProduct).toHaveBeenCalledWith(
         "token",
