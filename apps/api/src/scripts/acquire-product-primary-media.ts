@@ -628,9 +628,7 @@ async function main(): Promise<void> {
           });
           if (existing?.url.trim()) {
             report.push({
-              productSlug: product.slug,
-              productName: product.name,
-              categorySlug: product.categorySlug,
+              ...baseReport,
               coreType,
               status: "kept_existing",
               reason: "Product already has a media row; not duplicated.",
@@ -668,9 +666,7 @@ async function main(): Promise<void> {
 
           imported += 1;
           report.push({
-            productSlug: product.slug,
-            productName: product.name,
-            categorySlug: product.categorySlug,
+            ...baseReport,
             coreType,
             status: "imported",
             reason: "Downloaded licensed still and created primary ProductImage.",
@@ -684,9 +680,7 @@ async function main(): Promise<void> {
         } catch (error) {
           failed += 1;
           report.push({
-            productSlug: product.slug,
-            productName: product.name,
-            categorySlug: product.categorySlug,
+            ...baseReport,
             coreType,
             status: "failed",
             reason: error instanceof Error ? error.message : "Import failed.",
