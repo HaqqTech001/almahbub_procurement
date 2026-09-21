@@ -39,6 +39,26 @@ type Manifest = {
   entries: ManifestEntry[];
 };
 
+export function classifySeedProductOwnership(input: {
+  catalogueId: string;
+  ownedProductId?: string | null;
+  slugCollisionProductId?: string | null;
+}):
+  | { action: "create" }
+  | { action: "update_owned"; productId: string }
+  | { action: "block_legacy_collision"; productId: string } {
+  if (input.ownedProductId) {
+    return { action: "update_owned", productId: input.ownedProductId };
+  }
+  if (input.slugCollisionProductId) {
+    return {
+      action: "block_legacy_collision",
+      productId: input.slugCollisionProductId,
+    };
+  }
+  return { action: "create" };
+}
+
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const MANIFEST_PATH = join(ROOT, "docs", "catalogue", "master-catalogue.json");
 
@@ -228,21 +248,27 @@ async function main(): Promise<void> {
             )
           ).rows[0] ?? null;
 
-      if (slugCollision) {
+      const ownership = classifySeedProductOwnership({
+        catalogueId: entry.catalogueId,
+        ownedProductId: existing.rows[0]?.id ?? null,
+        slugCollisionProductId: slugCollision?.id ?? null,
+      });
+
+      if (ownership.action === "block_legacy_collision") {
         legacySlugCollisions.push({
           catalogueId: entry.catalogueId,
           slug: entry.slug,
-          existingProductId: slugCollision.id,
+          existingProductId: ownership.productId,
         });
         if (execute) {
           throw new Error(
-            `Legacy slug collision for ${entry.catalogueId} (${entry.slug}) with product ${slugCollision.id}. Resolve explicitly; automatic legacy adoption is prohibited.`,
+            `Legacy slug collision for ${entry.catalogueId} (${entry.slug}) with product ${ownership.productId}. Resolve explicitly; automatic legacy adoption is prohibited.`,
           );
         }
         continue;
       }
 
-      if (existing.rows[0]) updateCount += 1;
+      if (ownership.action === "update_owned") updateCount += 1;
       else createCount += 1;
 
       if (!execute) {
