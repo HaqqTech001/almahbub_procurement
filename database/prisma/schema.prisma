@@ -60,6 +60,20 @@ enum ProductStatus {
   archived
 }
 
+enum CatalogueEntryType {
+  STANDARD_PRODUCT
+  PRODUCT_FAMILY
+  PROCUREMENT_SERVICE
+  CONFIGURABLE_PRODUCT
+}
+
+enum ProductAvailabilityStatus {
+  ON_REQUEST
+  COMING_SOON
+  PRE_ORDER
+  OUT_OF_STOCK
+}
+
 enum SupplierStatus {
   draft
   active
@@ -416,27 +430,41 @@ model ProductCategory {
 }
 
 model Product {
-  id             String            @id @default(uuid(7)) @db.Uuid
-  categoryId     String?           @map("category_id") @db.Uuid
-  brandId        String?           @map("brand_id") @db.Uuid
-  manufacturerId String?           @map("manufacturer_id") @db.Uuid
-  name           String
-  slug           String            @unique @db.Citext
-  description    String?
-  status         ProductStatus     @default(draft)
-  createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime          @updatedAt @map("updated_at") @db.Timestamptz
-  category       ProductCategory?  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  brand          Brand?            @relation(fields: [brandId], references: [id], onDelete: Restrict)
-  manufacturer   Manufacturer?     @relation(fields: [manufacturerId], references: [id], onDelete: Restrict)
-  variants       ProductVariant[]
-  images         ProductImage[]
-  videos         ProductVideo[]
-  downloads      ProductDownload[]
+  id                    String                    @id @default(uuid(7)) @db.Uuid
+  categoryId            String?                   @map("category_id") @db.Uuid
+  brandId               String?                   @map("brand_id") @db.Uuid
+  manufacturerId        String?                   @map("manufacturer_id") @db.Uuid
+  catalogueId           String?                   @unique @map("catalogue_id")
+  name                  String
+  slug                  String                    @unique @db.Citext
+  description           String?
+  summary               String?
+  keySpecifications     Json?                     @map("key_specifications") @db.JsonB
+  entryType             CatalogueEntryType        @default(STANDARD_PRODUCT) @map("entry_type")
+  availabilityStatus    ProductAvailabilityStatus @default(ON_REQUEST) @map("availability_status")
+  manufacturerUrl       String?                   @map("manufacturer_url")
+  verificationStatus    String?                   @map("verification_status")
+  mediaStatus           String?                   @map("media_status")
+  heroImagePolicy       String?                   @map("hero_image_policy")
+  sourceManifestVersion String?                   @map("source_manifest_version")
+  releaseDate           DateTime?                 @map("release_date") @db.Date
+  catalogueNotes        String?                   @map("catalogue_notes")
+  status                ProductStatus             @default(draft)
+  createdAt             DateTime                  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt             DateTime                  @updatedAt @map("updated_at") @db.Timestamptz
+  category              ProductCategory?          @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  brand                 Brand?                    @relation(fields: [brandId], references: [id], onDelete: Restrict)
+  manufacturer          Manufacturer?             @relation(fields: [manufacturerId], references: [id], onDelete: Restrict)
+  variants              ProductVariant[]
+  images                ProductImage[]
+  videos                ProductVideo[]
+  downloads             ProductDownload[]
 
   @@index([categoryId, status])
   @@index([brandId])
   @@index([manufacturerId])
+  @@index([entryType, status])
+  @@index([availabilityStatus, status])
   @@map("products")
 }
 
