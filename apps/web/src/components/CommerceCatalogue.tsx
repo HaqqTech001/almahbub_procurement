@@ -7,6 +7,10 @@ import {
 import { usePublishedIeCommodities } from "../integrated-export/commodities/use-published-ie-catalogue.js";
 import { IE_PATHS } from "../integrated-export/ie-paths.js";
 import { PresentationImage } from "./PresentationImage.js";
+import {
+  IE_PRESENTATION_MEDIA,
+  INTERNATIONAL_PRESENTATION_MEDIA,
+} from "../content/presentation-media.js";
 import "../styles/commerce.css";
 
 export const procurementCategoryPath = (slug: string) =>
@@ -66,13 +70,12 @@ export function InternationalCategories({
       {categories.map((category, index) => (
         <li key={category.id ?? category.slug}>
           <Link to={procurementCategoryPath(category.slug)}>
-            {category.imageUrl && (
-              <PresentationImage
-                src={category.imageUrl}
-                alt={category.imageAlt ?? category.name}
-                loading={aboveFold && index < 2 ? "eager" : "lazy"}
-              />
-            )}
+            <PresentationImage
+              src={category.imageUrl ?? undefined}
+              fallbackSrc={INTERNATIONAL_PRESENTATION_MEDIA[category.slug]}
+              alt={category.imageAlt ?? category.name}
+              loading={aboveFold && index < 2 ? "eager" : "lazy"}
+            />
             <h3>{category.name}</h3>
           </Link>
         </li>
@@ -107,13 +110,12 @@ export function ExportCommodities({
       {commodities.map((commodity, index) => (
         <li key={commodity.id}>
           <Link to={IE_PATHS.commodity(commodity.slug)}>
-            {commodity.heroMedia && (
-              <PresentationImage
-                src={commodity.heroMedia.src}
-                alt={commodity.heroMedia.alt}
-                loading={aboveFold && index < 2 ? "eager" : "lazy"}
-              />
-            )}
+            <PresentationImage
+              src={commodity.heroMedia?.src}
+              fallbackSrc={IE_PRESENTATION_MEDIA[commodity.slug]}
+              alt={commodity.heroMedia?.alt ?? commodity.name}
+              loading={aboveFold && index < 2 ? "eager" : "lazy"}
+            />
             <h3>{commodity.name}</h3>
           </Link>
         </li>
