@@ -50,6 +50,16 @@ type PendingVideo = {
 };
 
 type ProductStatus = "draft" | "published" | "archived";
+type CatalogueEntryType =
+  | "STANDARD_PRODUCT"
+  | "PRODUCT_FAMILY"
+  | "PROCUREMENT_SERVICE"
+  | "CONFIGURABLE_PRODUCT";
+type ProductAvailabilityStatus =
+  | "ON_REQUEST"
+  | "COMING_SOON"
+  | "PRE_ORDER"
+  | "OUT_OF_STOCK";
 
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
@@ -194,6 +204,14 @@ export function ProductFormPage() {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
+  const [summary, setSummary] = useState("");
+  const [entryType, setEntryType] =
+    useState<CatalogueEntryType>("STANDARD_PRODUCT");
+  const [availabilityStatus, setAvailabilityStatus] =
+    useState<ProductAvailabilityStatus>("ON_REQUEST");
+  const [manufacturerUrl, setManufacturerUrl] = useState("");
+  const [releaseDate, setReleaseDate] = useState("");
+  const [catalogueNotes, setCatalogueNotes] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [brandId, setBrandId] = useState("");
   const [manufacturerId, setManufacturerId] = useState("");
@@ -245,6 +263,12 @@ export function ProductFormPage() {
         setSlug(product.slug);
         slugTouched.current = true;
         setDescription(product.description ?? "");
+        setSummary(product.summary ?? "");
+        setEntryType(product.entryType ?? "STANDARD_PRODUCT");
+        setAvailabilityStatus(product.availabilityStatus ?? "ON_REQUEST");
+        setManufacturerUrl(product.manufacturerUrl ?? "");
+        setReleaseDate(product.releaseDate ?? "");
+        setCatalogueNotes(product.catalogueNotes ?? "");
         setCategoryId(product.categoryId ?? "");
         setBrandId(product.brandId ?? "");
         setManufacturerId(product.manufacturerId ?? "");
@@ -359,6 +383,12 @@ export function ProductFormPage() {
         name: name.trim(),
         slug: finalSlug || undefined,
         description: description.trim() ? description.trim() : null,
+        summary: summary.trim() ? summary.trim() : null,
+        entryType,
+        availabilityStatus,
+        manufacturerUrl: manufacturerUrl.trim() ? manufacturerUrl.trim() : null,
+        releaseDate: releaseDate || null,
+        catalogueNotes: catalogueNotes.trim() ? catalogueNotes.trim() : null,
         categoryId: categoryId || null,
         brandId: brandId || null,
         manufacturerId: manufacturerId || null,
@@ -633,6 +663,81 @@ export function ProductFormPage() {
                       {fieldErrors.description}
                     </span>
                   ) : null}
+                </label>
+              </div>
+            </section>
+
+            <section className="hamd-entity-section">
+              <h2>Catalogue metadata</h2>
+              <p>
+                Control how this entry behaves in the master catalogue. Provenance and review
+                lifecycle fields remain read-only on the product detail screen.
+              </p>
+              <div className="hamd-entity-grid">
+                <label className="hamd-entity-field">
+                  Entry type
+                  <select
+                    value={entryType}
+                    onChange={(event) =>
+                      setEntryType(event.target.value as CatalogueEntryType)
+                    }
+                  >
+                    <option value="STANDARD_PRODUCT">Standard product</option>
+                    <option value="PRODUCT_FAMILY">Product family / series</option>
+                    <option value="PROCUREMENT_SERVICE">Procurement service</option>
+                    <option value="CONFIGURABLE_PRODUCT">Configurable product</option>
+                  </select>
+                </label>
+                <label className="hamd-entity-field">
+                  Availability
+                  <select
+                    value={availabilityStatus}
+                    onChange={(event) =>
+                      setAvailabilityStatus(
+                        event.target.value as ProductAvailabilityStatus,
+                      )
+                    }
+                  >
+                    <option value="ON_REQUEST">Available on request</option>
+                    <option value="COMING_SOON">Coming soon</option>
+                    <option value="PRE_ORDER">Pre-order</option>
+                    <option value="OUT_OF_STOCK">Out of stock</option>
+                  </select>
+                </label>
+                <label className="hamd-entity-field hamd-entity-field--wide">
+                  Catalogue summary
+                  <textarea
+                    rows={3}
+                    value={summary}
+                    onChange={(event) => setSummary(event.target.value)}
+                    placeholder="Short buyer-facing summary for the catalogue card and product page."
+                  />
+                </label>
+                <label className="hamd-entity-field">
+                  Manufacturer product page
+                  <input
+                    type="url"
+                    value={manufacturerUrl}
+                    onChange={(event) => setManufacturerUrl(event.target.value)}
+                    placeholder="https://manufacturer.example/product"
+                  />
+                </label>
+                <label className="hamd-entity-field">
+                  Release date
+                  <input
+                    type="date"
+                    value={releaseDate}
+                    onChange={(event) => setReleaseDate(event.target.value)}
+                  />
+                </label>
+                <label className="hamd-entity-field hamd-entity-field--wide">
+                  Internal catalogue notes
+                  <textarea
+                    rows={3}
+                    value={catalogueNotes}
+                    onChange={(event) => setCatalogueNotes(event.target.value)}
+                    placeholder="Internal sourcing or catalogue notes. Not shown publicly."
+                  />
                 </label>
               </div>
             </section>
