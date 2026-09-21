@@ -1,9 +1,23 @@
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 
+import { reviewFingerprint } from "../src/modules/catalog/application/product-publication-review.js";
+
 import { createApp } from "../src/app.js";
 import { parseEnvironment } from "../src/config/env.js";
 import type { DatabaseClient } from "../src/shared/database/database-client.js";
+
+vi.mock("../src/modules/catalog/infrastructure/product-media-health.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../src/modules/catalog/infrastructure/product-media-health.js")>();
+  return {
+    ...actual,
+    publicProductMediaHealth: vi.fn().mockResolvedValue("valid"),
+  };
+});
+
+vi.mock("../src/modules/catalog/infrastructure/reviewed-media-hash.js", () => ({
+  reviewedMediaHash: vi.fn().mockResolvedValue("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+}));
 
 function createCatalogApp(database: DatabaseClient) {
   return createApp(
@@ -19,6 +33,68 @@ function createCatalogApp(database: DatabaseClient) {
   );
 }
 
+const REVIEW_SHA = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
+function reviewedHospitalBed() {
+  const product = {
+    id: "11111111-1111-4111-8111-111111111111",
+    slug: "hospital-beds",
+    name: "Hospital Beds",
+    description: "Electric hospital beds",
+    status: "published",
+    summary: "Hospital beds available for institutional procurement.",
+    entryType: "STANDARD_PRODUCT" as const,
+    availabilityStatus: "ON_REQUEST" as const,
+    keySpecifications: {},
+    releaseDate: null,
+    category: {
+      id: "22222222-2222-4222-8222-222222222222",
+      slug: "medical-equipments",
+      name: "Medical Equipments",
+      status: "published",
+      description: null,
+    },
+    brand: null,
+    manufacturer: null,
+    images: [
+      {
+        id: "33333333-3333-4333-8333-333333333333",
+        url: "https://cdn.example.test/hospital-bed.jpg",
+        storageKey: "catalog/hospital-bed.jpg",
+        position: 0,
+        isPrimary: true,
+        altText: "Hospital bed",
+      },
+    ],
+    videos: [],
+    variants: [],
+  };
+
+  const publicationReview = {
+    productId: product.id,
+    slug: product.slug,
+    productName: product.name,
+    fingerprint: reviewFingerprint(product),
+    identityStatus: "approved" as const,
+    categoryStatus: "approved" as const,
+    duplicateStatus: "clear" as const,
+    mediaStatus: "approved" as const,
+    mediaSemanticStatus: "approved" as const,
+    commercialRelevance: "Core institutional healthcare procurement.",
+    reviewedBy: "catalog-route-test",
+    checkedAt: "2026-09-20T12:00:00.000Z",
+    primaryImageId: product.images[0].id,
+    sha256: REVIEW_SHA,
+    mediaIdentity: "Hospital Beds",
+    semanticEvidence: "Exact reviewed hospital-bed fixture.",
+    mediaSource: "Test fixture",
+    mediaRights: "Test fixture rights approved.",
+    priorityTier: "P2_CORE" as const,
+  };
+
+  return { product, publicationReview };
+}
+
 function mockDatabase(options?: {
   products?: unknown[];
   productCount?: number;
@@ -26,6 +102,7 @@ function mockDatabase(options?: {
   categoryCount?: number;
   publishedCategory?: { id: string } | null;
   productDetail?: unknown | null;
+  publicationReviews?: Array<{ productId: string; publicationReview: unknown }>;
 }): DatabaseClient {
   return {
     $queryRaw: vi.fn(),
@@ -34,6 +111,21 @@ function mockDatabase(options?: {
       count: vi.fn().mockResolvedValue(options?.productCount ?? 0),
       findMany: vi.fn().mockResolvedValue(options?.products ?? []),
       findFirst: vi.fn().mockResolvedValue(options?.productDetail ?? null),
+    },
+    productVariant: {
+      findMany: vi.fn().mockResolvedValue(
+        (options?.publicationReviews ?? []).map((row, index) => ({
+          id: `review-variant-${index + 1}`,
+          productId: row.productId,
+          specifications: {
+            publicationStatus: "PUBLIC_APPROVED",
+            publicationReview: row.publicationReview,
+          },
+        })),
+      ),
+    },
+    productImage: {
+      findMany: vi.fn().mockResolvedValue([]),
     },
     productCategory: {
       count: vi.fn().mockResolvedValue(options?.categoryCount ?? 0),
@@ -45,24 +137,12 @@ function mockDatabase(options?: {
 
 describe("public catalog routes", () => {
   it("lists published products in the standard envelope with pagination meta", async () => {
+    const { product, publicationReview } = reviewedHospitalBed();
     const app = createCatalogApp(
       mockDatabase({
-        products: [
-          {
-            slug: "hospital-beds",
-            name: "Hospital Beds",
-            description: null,
-            category: {
-              slug: "medical-equipments",
-              name: "Medical Equipments",
-              status: "published",
-            },
-            brand: null,
-            manufacturer: null,
-            images: [],
-          },
-        ],
+        products: [product],
         productCount: 1,
+        publicationReviews: [{ productId: product.id, publicationReview }],
       }),
     );
 
@@ -73,8 +153,15 @@ describe("public catalog routes", () => {
       {
         slug: "hospital-beds",
         name: "Hospital Beds",
-        description: null,
+        description: "Electric hospital beds",
+        summary: "Hospital beds available for institutional procurement.",
+        entryType: "STANDARD_PRODUCT",
+        availabilityStatus: "ON_REQUEST",
+        keySpecifications: {},
+        releaseDate: null,
         category: {
+          id: "22222222-2222-4222-8222-222222222222",
+          description: null,
           slug: "medical-equipments",
           name: "Medical Equipments",
           imageUrl: null,
@@ -82,7 +169,13 @@ describe("public catalog routes", () => {
         },
         brandName: null,
         manufacturerName: null,
-        images: [],
+        images: [
+          {
+            url: "https://cdn.example.test/hospital-bed.jpg",
+            altText: "Hospital bed",
+            position: 0,
+          },
+        ],
         videos: [],
         variants: [],
       },
@@ -121,17 +214,11 @@ describe("public catalog routes", () => {
   });
 
   it("looks up a published product by slug", async () => {
+    const { product, publicationReview } = reviewedHospitalBed();
     const app = createCatalogApp(
       mockDatabase({
-        productDetail: {
-          slug: "hospital-beds",
-          name: "Hospital Beds",
-          description: "Electric hospital beds",
-          category: null,
-          brand: null,
-          manufacturer: null,
-          images: [],
-        },
+        productDetail: product,
+        publicationReviews: [{ productId: product.id, publicationReview }],
       }),
     );
 
@@ -167,8 +254,8 @@ describe("public catalog routes", () => {
 
     const response = await request(app).get("/api/v1/categories").expect(200);
     expect(response.body.data).toEqual([
-      { slug: "general-procurement", name: "General Procurement", imageUrl: null, imageAlt: null },
-      { slug: "machineries", name: "Machineries", imageUrl: null, imageAlt: null },
+      { description: null, slug: "general-procurement", name: "General Procurement", imageUrl: null, imageAlt: null },
+      { description: null, slug: "machineries", name: "Machineries", imageUrl: null, imageAlt: null },
     ]);
   });
 });
