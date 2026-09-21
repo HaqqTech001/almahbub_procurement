@@ -2,7 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { OptimizedImage } from "@hamd/ui/primitives";
 
-import type { CatalogCardModel } from "../lib/catalog-display.js";
+import {
+  availabilityLabel,
+  entryTypeLabel,
+  type CatalogCardModel,
+} from "../lib/catalog-display.js";
 
 export function PublicProductCard({
   product,
@@ -46,6 +50,12 @@ export function PublicProductCard({
         </span>
         <span className="hamd-disc-card__body">
           <h3 className="hamd-disc-card__title">{product.name}</h3>
+          {entryTypeLabel(product.entryType) ? (
+            <span className="hamd-disc-card__meta">{entryTypeLabel(product.entryType)}</span>
+          ) : null}
+          <span className="hamd-disc-card__meta">
+            {availabilityLabel(product.availabilityStatus)}
+          </span>
           <span className="hamd-sr-only">{product.imageAlt}</span>
         </span>
       </Link>
