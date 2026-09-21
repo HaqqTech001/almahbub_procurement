@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { buildSeedVariantRows } from "./seed-master-catalogue.js";
+import {
+  buildSeedVariantRows,
+  classifySeedProductOwnership,
+} from "./seed-master-catalogue.js";
 
 function entry(
   entryType: "STANDARD_PRODUCT" | "PRODUCT_FAMILY" | "PROCUREMENT_SERVICE" | "CONFIGURABLE_PRODUCT",
@@ -75,5 +78,38 @@ describe("master catalogue seed variant planning", () => {
         specifications: { configurationMode: "customer_specification" },
       },
     ]);
+  });
+});
+
+
+describe("master catalogue seed ownership safety", () => {
+  it("updates only an already master-owned row", () => {
+    expect(
+      classifySeedProductOwnership({
+        catalogueId: "ALM-001",
+        ownedProductId: "owned-1",
+        slugCollisionProductId: "legacy-1",
+      }),
+    ).toEqual({ action: "update_owned", productId: "owned-1" });
+  });
+
+  it("blocks an unowned legacy slug collision", () => {
+    expect(
+      classifySeedProductOwnership({
+        catalogueId: "ALM-001",
+        slugCollisionProductId: "legacy-1",
+      }),
+    ).toEqual({
+      action: "block_legacy_collision",
+      productId: "legacy-1",
+    });
+  });
+
+  it("creates a new row when there is no owned row or slug collision", () => {
+    expect(
+      classifySeedProductOwnership({
+        catalogueId: "ALM-001",
+      }),
+    ).toEqual({ action: "create" });
   });
 });
