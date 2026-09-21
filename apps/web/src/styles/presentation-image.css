@@ -13,3 +13,28 @@
   color: var(--hamd-color-text, #344054);
   font-size: 0.85rem;
 }
+
+.presentation-image--deferred {
+  min-height: 0;
+  background:
+    linear-gradient(
+      110deg,
+      var(--hamd-surface-muted, #87949a12) 8%,
+      var(--hamd-surface-subtle, #87949a1f) 18%,
+      var(--hamd-surface-muted, #87949a12) 33%
+    );
+  background-size: 200% 100%;
+  animation: presentation-image-loading 1.3s linear infinite;
+}
+
+@keyframes presentation-image-loading {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presentation-image--deferred {
+    animation: none;
+  }
+}
