@@ -66,6 +66,7 @@ export function ProductDetailPage() {
   const [imageFailed, setImageFailed] = useState(false);
   const [failedImages, setFailedImages] = useState<string[]>([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [selectedVariantName, setSelectedVariantName] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -76,9 +77,15 @@ export function ProductDetailPage() {
     setActiveImage(0);
     setFailedImages([]);
     setImageFailed(false);
+    setSelectedVariantName("");
     void getPublicProduct(slug)
       .then((row) => {
-        if (!cancelled) setProduct(row);
+        if (!cancelled) {
+          setProduct(row);
+          if (row.entryType === "PRODUCT_FAMILY") {
+            setSelectedVariantName(row.variants[0]?.name ?? "");
+          }
+        }
       })
       .catch((err: unknown) => {
         if (cancelled) return;
@@ -182,7 +189,12 @@ export function ProductDetailPage() {
   const current = selected && !failedImages.includes(selected.url) ? selected : gallery.find(image => !failedImages.includes(image.url));
   const imageSrc = resolveMediaUrl(current?.url);
   const showImage = Boolean(imageSrc) && !imageFailed;
-  const requestHref = productRequestHref(product.slug, { workspace, authenticated });
+  const requestHref = productRequestHref(product.slug, {
+    workspace,
+    authenticated,
+    variant:
+      product.entryType === "PRODUCT_FAMILY" ? selectedVariantName : null,
+  });
   const specificationVariant =
     (product.variants ?? []).find((variant) => variant.name === "Standard sourcing") ??
     product.variants?.[0];
@@ -348,6 +360,18 @@ export function ProductDetailPage() {
             {familyVariants.length > 0 ? (
               <section className="hamd-product-specs" aria-labelledby="product-variants-heading">
                 <h2 id="product-variants-heading">Available variants</h2>
+                <label htmlFor="product-family-variant">Choose a variant for your request</label>
+                <select
+                  id="product-family-variant"
+                  value={selectedVariantName}
+                  onChange={(event) => setSelectedVariantName(event.target.value)}
+                >
+                  {familyVariants.map((variant) => (
+                    <option key={variant.name} value={variant.name}>
+                      {variant.name}
+                    </option>
+                  ))}
+                </select>
                 <ul>
                   {familyVariants.map((variant) => {
                     const details = visibleSpecifications(variant.specifications);
