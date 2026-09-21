@@ -19,6 +19,7 @@ import { createDatabaseClient } from "@hamd/database";
 
 import { parseEnvironment } from "../config/env.js";
 import { classifyProductPrimaryMatch } from "../modules/catalog/application/product-primary-media-match.js";
+import { masterCatalogueMediaDecision } from "../modules/catalog/application/master-catalogue-media-policy.js";
 import { isBlockedTestBedProduct } from "../modules/catalog/application/catalog-media-importer.js";
 import {
   sniffCatalogMediaMime,
@@ -539,13 +540,14 @@ async function main(): Promise<void> {
         categorySlug: product.categorySlug,
       };
 
-      if (product.entryType === "PROCUREMENT_SERVICE") {
+      const mediaDecision = masterCatalogueMediaDecision(product.entryType);
+      if (mediaDecision.action === "SERVICE_VISUAL_REQUIRED") {
         needsReview += 1;
         report.push({
           ...baseReport,
           coreType: product.name,
           status: "needs_review",
-          reason: "Procurement service requires a curated service visual, not a physical-product photograph.",
+          reason: mediaDecision.reason,
         });
         continue;
       }
@@ -578,13 +580,13 @@ async function main(): Promise<void> {
         if (!resolved) throw new Error("No sufficiently matched licensed Wikimedia/Openverse image candidate.");
         const confidenceScore = candidateConfidence(resolved.title, coreType, product.categorySlug);
         const evidence = semanticEvidence(product.name, resolved.title, product.categorySlug);
-        if (product.entryType === "PRODUCT_FAMILY") {
+        if (mediaDecision.action === "HUMAN_REVIEW_REQUIRED") {
           needsReview += 1;
           report.push({
             ...baseReport,
             coreType,
             status: "needs_review",
-            reason: "Family/series hero candidates require human confirmation that the image represents the collection, not just one sibling variant.",
+            reason: mediaDecision.reason,
             candidateTitle: resolved.title,
             searchQueries: [resolved.searchQuery ?? coreType],
             searchQuery: resolved.searchQuery ?? coreType,
