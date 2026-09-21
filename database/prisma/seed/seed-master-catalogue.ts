@@ -187,6 +187,11 @@ async function main(): Promise<void> {
   let updateCount = 0;
   let variantCount = 0;
   let manufacturerCreates = 0;
+  const legacySlugCollisions: Array<{
+    catalogueId: string;
+    slug: string;
+    existingProductId: string;
+  }> = [];
 
   try {
     await client.query("BEGIN");
@@ -208,11 +213,34 @@ async function main(): Promise<void> {
       const mId = await manufacturerId(client, entry.manufacturer, execute);
       const existing = await client.query<{ id: string; catalogue_id: string | null }>(
         `select id, catalogue_id from products
-         where catalogue_id = $1 or lower(slug) = lower($2)
-         order by case when catalogue_id = $1 then 0 else 1 end
+         where catalogue_id = $1
          limit 1`,
-        [entry.catalogueId, entry.slug],
+        [entry.catalogueId],
       );
+      const slugCollision = existing.rows[0]
+        ? null
+        : (
+            await client.query<{ id: string; catalogue_id: string | null }>(
+              `select id, catalogue_id from products
+               where lower(slug) = lower($1)
+               limit 1`,
+              [entry.slug],
+            )
+          ).rows[0] ?? null;
+
+      if (slugCollision) {
+        legacySlugCollisions.push({
+          catalogueId: entry.catalogueId,
+          slug: entry.slug,
+          existingProductId: slugCollision.id,
+        });
+        if (execute) {
+          throw new Error(
+            `Legacy slug collision for ${entry.catalogueId} (${entry.slug}) with product ${slugCollision.id}. Resolve explicitly; automatic legacy adoption is prohibited.`,
+          );
+        }
+        continue;
+      }
 
       if (existing.rows[0]) updateCount += 1;
       else createCount += 1;
@@ -358,9 +386,16 @@ async function main(): Promise<void> {
         `Products to update/adopt:   ${updateCount}`,
         `Variant rows ensured:       ${variantCount}`,
         `Manufacturers to create:    ${manufacturerCreates}`,
+        `Legacy slug collisions:      ${legacySlugCollisions.length}`,
+        ...(legacySlugCollisions.length
+          ? legacySlugCollisions.map(
+              (item) =>
+                `  - ${item.catalogueId} ${item.slug} -> ${item.existingProductId}`,
+            )
+          : []),
         "",
         execute
-          ? "All manifest-owned products remain DRAFT. No images, publication reviews, request items, quotations, or legacy products were modified."
+          ? "Manifest-created products start DRAFT; existing manifest-owned lifecycle states are preserved. No images, publication reviews, request items, quotations, or unowned legacy product rows were modified."
           : "DATABASE MUTATIONS: 0 (dry-run rollback)",
         "",
         "Pass --execute only after the additive migration is applied and this plan has been reviewed.",
