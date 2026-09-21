@@ -22,9 +22,15 @@ export type CatalogCardModel = {
 
 export function productRequestHref(
   slug: string,
-  options: { workspace?: boolean; authenticated?: boolean } = {},
+  options: {
+    workspace?: boolean;
+    authenticated?: boolean;
+    variant?: string | null;
+  } = {},
 ): string {
-  const next = `/app/requests/new?product=${encodeURIComponent(slug)}`;
+  const params = new URLSearchParams({ product: slug });
+  if (options.variant?.trim()) params.set("variant", options.variant.trim());
+  const next = `/app/requests/new?${params.toString()}`;
   if (options.workspace || options.authenticated) return next;
   return `/login?returnTo=${encodeURIComponent(next)}`;
 }
