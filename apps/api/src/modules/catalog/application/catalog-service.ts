@@ -62,12 +62,26 @@ export type PublicCatalogVariant = {
   unit: string | null;
   typicalSpecificationFields: string[];
   sourcingStatus: string | null;
+  specifications: Record<string, unknown>;
 };
 
 export type PublicCatalogProduct = {
   slug: string;
   name: string;
   description: string | null;
+  summary: string | null;
+  entryType:
+    | "STANDARD_PRODUCT"
+    | "PRODUCT_FAMILY"
+    | "PROCUREMENT_SERVICE"
+    | "CONFIGURABLE_PRODUCT";
+  availabilityStatus:
+    | "ON_REQUEST"
+    | "COMING_SOON"
+    | "PRE_ORDER"
+    | "OUT_OF_STOCK";
+  keySpecifications: Record<string, unknown>;
+  releaseDate: string | null;
   category: PublicCatalogCategory | null;
   brandName: string | null;
   manufacturerName: string | null;
@@ -80,6 +94,11 @@ type CatalogProductRow = {
   slug: string;
   name: string;
   description: string | null;
+  summary?: string | null;
+  entryType?: "STANDARD_PRODUCT" | "PRODUCT_FAMILY" | "PROCUREMENT_SERVICE" | "CONFIGURABLE_PRODUCT";
+  availabilityStatus?: "ON_REQUEST" | "COMING_SOON" | "PRE_ORDER" | "OUT_OF_STOCK";
+  keySpecifications?: unknown;
+  releaseDate?: Date | string | null;
   category: {
     id?: string;
     description?: string | null;
@@ -153,6 +172,16 @@ function parseVariantSpecifications(value: unknown): {
   };
 }
 
+function publicSpecifications(value: unknown): Record<string, unknown> {
+  return asRecord(value) ?? {};
+}
+
+function publicDate(value: Date | string | null | undefined): string | null {
+  if (!value) return null;
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  return String(value).slice(0, 10);
+}
+
 function pageMeta(total: number, page: number, pageSize: number): Meta {
   return {
     page,
@@ -167,6 +196,11 @@ export function toPublicProduct(row: CatalogProductRow): PublicCatalogProduct {
     slug: row.slug,
     name: row.name,
     description: row.description,
+    summary: row.summary ?? null,
+    entryType: row.entryType ?? "STANDARD_PRODUCT",
+    availabilityStatus: row.availabilityStatus ?? "ON_REQUEST",
+    keySpecifications: publicSpecifications(row.keySpecifications),
+    releaseDate: publicDate(row.releaseDate),
     category:
       row.category?.status === PUBLIC_CATALOG_STATUS
         ? {
@@ -208,6 +242,7 @@ export function toPublicProduct(row: CatalogProductRow): PublicCatalogProduct {
         unit: specs.unit,
         typicalSpecificationFields: specs.typicalSpecificationFields,
         sourcingStatus: specs.sourcingStatus,
+        specifications: publicSpecifications(variant.specifications),
       };
     }),
   };
