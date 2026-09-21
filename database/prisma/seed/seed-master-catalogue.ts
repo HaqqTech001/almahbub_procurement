@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import pg from "pg";
 
 import { validateMasterManifest } from "./map-master-catalogue.js";
+import { buildVerifiedManifestDescription } from "./master-catalogue-content.js";
 
 type EntryType =
   | "STANDARD_PRODUCT"
@@ -229,6 +230,7 @@ async function main(): Promise<void> {
       );
 
       const productId = existing.rows[0]?.id ?? randomUUID();
+      const verifiedDescription = buildVerifiedManifestDescription(entry);
       if (existing.rows[0]) {
         await client.query(
           `update products set
@@ -247,7 +249,10 @@ async function main(): Promise<void> {
              source_manifest_version = $13,
              release_date = $14::date,
              catalogue_notes = $15,
-             description = coalesce(description, $5),
+             description = case
+               when source_manifest_version is null then coalesce(description, $16)
+               else $16
+             end,
              status = 'draft',
              updated_at = now()
            where id = $16`,
@@ -267,6 +272,7 @@ async function main(): Promise<void> {
             manifest.catalogueVersion,
             entry.releaseDate ?? null,
             entry.notes ?? null,
+            verifiedDescription,
             productId,
           ],
         );
@@ -292,7 +298,7 @@ async function main(): Promise<void> {
             entry.catalogueId,
             entry.name,
             entry.slug,
-            entry.summary,
+            verifiedDescription,
             entry.summary,
             JSON.stringify(entry.keySpecs ?? {}),
             entry.entryType,
