@@ -244,7 +244,10 @@ async function main(): Promise<void> {
              availability_status = $8::"ProductAvailabilityStatus",
              manufacturer_url = $9,
              verification_status = $10,
-             media_status = $11,
+             media_status = case
+               when catalogue_id is null then $11
+               else coalesce(media_status, $11)
+             end,
              hero_image_policy = $12,
              source_manifest_version = $13,
              release_date = $14::date,
@@ -253,7 +256,10 @@ async function main(): Promise<void> {
                when source_manifest_version is null then coalesce(description, $16)
                else $16
              end,
-             status = 'draft',
+             status = case
+               when catalogue_id is null then 'draft'::"ProductStatus"
+               else status
+             end,
              updated_at = now()
            where id = $17`,
           [
