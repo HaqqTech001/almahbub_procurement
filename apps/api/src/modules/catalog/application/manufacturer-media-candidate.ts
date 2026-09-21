@@ -15,14 +15,14 @@ function decodeBasicEntities(value: string): string {
 
 function attribute(tag: string, name: string): string | null {
   const expression = new RegExp(
-    name + "\\s*=\\s*[\\\"']([^\\\"']+)[\\\"']",
+    name + "\\s*=\\s*[\"']([^\"']+)[\"']",
     "i",
   );
   return tag.match(expression)?.[1]?.trim() ?? null;
 }
 
 function metaContent(html: string, key: string): string | null {
-  for (const match of html.matchAll(/<meta\\b[^>]*>/gi)) {
+  for (const match of html.matchAll(/<meta\b[^>]*>/gi)) {
     const tag = match[0];
     const property = attribute(tag, "property") ?? attribute(tag, "name");
     if (property?.toLowerCase() !== key.toLowerCase()) continue;
@@ -48,10 +48,11 @@ export function parseManufacturerMediaCandidate(
   } catch {
     return null;
   }
-  if (!/^https?:\\/\\//i.test(imageUrl)) return null;
+  if (!/^https?:\/\//i.test(imageUrl)) return null;
 
-  const titleMatch = html.match(/<title\\b[^>]*>([^<]+)<\\/title>/i);
-  const rawTitle = metaContent(html, "og:title") ?? titleMatch?.[1]?.trim() ?? null;
+  const titleMatch = html.match(/<title\b[^>]*>([^<]+)<\/title>/i);
+  const rawTitle =
+    metaContent(html, "og:title") ?? titleMatch?.[1]?.trim() ?? null;
 
   return {
     pageUrl,
