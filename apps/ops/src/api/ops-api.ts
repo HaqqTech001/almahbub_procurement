@@ -57,6 +57,27 @@ export type OpsProductRow = {
   categoryId?: string | null;
   categoryName?: string | null;
   description?: string | null;
+  catalogueId?: string | null;
+  summary?: string | null;
+  entryType?:
+    | "STANDARD_PRODUCT"
+    | "PRODUCT_FAMILY"
+    | "PROCUREMENT_SERVICE"
+    | "CONFIGURABLE_PRODUCT";
+  availabilityStatus?: "ON_REQUEST" | "COMING_SOON" | "PRE_ORDER" | "OUT_OF_STOCK";
+  manufacturerUrl?: string | null;
+  verificationStatus?: string | null;
+  mediaStatus?: string | null;
+  heroImagePolicy?: string | null;
+  sourceManifestVersion?: string | null;
+  releaseDate?: string | null;
+  catalogueNotes?: string | null;
+  variants?: Array<{
+    id: string;
+    sku: string | null;
+    name: string;
+    specifications: unknown;
+  }>;
   brandId?: string | null;
   brandName?: string | null;
   manufacturerId?: string | null;
@@ -99,6 +120,16 @@ export type OpsProductInput = {
   status?: "draft" | "published" | "archived";
   categoryId?: string | null;
   description?: string | null;
+  summary?: string | null;
+  entryType?:
+    | "STANDARD_PRODUCT"
+    | "PRODUCT_FAMILY"
+    | "PROCUREMENT_SERVICE"
+    | "CONFIGURABLE_PRODUCT";
+  availabilityStatus?: "ON_REQUEST" | "COMING_SOON" | "PRE_ORDER" | "OUT_OF_STOCK";
+  manufacturerUrl?: string | null;
+  releaseDate?: string | null;
+  catalogueNotes?: string | null;
   brandId?: string | null;
   manufacturerId?: string | null;
 };
