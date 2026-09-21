@@ -7,13 +7,13 @@ import { createApp } from "../src/app.js";
 import { parseEnvironment } from "../src/config/env.js";
 import type { DatabaseClient } from "../src/shared/database/database-client.js";
 
-vi.mock("../src/modules/catalog/infrastructure/product-media-health.js", async (importOriginal) => {
-  const actual = await importOriginal<typeof import("../src/modules/catalog/infrastructure/product-media-health.js")>();
-  return {
-    ...actual,
-    publicProductMediaHealth: vi.fn().mockResolvedValue("valid"),
-  };
-});
+vi.mock("../src/modules/catalog/infrastructure/product-media-health.js", () => ({
+  publicProductMediaHealth: vi.fn().mockResolvedValue("valid"),
+  withConcurrency: async <T, R>(
+    rows: T[],
+    work: (row: T) => Promise<R>,
+  ): Promise<R[]> => Promise.all(rows.map((row) => work(row))),
+}));
 
 vi.mock("../src/modules/catalog/infrastructure/reviewed-media-hash.js", () => ({
   reviewedMediaHash: vi.fn().mockResolvedValue("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
@@ -229,7 +229,13 @@ describe("public catalog routes", () => {
     expect(response.body.data).toMatchObject({
       slug: "hospital-beds",
       name: "Hospital Beds",
-      images: [],
+      images: [
+        {
+          url: "https://cdn.example.test/hospital-bed.jpg",
+          altText: "Hospital bed",
+          position: 0,
+        },
+      ],
     });
   });
 
