@@ -8,7 +8,7 @@ import {
   ProfileIdentityHeader,
 } from "@hamd/ui/primitives";
 
-import { changePasswordRequest } from "../auth/api/auth-client.js";
+import { resetPasswordRequest } from "../auth/api/auth-client.js";
 import { AuthApiError } from "../auth/api/auth-errors.js";
 import { useAuth } from "../auth/session/AuthProvider.js";
 import { OpsAlert, OpsPage, OpsStatus } from "../components/OpsChrome.js";
@@ -51,7 +51,7 @@ export function AccountPage() {
     try {
       const token = await auth.ensureSession();
       if (!token) throw new Error("Sign in again to change your password.");
-      await changePasswordRequest(token, { currentPassword, newPassword });
+      await resetPasswordRequest(token, { currentPassword, newPassword });
       setCurrentPassword("");
       setNewPassword("");
       setEditingPassword(false);
