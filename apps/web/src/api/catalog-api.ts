@@ -29,12 +29,26 @@ export type PublicCatalogVariant = {
   unit: string | null;
   typicalSpecificationFields: string[];
   sourcingStatus: string | null;
+  specifications: Record<string, unknown>;
 };
 
 export type PublicCatalogProduct = {
   slug: string;
   name: string;
   description: string | null;
+  summary: string | null;
+  entryType:
+    | "STANDARD_PRODUCT"
+    | "PRODUCT_FAMILY"
+    | "PROCUREMENT_SERVICE"
+    | "CONFIGURABLE_PRODUCT";
+  availabilityStatus:
+    | "ON_REQUEST"
+    | "COMING_SOON"
+    | "PRE_ORDER"
+    | "OUT_OF_STOCK";
+  keySpecifications: Record<string, unknown>;
+  releaseDate: string | null;
   category: PublicCatalogCategory | null;
   brandName: string | null;
   manufacturerName: string | null;
@@ -59,7 +73,20 @@ function categoryCopy(row: PublicCatalogCategory): PublicCatalogCategory {
   return { ...row, name: catalogueCopy(row.name), description: row.description ? catalogueCopy(row.description) : null };
 }
 function productCopy(row: PublicCatalogProduct): PublicCatalogProduct {
-  return { ...row, name: catalogueCopy(row.name), description: row.description ? catalogueCopy(row.description) : null, category: row.category ? categoryCopy(row.category) : null };
+  return {
+    ...row,
+    name: catalogueCopy(row.name),
+    description: row.description ? catalogueCopy(row.description) : null,
+    summary: row.summary ? catalogueCopy(row.summary) : null,
+    keySpecifications:
+      row.keySpecifications && typeof row.keySpecifications === "object"
+        ? row.keySpecifications
+        : {},
+    entryType: row.entryType ?? "STANDARD_PRODUCT",
+    availabilityStatus: row.availabilityStatus ?? "ON_REQUEST",
+    releaseDate: row.releaseDate ?? null,
+    category: row.category ? categoryCopy(row.category) : null,
+  };
 }
 
 export class CatalogApiError extends Error {
