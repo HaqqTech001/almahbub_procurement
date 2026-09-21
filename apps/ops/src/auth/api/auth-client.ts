@@ -9,6 +9,9 @@ export type AuthUser = {
   displayName: string | null;
   locale: string;
   timeZone: string | null;
+  emailVerifiedAt?: string | null;
+  createdAt?: string | null;
+  lastAuthenticatedAt?: string | null;
 };
 
 export type AuthSessionPayload = {
@@ -23,6 +26,7 @@ export type AuthSessionPayload = {
 export type AuthMePayload = {
   user: AuthUser;
   organizationId: string;
+  organizationName?: string | null;
   permissions: string[];
 };
 
@@ -382,5 +386,17 @@ export function updateProfileRequest(
     method: "PATCH",
     accessToken,
     body,
+  });
+}
+
+
+export function changePasswordRequest(
+  accessToken: string,
+  input: { currentPassword: string; newPassword: string },
+): Promise<{ changed: true }> {
+  return authFetch("/password", {
+    method: "PATCH",
+    accessToken,
+    body: input,
   });
 }
