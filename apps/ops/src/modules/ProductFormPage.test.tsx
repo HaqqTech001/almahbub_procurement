@@ -47,6 +47,12 @@ describe("ProductFormPage", () => {
       status: "draft",
       categoryId: "cat-1",
       description: "Industrial valve",
+      summary: "Industrial isolation valve.",
+      entryType: "CONFIGURABLE_PRODUCT",
+      availabilityStatus: "ON_REQUEST",
+      manufacturerUrl: "https://manufacturer.example/gate-valve",
+      releaseDate: "2026-09-01",
+      catalogueNotes: "Confirm flange standard during quotation.",
       images: [],
       videos: [],
     });
@@ -89,4 +95,40 @@ describe("ProductFormPage", () => {
     expect(screen.getByDisplayValue("Industrial valve")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /edit product/i })).toBeInTheDocument();
   });
+
+  it("loads and submits master catalogue metadata", async () => {
+    render(
+      <MemoryRouter initialEntries={["/products/prod-1/edit"]}>
+        <Routes>
+          <Route path="/products/:id/edit" element={<ProductFormPage />} />
+          <Route path="/products/:id" element={<p>Product detail</p>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(
+      await screen.findByDisplayValue("Industrial isolation valve."),
+    ).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Configurable product")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("Available on request")).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue("https://manufacturer.example/gate-valve"),
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /save changes/i }));
+    await waitFor(() =>
+      expect(updateOpsProduct).toHaveBeenCalledWith(
+        "token",
+        "prod-1",
+        expect.objectContaining({
+          summary: "Industrial isolation valve.",
+          entryType: "CONFIGURABLE_PRODUCT",
+          availabilityStatus: "ON_REQUEST",
+          manufacturerUrl: "https://manufacturer.example/gate-valve",
+          releaseDate: "2026-09-01",
+        }),
+      ),
+    );
+  });
+
 });
