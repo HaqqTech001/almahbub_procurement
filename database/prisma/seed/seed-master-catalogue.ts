@@ -101,7 +101,7 @@ function parseManifest(): Manifest {
   return validation.manifest as Manifest;
 }
 
-function variantRows(entry: ManifestEntry): Array<{ sku: string; name: string; specifications: Record<string, unknown> }> {
+export function buildSeedVariantRows(entry: ManifestEntry): Array<{ sku: string; name: string; specifications: Record<string, unknown> }> {
   if (entry.entryType === "PRODUCT_FAMILY") {
     return entry.variants.map((variant, index) => ({
       sku: `${entry.catalogueId}-V${String(index + 1).padStart(2, "0")}`,
@@ -217,7 +217,7 @@ async function main(): Promise<void> {
       else createCount += 1;
 
       if (!execute) {
-        variantCount += variantRows(entry).length;
+        variantCount += buildSeedVariantRows(entry).length;
         continue;
       }
 
@@ -308,7 +308,7 @@ async function main(): Promise<void> {
         );
       }
 
-      for (const variant of variantRows(entry)) {
+      for (const variant of buildSeedVariantRows(entry)) {
         variantCount += 1;
         const existingVariant = await client.query<{ id: string }>(
           `select id from product_variants where sku = $1 limit 1`,
@@ -363,7 +363,13 @@ async function main(): Promise<void> {
   }
 }
 
-void main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : error);
-  process.exitCode = 1;
-});
+const direct =
+  process.argv[1] &&
+  resolve(process.argv[1]) === resolve(fileURLToPath(import.meta.url));
+
+if (direct) {
+  void main().catch((error: unknown) => {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+  });
+}
