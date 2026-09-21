@@ -20,6 +20,7 @@ import { createDatabaseClient } from "@hamd/database";
 import { parseEnvironment } from "../config/env.js";
 import { classifyProductPrimaryMatch } from "../modules/catalog/application/product-primary-media-match.js";
 import { masterCatalogueMediaDecision } from "../modules/catalog/application/master-catalogue-media-policy.js";
+import { parseManufacturerMediaCandidate } from "../modules/catalog/application/manufacturer-media-candidate.js";
 import { isBlockedTestBedProduct } from "../modules/catalog/application/catalog-media-importer.js";
 import {
   sniffCatalogMediaMime,
@@ -125,6 +126,30 @@ function sleep(ms: number): Promise<void> {
 
 function stripHtml(value: string): string {
   return value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+async function fetchText(url: string, timeoutMs = 12000): Promise<string | null> {
+  try {
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": USER_AGENT,
+        Accept: "text/html,application/xhtml+xml",
+      },
+      redirect: "follow",
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+    if (!response.ok) return null;
+    const contentType = response.headers.get("content-type") ?? "";
+    if (!/text\/html|application\/xhtml\+xml/i.test(contentType)) return null;
+    return response.text();
+  } catch {
+    return null;
+  }
+}
+
+async function officialManufacturerCandidate(pageUrl: string) {
+  const html = await fetchText(pageUrl);
+  return html ? parseManufacturerMediaCandidate(html, pageUrl) : null;
 }
 
 function jpegSize(bytes: Buffer): { width: number; height: number } | null {
@@ -550,6 +575,27 @@ async function main(): Promise<void> {
           reason: mediaDecision.reason,
         });
         continue;
+      }
+
+      if (product.manufacturerUrl) {
+        const official = await officialManufacturerCandidate(product.manufacturerUrl);
+        if (official) {
+          needsReview += 1;
+          report.push({
+            ...baseReport,
+            coreType: product.name,
+            status: "needs_review",
+            reason:
+              "Official manufacturer-page hero image discovered. Exact identity and usage rights must be approved before durable copy/import.",
+            mediaUrl: official.imageUrl,
+            source: "manufacturer",
+            sourceUrl: official.pageUrl,
+            candidateTitle: official.title ?? product.name,
+            searchQuery: "official_manufacturer_page",
+            searchQueries: ["official_manufacturer_page"],
+          });
+          continue;
+        }
       }
 
       const match =
