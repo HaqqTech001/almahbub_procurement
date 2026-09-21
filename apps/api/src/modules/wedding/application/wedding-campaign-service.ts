@@ -507,7 +507,7 @@ export class WeddingCampaignService {
   public async listWaitingTracks(includeDisabled = false): Promise<WeddingWaitingTrack[]> {
     await this.ensureWaitingTracksHydrated();
     return waitingTracks
-      .filter((row) => includeDisabled || row.isEnabled)
+      .filter((row) => includeDisabled || (row.isEnabled && this.isPublicWaitingTrackUsable(row)))
       .sort((a, b) => a.position - b.position)
       .map((row) => this.presentWaitingTrack(row, includeDisabled));
   }
