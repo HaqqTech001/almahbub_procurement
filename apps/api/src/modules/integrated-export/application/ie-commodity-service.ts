@@ -1,4 +1,3 @@
-import { commodityPublicationApproved } from "./commodity-publication-review.js";
 import { Prisma } from "@hamd/database";
 
 import { AppError } from "../../../lib/app-error.js";
@@ -243,7 +242,6 @@ export class IeCommodityService {
     private readonly catalogMedia: CatalogMediaStore = createCatalogMediaStore({
       uploadRoot: "uploads",
     }),
-    private readonly publicationApproved = commodityPublicationApproved,
   ) {}
 
   public async list(
