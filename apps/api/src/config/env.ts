@@ -47,6 +47,9 @@ const environmentSchema = z
     RESEND_API_KEY: z.string().min(1).optional(),
     EMAIL_FROM: z.string().email().optional(),
     EMAIL_FROM_NAME: z.string().min(1).optional(),
+    EMAIL_REPLY_TO: z.string().email().optional(),
+    EMAIL_LOGO_URL: z.string().url().optional(),
+    EMAIL_CONTACT: z.string().email().optional(),
     /** Public web origin for auth email links (verify / reset). */
     APP_PUBLIC_URL: z.string().url().optional(),
     /** Runtime bootstrap account for the platform admin. */
@@ -61,6 +64,7 @@ const environmentSchema = z
      * Google OAuth (optional). When CLIENT_ID + CLIENT_SECRET are set,
      * `/api/v1/auth/google` is enabled. Redirect URI must match Google Console.
      */
+    GOOGLE_CLIENT_ID: z.string().min(1).optional(),
     GOOGLE_OAUTH_CLIENT_ID: z.string().min(1).optional(),
     GOOGLE_OAUTH_CLIENT_SECRET: z.string().min(1).optional(),
     /** Defaults to `{API public}/api/v1/auth/google/callback` when unset. */
@@ -78,6 +82,10 @@ const environmentSchema = z
       .enum(["none", "openai", "anthropic", "gemini", "azure_openai"])
       .default("none"),
     OPENAI_API_KEY: z.string().min(1).optional(),
+    CATALOG_IMAGE_PROVIDER: z.enum(["none", "openai"]).default("none"),
+    AI_OPENAI_IMAGE_MODEL: z.string().min(1).default("gpt-image-2"),
+    AI_OPENAI_IMAGE_SIZE: z.string().min(1).default("1024x1024"),
+    AI_OPENAI_IMAGE_QUALITY: z.string().min(1).default("medium"),
     AI_OPENAI_MODEL: z.string().min(1).default("gpt-4o-mini"),
     ANTHROPIC_API_KEY: z.string().min(1).optional(),
     AI_ANTHROPIC_MODEL: z.string().min(1).default("claude-sonnet-4-20250514"),
@@ -101,6 +109,17 @@ const environmentSchema = z
     CATALOG_MEDIA_SUPABASE_URL: z.string().url().optional(),
     CATALOG_MEDIA_SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
     CATALOG_MEDIA_SUPABASE_BUCKET: z.string().min(1).default("catalog-public"),
+    /** Optional wedding/event integrations. */
+    WEDDING_TEST_CONTROLS: z
+      .enum(["true", "false"])
+      .default("false")
+      .transform((value) => value === "true"),
+    LIVEKIT_URL: z.string().min(1).optional(),
+    LIVEKIT_API_KEY: z.string().min(1).optional(),
+    LIVEKIT_API_SECRET: z.string().min(1).optional(),
+    TERMII_API_KEY: z.string().min(1).optional(),
+    TERMII_BASE_URL: z.string().url().optional(),
+    TERMII_SENDER_ID: z.string().min(1).optional(),
   })
   .superRefine((environment, context) => {
     if (environment.NODE_ENV !== "production") {

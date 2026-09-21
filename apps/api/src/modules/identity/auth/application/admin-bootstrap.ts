@@ -26,7 +26,8 @@ export async function ensureAdminBootstrap(
     return null;
   }
 
-  const [firstName, ...rest] = name.split(/\s+/);
+  const [firstNamePart, ...rest] = name.split(/\s+/);
+  const firstName = firstNamePart || "Admin";
   const lastName = rest.join(" ") || "Admin";
   const passwordHash = await hashPassword(password);
 
