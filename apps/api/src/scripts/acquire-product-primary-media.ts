@@ -10,7 +10,7 @@
  */
 import "../load-env.js";
 
-import { writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -31,12 +31,41 @@ const USER_AGENT =
   "AlmahbubProductMedia/1.0 (catalogue primary-image acquisition; licensed Wikimedia/Openverse only)";
 const MIN_EDGE = 400;
 const REPORT_NAME = "product-media-provenance.json";
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../../../../");
+const MANIFEST_PATH = join(ROOT, "docs", "catalogue", "master-catalogue.json");
+
+type ManifestMediaEntry = {
+  catalogueId: string;
+  slug: string;
+  name: string;
+  entryType: "STANDARD_PRODUCT" | "PRODUCT_FAMILY" | "PROCUREMENT_SERVICE" | "CONFIGURABLE_PRODUCT";
+  manufacturer?: string | null;
+  manufacturerUrl?: string | null;
+  heroImagePolicy: string;
+  searchAliases?: string[];
+  variants?: Array<{ name?: string }>;
+};
+
+async function loadManifestMediaEntries(): Promise<Map<string, ManifestMediaEntry>> {
+  const parsed = JSON.parse(await readFile(MANIFEST_PATH, "utf8")) as {
+    entries?: ManifestMediaEntry[];
+  };
+  const entries = Array.isArray(parsed.entries) ? parsed.entries : [];
+  if (entries.length !== 100) {
+    throw new Error(`Expected 100 master catalogue entries; received ${entries.length}.`);
+  }
+  return new Map(entries.map((entry) => [entry.catalogueId, entry]));
+}
 
 type ProductRow = {
   id: string;
+  catalogueId: string;
   slug: string;
   name: string;
   status: string;
+  entryType: ManifestMediaEntry["entryType"];
+  heroImagePolicy: string | null;
+  manufacturerUrl: string | null;
   categorySlug: string | null;
   hasPrimary: boolean;
 };
@@ -56,6 +85,10 @@ type ResolvedSource = {
 };
 
 type ReportRow = {
+  catalogueId: string;
+  entryType: ManifestMediaEntry["entryType"];
+  heroImagePolicy: string | null;
+  manufacturerUrl: string | null;
   productSlug: string;
   productName: string;
   categorySlug: string | null;
@@ -419,6 +452,7 @@ async function main(): Promise<void> {
     throw new Error("DATABASE_URL is required.");
   }
 
+  const manifestEntries = await loadManifestMediaEntries();
   const database = createDatabaseClient(environment.DATABASE_URL);
   const store = createCatalogMediaStore({
     uploadRoot: environment.UPLOAD_ROOT,
@@ -435,33 +469,51 @@ async function main(): Promise<void> {
   });
 
   const products = (await database.product.findMany({
-    where: { status: "published" },
+    where: {
+      catalogueId: { not: null },
+      status: { in: ["draft", "published"] },
+    },
     select: {
       id: true,
+      catalogueId: true,
       slug: true,
       name: true,
       status: true,
+      entryType: true,
+      heroImagePolicy: true,
+      manufacturerUrl: true,
       category: { select: { slug: true } },
       images: { select: { id: true, url: true, position: true, isPrimary: true } },
     },
     orderBy: { slug: "asc" },
   })) as Array<{
     id: string;
+    catalogueId: string | null;
     slug: string;
     name: string;
     status: string;
+    entryType: ManifestMediaEntry["entryType"];
+    heroImagePolicy: string | null;
+    manufacturerUrl: string | null;
     category: { slug: string } | null;
     images: Array<{ id: string; url: string; position: number; isPrimary: boolean }>;
   }>;
 
-  const rows: ProductRow[] = products.map((product) => ({
+  const rows: ProductRow[] = products.flatMap((product) => {
+    if (!product.catalogueId || !manifestEntries.has(product.catalogueId)) return [];
+    return [{
     id: product.id,
+    catalogueId: product.catalogueId,
     slug: product.slug,
     name: product.name,
     status: product.status,
+    entryType: product.entryType,
+    heroImagePolicy: product.heroImagePolicy,
+    manufacturerUrl: product.manufacturerUrl,
     categorySlug: product.category?.slug ?? null,
     hasPrimary: product.images.some((image) => (image.isPrimary || image.position === 0) && image.url.trim().length > 0),
-  }));
+  }];
+  });
 
   const alreadyCovered = rows.filter((row) => row.hasPrimary).length;
   const report: ReportRow[] = [];
@@ -476,24 +528,78 @@ async function main(): Promise<void> {
     let lastProcessedSlug: string | null = null;
     for (const product of candidates) {
       lastProcessedSlug = product.slug;
-      const match = classifyProductPrimaryMatch(product.name);
+      const manifestEntry = manifestEntries.get(product.catalogueId)!;
+      const baseReport = {
+        catalogueId: product.catalogueId,
+        entryType: product.entryType,
+        heroImagePolicy: product.heroImagePolicy,
+        manufacturerUrl: product.manufacturerUrl,
+        productSlug: product.slug,
+        productName: product.name,
+        categorySlug: product.categorySlug,
+      };
+
+      if (product.entryType === "PROCUREMENT_SERVICE") {
+        needsReview += 1;
+        report.push({
+          ...baseReport,
+          coreType: product.name,
+          status: "needs_review",
+          reason: "Procurement service requires a curated service visual, not a physical-product photograph.",
+        });
+        continue;
+      }
+
+      const match =
+        product.entryType === "PRODUCT_FAMILY"
+          ? { kind: "match" as const, coreType: product.name }
+          : classifyProductPrimaryMatch(product.name);
       const coreType = match.coreType;
       if (match.kind === "needs_review") {
         needsReview += 1;
-        report.push({ productSlug: product.slug, productName: product.name, categorySlug: product.categorySlug, coreType, status: "needs_review", reason: match.reason });
+        report.push({ ...baseReport, coreType, status: "needs_review", reason: match.reason });
         continue;
       }
       let resolved: ResolvedSource | null = null;
       let bytes: Buffer | null = null;
       let mime = "";
       try {
-        resolved = await resolveSource(coreType);
-        if (!resolved) throw new Error("No licensed Wikimedia/Openverse match.");
+        const searchTerms = [
+          coreType,
+          ...(manifestEntry.searchAliases ?? []),
+        ].filter((value, index, all) => value && all.indexOf(value) === index);
+        for (const term of searchTerms) {
+          resolved = await resolveSource(term);
+          if (resolved) {
+            resolved.searchQuery = term;
+            break;
+          }
+        }
+        if (!resolved) throw new Error("No sufficiently matched licensed Wikimedia/Openverse image candidate.");
         const confidenceScore = candidateConfidence(resolved.title, coreType, product.categorySlug);
         const evidence = semanticEvidence(product.name, resolved.title, product.categorySlug);
+        if (product.entryType === "PRODUCT_FAMILY") {
+          needsReview += 1;
+          report.push({
+            ...baseReport,
+            coreType,
+            status: "needs_review",
+            reason: "Family/series hero candidates require human confirmation that the image represents the collection, not just one sibling variant.",
+            candidateTitle: resolved.title,
+            searchQueries: [resolved.searchQuery ?? coreType],
+            searchQuery: resolved.searchQuery ?? coreType,
+            confidenceScore,
+            source: resolved.source,
+            sourceUrl: resolved.sourceUrl,
+            license: resolved.license,
+            licenseUrl: resolved.licenseUrl,
+            photographer: resolved.photographer,
+          });
+          continue;
+        }
         if (confidenceScore < 45 || !evidence.safe) {
           needsReview += 1;
-          report.push({ productSlug: product.slug, productName: product.name, categorySlug: product.categorySlug, coreType, status: "needs_review", reason: "Candidate failed fail-closed semantic validation.", candidateTitle: resolved.title, candidateDescription: "", searchQueries: [resolved.searchQuery ?? coreType], searchQuery: resolved.searchQuery ?? "", matchedRequiredAnchors: evidence.matchedRequiredAnchors, matchedSupportingAnchors: evidence.matchedSupportingAnchors, matchedForbiddenTerms: evidence.matchedForbiddenTerms, confidenceScore, rejectionReason: "Required domain anchors missing or forbidden meaning detected.", source: resolved.source, sourceUrl: resolved.sourceUrl });
+          report.push({ ...baseReport, coreType, status: "needs_review", reason: "Candidate failed fail-closed semantic validation.", candidateTitle: resolved.title, candidateDescription: "", searchQueries: [resolved.searchQuery ?? coreType], searchQuery: resolved.searchQuery ?? "", matchedRequiredAnchors: evidence.matchedRequiredAnchors, matchedSupportingAnchors: evidence.matchedSupportingAnchors, matchedForbiddenTerms: evidence.matchedForbiddenTerms, confidenceScore, rejectionReason: "Required domain anchors missing or forbidden meaning detected.", source: resolved.source, sourceUrl: resolved.sourceUrl });
           continue;
         }
         bytes = await download(resolved.downloadUrl);
@@ -502,17 +608,17 @@ async function main(): Promise<void> {
         const issues = !mime || !size || size.width < MIN_EDGE || size.height < MIN_EDGE ? ["invalid image dimensions or format"] : validateCatalogMediaUpload({ filename: `primary${extensionForMime(mime)}`, mimeType: mime, sizeBytes: bytes.length, kind: "image", bytes });
         if (issues.length) throw new Error(issues.join(", "));
         const hash = createHash("sha256").update(bytes).digest("hex");
-        if (seenHashes.has(hash)) { duplicateRejected += 1; report.push({ productSlug: product.slug, productName: product.name, categorySlug: product.categorySlug, coreType, status: "duplicate_rejected", reason: "Downloaded binary duplicates another unrelated product; no shared variant was confirmed.", source: resolved.source, sourceUrl: resolved.sourceUrl, license: resolved.license, licenseUrl: resolved.licenseUrl, photographer: resolved.photographer }); continue; }
+        if (seenHashes.has(hash)) { duplicateRejected += 1; report.push({ ...baseReport, coreType, status: "duplicate_rejected", reason: "Downloaded binary duplicates another unrelated product; no shared variant was confirmed.", source: resolved.source, sourceUrl: resolved.sourceUrl, license: resolved.license, licenseUrl: resolved.licenseUrl, photographer: resolved.photographer }); continue; }
         seenHashes.add(hash);
       } catch (error) {
         failed += 1;
-        report.push({ productSlug: product.slug, productName: product.name, categorySlug: product.categorySlug, coreType, status: "failed", reason: error instanceof Error ? error.message : "Source acquisition failed." });
+        report.push({ ...baseReport, coreType, status: "failed", reason: error instanceof Error ? error.message : "Source acquisition failed." });
         continue;
       }
       if (!execute) {
         needsReview += 1;
         const evidence = semanticEvidence(product.name, resolved.title, product.categorySlug);
-        report.push({ productSlug: product.slug, productName: product.name, categorySlug: product.categorySlug, coreType, status: "resolved_candidate", reason: "Dry-run: high-confidence candidate resolved; pass --execute to store and map.", source: resolved.source, sourceUrl: resolved.sourceUrl, license: resolved.license, licenseUrl: resolved.licenseUrl, photographer: resolved.photographer, candidateTitle: resolved.title, candidateDescription: "", searchQueries: [resolved.searchQuery ?? coreType], searchQuery: resolved.searchQuery ?? "", matchedRequiredAnchors: evidence.matchedRequiredAnchors, matchedSupportingAnchors: evidence.matchedSupportingAnchors, matchedForbiddenTerms: evidence.matchedForbiddenTerms, confidenceScore: candidateConfidence(resolved.title, coreType, product.categorySlug) });
+        report.push({ ...baseReport, coreType, status: "resolved_candidate", reason: "Dry-run: high-confidence candidate resolved; pass --execute to store and map.", source: resolved.source, sourceUrl: resolved.sourceUrl, license: resolved.license, licenseUrl: resolved.licenseUrl, photographer: resolved.photographer, candidateTitle: resolved.title, candidateDescription: "", searchQueries: [resolved.searchQuery ?? coreType], searchQuery: resolved.searchQuery ?? "", matchedRequiredAnchors: evidence.matchedRequiredAnchors, matchedSupportingAnchors: evidence.matchedSupportingAnchors, matchedForbiddenTerms: evidence.matchedForbiddenTerms, confidenceScore: candidateConfidence(resolved.title, coreType, product.categorySlug) });
         continue;
       }
         try {
@@ -554,6 +660,12 @@ async function main(): Promise<void> {
             select: { id: true },
           });
 
+          await database.product.update({
+            where: { id: product.id },
+            data: { mediaStatus: "ACQUIRED_NEEDS_EDITORIAL_REVIEW" },
+            select: { id: true },
+          });
+
           imported += 1;
           report.push({
             productSlug: product.slug,
@@ -581,13 +693,13 @@ async function main(): Promise<void> {
           });
         }
       }
-    const root = join(dirname(fileURLToPath(import.meta.url)), "../../../../");
-    const reportPath = join(root, "docs", REPORT_NAME);
+    const reportPath = join(ROOT, "docs", REPORT_NAME);
     const payload = {
       schema: "product-primary-media-provenance",
       generatedAt: new Date().toISOString(),
       secrets: false,
       mode: execute ? "execute" : "dry-run",
+      manifestEntries: manifestEntries.size,
       products: rows.length,
       selected: candidates.length,
       alreadyCovered,
@@ -598,7 +710,7 @@ async function main(): Promise<void> {
       duplicateRejected,
       lastProcessedSlug,
       sameOriginCatalogMedia: true,
-      note: "Existing 20-pilot and other ProductImage rows were not duplicated. Uncertain matches stay needs_review.",
+      note: "Only master-manifest products are eligible. Existing ProductImage rows are not duplicated. Product-family hero images and service visuals remain fail-closed for human review.",
       rows: report.sort((a, b) => a.productSlug.localeCompare(b.productSlug)),
     };
     await writeFile(reportPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
