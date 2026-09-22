@@ -10,6 +10,12 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "logitech-rally-bar": {
+    src: "https://resource.logitech.com/w_692%2Cc_lpad%2Car_4%3A3%2Cq_auto%2Cf_auto%2Cdpr_1.0/d_transparent.gif/content/dam/logitech/en/products/video-conferencing/rally-bar/buy/gallery/rally-bar-graphite-01.png?v=1",
+    alt: "Logitech Rally Bar all-in-one video bar",
+    sourceUrl: "https://www.logitech.com/de-de/products/video-conferencing/room-solutions/rallybar.html",
+    source: "manufacturer",
+  },
   "dyson-purifier-big-quiet-formaldehyde-bp04": {
     src: "https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/410624-01.png?$responsive$=&fmt=png-alpha",
     alt: "Dyson Purifier Big+Quiet Formaldehyde BP04",
