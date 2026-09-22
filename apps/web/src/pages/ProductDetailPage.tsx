@@ -20,6 +20,7 @@ import {
 } from "../lib/catalog-display.js";
 import { useOptionalAuth } from "../auth/session/AuthProvider.js";
 import { procurementServiceVisual } from "../lib/procurement-service-visuals.js";
+import { curatedProductMedia } from "../lib/curated-product-media.js";
 
 function specificationValue(value: unknown): string {
   if (Array.isArray(value)) return value.map((item) => String(item)).join(", ");
@@ -192,7 +193,8 @@ export function ProductDetailPage() {
     product.entryType === "PROCUREMENT_SERVICE"
       ? procurementServiceVisual(product.slug)
       : null;
-  const imageSrc = resolveMediaUrl(current?.url) ?? serviceVisual?.src;
+  const curatedMedia = curatedProductMedia(product.slug);
+  const imageSrc = resolveMediaUrl(current?.url) ?? serviceVisual?.src ?? curatedMedia?.src;
   const showImage = Boolean(imageSrc) && !imageFailed;
   const requestHref = productRequestHref(product.slug, {
     workspace,
@@ -260,11 +262,11 @@ export function ProductDetailPage() {
             aria-label={gallery.length > 1 ? "Product image gallery" : undefined}
             onKeyDown={onGalleryKeyDown}
           >
-            {showImage && serviceVisual && !current ? (
+            {showImage && (serviceVisual || curatedMedia) && !current ? (
               <OptimizedImage
                 key={imageSrc}
                 src={imageSrc}
-                alt={serviceVisual.alt}
+                alt={serviceVisual?.alt ?? curatedMedia?.alt ?? product.name}
                 className="hamd-product-detail__media"
                 width={960}
                 height={720}
