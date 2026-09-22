@@ -281,6 +281,11 @@ export function ProductDetailPage() {
                 <span className="hamd-disc-card__ph-note">Image coming soon</span>
               </div>
             )}
+            {current?.caption?.trim() ? (
+              <p className="hamd-product-detail__media-credit">
+                {current.caption}
+              </p>
+            ) : null}
             {gallery.length > 1 ? (
               <ul className="hamd-product-detail__thumbs" aria-label="Product images">
                 {gallery.map((image, index) => (
