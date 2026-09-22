@@ -38,7 +38,7 @@ type Meta = {
 export type PublicCatalogImage = {
   url: string;
   altText: string | null;
-  caption: string | null;
+  caption?: string | null;
   position: number;
 };
 
