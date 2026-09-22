@@ -260,7 +260,18 @@ export function ProductDetailPage() {
             aria-label={gallery.length > 1 ? "Product image gallery" : undefined}
             onKeyDown={onGalleryKeyDown}
           >
-            {showImage ? (
+            {showImage && serviceVisual && !current ? (
+              <OptimizedImage
+                key={imageSrc}
+                src={imageSrc}
+                alt={serviceVisual.alt}
+                className="hamd-product-detail__media"
+                width={960}
+                height={720}
+                priority
+                onLoadError={() => setImageFailed(true)}
+              />
+            ) : showImage ? (
               <button
                 type="button"
                 className="hamd-product-detail__zoom"
@@ -269,7 +280,7 @@ export function ProductDetailPage() {
                 <OptimizedImage
                   key={imageSrc}
                   src={imageSrc}
-                  alt={current?.altText?.trim() || serviceVisual?.alt || product.name}
+                  alt={current?.altText?.trim() || product.name}
                   className="hamd-product-detail__media"
                   width={960}
                   height={720}
