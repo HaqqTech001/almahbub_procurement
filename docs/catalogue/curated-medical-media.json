@@ -1,0 +1,126 @@
+{
+  "schema": "curated-product-primary-media",
+  "version": 1,
+  "category": "Medical / Healthcare / Laboratory Equipment",
+  "note": "Exact model/family media only. approved_for_import entries have reusable rights verified; manufacturer_reference entries remain blocked until reusable exact media is found.",
+  "entries": [
+    {
+      "catalogueId": "ALM-011",
+      "slug": "philips-intellivue-mx850",
+      "productName": "Philips IntelliVue MX850",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "https://www.usa.philips.com/healthcare/product/HC866470/intellivue-mx850-bedside-patient-monitor",
+      "imageUrl": null,
+      "altText": "Philips IntelliVue MX850 bedside patient monitor.",
+      "identityEvidence": "Official manufacturer page verifies the exact model; reusable exact media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-012",
+      "slug": "ge-healthcare-vscan-air-sl",
+      "productName": "GE HealthCare Vscan Air SL",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "https://www.gehealthcare.com/products/ultrasound/handheld-ultrasound/vscan-air-sl",
+      "imageUrl": null,
+      "altText": "GE HealthCare Vscan Air SL handheld ultrasound.",
+      "identityEvidence": "Official manufacturer page verifies the exact model; reusable exact media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-013",
+      "slug": "siemens-healthineers-acuson-maple",
+      "productName": "Siemens Healthineers ACUSON Maple",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "https://www.siemens-healthineers.com/ultrasound/general-imaging/acuson-maple",
+      "imageUrl": null,
+      "altText": "Siemens Healthineers ACUSON Maple ultrasound system.",
+      "identityEvidence": "Official manufacturer page verifies the exact model; reusable exact media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-014",
+      "slug": "mindray-benevision-n22",
+      "productName": "Mindray BeneVision N22",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "https://www.mindray.com/en/products/patient-monitoring/continuous-patient-monitoring/benevision-n22-n19",
+      "imageUrl": null,
+      "altText": "Mindray BeneVision N22 patient monitor.",
+      "identityEvidence": "Official manufacturer page verifies the exact model; reusable exact media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-015",
+      "slug": "abbott-i-stat-alinity",
+      "productName": "Abbott i-STAT Alinity",
+      "status": "approved_for_import",
+      "source": "us_federal_public_domain",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:New_medical_equipment_to_detect_TBIs_faster_(9813576).jpg",
+      "imageUrl": "https://d34w7g4gy10iej.cloudfront.net/photos/2607/9813576.jpg",
+      "altText": "Abbott i-STAT Alinity portable blood analyzer being demonstrated in a U.S. Army medical facility.",
+      "identityEvidence": "Exact i-STAT Alinity identified in the U.S. Army caption and Commons metadata.",
+      "credit": "U.S. Army 10th Army Air and Missile Defense Command / Sgt. 1st Class Jacob Kohrs",
+      "license": "Public domain (U.S. federal government work)",
+      "licenseUrl": "https://commons.wikimedia.org/wiki/File:New_medical_equipment_to_detect_TBIs_faster_(9813576).jpg",
+      "changes": "No editorial changes other than storage copy and browser resizing."
+    },
+    {
+      "catalogueId": "ALM-016",
+      "slug": "roche-cobas-pure-integrated-solutions",
+      "productName": "Roche cobas pure integrated solutions",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "https://diagnostics.roche.com/global/en/products/systems/cobas-pure-integrated-solutions-sys-351.html",
+      "imageUrl": null,
+      "altText": "Roche cobas pure integrated solutions.",
+      "identityEvidence": "Official manufacturer page verifies the exact system; reusable exact media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-017",
+      "slug": "eppendorf-centrifuge-5910-ri",
+      "productName": "Eppendorf Centrifuge 5910 Ri",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "https://www.eppendorf.com/product-media/doc/en/91736/Centrifugation_Operating-manual_Centrifuge-5910-Ri.pdf",
+      "imageUrl": null,
+      "altText": "Eppendorf Centrifuge 5910 Ri.",
+      "identityEvidence": "Official manufacturer documentation verifies the exact model; reusable exact media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-018",
+      "slug": "thermo-scientific-tsx-series-ultra-low-temperature-freezers",
+      "productName": "Thermo Scientific TSX Series Ultra-Low Temperature Freezers",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "https://www.thermofisher.com/us/en/home/life-science/lab-equipment/cold-storage/ult-freezers.html",
+      "imageUrl": null,
+      "altText": "Thermo Scientific TSX Series ultra-low temperature freezer.",
+      "identityEvidence": "Official manufacturer page verifies the family; reusable family media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-019",
+      "slug": "bd-max-system",
+      "productName": "BD MAX System",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "https://www.bd.com/en-us/products-and-solutions/products/product-families/bd-max-system",
+      "imageUrl": null,
+      "altText": "BD MAX System molecular diagnostics platform.",
+      "identityEvidence": "Official manufacturer page verifies the exact system; reusable exact media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-020",
+      "slug": "hamilton-c6",
+      "productName": "HAMILTON-C6",
+      "status": "approved_for_import",
+      "source": "wikimedia_commons",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Hamilton_C6.jpg",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Hamilton%20C6.jpg?width=1280",
+      "altText": "HAMILTON-C6 ventilator on a white background.",
+      "identityEvidence": "Exact Hamilton C6 photograph identified by the creator and Commons metadata.",
+      "credit": "BreathDriver",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "changes": "No editorial changes. Wikimedia 1280px derivative used for catalogue delivery."
+    }
+  ]
+}
