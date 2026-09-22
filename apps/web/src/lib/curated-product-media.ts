@@ -10,6 +10,126 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "apple-ipad-air-m4-series": {
+    src: "https://www.apple.com/newsroom/images/2026/03/apple-introduces-the-new-ipad-air-powered-by-m4/tile/Apple-iPad-Air-M4-multitasking-260302-lp.jpg.og.jpg?202608191652",
+    alt: "Apple iPad Air with M4",
+    sourceUrl: "https://www.apple.com/newsroom/2026/03/apple-introduces-the-new-ipad-air-powered-by-m4/",
+    source: "manufacturer",
+  },
+  "apple-iphone-18-pro-series": {
+    src: "https://www.apple.com/newsroom/images/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max/tile/Apple-iPhone-18-Pro-2up-260909-lp.jpg.og.jpg?202609212009",
+    alt: "Apple iPhone 18 Pro and iPhone 18 Pro Max",
+    sourceUrl: "https://www.apple.com/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max/",
+    source: "manufacturer",
+  },
+  "apple-iphone-duo": {
+    src: "https://www.apple.com/newsroom/images/2026/09/apple-unveils-iphone-duo/tile/Apple-iPhone-Duo-opening-iPhone-Duo-260909-lp.jpg.og.jpg?202609212008",
+    alt: "Apple iPhone Duo",
+    sourceUrl: "https://www.apple.com/newsroom/2026/09/apple-unveils-iphone-duo/",
+    source: "manufacturer",
+  },
+  "apple-macbook-pro-m5-pro-m5-max-series": {
+    src: "https://www.apple.com/newsroom/images/2026/03/apple-introduces-macbook-pro-with-all-new-m5-pro-and-m5-max/tile/Apple-MacBook-Pro-M5-Pro-and-M5-Max-Capture-One-260303-lp.jpg.og.jpg?202608191802",
+    alt: "Apple MacBook Pro with M5 Pro and M5 Max",
+    sourceUrl: "https://www.apple.com/newsroom/2026/03/apple-introduces-macbook-pro-with-all-new-m5-pro-and-m5-max/",
+    source: "manufacturer",
+  },
+  "bosch-advancedrotak-44-750": {
+    src: "https://www.bosch-diy.com/imagestorage/de-de/advancedrotak-44-750-100057263-hires-png-rgb-oneux-431667_w_800_h_418.png?imgWidth=800&imgHeight=418",
+    alt: "Bosch AdvancedRotak 44-750 lawn mower",
+    sourceUrl: "https://www.bosch-diy.com/de/de/p/advancedrotak-44-750-06008b9j00",
+    source: "manufacturer",
+  },
+  "bosch-serie-8-wgb256a41": {
+    src: "https://media3.bsh-group.com/Product_Shots/25210814_WGB256A41_PGA1_def.webp",
+    alt: "Bosch Serie 8 WGB256A41 washing machine",
+    sourceUrl: "https://www.bosch-home.com/de/de/product/WGB256A41",
+    source: "manufacturer",
+  },
+  "casio-g-shock-ga-v01-series": {
+    src: "https://www.casio.com/content/dam/casio/product-info/locales/de/de/timepiece/product/watch/G/GA/gav/ga-v01-7a/assets/GA-V01-7A.png",
+    alt: "Casio G-SHOCK GA-V01 watch",
+    sourceUrl: "https://www.casio.com/de/watches/gshock/product.GA-V01-7A/",
+    source: "manufacturer",
+  },
+  "ge-healthcare-vscan-air-sl": {
+    src: "https://s7d9.scene7.com/is/image/gehealthcare/vscan-air-sl-product-tile-en?fmt=webp",
+    alt: "GE HealthCare Vscan Air SL handheld ultrasound",
+    sourceUrl: "https://www.gehealthcare.com/products/ultrasound/handheld-ultrasound/vscan-air-sl",
+    source: "manufacturer",
+  },
+  "husqvarna-automower-450x-nera": {
+    src: "https://www-static-nw.husqvarna.com/-/images/aprimo/husqvarna/robotic-mowers/photos/studio/p/pc/pc-350263.jpg?v=441f7a3d152aa71&format=opengraph-cover",
+    alt: "Husqvarna Automower 450X NERA",
+    sourceUrl: "https://www.husqvarna.com/de/maehroboter/automower-450x-nera/",
+    source: "manufacturer",
+  },
+  "k-rcher-br-30-4-c-bp": {
+    src: "https://s1.kaercher-media.com/mam/17832340/mainproduct/172223/d0.jpg",
+    alt: "Kärcher BR 30/4 C Bp scrubber dryer",
+    sourceUrl: "https://www.kaercher.com/int/professional/floor-scrubbers-scrubber-driers/compact-scrubber-driers/br-30-4-c-bp-17832340.html",
+    source: "manufacturer",
+  },
+  "k-rcher-puzzi-10-1": {
+    src: "https://s1.kaercher-media.com/mam/11001300/mainproduct/d306ec1a-1aef-462c-90e9-5a99c134aef9/d0.jpg",
+    alt: "Kärcher Puzzi 10/1 spray extraction machine",
+    sourceUrl: "https://www.kaercher.com/int/professional/carpet-cleaner/spray-extraction-machines/puzzi-10-1-11001300.html",
+    source: "manufacturer",
+  },
+  "k-rcher-t-11-1-classic-hepa": {
+    src: "https://s1.kaercher-media.com/mam/15271990/mainproduct/2d05f606-0146-49f1-902d-9ecc0ce7868c/d0.jpg",
+    alt: "Kärcher T 11/1 Classic HEPA vacuum cleaner",
+    sourceUrl: "https://www.kaercher.com/int/professional/vacuums/dry-vacuum-cleaners/t-11-1-classic-hepa-15271990.html",
+    source: "manufacturer",
+  },
+  "k-rcher-wv-7-signature-line": {
+    src: "https://s1.kaercher-media.com/mam/16337800/mainproduct/211448/d0.jpg",
+    alt: "Kärcher WV 7 Signature Line window vacuum",
+    sourceUrl: "https://www.kaercher.com/int/home-garden/window-vacs/wv-7-signature-line-16337800.html",
+    source: "manufacturer",
+  },
+  "mindray-benevision-n22": {
+    src: "https://www.mindray.com/content/xpace/en/products/patient-monitoring/continuous-patient-monitoring/benevision-n22-n19.thumb.319.319.png",
+    alt: "Mindray BeneVision N22 patient monitor",
+    sourceUrl: "https://www.mindray.com/en/products/patient-monitoring/continuous-patient-monitoring/benevision-n22-n19",
+    source: "manufacturer",
+  },
+  "philips-intellivue-mx850": {
+    src: "https://images.philips.com/is/image/philipsconsumer/7a1df1a54ca4420a9c76aa8b00db4b44",
+    alt: "Philips IntelliVue MX850 patient monitor",
+    sourceUrl: "https://www.usa.philips.com/healthcare/product/HC866470/intellivue-mx850-bedside-patient-monitor",
+    source: "manufacturer",
+  },
+  "robot-coupe-cl-50": {
+    src: "https://www.robot-coupe.com/robot-coupe-global/Products/Coupes-Legumes/CL50/image-thumb__34771__RBC_cover_center_1140_580/CL50-1V%20READY.png",
+    alt: "Robot-Coupe CL 50 vegetable preparation machine",
+    sourceUrl: "https://www.robot-coupe.com/usa/en_US/p/vegetable-preparation-machines-cl-50-1v/20672",
+    source: "manufacturer",
+  },
+  "robot-coupe-cl-50-ultra": {
+    src: "https://www.robot-coupe.com/robot-coupe-global/Products/Coupes-Legumes/image-thumb__20108__RBC_cover_center_1140_580/CL%2050%20Ultra%20photo%20machine.png",
+    alt: "Robot-Coupe CL 50 Ultra vegetable preparation machine",
+    sourceUrl: "https://www.robot-coupe.com/export/en/p/vegetable-preparation-machines-cl-50-ultra/20673",
+    source: "manufacturer",
+  },
+  "roche-cobas-pure-integrated-solutions": {
+    src: "https://pim-media.roche.com/Images/cobas_pure_system.jpg?scl=1",
+    alt: "Roche cobas pure integrated solutions analyzer",
+    sourceUrl: "https://diagnostics.roche.com/global/en/products/systems/cobas-pure-integrated-solutions-sys-351.html",
+    source: "manufacturer",
+  },
+  "toyota-lifter-lhm230": {
+    src: "https://tmhe-media.azureedge.net/published/715_2500x700_toyota%20mh.jpg",
+    alt: "Toyota Lifter LHM230 hand pallet truck",
+    sourceUrl: "https://toyota-forklifts.eu/premium-trucks/hand-pallet-trucks/",
+    source: "manufacturer",
+  },
+  "zebra-zd421": {
+    src: "https://www.zebra.com/content/dam/zebra_dam/global/zcom-web-production/web-production-photography/product-cards/series/zd400-series-1x1.jpg",
+    alt: "Zebra ZD421 desktop printer",
+    sourceUrl: "https://www.zebra.com/de/de/products/printers/desktop/zd400-series.html",
+    source: "manufacturer",
+  },
   "google-pixel-11-pro-series": {
     src: "https://lh3.googleusercontent.com/LP4fWGXX_e-7i7cl_8Zs3qlFq6n92rxXO0az_SOV3wc2LP5mP9wxkm0Jjdu8urbOJOLaGdzdoeXWf5CVAvsIeH3xwljO28AUvnlq=w720-h900-rw-nu",
     alt: "Google Pixel 11 Pro official product image",
