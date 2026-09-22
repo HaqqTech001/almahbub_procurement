@@ -161,14 +161,15 @@
       "keySpecs": {},
       "availabilityStatus": "ON_REQUEST",
       "releaseDate": null,
-      "manufacturerUrl": "https://store.google.com/de/product/pixel_11_pro_specs?hl=de",
+      "manufacturerUrl": "https://store.google.com/de/product/pixel_11_pro?hl=de",
       "verificationStatus": "VERIFIED_2026-09-20",
       "heroImagePolicy": "OFFICIAL_FAMILY_GROUP_IMAGE_PREFERRED",
       "mediaStatus": "PENDING_ACQUISITION",
       "searchAliases": [
-        "Google Pixel 11 Pro 11 Pro XL official"
+        "Google Pixel 11 Pro and Pixel 11 Pro XL official family",
+        "Google Pixel 11 Pro Pro XL Canyon Olive official"
       ],
-      "notes": "Prefer an official image showing Pro and Pro XL together."
+      "notes": "Prefer the official Google Store family visual showing Pixel 11 Pro and Pixel 11 Pro XL together; do not use generic or unrelated Wikimedia fallback imagery."
     },
     {
       "catalogueId": "ALM-005",
