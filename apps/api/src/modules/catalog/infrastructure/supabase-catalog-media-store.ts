@@ -23,21 +23,57 @@ export class SupabaseCatalogMediaStore implements CatalogMediaStore {
   }): Promise<CatalogMediaObject> {
     const filename = `${randomUUID()}-${sanitizeUploadFilename(input.originalFilename)}`;
     const key = catalogObjectKey({ productId: input.productId, filename });
-    const response = await fetch(this.objectUrl(key), {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.serviceRoleKey}`,
-        apikey: this.serviceRoleKey,
-        "Content-Type": mimeFromFilename(filename),
-        "x-upsert": "true",
-      },
-      body: new Uint8Array(input.bytes),
-    });
-    if (!response.ok) {
+    let response: Response;
+    try {
+      response = await fetch(this.objectUrl(key), {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${this.serviceRoleKey}`,
+          apikey: this.serviceRoleKey,
+          "Content-Type": mimeFromFilename(filename),
+          "x-upsert": "true",
+        },
+        body: new Uint8Array(input.bytes),
+      });
+    } catch (error) {
+      const cause =
+        error instanceof Error && "cause" in error
+          ? (error as Error & { cause?: unknown }).cause
+          : undefined;
+      const causeMessage =
+        cause instanceof Error
+          ? cause.message
+          : typeof cause === "object" && cause !== null && "message" in cause
+            ? String((cause as { message?: unknown }).message ?? "")
+            : "";
+      const code =
+        typeof cause === "object" && cause !== null && "code" in cause
+          ? String((cause as { code?: unknown }).code ?? "")
+          : "";
+      let host = "configured Supabase host";
+      try {
+        host = new URL(this.supabaseUrl).host || host;
+      } catch {
+        /* env validation normally prevents this */
+      }
       throw new AppError({
         statusCode: 502,
         code: "STORAGE_UNAVAILABLE",
-        message: `Supabase catalog upload failed (${response.status}).`,
+        message: `Supabase catalog upload network failure for ${host}: ${[
+          error instanceof Error ? error.message : String(error),
+          code,
+          causeMessage,
+        ]
+          .filter(Boolean)
+          .join(" / ")}`,
+      });
+    }
+    if (!response.ok) {
+      const body = await response.text().catch(() => "");
+      throw new AppError({
+        statusCode: 502,
+        code: "STORAGE_UNAVAILABLE",
+        message: `Supabase catalog upload failed (${response.status})${body ? `: ${body.slice(0, 300)}` : "."}`,
       });
     }
     return {
