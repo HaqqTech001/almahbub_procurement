@@ -5,14 +5,34 @@ const COMMON_IDENTITY_WORDS = new Set([
 ]);
 
 function tokens(value: string): string[] {
-  return value
+  const raw = value
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, " ")
     .trim()
     .split(/\s+/)
-    .filter((token) => token.length >= 2);
+    .filter(Boolean);
+
+  const result: string[] = [];
+  for (let index = 0; index < raw.length; index += 1) {
+    const token = raw[index]!;
+    if (token.length >= 2) {
+      result.push(token);
+      continue;
+    }
+
+    const next = raw[index + 1];
+    if (
+      next?.length === 1 &&
+      ((/[a-z]/.test(token) && /\d/.test(next)) ||
+        (/\d/.test(token) && /[a-z]/.test(next)))
+    ) {
+      result.push(`${token}${next}`);
+      index += 1;
+    }
+  }
+  return result;
 }
 
 function distinctive(values: string[]): string[] {
