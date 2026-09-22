@@ -1,6 +1,6 @@
 # Master Catalogue Compatibility Report
 
-Generated: 2026-09-22T01:15:26.345Z
+Generated: 2026-09-22T01:41:06.216Z
 
 ## Manifest
 
@@ -12,19 +12,19 @@ Generated: 2026-09-22T01:15:26.345Z
 
 ## Existing Database
 
-- Products: 1134
-- Product statuses: published=1073, archived=48, draft=13
-- Variants: 1127
+- Products: 1234
+- Product statuses: draft=113, published=1073, archived=48
+- Variants: 1235
 - Images: 263
-- Manufacturers: 3
+- Manufacturers: 64
 - Brands: 3
 
 ## Mapping Summary
 
-- Exact slug matches: 0
+- Exact slug matches: 100
 - Alias matches: 0
-- Manual review: 6
-- Create new draft: 94
+- Manual review: 0
+- Create new draft: 0
 - Family consolidation candidates: 0
 
 ## Risk Summary
@@ -39,6 +39,9 @@ Generated: 2026-09-22T01:15:26.345Z
 
 ## Category 8 Cleanup
 
+- MANUAL_REVIEW: adidas Samba OG (variants=1, images=0, requestRefs=0, quotationRefs=0)
+- MANUAL_REVIEW: Casio G-SHOCK GA-V01 Series (variants=1, images=0, requestRefs=0, quotationRefs=0)
+- KEEP_AND_MAP: Coach Tabby Shoulder Bag 26 (variants=1, images=0, requestRefs=0, quotationRefs=0)
 - KEEP_AND_MAP: Ankle Work Boot (variants=1, images=1, requestRefs=0, quotationRefs=0)
 - LEGACY_ARCHIVE_CANDIDATE: Anti-pill Fleece Fabric Roll (variants=1, images=1, requestRefs=0, quotationRefs=0)
 - KEEP_AND_MAP: Anti-slip Safety Shoe (variants=1, images=0, requestRefs=0, quotationRefs=0)
@@ -150,41 +153,48 @@ Generated: 2026-09-22T01:15:26.345Z
 - LEGACY_ARCHIVE_CANDIDATE: Window curtain fabric (variants=1, images=1, requestRefs=0, quotationRefs=0)
 - MANUAL_REVIEW: Women’s Medical Scrub Set (variants=1, images=1, requestRefs=0, quotationRefs=0)
 - LEGACY_ARCHIVE_CANDIDATE: Workwear coverall (variants=1, images=0, requestRefs=0, quotationRefs=0)
+- MANUAL_REVIEW: Michael Kors Jet Set Travel Large Crossbody (variants=1, images=0, requestRefs=0, quotationRefs=0)
+- KEEP_AND_MAP: Montblanc Meisterstück Wallet 6cc (variants=1, images=0, requestRefs=0, quotationRefs=0)
+- MANUAL_REVIEW: Nike Air Max Dn8 (variants=1, images=0, requestRefs=0, quotationRefs=0)
+- MANUAL_REVIEW: On Cloud 6 (variants=1, images=0, requestRefs=0, quotationRefs=0)
+- MANUAL_REVIEW: Ray-Ban Meta (Gen 2) Wayfarer (variants=1, images=0, requestRefs=0, quotationRefs=0)
+- MANUAL_REVIEW: Samsonite Proxis Spinner 75 cm (variants=1, images=0, requestRefs=0, quotationRefs=0)
+- MANUAL_REVIEW: TUMI Alpha Bravo Navigation Backpack (variants=1, images=0, requestRefs=0, quotationRefs=0)
 
 ## Product Families
 
-- Apple iPhone 18 Pro Series: PARTIAL_FAMILY_MATCH; candidates=1
-- Samsung Galaxy S26 Series: PARTIAL_FAMILY_MATCH; candidates=1
-- Google Pixel 11 Pro Series: NO_FAMILY_MATCH; candidates=0
-- Apple iPad Air (M4) Series: MANUAL_REVIEW; candidates=1
-- Samsung Galaxy Tab S11 Series: PARTIAL_FAMILY_MATCH; candidates=1
-- Apple MacBook Air (M5) Series: NO_FAMILY_MATCH; candidates=0
-- Apple MacBook Pro (M5 Pro / M5 Max) Series: NO_FAMILY_MATCH; candidates=0
-- Thermo Scientific TSX Series Ultra-Low Temperature Freezers: NO_FAMILY_MATCH; candidates=0
-- Nike Air Max Dn8: NO_FAMILY_MATCH; candidates=0
-- adidas Samba OG: NO_FAMILY_MATCH; candidates=0
-- On Cloud 6: NO_FAMILY_MATCH; candidates=0
-- Coach Tabby Shoulder Bag 26: NO_FAMILY_MATCH; candidates=0
-- Michael Kors Jet Set Travel Large Crossbody: NO_FAMILY_MATCH; candidates=0
-- TUMI Alpha Bravo Navigation Backpack: NO_FAMILY_MATCH; candidates=0
-- Samsonite Proxis Spinner 75 cm: NO_FAMILY_MATCH; candidates=0
-- Ray-Ban Meta (Gen 2) Wayfarer: NO_FAMILY_MATCH; candidates=0
-- Montblanc Meisterstück Wallet 6cc: NO_FAMILY_MATCH; candidates=0
-- Casio G-SHOCK GA-V01 Series: NO_FAMILY_MATCH; candidates=0
-- Vusion V300 Series Electronic Shelf Labels: NO_FAMILY_MATCH; candidates=0
+- Apple iPhone 18 Pro Series: FAMILY_ALREADY_MODELED; candidates=1
+- Samsung Galaxy S26 Series: FAMILY_ALREADY_MODELED; candidates=1
+- Google Pixel 11 Pro Series: FAMILY_ALREADY_MODELED; candidates=1
+- Apple iPad Air (M4) Series: FAMILY_ALREADY_MODELED; candidates=1
+- Samsung Galaxy Tab S11 Series: FAMILY_ALREADY_MODELED; candidates=1
+- Apple MacBook Air (M5) Series: FAMILY_ALREADY_MODELED; candidates=1
+- Apple MacBook Pro (M5 Pro / M5 Max) Series: FAMILY_ALREADY_MODELED; candidates=1
+- Thermo Scientific TSX Series Ultra-Low Temperature Freezers: FAMILY_ALREADY_MODELED; candidates=1
+- Nike Air Max Dn8: FAMILY_ALREADY_MODELED; candidates=1
+- adidas Samba OG: FAMILY_ALREADY_MODELED; candidates=1
+- On Cloud 6: FAMILY_ALREADY_MODELED; candidates=1
+- Coach Tabby Shoulder Bag 26: FAMILY_ALREADY_MODELED; candidates=1
+- Michael Kors Jet Set Travel Large Crossbody: FAMILY_ALREADY_MODELED; candidates=1
+- TUMI Alpha Bravo Navigation Backpack: FAMILY_ALREADY_MODELED; candidates=1
+- Samsonite Proxis Spinner 75 cm: FAMILY_ALREADY_MODELED; candidates=1
+- Ray-Ban Meta (Gen 2) Wayfarer: FAMILY_ALREADY_MODELED; candidates=1
+- Montblanc Meisterstück Wallet 6cc: FAMILY_ALREADY_MODELED; candidates=1
+- Casio G-SHOCK GA-V01 Series: FAMILY_ALREADY_MODELED; candidates=1
+- Vusion V300 Series Electronic Shelf Labels: FAMILY_ALREADY_MODELED; candidates=1
 
 ## Procurement Services
 
-- Custom Product Sourcing: CREATE_NEW_DRAFT
-- Bulk & Institutional Procurement: CREATE_NEW_DRAFT
-- OEM & Private-Label Sourcing: CREATE_NEW_DRAFT
-- Project-Based Procurement: CREATE_NEW_DRAFT
-- Tender & BOQ/BOM Procurement: CREATE_NEW_DRAFT
-- Replacement Parts & Components Sourcing: CREATE_NEW_DRAFT
-- International Supplier Sourcing: CREATE_NEW_DRAFT
-- Supplier Verification & Product Matching: CREATE_NEW_DRAFT
-- Multi-Vendor Procurement Consolidation: CREATE_NEW_DRAFT
-- Special Specification / Hard-to-Find Procurement: CREATE_NEW_DRAFT
+- Custom Product Sourcing: REUSE_AFTER_REVIEW
+- Bulk & Institutional Procurement: REUSE_AFTER_REVIEW
+- OEM & Private-Label Sourcing: REUSE_AFTER_REVIEW
+- Project-Based Procurement: REUSE_AFTER_REVIEW
+- Tender & BOQ/BOM Procurement: REUSE_AFTER_REVIEW
+- Replacement Parts & Components Sourcing: REUSE_AFTER_REVIEW
+- International Supplier Sourcing: REUSE_AFTER_REVIEW
+- Supplier Verification & Product Matching: REUSE_AFTER_REVIEW
+- Multi-Vendor Procurement Consolidation: REUSE_AFTER_REVIEW
+- Special Specification / Hard-to-Find Procurement: REUSE_AFTER_REVIEW
 
 ## Next Action
 
