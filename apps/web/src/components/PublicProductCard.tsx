@@ -43,7 +43,9 @@ export function PublicProductCard({
               <span className="hamd-disc-card__ph-note">Image coming soon</span>
             </span>
           )}
-          {product.categoryName ? (
+          {product.imageIsCategoryFallback ? (
+            <span className="hamd-disc-card__tag">Representative category image</span>
+          ) : product.categoryName ? (
             <span className="hamd-disc-card__tag">{product.categoryName}</span>
           ) : null}
         </span>

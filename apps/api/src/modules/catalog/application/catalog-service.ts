@@ -109,6 +109,9 @@ type CatalogProductRow = {
     slug: string;
     name: string;
     status: string;
+    imageUrl?: string | null;
+    imageAlt?: string | null;
+    imageStorageKey?: string | null;
   } | null;
   brand: { name: string } | null;
   manufacturer: { legalName: string } | null;
@@ -212,6 +215,11 @@ function pageMeta(total: number, page: number, pageSize: number): Meta {
 }
 
 export function toPublicProduct(row: CatalogProductRow): PublicCatalogProduct {
+  const category =
+    row.category?.status === PUBLIC_CATALOG_STATUS
+      ? withCategoryMedia(row.category)
+      : null;
+
   return {
     slug: row.slug,
     name: row.name,
@@ -221,17 +229,16 @@ export function toPublicProduct(row: CatalogProductRow): PublicCatalogProduct {
     availabilityStatus: row.availabilityStatus ?? "ON_REQUEST",
     keySpecifications: publicSpecifications(row.keySpecifications),
     releaseDate: publicDate(row.releaseDate),
-    category:
-      row.category?.status === PUBLIC_CATALOG_STATUS
-        ? {
-            id: row.category.id,
-            description: row.category.description ?? null,
-            slug: row.category.slug,
-            name: row.category.name,
-            imageUrl: null,
-            imageAlt: null,
-          }
-        : null,
+    category: category
+      ? {
+          id: category.id,
+          description: category.description ?? null,
+          slug: category.slug,
+          name: category.name,
+          imageUrl: category.imageUrl ?? null,
+          imageAlt: category.imageAlt ?? null,
+        }
+      : null,
     brandName: row.brand?.name ?? null,
     manufacturerName: row.manufacturer?.legalName ?? null,
     images: orderedProductImages(row.images ?? [])
@@ -409,8 +416,7 @@ export class CatalogService {
           categoryId: row.id,
           status: PUBLIC_CATALOG_STATUS,
           catalogueId: { not: null },
-          sourceManifestVersion: { not: null },
-          verificationStatus: { startsWith: "VERIFIED_" },
+          sourceManifestVersion: "2.0-starter",
         },
         take: 16,
         orderBy: [{ createdAt: "desc" }, { slug: "asc" }],
