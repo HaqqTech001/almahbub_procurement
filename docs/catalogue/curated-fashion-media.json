@@ -1,0 +1,122 @@
+{
+  "schema": "curated-product-primary-media",
+  "version": 1,
+  "category": "Fashion, Footwear, Bags & Lifestyle Accessories",
+  "note": "Exact product/family media only. approved_for_import entries have reusable rights verified; unresolved entries remain blocked.",
+  "entries": [
+    {
+      "catalogueId": "ALM-071",
+      "slug": "nike-air-max-dn8",
+      "productName": "Nike Air Max Dn8",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Nike Air Max Dn8.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-072",
+      "slug": "adidas-samba-og",
+      "productName": "adidas Samba OG",
+      "status": "approved_for_import",
+      "source": "wikimedia_commons",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Adidas_Samba_OG.jpg",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Adidas%20Samba%20OG.jpg?width=1280",
+      "altText": "adidas Samba OG shoe.",
+      "identityEvidence": "Exact adidas Samba OG photograph on Wikimedia Commons.",
+      "credit": "LeDroider",
+      "license": "CC0 1.0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "changes": "No editorial changes. Wikimedia 1280px derivative used for catalogue delivery."
+    },
+    {
+      "catalogueId": "ALM-073",
+      "slug": "on-cloud-6",
+      "productName": "On Cloud 6",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "On Cloud 6.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-074",
+      "slug": "coach-tabby-shoulder-bag-26",
+      "productName": "Coach Tabby Shoulder Bag 26",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Coach Tabby Shoulder Bag 26.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-075",
+      "slug": "michael-kors-jet-set-travel-large-crossbody",
+      "productName": "Michael Kors Jet Set Travel Large Crossbody",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Michael Kors Jet Set Travel Large Crossbody.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-076",
+      "slug": "tumi-alpha-bravo-navigation-backpack",
+      "productName": "TUMI Alpha Bravo Navigation Backpack",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "TUMI Alpha Bravo Navigation Backpack.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-077",
+      "slug": "samsonite-proxis-spinner-75-cm",
+      "productName": "Samsonite Proxis Spinner 75 cm",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Samsonite Proxis Spinner 75 cm.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-078",
+      "slug": "ray-ban-meta-gen-2-wayfarer",
+      "productName": "Ray-Ban Meta (Gen 2) Wayfarer",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Ray-Ban Meta Gen 2 Wayfarer.",
+      "identityEvidence": "Reusable exact Gen 2 Wayfarer product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-079",
+      "slug": "montblanc-meisterst-ck-wallet-6cc",
+      "productName": "Montblanc Meisterstück Wallet 6cc",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Montblanc Meisterstück Wallet 6cc.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-080",
+      "slug": "casio-g-shock-ga-v01-series",
+      "productName": "Casio G-SHOCK GA-V01 Series",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Casio G-SHOCK GA-V01 Series.",
+      "identityEvidence": "Reusable exact family media not yet verified."
+    }
+  ]
+}
