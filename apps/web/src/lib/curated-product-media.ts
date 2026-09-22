@@ -10,6 +10,18 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "epson-tm-t88vii": {
+    src: "https://press.epson.eu/app/uploads/2025/05/tm-t88vii_front_bk.tif_.jpg",
+    alt: "Epson TM-T88VII POS receipt printer in black",
+    sourceUrl: "https://press.epson.eu/en_EU/news/epson-announces-its-newest-high-speed-most-eco-efficient-pos-receipt-printer-for-retailers-and-hospitality-providers/",
+    source: "manufacturer",
+  },
+  "siemens-healthineers-acuson-maple": {
+    src: "https://marketing.webassets.siemens-healthineers.com/17045d25e9a51481/49a9099a9585/v/a58a71395316/siemens-healthineers-us-acuson-maple-hero-new-4x3.png",
+    alt: "Siemens Healthineers ACUSON Maple ultrasound system",
+    sourceUrl: "https://www.siemens-healthineers.com/en-us/ultrasound/general-imaging/acuson-maple",
+    source: "manufacturer",
+  },
   "bd-max-system": {
     src: "https://www.bd.com/content/dam/bd-assets/bd-com/en-us/images/product-family/integrated-diagnostic-solutions/bd-max-system/max-system_C_DS_MD_0616-0021.png",
     alt: "BD MAX molecular diagnostic system",
