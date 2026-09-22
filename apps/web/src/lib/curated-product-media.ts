@@ -10,6 +10,18 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "gardena-smart-water-control-19033-20": {
+    src: "https://media.husqvarnagroup.com/image/SS-405844.png?fit=bounds&format=webply&height=520&optimize=low&width=750",
+    alt: "GARDENA smart Water Control 19033-20",
+    sourceUrl: "https://www.gardena.com/de/produkte/bewaesserung/bewaesserungssteuerung/smart-water-control/970825901.html",
+    source: "manufacturer",
+  },
+  "lg-washtower-wt1210bbf": {
+    src: "https://www.lg.com/content/dam/channel/wcms/de/images/washer-dryers/wt1210bbf/gallery/2010-02.jpg/jcr%3Acontent/renditions/thum-1600x1062.jpeg?w=800",
+    alt: "LG WashTower WT1210BBF front view",
+    sourceUrl: "https://www.lg.com/de/waeschepflege/washtower/wt1210bbf/",
+    source: "manufacturer",
+  },
   "hp-poly-studio-x70": {
     src: "https://www.hp.com/content/dam/sites/worldwide/poly/video-conferencing/all-in-one/studio-x70/KSP%20Carousel%20-%20Desktop%20%E2%80%93%204%402x.png",
     alt: "HP Poly Studio X70 all-in-one video bar",
