@@ -192,8 +192,8 @@ function manifestFallbackEligible(
   return Boolean(
     product.status === PUBLIC_CATALOG_STATUS &&
       product.category?.status === PUBLIC_CATALOG_STATUS &&
-      product.catalogueId?.trim() &&
-      product.sourceManifestVersion?.trim() &&
+      /^ALM-\d{3}$/.test(product.catalogueId?.trim() ?? "") &&
+      product.sourceManifestVersion === "2.0-starter" &&
       product.verificationStatus?.startsWith("VERIFIED_"),
   );
 }
