@@ -10,6 +10,18 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "haas-vf-2": {
+    src: "https://www.haascnc.com/content/dam/haascnc/pdp_feed/machines/VF-2.png",
+    alt: "Haas VF-2 CNC vertical mill",
+    sourceUrl: "https://www.haascnc.com/machines/vertical-mills/vf-series/models/small/vf-2.html",
+    source: "manufacturer",
+  },
+  "hobart-legacy-hl600": {
+    src: "https://cdn2.webdamdb.com/1280_cbnmyVNkPjn01QKU.png?1781292805=",
+    alt: "Hobart Legacy+ HL600 commercial floor mixer",
+    sourceUrl: "https://www.hobartcorp.com/products/food-prep/mixers/legacy-plus-floor-mixers",
+    source: "manufacturer",
+  },
   "eppendorf-centrifuge-5910-ri": {
     src: "https://www.eppendorf.com/product-media/img/global/966241/Eppendorf_Centrifugation_Centrifuge-5910-Ri_side-view-open_product.jpg?imwidth=540",
     alt: "Eppendorf Centrifuge 5910 Ri",
