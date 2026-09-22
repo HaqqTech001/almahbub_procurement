@@ -39,7 +39,8 @@
     "catalogue:media-audit": "corepack pnpm --filter @hamd/api exec tsx src/scripts/audit-production-media.ts",
     "catalogue:media-repair": "corepack pnpm --filter @hamd/api exec tsx src/scripts/repair-production-media.ts",
     "catalogue:archive-disallowed-fashion": "corepack pnpm --filter @hamd/api exec tsx src/scripts/archive-disallowed-fashion-products.ts",
-    "catalogue:publish-master": "corepack pnpm --filter @hamd/database catalogue:publish-master"
+    "catalogue:publish-master": "corepack pnpm --filter @hamd/database catalogue:publish-master",
+    "media:import-curated-electronics": "corepack pnpm --filter @hamd/api exec tsx src/scripts/import-curated-electronics-media.ts"
   },
   "devDependencies": {
     "@types/dom-mediacapture-record": "^1.0.22",

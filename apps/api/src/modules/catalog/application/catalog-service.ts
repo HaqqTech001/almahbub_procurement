@@ -38,6 +38,7 @@ type Meta = {
 export type PublicCatalogImage = {
   url: string;
   altText: string | null;
+  caption?: string | null;
   position: number;
 };
 
@@ -115,7 +116,7 @@ type CatalogProductRow = {
   } | null;
   brand: { name: string } | null;
   manufacturer: { legalName: string } | null;
-  images: { url: string; altText: string | null; position: number }[];
+  images: { url: string; altText: string | null; caption?: string | null; position: number }[];
   videos?: {
     url: string;
     title: string | null;
@@ -249,6 +250,7 @@ export function toPublicProduct(row: CatalogProductRow): PublicCatalogProduct {
       .map((image) => ({
         url: image.url,
         altText: image.altText,
+        caption: image.caption ?? null,
         position: image.position,
       })),
     videos: (row.videos ?? [])
@@ -358,7 +360,7 @@ export class CatalogService {
     // Only the reviewed primary binary is approved, not every legacy gallery row.
     return toPublicProduct({
       ...row,
-      images: [{ url: image.url, altText: image.altText ?? null, position: 0 }],
+      images: [{ url: image.url, altText: image.altText ?? null, caption: image.caption ?? null, position: 0 }],
     });
   }
 

@@ -36,6 +36,6 @@ export const PUBLIC_VARIANT_KEYS = [
 
 export const PUBLIC_CATEGORY_KEYS = ["id", "slug", "name", "description", "imageUrl", "imageAlt"] as const;
 
-export const PUBLIC_IMAGE_KEYS = ["url", "altText", "position"] as const;
+export const PUBLIC_IMAGE_KEYS = ["url", "altText", "caption", "position"] as const;
 
 export const PUBLIC_VIDEO_KEYS = ["url", "title", "caption", "position"] as const;

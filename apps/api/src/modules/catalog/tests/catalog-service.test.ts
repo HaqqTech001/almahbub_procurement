@@ -400,6 +400,24 @@ describe("catalog service", () => {
     expect(mapped.images).toEqual([]);
   });
 
+  it("preserves public image attribution captions", () => {
+    const mapped = toPublicProduct({
+      ...publishedPhone,
+      images: [
+        {
+          ...publishedPhone.images[0],
+          caption:
+            "Photo: Example Author. License: CC BY-SA 4.0. Source: https://commons.wikimedia.org/",
+        },
+      ],
+    });
+
+    expect(mapped.images[0]).toMatchObject({
+      caption:
+        "Photo: Example Author. License: CC BY-SA 4.0. Source: https://commons.wikimedia.org/",
+    });
+  });
+
   it("returns an empty images array when a product has no photography", () => {
     const mapped = toPublicProduct({
       ...publishedPhone,
