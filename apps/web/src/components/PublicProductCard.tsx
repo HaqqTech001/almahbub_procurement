@@ -19,9 +19,8 @@ export function PublicProductCard({
   const imageSrc = (product.imageSources ?? [product.imageSrc]).find(src => src && !failedSources.includes(src));
   const showImage = Boolean(imageSrc);
 
-  // Public grids must not turn unavailable media into giant placeholder cards.
-  // Ops and direct product management retain their own recoverable fallback UI.
-  if (!showImage) return null;
+  // Verified manifest-owned products may intentionally render without photography
+  // while exact/licensed media is still pending. Never invent or substitute a photo.
 
   return (
     <article className="hamd-disc-card hamd-disc-card--grid">
