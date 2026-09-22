@@ -193,6 +193,34 @@ async function manufacturerId(
   return id;
 }
 
+async function assertMasterCatalogueSchemaReady(
+  client: pg.PoolClient,
+): Promise<void> {
+  const result = await client.query<{ catalogue_id: string | null }>(
+    `select column_name as catalogue_id
+     from information_schema.columns
+     where table_schema = current_schema()
+       and table_name = 'products'
+       and column_name = 'catalogue_id'
+     limit 1`,
+  );
+
+  if (!result.rows[0]?.catalogue_id) {
+    throw new Error(
+      [
+        "MASTER_CATALOGUE_MIGRATION_REQUIRED",
+        "The database does not yet contain products.catalogue_id.",
+        "Apply the additive master-catalogue migration before running this seed:",
+        "  pnpm db:migrate",
+        "Then regenerate Prisma and rerun the dry-run:",
+        "  pnpm db:generate",
+        "  pnpm catalogue:seed-master",
+        "No catalogue rows were modified.",
+      ].join("\n"),
+    );
+  }
+}
+
 async function main(): Promise<void> {
   const execute = process.argv.includes("--execute");
   const manifest = parseManifest();
@@ -215,6 +243,7 @@ async function main(): Promise<void> {
 
   try {
     await client.query("BEGIN");
+    await assertMasterCatalogueSchemaReady(client);
     const categories = await categoryIds(client, manifest);
 
     for (const entry of manifest.entries) {
