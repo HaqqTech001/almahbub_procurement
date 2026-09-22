@@ -36,7 +36,8 @@
     "catalogue:db-health": "corepack pnpm --filter @hamd/api exec tsx src/scripts/catalogue-db-health.ts",
     "catalogue:map-master": "corepack pnpm --filter @hamd/database catalogue:map",
     "catalogue:seed-master": "corepack pnpm --filter @hamd/database catalogue:seed-master",
-    "catalogue:media-audit": "corepack pnpm --filter @hamd/api exec tsx src/scripts/audit-production-media.ts"
+    "catalogue:media-audit": "corepack pnpm --filter @hamd/api exec tsx src/scripts/audit-production-media.ts",
+    "catalogue:media-repair": "corepack pnpm --filter @hamd/api exec tsx src/scripts/repair-production-media.ts"
   },
   "devDependencies": {
     "@types/dom-mediacapture-record": "^1.0.22",
