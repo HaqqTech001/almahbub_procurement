@@ -6,7 +6,8 @@
  * Usage:
  *   pnpm media:acquire --limit=100
  *   pnpm media:acquire --limit=100 --after=product-slug --category=valves
- *   pnpm media:acquire --limit=100 --execute
+ *   pnpm media:acquire --slug=product-slug
+ *   pnpm media:acquire --slug=product-slug --expected-source-url=https://example.test/source --execute
  */
 import "../load-env.js";
 
@@ -473,6 +474,11 @@ async function main(): Promise<void> {
   if (!Number.isInteger(limit) || limit <= 0) throw new Error("--limit must be a positive integer.");
   const after = value("--after");
   const category = value("--category");
+  const productSlug = value("--slug");
+  const expectedSourceUrl = value("--expected-source-url");
+  if (expectedSourceUrl && !productSlug) {
+    throw new Error("--expected-source-url requires --slug.");
+  }
   const environment = parseEnvironment(process.env);
   if (!environment.DATABASE_URL) {
     throw new Error("DATABASE_URL is required.");
@@ -549,7 +555,14 @@ async function main(): Promise<void> {
   let duplicateRejected = 0;
 
   try {
-    const candidates = rows.filter((row) => !row.hasPrimary && !isBlockedTestBedProduct(row.slug) && (!after || row.slug > after) && (!category || row.categorySlug === category)).slice(0, limit);
+    const candidates = rows.filter(
+      (row) =>
+        !row.hasPrimary &&
+        !isBlockedTestBedProduct(row.slug) &&
+        (!after || row.slug > after) &&
+        (!category || row.categorySlug === category) &&
+        (!productSlug || row.slug === productSlug),
+    ).slice(0, limit);
     const seenHashes = new Set<string>();
     let lastProcessedSlug: string | null = null;
     for (const product of candidates) {
@@ -624,6 +637,11 @@ async function main(): Promise<void> {
           }
         }
         if (!resolved) throw new Error("No sufficiently matched licensed Wikimedia/Openverse image candidate.");
+        if (expectedSourceUrl && resolved.sourceUrl !== expectedSourceUrl) {
+          throw new Error(
+            `Reviewed media source changed for ${product.slug}; expected ${expectedSourceUrl}, resolved ${resolved.sourceUrl}. No media was written.`,
+          );
+        }
         const confidenceScore = candidateConfidence(resolved.title, coreType, product.categorySlug);
         const evidence = semanticEvidence(product.name, resolved.title, product.categorySlug);
         if (mediaDecision.action === "HUMAN_REVIEW_REQUIRED") {
