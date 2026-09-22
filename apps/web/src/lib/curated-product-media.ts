@@ -10,6 +10,24 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "dyson-supersonic-r-professional": {
+    src: "https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/522238-01.png?%24responsive%24=&fmt=png-alpha",
+    alt: "Dyson Supersonic r Professional hair dryer",
+    sourceUrl: "https://www.dyson.com/commercial/hair-care/supersonic-r-professional",
+    source: "manufacturer",
+  },
+  "ghd-chronos-max": {
+    src: "https://amplience.ghdhair.com/i/ghd/689_PLP_PrimaryImage_ChronosMax_BlackUpright_Global?%24CarouselImageItem%24=&fmt=auto",
+    alt: "ghd Chronos Max wide-plate hair straightener",
+    sourceUrl: "https://www.ghdhair.com/de/glaetteisen/ghd-chronos-max-glaetteisen-weiss-p-690",
+    source: "manufacturer",
+  },
+  "ghd-duet-blowdry": {
+    src: "https://amplience.ghdhair.com/i/ghd/664_DuetBlowdry_PLP_PrimaryImage_White_Global?%24CarouselImageItem%24=&fmt=auto",
+    alt: "ghd Duet Blowdry hair dryer brush",
+    sourceUrl: "https://www.ghdhair.com/de/foehnbuersten/ghd-duet-blowdry-schwarz-p-663/",
+    source: "manufacturer",
+  },
   "haas-vf-2": {
     src: "https://www.haascnc.com/content/dam/haascnc/pdp_feed/machines/VF-2.png",
     alt: "Haas VF-2 CNC vertical mill",
