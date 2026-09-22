@@ -91,6 +91,10 @@ export type PublicCatalogProduct = {
 };
 
 type CatalogProductRow = {
+  id?: string;
+  catalogueId?: string | null;
+  sourceManifestVersion?: string | null;
+  verificationStatus?: string | null;
   slug: string;
   name: string;
   description: string | null;
@@ -180,6 +184,18 @@ function publicDate(value: Date | string | null | undefined): string | null {
   if (!value) return null;
   if (value instanceof Date) return value.toISOString().slice(0, 10);
   return String(value).slice(0, 10);
+}
+
+function manifestFallbackEligible(
+  product: CatalogProductRow & { status?: string },
+): boolean {
+  return Boolean(
+    product.status === PUBLIC_CATALOG_STATUS &&
+      product.category?.status === PUBLIC_CATALOG_STATUS &&
+      product.catalogueId?.trim() &&
+      product.sourceManifestVersion?.trim() &&
+      product.verificationStatus?.startsWith("VERIFIED_"),
+  );
 }
 
 function pageMeta(total: number, page: number, pageSize: number): Meta {
@@ -308,6 +324,22 @@ export class CatalogService {
     );
   }
 
+  private async isPubliclyReleasable(
+    product: CatalogProductRow & ReviewProduct,
+  ): Promise<boolean> {
+    if (manifestFallbackEligible(product)) return true;
+    if (!this.reviews.some((review) => review.productId === product.id)) return false;
+    return this.isApproved(product);
+  }
+
+  private publicProductForRelease(
+    row: CatalogProductRow & ReviewProduct,
+  ): PublicCatalogProduct {
+    return manifestFallbackEligible(row)
+      ? toPublicProduct(row)
+      : this.reviewedPublicProduct(row);
+  }
+
   private reviewedPublicProduct(
     row: CatalogProductRow & ReviewProduct,
   ): PublicCatalogProduct {
@@ -366,6 +398,33 @@ export class CatalogService {
           products.push({ ...this.reviewedPublicProduct(candidates[index]!), id: candidates[index]!.id });
       }
     }
+    if (products.length < 16) {
+      const excludedIds = new Set(products.map((product) => product.id));
+      const manifestCandidates = await this.database.product.findMany({
+        where: {
+          categoryId: row.id,
+          status: PUBLIC_CATALOG_STATUS,
+          catalogueId: { not: null },
+          sourceManifestVersion: { not: null },
+          verificationStatus: { startsWith: "VERIFIED_" },
+        },
+        take: 16,
+        orderBy: [{ createdAt: "desc" }, { slug: "asc" }],
+        include: publicProductInclude,
+      });
+      for (const product of manifestCandidates) {
+        if (
+          products.length >= 16 ||
+          excludedIds.has(product.id) ||
+          !manifestFallbackEligible(product)
+        ) {
+          continue;
+        }
+        products.push({ ...toPublicProduct(product), id: product.id });
+        excludedIds.add(product.id);
+      }
+    }
+
     return {
       category: {
         id: row.id,
@@ -392,7 +451,6 @@ export class CatalogService {
 
     const where = {
       status: PUBLIC_CATALOG_STATUS,
-      slug: { in: this.reviews.map((review) => review.slug) },
       ...(categoryFilter ? { categoryId: categoryFilter.id } : {}),
       ...(query.q
         ? {
@@ -423,13 +481,14 @@ export class CatalogService {
           : [{ createdAt: "desc" }, { slug: "asc" }],
     });
     const approved = await withConcurrency(candidates, (row) =>
-      this.isApproved(row),
+      this.isPubliclyReleasable(row),
     );
     const eligible = candidates.filter((_row, index) => approved[index]);
     if (query.sort === "recommended")
       eligible.sort((a, b) => {
         const tier = (id: string) =>
-          this.reviews.find((review) => review.productId === id)!.priorityTier;
+          this.reviews.find((review) => review.productId === id)?.priorityTier ??
+          "P2_CORE";
         return (
           tier(a.id).localeCompare(tier(b.id)) || compareProductPriority(a, b)
         );
@@ -450,13 +509,13 @@ export class CatalogService {
     });
 
     const currentApprovals = await withConcurrency(rows, (row) =>
-      this.isApproved(row),
+      this.isPubliclyReleasable(row),
     );
     return {
       data: restoreProductOrder(
         rows.filter((_row, index) => currentApprovals[index]),
         prioritySlugs,
-      ).map((row) => this.reviewedPublicProduct(row)),
+      ).map((row) => this.publicProductForRelease(row)),
       page: pageMeta(total, query.page, query.pageSize),
     };
   }
@@ -476,23 +535,25 @@ export class CatalogService {
         message: "Product not found.",
       });
     }
-    if (!(await this.isApproved(row)))
+    if (!(await this.isPubliclyReleasable(row)))
       throw new AppError({
         statusCode: 404,
         code: "NOT_FOUND",
         message: "Product not found.",
       });
 
-    const primary = primaryImage(row);
-    if ((await this.mediaHealth(primary?.url)) !== "valid") {
-      throw new AppError({
-        statusCode: 404,
-        code: "NOT_FOUND",
-        message: "Product not found.",
-      });
+    if (!manifestFallbackEligible(row)) {
+      const primary = primaryImage(row);
+      if ((await this.mediaHealth(primary?.url)) !== "valid") {
+        throw new AppError({
+          statusCode: 404,
+          code: "NOT_FOUND",
+          message: "Product not found.",
+        });
+      }
     }
 
-    return this.reviewedPublicProduct(row);
+    return this.publicProductForRelease(row);
   }
 
   public async listCategories(query: PublicCategoryListQuery): Promise<{
