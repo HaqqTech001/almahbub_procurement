@@ -188,10 +188,7 @@ export function ProductDetailPage() {
   const selected = gallery[activeImage] ?? gallery[0];
   const current = selected && !failedImages.includes(selected.url) ? selected : gallery.find(image => !failedImages.includes(image.url));
   const imageSrc = resolveMediaUrl(current?.url);
-  const categoryFallbackSrc = resolveMediaUrl(product.category?.imageUrl ?? undefined);
-  const displayImageSrc = imageSrc ?? categoryFallbackSrc;
-  const usingCategoryFallback = !imageSrc && Boolean(categoryFallbackSrc);
-  const showImage = Boolean(displayImageSrc) && !imageFailed;
+  const showImage = Boolean(imageSrc) && !imageFailed;
   const requestHref = productRequestHref(product.slug, {
     workspace,
     authenticated,
@@ -258,21 +255,7 @@ export function ProductDetailPage() {
             aria-label={gallery.length > 1 ? "Product image gallery" : undefined}
             onKeyDown={onGalleryKeyDown}
           >
-            {showImage && usingCategoryFallback ? (
-              <div className="hamd-product-detail__fallback-media">
-                <OptimizedImage
-                  key={displayImageSrc}
-                  src={displayImageSrc}
-                  alt={product.category?.imageAlt?.trim() || product.category?.name || "Representative category image"}
-                  className="hamd-product-detail__media"
-                  width={960}
-                  height={720}
-                  priority
-                  onLoadError={() => setImageFailed(true)}
-                />
-                <span className="hamd-disc-card__ph-note">Representative category image</span>
-              </div>
-            ) : showImage ? (
+            {showImage ? (
               <button
                 type="button"
                 className="hamd-product-detail__zoom"
