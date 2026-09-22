@@ -86,7 +86,7 @@ async function main(): Promise<void> {
     supabaseBucket: env.CATALOG_MEDIA_SUPABASE_BUCKET,
   });
 
-  const webPublic = resolve(process.cwd(), "../../web/public");
+  const webPublic = resolve(process.cwd(), "../web/public");
   const categoryResults: Array<Record<string, unknown>> = [];
   const commodityResults: Array<Record<string, unknown>> = [];
   const productResults: Array<Record<string, unknown>> = [];
