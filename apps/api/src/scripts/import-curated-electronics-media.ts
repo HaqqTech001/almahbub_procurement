@@ -36,7 +36,7 @@ type CuratedEntry = {
   catalogueId: string;
   slug: string;
   productName: string;
-  status: "ready_for_rights_review" | "approved_for_import" | "pending_direct_asset_url";
+  status: "ready_for_rights_review" | "approved_for_import" | "pending_direct_asset_url" | "needs_family_licensed_media";
   source: string;
   sourcePageUrl: string;
   imageUrl: string | null;
