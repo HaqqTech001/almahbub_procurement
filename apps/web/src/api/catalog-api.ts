@@ -5,7 +5,7 @@ import { BROWSER_REQUEST_TIMEOUT_MS, fetchWithTransientRetry, isAbortError, sign
 export type PublicCatalogImage = {
   url: string;
   altText: string | null;
-  caption: string | null;
+  caption?: string | null;
   position: number;
 };
 
