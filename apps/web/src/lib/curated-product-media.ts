@@ -10,6 +10,18 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "k-rcher-wd-6-p-s-v-30-6-22-t-car-and-pet": {
+    src: "https://d1y4tv7o00gnfq.cloudfront.net/mam/16283880/mainproduct/8354d91d-5cca-468e-ba99-44d815a20a23/d0.jpg",
+    alt: "Kärcher WD 6 P S V-30/6/22/T Car & Pet wet and dry vacuum",
+    sourceUrl: "https://www.karcher.com/de/de/home-and-garden/produkte/wd-6-p-s-v-30-6-22-t-car-und-pet-p16283880",
+    source: "manufacturer",
+  },
+  "nilfisk-attix-965-21-sd-xc": {
+    src: "https://www.nilfisk.com/product-images-1920/ATTIX-965-SD-ps-Original-JETLLN.webp",
+    alt: "Nilfisk ATTIX 965-21 SD XC wet and dry vacuum",
+    sourceUrl: "https://www.nilfisk.com/de-de/professional/produkte/industriesauger/nass-trockensauger-wechselstrom/attix-965-21-sd-xc%2B302002902/",
+    source: "manufacturer",
+  },
   "nike-air-max-dn8": {
     src: "https://nmp.about.nike.com/about/prod/3a348c07-6124-4466-a330-2325bf8a3651/nike-air-max-dn8.jpg?m=eyJlZGl0cyI6eyJqcGVnIjp7InF1YWxpdHkiOjEwMH0sIndlYnAiOnsicXVhbGl0eSI6MTAwfSwiZXh0cmFjdCI6eyJsZWZ0Ijo3NSwidG9wIjowLCJ3aWR0aCI6MzAxMywiaGVpZ2h0IjoyMDExfSwicmVzaXplIjp7IndpZHRoIjozODQwfX19&s=50dd8018a75af0125f4ec63218e496e5ce551148ca1dc7d650e428d1a8e0854d",
     alt: "Nike Air Max Dn8",
