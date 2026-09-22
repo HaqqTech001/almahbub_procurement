@@ -35,7 +35,8 @@
     "catalogue:approve-product": "corepack pnpm --filter @hamd/api exec tsx src/scripts/approve-catalogue-product.ts",
     "catalogue:db-health": "corepack pnpm --filter @hamd/api exec tsx src/scripts/catalogue-db-health.ts",
     "catalogue:media-audit": "corepack pnpm --filter @hamd/api exec tsx src/scripts/audit-production-media.ts",
-    "catalogue:media-repair": "corepack pnpm --filter @hamd/api exec tsx src/scripts/repair-production-media.ts"
+    "catalogue:media-repair": "corepack pnpm --filter @hamd/api exec tsx src/scripts/repair-production-media.ts",
+    "catalogue:archive-disallowed-fashion": "corepack pnpm --filter @hamd/api exec tsx src/scripts/archive-disallowed-fashion-products.ts"
   },
   "devDependencies": {
     "@types/dom-mediacapture-record": "^1.0.22",
