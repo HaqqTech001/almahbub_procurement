@@ -382,6 +382,24 @@ describe("catalog service", () => {
     expect(mapped).not.toHaveProperty("sourceManifestVersion");
   });
 
+  it("passes published category media through for safe product fallback use", () => {
+    const mapped = toPublicProduct({
+      ...publishedPhone,
+      category: {
+        ...publishedPhone.category,
+        imageUrl: "https://cdn.example/electronics-category.jpg",
+        imageAlt: "Electronics and digital technology",
+      },
+      images: [],
+    });
+
+    expect(mapped.category).toMatchObject({
+      imageUrl: "https://cdn.example/electronics-category.jpg",
+      imageAlt: "Electronics and digital technology",
+    });
+    expect(mapped.images).toEqual([]);
+  });
+
   it("returns an empty images array when a product has no photography", () => {
     const mapped = toPublicProduct({
       ...publishedPhone,
