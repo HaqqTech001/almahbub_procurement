@@ -1,6 +1,6 @@
 import "../load-env.js";
 
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -9,12 +9,7 @@ import { parseEnvironment } from "../config/env.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../../../../");
 const MASTER_PATH = join(ROOT, "docs", "catalogue", "master-catalogue.json");
-const CURATED_ELECTRONICS_PATH = join(
-  ROOT,
-  "docs",
-  "catalogue",
-  "curated-electronics-media.json",
-);
+const CURATED_DIR = join(ROOT, "docs", "catalogue");
 
 type MasterEntry = {
   catalogueId: string;
@@ -45,14 +40,22 @@ async function main(): Promise<void> {
     throw new Error(`Expected 100 master entries, found ${entries.length}.`);
   }
 
-  let curated: CuratedEntry[] = [];
-  try {
+  const curated: CuratedEntry[] = [];
+  const curatedFiles = (await readdir(CURATED_DIR))
+    .filter((name) => /^curated-.*-media\.json$/i.test(name))
+    .sort();
+  const seenCuratedSlugs = new Set<string>();
+  for (const name of curatedFiles) {
     const parsed = JSON.parse(
-      await readFile(CURATED_ELECTRONICS_PATH, "utf8"),
+      await readFile(join(CURATED_DIR, name), "utf8"),
     ) as { entries?: CuratedEntry[] };
-    curated = Array.isArray(parsed.entries) ? parsed.entries : [];
-  } catch {
-    curated = [];
+    for (const entry of Array.isArray(parsed.entries) ? parsed.entries : []) {
+      if (seenCuratedSlugs.has(entry.slug)) {
+        throw new Error(`Duplicate curated media slug ${entry.slug} across manifests.`);
+      }
+      seenCuratedSlugs.add(entry.slug);
+      curated.push(entry);
+    }
   }
   const curatedBySlug = new Map(curated.map((entry) => [entry.slug, entry]));
 
