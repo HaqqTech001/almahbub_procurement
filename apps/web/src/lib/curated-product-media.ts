@@ -10,6 +10,30 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "on-cloud-6": {
+    src: "https://images.ctfassets.net/hnk2vsx53n6l/2pHLf8aCLrQxrGCjJk26bG/55c4b7f6e1d9c8d9c3fc265c6ce1a173/5e1e876ff3833fccd30a05e41c41ce1acadab687.png?fm=webp",
+    alt: "On Cloud 6 lifestyle shoe",
+    sourceUrl: "https://www.on.com/en-de/products/cloud-6-m-3mf1007/mens",
+    source: "manufacturer",
+  },
+  "coach-tabby-shoulder-bag-26": {
+    src: "https://coach.scene7.com/is/image/Coach/ch857_b4bk_a0",
+    alt: "Coach Tabby Shoulder Bag 26 in black",
+    sourceUrl: "https://de.coach.com/de_DE/products/tabby-schultertasche-26/CH857.html",
+    source: "manufacturer",
+  },
+  "tumi-alpha-bravo-navigation-backpack": {
+    src: "https://de.tumi.com/dw/image/v2/AATF_PRD/on/demandware.static/-/Sites-tumi-product-catalog/default/dw7d3d9998/images/product/142497-1041_03.jpg?sh=1456&sw=1200",
+    alt: "TUMI Alpha Bravo Navigation Backpack in black",
+    sourceUrl: "https://de.tumi.com/en/alpha-bravo-alpha-bravo-navigation-backpack--black/142497-1041.html",
+    source: "manufacturer",
+  },
+  "samsonite-proxis-spinner-75-cm": {
+    src: "https://www.samsonite.de/dw/image/v2/AATF_PRD/on/demandware.static/-/Sites-samsonite-product-catalog/default/dw2ab40516/images/salsify/c1d48177cf9d804d8f954abe939091387bf87b07_s--v81MYLrt--_fl_clip_pg_1_e_trim_c_fit_w_2000_h_3000_u_tcrttuyt8xafi2acibgb_fl_layer_apply_e_make_transparent.png?sh=900&sw=600",
+    alt: "Samsonite Proxis Spinner 75 cm suitcase",
+    sourceUrl: "https://www.samsonite.de/proxis-spinner-75-28-matt-climbing-ivy/126042-9781.html",
+    source: "manufacturer",
+  },
   "apple-airpods-5": {
     src: "https://www.apple.com/newsroom/images/2026/09/apple-introduces-airpods-5-with-best-in-class-open-ear-active-noise-cancellation/article/Apple-AirPods-5-hero-260909_big.jpg.large.jpg",
     alt: "Apple AirPods 5 with charging case",
