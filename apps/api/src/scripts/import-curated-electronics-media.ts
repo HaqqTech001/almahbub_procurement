@@ -11,6 +11,7 @@
  *   pnpm catalogue:media-import
  *   pnpm catalogue:media-import -- --slug=apple-ipad-air-m4-series
  *   pnpm catalogue:media-import -- --execute
+ *   pnpm catalogue:media-import -- --slug=google-pixel-11-pro-series --replace --execute
  *
  * Legacy alias remains: pnpm media:import-curated-electronics
  */
@@ -121,7 +122,12 @@ function extensionForMime(mime: string): ".jpg" | ".png" | ".webp" | ".gif" {
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const execute = argv.includes("--execute");
+  const replace = argv.includes("--replace");
   const slug = value(argv, "--slug");
+
+  if (replace && !slug) {
+    throw new Error("--replace requires --slug so replacement cannot run in bulk.");
+  }
 
   const allEntries = await loadCuratedEntries();
   const selected = allEntries.filter((entry) => !slug || entry.slug === slug);
@@ -173,6 +179,7 @@ async function main(): Promise<void> {
             select: {
               id: true,
               url: true,
+              storageKey: true,
               isPrimary: true,
               position: true,
             },
@@ -189,7 +196,11 @@ async function main(): Promise<void> {
         continue;
       }
 
-      if (product.images.some((image) => image.isPrimary || image.position === 0)) {
+      const existingPrimary =
+        product.images.find((image) => image.isPrimary) ??
+        product.images.find((image) => image.position === 0);
+
+      if (existingPrimary && !replace) {
         report.push({
           slug: entry.slug,
           status: "kept_existing",
@@ -268,28 +279,46 @@ async function main(): Promise<void> {
             : new Error("Catalogue media storage upload failed after retries.");
         }
 
-        await database.productImage.create({
-          data: mediaWriteData({
-            productId: product.id,
-            url: stored.publicUrl,
-            altText: entry.altText,
-            caption: [
-              entry.credit ? `Photo/render: ${entry.credit}.` : null,
-              entry.license ? `License: ${entry.license}.` : null,
-              entry.licenseUrl ? `License: ${entry.licenseUrl}` : null,
-              entry.sourcePageUrl ? `Source: ${entry.sourcePageUrl}` : null,
-              entry.changes ? entry.changes : null,
-            ]
-              .filter(Boolean)
-              .join(" "),
-            storageKey: stored.filename,
-            mimeType: mime,
-            fileSize: bytes.length,
-            position: 0,
-            isPrimary: true,
-          }),
-          select: { id: true },
+        const mediaData = mediaWriteData({
+          productId: product.id,
+          url: stored.publicUrl,
+          altText: entry.altText,
+          caption: [
+            entry.credit ? `Photo/render: ${entry.credit}.` : null,
+            entry.license ? `License: ${entry.license}.` : null,
+            entry.licenseUrl ? `License: ${entry.licenseUrl}` : null,
+            entry.sourcePageUrl ? `Source: ${entry.sourcePageUrl}` : null,
+            entry.changes ? entry.changes : null,
+          ]
+            .filter(Boolean)
+            .join(" "),
+          storageKey: stored.filename,
+          mimeType: mime,
+          fileSize: bytes.length,
+          position: 0,
+          isPrimary: true,
         });
+
+        if (existingPrimary && replace) {
+          await database.productImage.update({
+            where: { id: existingPrimary.id },
+            data: mediaData,
+            select: { id: true },
+          });
+          if (existingPrimary.storageKey) {
+            await store
+              .remove({
+                productId: product.id,
+                filename: existingPrimary.storageKey,
+              })
+              .catch(() => undefined);
+          }
+        } else {
+          await database.productImage.create({
+            data: mediaData,
+            select: { id: true },
+          });
+        }
 
         await database.product.update({
           where: { id: product.id },
@@ -299,7 +328,7 @@ async function main(): Promise<void> {
 
         report.push({
           slug: entry.slug,
-          status: "imported",
+          status: existingPrimary && replace ? "replaced" : "imported",
           sourcePageUrl: entry.sourcePageUrl,
           storedUrl: stored.publicUrl,
         });
