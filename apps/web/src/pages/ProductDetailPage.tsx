@@ -116,7 +116,7 @@ export function ProductDetailPage() {
       });
       return;
     }
-    const primary = product.images[0]?.url;
+    const primary = curatedProductMedia(product.slug)?.src ?? product.images[0]?.url;
     applyPageSeo({
       title: product.name,
       description:
@@ -194,7 +194,7 @@ export function ProductDetailPage() {
       ? procurementServiceVisual(product.slug)
       : null;
   const curatedMedia = curatedProductMedia(product.slug);
-  const imageSrc = resolveMediaUrl(current?.url) ?? serviceVisual?.src ?? curatedMedia?.src;
+  const imageSrc = serviceVisual?.src ?? curatedMedia?.src ?? resolveMediaUrl(current?.url);
   const showImage = Boolean(imageSrc) && !imageFailed;
   const requestHref = productRequestHref(product.slug, {
     workspace,
@@ -262,7 +262,7 @@ export function ProductDetailPage() {
             aria-label={gallery.length > 1 ? "Product image gallery" : undefined}
             onKeyDown={onGalleryKeyDown}
           >
-            {showImage && (serviceVisual || curatedMedia) && !current ? (
+            {showImage && (serviceVisual || curatedMedia) ? (
               <OptimizedImage
                 key={imageSrc}
                 src={imageSrc}
