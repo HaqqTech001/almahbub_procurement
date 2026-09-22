@@ -27,6 +27,7 @@ export type ReviewProduct = {
     position: number;
     isPrimary?: boolean;
     altText?: string | null;
+    caption?: string | null;
   }[];
 };
 export type PublicationReview = {
