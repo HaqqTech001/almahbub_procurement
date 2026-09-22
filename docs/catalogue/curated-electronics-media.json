@@ -2,7 +2,7 @@
   "schema": "curated-product-primary-media",
   "version": 1,
   "category": "Electronics / Mobile / Digital Technology",
-  "note": "Exact product/model media only. approved_for_import entries have reusable licensing verified; family entries remain blocked until a series-appropriate reusable image is found.",
+  "note": "Exact product/model media only. approved_for_import entries have reusable licensing verified. Wikimedia photography uses bounded 1600px derivatives to remain within catalogue upload limits; unresolved family entries remain blocked until a series-appropriate reusable image is found.",
   "entries": [
     {
       "catalogueId": "ALM-001",
@@ -37,13 +37,13 @@
       "status": "approved_for_import",
       "source": "wikimedia_commons",
       "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Galaxy_S26_series.jpg",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Galaxy%20S26%20series.jpg",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Galaxy%20S26%20series.jpg?width=1600",
       "altText": "Samsung Galaxy S26 Series photographed together.",
       "identityEvidence": "Exact Samsung Galaxy S26 series photo showing the family.",
       "credit": "Kyu3a",
       "license": "CC BY-SA 4.0",
       "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "changes": "No changes other than storage copy and browser resizing."
+      "changes": "No editorial changes. Wikimedia 1600px derivative used for catalogue delivery; browser may resize further."
     },
     {
       "catalogueId": "ALM-004",
@@ -107,13 +107,13 @@
       "status": "approved_for_import",
       "source": "wikimedia_commons",
       "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:DJI_Mini_5_Pro_in_de_lucht.jpg",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/DJI%20Mini%205%20Pro%20in%20de%20lucht.jpg",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/DJI%20Mini%205%20Pro%20in%20de%20lucht.jpg?width=1600",
       "altText": "DJI Mini 5 Pro in flight.",
       "identityEvidence": "Exact DJI Mini 5 Pro photograph; Commons category and structured data identify the model.",
       "credit": "Zefke",
       "license": "CC BY-SA 4.0",
       "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "changes": "No changes other than storage copy and browser resizing."
+      "changes": "No editorial changes. Wikimedia 1600px derivative used for catalogue delivery; browser may resize further."
     },
     {
       "catalogueId": "ALM-010",
@@ -122,13 +122,13 @@
       "status": "approved_for_import",
       "source": "wikimedia_commons",
       "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Fifth-generation_AirPods_in_their_charging_case.jpg",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Fifth-generation%20AirPods%20in%20their%20charging%20case.jpg",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Fifth-generation%20AirPods%20in%20their%20charging%20case.jpg?width=1600",
       "altText": "Fifth-generation Apple AirPods in their charging case.",
       "identityEvidence": "Exact AirPods 5 photograph; Commons structured data depicts AirPods 5.",
       "credit": "Cheeseburgahhh",
       "license": "CC BY-SA 4.0",
       "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "changes": "No changes other than storage copy and browser resizing."
+      "changes": "No editorial changes. Wikimedia 1600px derivative used for catalogue delivery; browser may resize further."
     }
   ]
 }
