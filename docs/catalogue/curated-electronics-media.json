@@ -97,13 +97,13 @@
       "status": "approved_for_import",
       "source": "wikimedia_commons",
       "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:M5_Macbook_Air_13_Sky_Blue_model.jpg",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/M5%20Macbook%20Air%2013%20Sky%20Blue%20model.jpg?width=1600",
+      "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/M5_Macbook_Air_13_Sky_Blue_model.jpg/1280px-M5_Macbook_Air_13_Sky_Blue_model.jpg",
       "altText": "13-inch Apple MacBook Air with M5 in Sky Blue, used as a representative model image for the MacBook Air M5 Series.",
       "identityEvidence": "Exact M5 MacBook Air photograph; representative model from the M5 series.",
       "credit": "Kyu3a",
       "license": "CC BY-SA 4.0",
       "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "changes": "No editorial changes. Wikimedia 1600px derivative used for catalogue delivery; browser may resize further."
+      "changes": "No editorial changes. Direct Wikimedia 1280px derivative used for reliable catalogue import."
     },
     {
       "catalogueId": "ALM-008",
