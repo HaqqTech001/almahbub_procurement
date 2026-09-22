@@ -25,7 +25,8 @@
     "validate": "prisma validate",
     "format": "prisma format",
     "catalogue:seed-master": "tsx prisma/seed/seed-master-catalogue.ts",
-    "catalogue:verify-master": "tsx prisma/seed/verify-master-catalogue.ts"
+    "catalogue:verify-master": "tsx prisma/seed/verify-master-catalogue.ts",
+    "catalogue:publish-master": "tsx prisma/seed/publish-master-catalogue.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed/development.ts"
