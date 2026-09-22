@@ -26,12 +26,22 @@ describe("masterCatalogueIdentityEvidence", () => {
     expect(evidence.matchedDistinctiveTokens).toContain("rally");
   });
 
-  it("normalizes manufacturer diacritics", () => {
+  it("normalizes manufacturer diacritics and preserves split model codes", () => {
     const evidence = masterCatalogueIdentityEvidence({
       productName: "Kärcher K 5 Premium Smart Control Flex Home",
       manufacturer: "Kärcher",
       candidateTitle: "Karcher K 5 pressure washer",
     });
     expect(evidence.safe).toBe(true);
+    expect(evidence.matchedDistinctiveTokens).toContain("k5");
+  });
+
+  it("rejects a nearby but different K-series model", () => {
+    const evidence = masterCatalogueIdentityEvidence({
+      productName: "Kärcher K 5 Premium Smart Control Flex Home",
+      manufacturer: "Kärcher",
+      candidateTitle: "Karcher K 6 pressure washer",
+    });
+    expect(evidence.safe).toBe(false);
   });
 });
