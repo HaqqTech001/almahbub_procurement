@@ -1,0 +1,122 @@
+{
+  "schema": "curated-product-primary-media",
+  "version": 1,
+  "category": "Industrial Machinery / Tools / Processing Equipment",
+  "note": "Exact product/model media only. approved_for_import entries have reusable rights verified; unresolved entries remain blocked until exact reusable media is verified.",
+  "entries": [
+    {
+      "catalogueId": "ALM-031",
+      "slug": "atlas-copco-ga-15-vsds",
+      "productName": "Atlas Copco GA 15 VSDs",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Atlas Copco GA 15 VSDs compressor.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-032",
+      "slug": "haas-vf-2",
+      "productName": "Haas VF-2",
+      "status": "approved_for_import",
+      "source": "creator_owned_cc_by_repository",
+      "sourcePageUrl": "https://github.com/tonykoop/cnc/blob/main/README.md",
+      "imageUrl": "https://raw.githubusercontent.com/tonykoop/cnc/main/images/2023-02-23%2009.00.59.jpg",
+      "altText": "Haas VF-2 vertical machining center.",
+      "identityEvidence": "The repository README explicitly identifies this exact file as the Haas VF-2 vertical machining center. Repository states original photographs are CC BY 4.0.",
+      "credit": "Tony Koop",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "changes": "No editorial changes other than storage copy and browser resizing."
+    },
+    {
+      "catalogueId": "ALM-033",
+      "slug": "mazak-quick-turn-250msy",
+      "productName": "Mazak QUICK TURN 250MSY",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Mazak QUICK TURN 250MSY.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-034",
+      "slug": "robot-coupe-cl-50",
+      "productName": "Robot-Coupe CL 50",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Robot-Coupe CL 50.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-035",
+      "slug": "robot-coupe-cl-50-ultra",
+      "productName": "Robot-Coupe CL 50 Ultra",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Robot-Coupe CL 50 Ultra.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-036",
+      "slug": "rational-icombi-pro-10-1-1",
+      "productName": "RATIONAL iCombi Pro 10-1/1",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "RATIONAL iCombi Pro 10-1/1.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-037",
+      "slug": "hobart-legacy-hl600",
+      "productName": "Hobart Legacy+ HL600",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Hobart Legacy+ HL600.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-038",
+      "slug": "hobart-hcm450",
+      "productName": "Hobart HCM450",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Hobart HCM450.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-039",
+      "slug": "toyota-lifter-lhm230",
+      "productName": "Toyota Lifter LHM230",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Toyota Lifter LHM230.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    },
+    {
+      "catalogueId": "ALM-040",
+      "slug": "nilfisk-attix-965-21-sd-xc",
+      "productName": "Nilfisk ATTIX 965-21 SD XC",
+      "status": "needs_exact_licensed_media",
+      "source": "manufacturer_reference",
+      "sourcePageUrl": "",
+      "imageUrl": null,
+      "altText": "Nilfisk ATTIX 965-21 SD XC.",
+      "identityEvidence": "Reusable exact product media not yet verified."
+    }
+  ]
+}
