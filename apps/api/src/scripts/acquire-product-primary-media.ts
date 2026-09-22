@@ -145,7 +145,7 @@ async function fetchText(url: string, timeoutMs = 12000): Promise<string | null>
     if (!response.ok) return null;
     const contentType = response.headers.get("content-type") ?? "";
     if (!/text\/html|application\/xhtml\+xml/i.test(contentType)) return null;
-    return response.text();
+    return await response.text();
   } catch {
     return null;
   }
@@ -244,7 +244,7 @@ async function fetchJson(url: URL | string, timeoutMs = 12000): Promise<unknown 
       continue;
     }
     if (!response.ok) return null;
-    return response.json();
+    return await response.json();
   } catch {
     if (attempt === 3) return null;
     await sleep(300 * 2 ** attempt);
