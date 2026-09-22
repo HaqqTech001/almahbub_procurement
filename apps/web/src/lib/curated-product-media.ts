@@ -10,6 +10,18 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "hp-poly-studio-x70": {
+    src: "https://www.hp.com/content/dam/sites/worldwide/poly/video-conferencing/all-in-one/studio-x70/KSP%20Carousel%20-%20Desktop%20%E2%80%93%204%402x.png",
+    alt: "HP Poly Studio X70 all-in-one video bar",
+    sourceUrl: "https://www.hp.com/us-en/poly/video-conferencing/all-in-one/studio-x70.html",
+    source: "manufacturer",
+  },
+  "zebra-ds9308": {
+    src: "https://www.zebra.com/content/dam/zebra_dam/global/zcom-web-production/web-production-photography/web001/ds9300-series-ds9308-sr-upper-front-right-black3x2-3600.jpg",
+    alt: "Zebra DS9308 presentation barcode scanner",
+    sourceUrl: "https://www.zebra.com/gb/en/products/scanners/general-purpose-hands-free-scanners/ds9300-series/ds9308.html",
+    source: "manufacturer",
+  },
   "logitech-rally-bar": {
     src: "https://resource.logitech.com/w_692%2Cc_lpad%2Car_4%3A3%2Cq_auto%2Cf_auto%2Cdpr_1.0/d_transparent.gif/content/dam/logitech/en/products/video-conferencing/rally-bar/buy/gallery/rally-bar-graphite-01.png?v=1",
     alt: "Logitech Rally Bar all-in-one video bar",
