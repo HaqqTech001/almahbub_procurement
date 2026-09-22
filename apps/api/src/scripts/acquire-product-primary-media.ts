@@ -21,6 +21,7 @@ import { createDatabaseClient } from "@hamd/database";
 import { parseEnvironment } from "../config/env.js";
 import { classifyProductPrimaryMatch } from "../modules/catalog/application/product-primary-media-match.js";
 import { masterCatalogueMediaDecision } from "../modules/catalog/application/master-catalogue-media-policy.js";
+import { masterCatalogueIdentityEvidence } from "../modules/catalog/application/master-catalogue-media-identity.js";
 import { parseManufacturerMediaCandidate } from "../modules/catalog/application/manufacturer-media-candidate.js";
 import { isBlockedTestBedProduct } from "../modules/catalog/application/catalog-media-importer.js";
 import {
@@ -44,6 +45,7 @@ type ManifestMediaEntry = {
   entryType: "STANDARD_PRODUCT" | "PRODUCT_FAMILY" | "PROCUREMENT_SERVICE" | "CONFIGURABLE_PRODUCT";
   manufacturer?: string | null;
   manufacturerUrl?: string | null;
+  manufacturer?: string | null;
   heroImagePolicy: string;
   searchAliases?: string[];
   variants?: Array<{ name?: string }>;
@@ -69,6 +71,7 @@ type ProductRow = {
   entryType: ManifestMediaEntry["entryType"];
   heroImagePolicy: string | null;
   manufacturerUrl: string | null;
+  manufacturerName: string | null;
   categorySlug: string | null;
   hasPrimary: boolean;
 };
@@ -514,6 +517,7 @@ async function main(): Promise<void> {
       entryType: true,
       heroImagePolicy: true,
       manufacturerUrl: true,
+      manufacturer: { select: { legalName: true } },
       category: { select: { slug: true } },
       images: { select: { id: true, url: true, position: true, isPrimary: true } },
     },
@@ -527,6 +531,7 @@ async function main(): Promise<void> {
     entryType: ManifestMediaEntry["entryType"];
     heroImagePolicy: string | null;
     manufacturerUrl: string | null;
+    manufacturer: { legalName: string } | null;
     category: { slug: string } | null;
     images: Array<{ id: string; url: string; position: number; isPrimary: boolean }>;
   }>;
@@ -542,6 +547,7 @@ async function main(): Promise<void> {
     entryType: product.entryType,
     heroImagePolicy: product.heroImagePolicy,
     manufacturerUrl: product.manufacturerUrl,
+    manufacturerName: product.manufacturer?.legalName ?? manifestEntries.get(product.catalogueId)?.manufacturer ?? null,
     categorySlug: product.category?.slug ?? null,
     hasPrimary: product.images.some((image) => (image.isPrimary || image.position === 0) && image.url.trim().length > 0),
   }];
@@ -615,6 +621,8 @@ async function main(): Promise<void> {
         product.entryType === "PRODUCT_FAMILY"
           ? { kind: "match" as const, coreType: product.name }
           : classifyProductPrimaryMatch(product.name);
+      // Master-catalogue acquisition searches the full verified manifest identity.
+      // The reduced core type remains useful only for generic semantic rules/reporting.
       const coreType = match.coreType;
       if (match.kind === "needs_review") {
         needsReview += 1;
@@ -626,7 +634,7 @@ async function main(): Promise<void> {
       let mime = "";
       try {
         const searchTerms = [
-          coreType,
+          product.name,
           ...(manifestEntry.searchAliases ?? []),
         ].filter((value, index, all) => value && all.indexOf(value) === index);
         for (const term of searchTerms) {
@@ -642,8 +650,34 @@ async function main(): Promise<void> {
             `Reviewed media source changed for ${product.slug}; expected ${expectedSourceUrl}, resolved ${resolved.sourceUrl}. No media was written.`,
           );
         }
-        const confidenceScore = candidateConfidence(resolved.title, coreType, product.categorySlug);
+        const identity = masterCatalogueIdentityEvidence({
+          productName: product.name,
+          manufacturer: product.manufacturerName,
+          candidateTitle: resolved.title,
+        });
+        const confidenceScore = candidateConfidence(resolved.title, product.name, product.categorySlug);
         const evidence = semanticEvidence(product.name, resolved.title, product.categorySlug);
+        if (!identity.safe) {
+          needsReview += 1;
+          report.push({
+            ...baseReport,
+            coreType,
+            status: "needs_review",
+            reason: identity.reason,
+            candidateTitle: resolved.title,
+            searchQueries: [resolved.searchQuery ?? product.name],
+            searchQuery: resolved.searchQuery ?? product.name,
+            confidenceScore,
+            source: resolved.source,
+            sourceUrl: resolved.sourceUrl,
+            license: resolved.license,
+            licenseUrl: resolved.licenseUrl,
+            photographer: resolved.photographer,
+            matchedRequiredAnchors: identity.matchedManufacturerTokens,
+            matchedSupportingAnchors: identity.matchedDistinctiveTokens,
+          });
+          continue;
+        }
         if (mediaDecision.action === "HUMAN_REVIEW_REQUIRED") {
           needsReview += 1;
           report.push({
@@ -683,8 +717,13 @@ async function main(): Promise<void> {
       }
       if (!execute) {
         needsReview += 1;
+        const identity = masterCatalogueIdentityEvidence({
+          productName: product.name,
+          manufacturer: product.manufacturerName,
+          candidateTitle: resolved.title,
+        });
         const evidence = semanticEvidence(product.name, resolved.title, product.categorySlug);
-        report.push({ ...baseReport, coreType, status: "resolved_candidate", reason: "Dry-run: high-confidence candidate resolved; pass --execute to store and map.", source: resolved.source, sourceUrl: resolved.sourceUrl, license: resolved.license, licenseUrl: resolved.licenseUrl, photographer: resolved.photographer, candidateTitle: resolved.title, candidateDescription: "", searchQueries: [resolved.searchQuery ?? coreType], searchQuery: resolved.searchQuery ?? "", matchedRequiredAnchors: evidence.matchedRequiredAnchors, matchedSupportingAnchors: evidence.matchedSupportingAnchors, matchedForbiddenTerms: evidence.matchedForbiddenTerms, confidenceScore: candidateConfidence(resolved.title, coreType, product.categorySlug) });
+        report.push({ ...baseReport, coreType, status: "resolved_candidate", reason: "Dry-run: high-confidence candidate resolved; pass --execute to store and map.", source: resolved.source, sourceUrl: resolved.sourceUrl, license: resolved.license, licenseUrl: resolved.licenseUrl, photographer: resolved.photographer, candidateTitle: resolved.title, candidateDescription: "", searchQueries: [resolved.searchQuery ?? product.name], searchQuery: resolved.searchQuery ?? "", matchedRequiredAnchors: identity.matchedManufacturerTokens.length ? identity.matchedManufacturerTokens : evidence.matchedRequiredAnchors, matchedSupportingAnchors: identity.matchedDistinctiveTokens.length ? identity.matchedDistinctiveTokens : evidence.matchedSupportingAnchors, matchedForbiddenTerms: evidence.matchedForbiddenTerms, confidenceScore: candidateConfidence(resolved.title, product.name, product.categorySlug) });
         continue;
       }
         try {
