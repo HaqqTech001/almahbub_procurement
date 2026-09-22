@@ -8,6 +8,8 @@ export type CatalogCardModel = {
   href: string;
   requestHref: string;
   description: string | null;
+  entryType: PublicCatalogProduct["entryType"];
+  availabilityStatus: PublicCatalogProduct["availabilityStatus"];
   categoryName: string | null;
   categorySlug: string | null;
   brandName: string | null;
@@ -20,9 +22,15 @@ export type CatalogCardModel = {
 
 export function productRequestHref(
   slug: string,
-  options: { workspace?: boolean; authenticated?: boolean } = {},
+  options: {
+    workspace?: boolean;
+    authenticated?: boolean;
+    variant?: string | null;
+  } = {},
 ): string {
-  const next = `/app/requests/new?product=${encodeURIComponent(slug)}`;
+  const params = new URLSearchParams({ product: slug });
+  if (options.variant?.trim()) params.set("variant", options.variant.trim());
+  const next = `/app/requests/new?${params.toString()}`;
   if (options.workspace || options.authenticated) return next;
   return `/login?returnTo=${encodeURIComponent(next)}`;
 }
@@ -47,7 +55,9 @@ export function toCatalogCard(
       workspace,
       authenticated: options?.authenticated,
     }),
-    description: product.description,
+    description: product.summary ?? product.description,
+    entryType: product.entryType,
+    availabilityStatus: product.availabilityStatus,
     categoryName: product.category?.name ?? null,
     categorySlug: product.category?.slug ?? null,
     brandName: product.brandName,
@@ -86,4 +96,23 @@ export function productsPath(options: {
   const qs = params.toString();
   const base = options.workspace ? "/app/products" : "/products";
   return qs ? `${base}?${qs}` : base;
+}
+
+
+export function availabilityLabel(
+  value: PublicCatalogProduct["availabilityStatus"],
+): string {
+  if (value === "COMING_SOON") return "Coming soon";
+  if (value === "PRE_ORDER") return "Pre-order";
+  if (value === "OUT_OF_STOCK") return "Out of stock";
+  return "Available on request";
+}
+
+export function entryTypeLabel(
+  value: PublicCatalogProduct["entryType"],
+): string | null {
+  if (value === "PRODUCT_FAMILY") return "Product series";
+  if (value === "PROCUREMENT_SERVICE") return "Procurement service";
+  if (value === "CONFIGURABLE_PRODUCT") return "Configurable product";
+  return null;
 }

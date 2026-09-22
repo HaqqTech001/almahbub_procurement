@@ -105,7 +105,7 @@ export function ProductDetailPage() {
         await updateOpsProduct(token, row.id, { status });
         setSuccess(
           status === "published"
-            ? "Product published to the public catalogue."
+            ? "Product status set to published. Public visibility still depends on the catalogue publication-review gate."
             : status === "archived"
               ? "Product archived and hidden from the public catalogue."
               : "Product saved as draft.",
@@ -296,6 +296,9 @@ export function ProductDetailPage() {
 
             <section className="hamd-ops-product-detail__panel hamd-ops-product-detail__overview" aria-labelledby="product-overview">
               <h2 id="product-overview">Overview</h2>
+              {row.summary ? (
+                <p className="hamd-ops-product-detail__description">{row.summary}</p>
+              ) : null}
               {row.description ? (
                 <p className="hamd-ops-product-detail__description">{row.description}</p>
               ) : (
@@ -318,7 +321,35 @@ export function ProductDetailPage() {
                   <dt>Country of manufacture</dt>
                   <dd>{row.manufacturerCountry ?? "Not specified"}</dd>
                 </div>
+                <div>
+                  <dt>Entry type</dt>
+                  <dd>{(row.entryType ?? "STANDARD_PRODUCT").replaceAll("_", " ")}</dd>
+                </div>
+                <div>
+                  <dt>Availability</dt>
+                  <dd>{(row.availabilityStatus ?? "ON_REQUEST").replaceAll("_", " ")}</dd>
+                </div>
+                {row.releaseDate ? (
+                  <div>
+                    <dt>Release date</dt>
+                    <dd>{row.releaseDate}</dd>
+                  </div>
+                ) : null}
               </dl>
+
+              {row.variants && row.variants.length > 0 ? (
+                <div className="hamd-ops-product-detail__section">
+                  <h3>Variants</h3>
+                  <ul role="list">
+                    {row.variants.map((variant) => (
+                      <li key={variant.id}>
+                        <strong>{variant.name}</strong>
+                        {variant.sku ? <span> · {variant.sku}</span> : null}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
             </section>
 
             <section className="hamd-ops-product-detail__panel hamd-ops-product-detail__info" aria-labelledby="product-catalogue">
@@ -332,6 +363,36 @@ export function ProductDetailPage() {
                   <dt>Visibility</dt>
                   <dd>{visibilityLabel(row.status)}</dd>
                 </div>
+                <div>
+                  <dt>Master catalogue ID</dt>
+                  <dd>{row.catalogueId ?? "Legacy / not manifest-owned"}</dd>
+                </div>
+                <div>
+                  <dt>Manifest version</dt>
+                  <dd>{row.sourceManifestVersion ?? "Not assigned"}</dd>
+                </div>
+                <div>
+                  <dt>Verification</dt>
+                  <dd>{row.verificationStatus ?? "Not recorded"}</dd>
+                </div>
+                <div>
+                  <dt>Media lifecycle</dt>
+                  <dd>{row.mediaStatus ?? "Not recorded"}</dd>
+                </div>
+                <div>
+                  <dt>Hero image policy</dt>
+                  <dd>{row.heroImagePolicy ?? "Not recorded"}</dd>
+                </div>
+                {row.manufacturerUrl ? (
+                  <div>
+                    <dt>Manufacturer source</dt>
+                    <dd>
+                      <a href={row.manufacturerUrl} target="_blank" rel="noreferrer">
+                        Open verified source
+                      </a>
+                    </dd>
+                  </div>
+                ) : null}
                 <div>
                   <dt>Created</dt>
                   <dd>{formatDate(row.createdAt)}</dd>

@@ -84,6 +84,21 @@ export const createOpsProductSchema = z.object({
   status: z.enum(["draft", "published", "archived"]).optional(),
   categoryId: z.string().uuid().nullable().optional(),
   description: z.string().trim().max(8000).nullable().optional(),
+  summary: z.string().trim().max(2000).nullable().optional(),
+  entryType: z
+    .enum([
+      "STANDARD_PRODUCT",
+      "PRODUCT_FAMILY",
+      "PROCUREMENT_SERVICE",
+      "CONFIGURABLE_PRODUCT",
+    ])
+    .optional(),
+  availabilityStatus: z
+    .enum(["ON_REQUEST", "COMING_SOON", "PRE_ORDER", "OUT_OF_STOCK"])
+    .optional(),
+  manufacturerUrl: httpUrlSchema.nullable().optional(),
+  releaseDate: z.coerce.date().nullable().optional(),
+  catalogueNotes: z.string().trim().max(4000).nullable().optional(),
   brandId: z.string().uuid().nullable().optional(),
   manufacturerId: z.string().uuid().nullable().optional(),
 });

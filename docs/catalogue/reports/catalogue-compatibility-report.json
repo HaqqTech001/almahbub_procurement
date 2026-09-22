@@ -1,6 +1,6 @@
 {
   "manifestVersion": "2.0-starter",
-  "generatedAt": "2026-09-20T20:12:21.487Z",
+  "generatedAt": "2026-09-22T01:47:35.211Z",
   "validation": {
     "errors": [],
     "warnings": [
@@ -15,19 +15,19 @@
       "manifestName": "Apple iPhone 18 Pro Series",
       "entryType": "PRODUCT_FAMILY",
       "category": "Electronics / Mobile / Digital Technology",
-      "mappingStatus": "PARTIAL_FAMILY_MATCH",
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
       "existingCandidates": [
         {
-          "productId": "01a0b3b6-182b-767f-8c5b-526a4f9924b0",
-          "slug": "electronics-apple-iphone-18-pro",
-          "name": "Apple iPhone 18 Pro",
+          "productId": "818c5531-73bc-444e-a889-4ee2a7b77740",
+          "slug": "apple-iphone-18-pro-series",
+          "name": "Apple iPhone 18 Pro Series",
           "status": "draft",
           "categorySlug": "iphones-gadgets",
-          "manufacturerName": null,
-          "brandName": "Apple",
-          "matchStatus": "MANUAL_REVIEW",
-          "score": 75,
-          "variantCount": 1,
+          "manufacturerName": "Apple",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 2,
           "imageCount": 0,
           "requestItemReferences": 0,
           "quotationItemReferences": 0
@@ -37,21 +37,23 @@
         {
           "manifestVariant": "iPhone 18 Pro",
           "matchingExistingProducts": [
-            "01a0b3b6-182b-767f-8c5b-526a4f9924b0"
+            "818c5531-73bc-444e-a889-4ee2a7b77740"
           ],
           "status": "MATCHED"
         },
         {
           "manifestVariant": "iPhone 18 Pro Max",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "818c5531-73bc-444e-a889-4ee2a7b77740"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "MANUAL_REVIEW",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -60,301 +62,17 @@
       "manifestName": "Apple iPhone Duo",
       "entryType": "STANDARD_PRODUCT",
       "category": "Electronics / Mobile / Digital Technology",
-      "mappingStatus": "MANUAL_REVIEW",
+      "mappingStatus": "EXACT_SLUG_MATCH",
       "existingCandidates": [
         {
-          "productId": "01a0b3b6-0a68-7518-bc7d-8ab656961d62",
-          "slug": "electronics-apple-iphone-17",
-          "name": "Apple iPhone 17",
+          "productId": "672a4960-1e04-45da-af51-144574bf5b03",
+          "slug": "apple-iphone-duo",
+          "name": "Apple iPhone Duo",
           "status": "draft",
           "categorySlug": "iphones-gadgets",
-          "manufacturerName": null,
-          "brandName": "Apple",
-          "matchStatus": "MANUAL_REVIEW",
-          "score": 67,
-          "variantCount": 1,
-          "imageCount": 0,
-          "requestItemReferences": 0,
-          "quotationItemReferences": 0
-        },
-        {
-          "productId": "01a0b3b6-182b-767f-8c5b-526a4f9924b0",
-          "slug": "electronics-apple-iphone-18-pro",
-          "name": "Apple iPhone 18 Pro",
-          "status": "draft",
-          "categorySlug": "iphones-gadgets",
-          "manufacturerName": null,
-          "brandName": "Apple",
-          "matchStatus": "MANUAL_REVIEW",
-          "score": 67,
-          "variantCount": 1,
-          "imageCount": 0,
-          "requestItemReferences": 0,
-          "quotationItemReferences": 0
-        }
-      ],
-      "variantAnalysis": [],
-      "mediaStatus": "MEDIA_MISSING",
-      "mediaDetails": [],
-      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "MANUAL_REVIEW",
-      "contentStatus": "CONTENT_MISSING",
-      "notes": []
-    },
-    {
-      "catalogueId": "ALM-003",
-      "manifestSlug": "samsung-galaxy-s26-series",
-      "manifestName": "Samsung Galaxy S26 Series",
-      "entryType": "PRODUCT_FAMILY",
-      "category": "Electronics / Mobile / Digital Technology",
-      "mappingStatus": "PARTIAL_FAMILY_MATCH",
-      "existingCandidates": [
-        {
-          "productId": "01a0b3b6-3878-760c-8229-092a07ff7df4",
-          "slug": "electronics-samsung-galaxy-s26-ultra",
-          "name": "Samsung Galaxy S26 Ultra",
-          "status": "draft",
-          "categorySlug": "iphones-gadgets",
-          "manufacturerName": null,
-          "brandName": "Samsung",
-          "matchStatus": "MANUAL_REVIEW",
-          "score": 75,
-          "variantCount": 1,
-          "imageCount": 0,
-          "requestItemReferences": 0,
-          "quotationItemReferences": 0
-        }
-      ],
-      "variantAnalysis": [
-        {
-          "manifestVariant": "Galaxy S26",
-          "matchingExistingProducts": [
-            "01a0b3b6-3878-760c-8229-092a07ff7df4"
-          ],
-          "status": "MATCHED"
-        },
-        {
-          "manifestVariant": "Galaxy S26+",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
-        },
-        {
-          "manifestVariant": "Galaxy S26 Ultra",
-          "matchingExistingProducts": [
-            "01a0b3b6-3878-760c-8229-092a07ff7df4"
-          ],
-          "status": "MATCHED"
-        }
-      ],
-      "mediaStatus": "FAMILY_HERO_REQUIRED",
-      "mediaDetails": [],
-      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "MANUAL_REVIEW",
-      "contentStatus": "CONTENT_MISSING",
-      "notes": []
-    },
-    {
-      "catalogueId": "ALM-004",
-      "manifestSlug": "google-pixel-11-pro-series",
-      "manifestName": "Google Pixel 11 Pro Series",
-      "entryType": "PRODUCT_FAMILY",
-      "category": "Electronics / Mobile / Digital Technology",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
-      "variantAnalysis": [
-        {
-          "manifestVariant": "Pixel 11 Pro",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
-        },
-        {
-          "manifestVariant": "Pixel 11 Pro XL",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
-        }
-      ],
-      "mediaStatus": "FAMILY_HERO_REQUIRED",
-      "mediaDetails": [],
-      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
-      "notes": []
-    },
-    {
-      "catalogueId": "ALM-005",
-      "manifestSlug": "apple-ipad-air-m4-series",
-      "manifestName": "Apple iPad Air (M4) Series",
-      "entryType": "PRODUCT_FAMILY",
-      "category": "Electronics / Mobile / Digital Technology",
-      "mappingStatus": "MANUAL_REVIEW",
-      "existingCandidates": [
-        {
-          "productId": "01a0b3b6-23c9-750c-bd2c-1804c853f113",
-          "slug": "electronics-apple-ipad-air-11-inch-m4",
-          "name": "Apple iPad Air 11-inch (M4)",
-          "status": "draft",
-          "categorySlug": "iphones-gadgets",
-          "manufacturerName": null,
-          "brandName": "Apple",
-          "matchStatus": "MANUAL_REVIEW",
-          "score": 75,
-          "variantCount": 1,
-          "imageCount": 0,
-          "requestItemReferences": 0,
-          "quotationItemReferences": 0
-        }
-      ],
-      "variantAnalysis": [
-        {
-          "manifestVariant": "11-inch iPad Air (M4)",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
-        },
-        {
-          "manifestVariant": "13-inch iPad Air (M4)",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
-        }
-      ],
-      "mediaStatus": "FAMILY_HERO_REQUIRED",
-      "mediaDetails": [],
-      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "MANUAL_REVIEW",
-      "contentStatus": "CONTENT_MISSING",
-      "notes": []
-    },
-    {
-      "catalogueId": "ALM-006",
-      "manifestSlug": "samsung-galaxy-tab-s11-series",
-      "manifestName": "Samsung Galaxy Tab S11 Series",
-      "entryType": "PRODUCT_FAMILY",
-      "category": "Electronics / Mobile / Digital Technology",
-      "mappingStatus": "PARTIAL_FAMILY_MATCH",
-      "existingCandidates": [
-        {
-          "productId": "01a0b3b6-4e3f-721c-bcd6-5151d54ed54e",
-          "slug": "electronics-samsung-galaxy-tab-s11",
-          "name": "Samsung Galaxy Tab S11",
-          "status": "draft",
-          "categorySlug": "iphones-gadgets",
-          "manufacturerName": null,
-          "brandName": "Samsung",
-          "matchStatus": "MANUAL_REVIEW",
-          "score": 80,
-          "variantCount": 1,
-          "imageCount": 0,
-          "requestItemReferences": 0,
-          "quotationItemReferences": 0
-        }
-      ],
-      "variantAnalysis": [
-        {
-          "manifestVariant": "Galaxy Tab S11",
-          "matchingExistingProducts": [
-            "01a0b3b6-4e3f-721c-bcd6-5151d54ed54e"
-          ],
-          "status": "MATCHED"
-        },
-        {
-          "manifestVariant": "Galaxy Tab S11 Ultra",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
-        }
-      ],
-      "mediaStatus": "FAMILY_HERO_REQUIRED",
-      "mediaDetails": [],
-      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "MANUAL_REVIEW",
-      "contentStatus": "CONTENT_MISSING",
-      "notes": []
-    },
-    {
-      "catalogueId": "ALM-007",
-      "manifestSlug": "apple-macbook-air-m5-series",
-      "manifestName": "Apple MacBook Air (M5) Series",
-      "entryType": "PRODUCT_FAMILY",
-      "category": "Electronics / Mobile / Digital Technology",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
-      "variantAnalysis": [
-        {
-          "manifestVariant": "13-inch MacBook Air (M5)",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
-        },
-        {
-          "manifestVariant": "15-inch MacBook Air (M5)",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
-        }
-      ],
-      "mediaStatus": "FAMILY_HERO_REQUIRED",
-      "mediaDetails": [],
-      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
-      "notes": []
-    },
-    {
-      "catalogueId": "ALM-008",
-      "manifestSlug": "apple-macbook-pro-m5-pro-m5-max-series",
-      "manifestName": "Apple MacBook Pro (M5 Pro / M5 Max) Series",
-      "entryType": "PRODUCT_FAMILY",
-      "category": "Electronics / Mobile / Digital Technology",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
-      "variantAnalysis": [
-        {
-          "manifestVariant": "14-inch MacBook Pro",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
-        },
-        {
-          "manifestVariant": "16-inch MacBook Pro",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
-        }
-      ],
-      "mediaStatus": "FAMILY_HERO_REQUIRED",
-      "mediaDetails": [],
-      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
-      "notes": []
-    },
-    {
-      "catalogueId": "ALM-009",
-      "manifestSlug": "dji-mini-5-pro",
-      "manifestName": "DJI Mini 5 Pro",
-      "entryType": "STANDARD_PRODUCT",
-      "category": "Electronics / Mobile / Digital Technology",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
-      "variantAnalysis": [],
-      "mediaStatus": "MEDIA_MISSING",
-      "mediaDetails": [],
-      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
-      "notes": []
-    },
-    {
-      "catalogueId": "ALM-010",
-      "manifestSlug": "apple-airpods-5",
-      "manifestName": "Apple AirPods 5",
-      "entryType": "STANDARD_PRODUCT",
-      "category": "Electronics / Mobile / Digital Technology",
-      "mappingStatus": "MANUAL_REVIEW",
-      "existingCandidates": [
-        {
-          "productId": "01a0b3b6-2c3f-7433-8d23-d7940537b397",
-          "slug": "electronics-apple-airpods-5",
-          "name": "Apple AirPods 5",
-          "status": "draft",
-          "categorySlug": "iphones-gadgets",
-          "manufacturerName": null,
-          "brandName": "Apple",
-          "matchStatus": "MANUAL_REVIEW",
+          "manufacturerName": "Apple",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
           "score": 100,
           "variantCount": 1,
           "imageCount": 0,
@@ -366,8 +84,361 @@
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "MANUAL_REVIEW",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
+      "notes": []
+    },
+    {
+      "catalogueId": "ALM-003",
+      "manifestSlug": "samsung-galaxy-s26-series",
+      "manifestName": "Samsung Galaxy S26 Series",
+      "entryType": "PRODUCT_FAMILY",
+      "category": "Electronics / Mobile / Digital Technology",
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "b5012418-d8a4-4914-b3bc-88453b0f69b4",
+          "slug": "samsung-galaxy-s26-series",
+          "name": "Samsung Galaxy S26 Series",
+          "status": "draft",
+          "categorySlug": "iphones-gadgets",
+          "manufacturerName": "Samsung",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 3,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
+      "variantAnalysis": [
+        {
+          "manifestVariant": "Galaxy S26",
+          "matchingExistingProducts": [
+            "b5012418-d8a4-4914-b3bc-88453b0f69b4"
+          ],
+          "status": "MATCHED"
+        },
+        {
+          "manifestVariant": "Galaxy S26+",
+          "matchingExistingProducts": [
+            "b5012418-d8a4-4914-b3bc-88453b0f69b4"
+          ],
+          "status": "MATCHED"
+        },
+        {
+          "manifestVariant": "Galaxy S26 Ultra",
+          "matchingExistingProducts": [
+            "b5012418-d8a4-4914-b3bc-88453b0f69b4"
+          ],
+          "status": "MATCHED"
+        }
+      ],
+      "mediaStatus": "FAMILY_HERO_REQUIRED",
+      "mediaDetails": [],
+      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
+      "notes": []
+    },
+    {
+      "catalogueId": "ALM-004",
+      "manifestSlug": "google-pixel-11-pro-series",
+      "manifestName": "Google Pixel 11 Pro Series",
+      "entryType": "PRODUCT_FAMILY",
+      "category": "Electronics / Mobile / Digital Technology",
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "16a6d92c-944d-40c9-a1b9-17967a5093f8",
+          "slug": "google-pixel-11-pro-series",
+          "name": "Google Pixel 11 Pro Series",
+          "status": "draft",
+          "categorySlug": "iphones-gadgets",
+          "manufacturerName": "Google",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 2,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
+      "variantAnalysis": [
+        {
+          "manifestVariant": "Pixel 11 Pro",
+          "matchingExistingProducts": [
+            "16a6d92c-944d-40c9-a1b9-17967a5093f8"
+          ],
+          "status": "MATCHED"
+        },
+        {
+          "manifestVariant": "Pixel 11 Pro XL",
+          "matchingExistingProducts": [
+            "16a6d92c-944d-40c9-a1b9-17967a5093f8"
+          ],
+          "status": "MATCHED"
+        }
+      ],
+      "mediaStatus": "FAMILY_HERO_REQUIRED",
+      "mediaDetails": [],
+      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
+      "notes": []
+    },
+    {
+      "catalogueId": "ALM-005",
+      "manifestSlug": "apple-ipad-air-m4-series",
+      "manifestName": "Apple iPad Air (M4) Series",
+      "entryType": "PRODUCT_FAMILY",
+      "category": "Electronics / Mobile / Digital Technology",
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "343795b0-9192-48e1-a72d-71397adc2840",
+          "slug": "apple-ipad-air-m4-series",
+          "name": "Apple iPad Air (M4) Series",
+          "status": "draft",
+          "categorySlug": "iphones-gadgets",
+          "manufacturerName": "Apple",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 2,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
+      "variantAnalysis": [
+        {
+          "manifestVariant": "11-inch iPad Air (M4)",
+          "matchingExistingProducts": [
+            "343795b0-9192-48e1-a72d-71397adc2840"
+          ],
+          "status": "MATCHED"
+        },
+        {
+          "manifestVariant": "13-inch iPad Air (M4)",
+          "matchingExistingProducts": [
+            "343795b0-9192-48e1-a72d-71397adc2840"
+          ],
+          "status": "MATCHED"
+        }
+      ],
+      "mediaStatus": "FAMILY_HERO_REQUIRED",
+      "mediaDetails": [],
+      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
+      "notes": []
+    },
+    {
+      "catalogueId": "ALM-006",
+      "manifestSlug": "samsung-galaxy-tab-s11-series",
+      "manifestName": "Samsung Galaxy Tab S11 Series",
+      "entryType": "PRODUCT_FAMILY",
+      "category": "Electronics / Mobile / Digital Technology",
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "907faf36-9451-4d9a-9808-a0944be64bd8",
+          "slug": "samsung-galaxy-tab-s11-series",
+          "name": "Samsung Galaxy Tab S11 Series",
+          "status": "draft",
+          "categorySlug": "iphones-gadgets",
+          "manufacturerName": "Samsung",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 2,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
+      "variantAnalysis": [
+        {
+          "manifestVariant": "Galaxy Tab S11",
+          "matchingExistingProducts": [
+            "907faf36-9451-4d9a-9808-a0944be64bd8"
+          ],
+          "status": "MATCHED"
+        },
+        {
+          "manifestVariant": "Galaxy Tab S11 Ultra",
+          "matchingExistingProducts": [
+            "907faf36-9451-4d9a-9808-a0944be64bd8"
+          ],
+          "status": "MATCHED"
+        }
+      ],
+      "mediaStatus": "FAMILY_HERO_REQUIRED",
+      "mediaDetails": [],
+      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
+      "notes": []
+    },
+    {
+      "catalogueId": "ALM-007",
+      "manifestSlug": "apple-macbook-air-m5-series",
+      "manifestName": "Apple MacBook Air (M5) Series",
+      "entryType": "PRODUCT_FAMILY",
+      "category": "Electronics / Mobile / Digital Technology",
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "52310248-e70f-4d49-a501-08cdb83e1f9c",
+          "slug": "apple-macbook-air-m5-series",
+          "name": "Apple MacBook Air (M5) Series",
+          "status": "draft",
+          "categorySlug": "iphones-gadgets",
+          "manufacturerName": "Apple",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 2,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
+      "variantAnalysis": [
+        {
+          "manifestVariant": "13-inch MacBook Air (M5)",
+          "matchingExistingProducts": [
+            "52310248-e70f-4d49-a501-08cdb83e1f9c"
+          ],
+          "status": "MATCHED"
+        },
+        {
+          "manifestVariant": "15-inch MacBook Air (M5)",
+          "matchingExistingProducts": [
+            "52310248-e70f-4d49-a501-08cdb83e1f9c"
+          ],
+          "status": "MATCHED"
+        }
+      ],
+      "mediaStatus": "FAMILY_HERO_REQUIRED",
+      "mediaDetails": [],
+      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
+      "notes": []
+    },
+    {
+      "catalogueId": "ALM-008",
+      "manifestSlug": "apple-macbook-pro-m5-pro-m5-max-series",
+      "manifestName": "Apple MacBook Pro (M5 Pro / M5 Max) Series",
+      "entryType": "PRODUCT_FAMILY",
+      "category": "Electronics / Mobile / Digital Technology",
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "bdfab991-b10b-4bc7-a421-79c0d6cfa94c",
+          "slug": "apple-macbook-pro-m5-pro-m5-max-series",
+          "name": "Apple MacBook Pro (M5 Pro / M5 Max) Series",
+          "status": "draft",
+          "categorySlug": "iphones-gadgets",
+          "manufacturerName": "Apple",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 2,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
+      "variantAnalysis": [
+        {
+          "manifestVariant": "14-inch MacBook Pro",
+          "matchingExistingProducts": [
+            "bdfab991-b10b-4bc7-a421-79c0d6cfa94c"
+          ],
+          "status": "MATCHED"
+        },
+        {
+          "manifestVariant": "16-inch MacBook Pro",
+          "matchingExistingProducts": [
+            "bdfab991-b10b-4bc7-a421-79c0d6cfa94c"
+          ],
+          "status": "MATCHED"
+        }
+      ],
+      "mediaStatus": "FAMILY_HERO_REQUIRED",
+      "mediaDetails": [],
+      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
+      "notes": []
+    },
+    {
+      "catalogueId": "ALM-009",
+      "manifestSlug": "dji-mini-5-pro",
+      "manifestName": "DJI Mini 5 Pro",
+      "entryType": "STANDARD_PRODUCT",
+      "category": "Electronics / Mobile / Digital Technology",
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "62c9e2b6-911e-42ac-8a19-3dccac4ee48a",
+          "slug": "dji-mini-5-pro",
+          "name": "DJI Mini 5 Pro",
+          "status": "draft",
+          "categorySlug": "iphones-gadgets",
+          "manufacturerName": "DJI",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
+      "variantAnalysis": [],
+      "mediaStatus": "MEDIA_MISSING",
+      "mediaDetails": [],
+      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
+      "notes": []
+    },
+    {
+      "catalogueId": "ALM-010",
+      "manifestSlug": "apple-airpods-5",
+      "manifestName": "Apple AirPods 5",
+      "entryType": "STANDARD_PRODUCT",
+      "category": "Electronics / Mobile / Digital Technology",
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "5abeedc2-9f1c-4c9d-a8bc-a9f966941e02",
+          "slug": "apple-airpods-5",
+          "name": "Apple AirPods 5",
+          "status": "draft",
+          "categorySlug": "iphones-gadgets",
+          "manufacturerName": "Apple",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
+      "variantAnalysis": [],
+      "mediaStatus": "MEDIA_MISSING",
+      "mediaDetails": [],
+      "historicalReferenceRisk": "SAFE_NO_REFERENCES",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -376,14 +447,30 @@
       "manifestName": "Philips IntelliVue MX850",
       "entryType": "STANDARD_PRODUCT",
       "category": "Medical / Healthcare / Laboratory Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "8e20da74-afea-455b-87ea-44320ac28eb5",
+          "slug": "philips-intellivue-mx850",
+          "name": "Philips IntelliVue MX850",
+          "status": "draft",
+          "categorySlug": "medical-equipments",
+          "manufacturerName": "Philips",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -392,14 +479,30 @@
       "manifestName": "GE HealthCare Vscan Air SL",
       "entryType": "STANDARD_PRODUCT",
       "category": "Medical / Healthcare / Laboratory Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "0c3bf899-7057-46a3-927c-e66fad4a6004",
+          "slug": "ge-healthcare-vscan-air-sl",
+          "name": "GE HealthCare Vscan Air SL",
+          "status": "draft",
+          "categorySlug": "medical-equipments",
+          "manufacturerName": "GE HealthCare",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -408,14 +511,30 @@
       "manifestName": "Siemens Healthineers ACUSON Maple",
       "entryType": "STANDARD_PRODUCT",
       "category": "Medical / Healthcare / Laboratory Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "f87fbbe5-921e-45b3-a73d-2dd530de4469",
+          "slug": "siemens-healthineers-acuson-maple",
+          "name": "Siemens Healthineers ACUSON Maple",
+          "status": "draft",
+          "categorySlug": "medical-equipments",
+          "manufacturerName": "Siemens Healthineers",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -424,14 +543,30 @@
       "manifestName": "Mindray BeneVision N22",
       "entryType": "STANDARD_PRODUCT",
       "category": "Medical / Healthcare / Laboratory Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "24cfff7b-e636-43cc-9ee9-dd6338e66a99",
+          "slug": "mindray-benevision-n22",
+          "name": "Mindray BeneVision N22",
+          "status": "draft",
+          "categorySlug": "medical-equipments",
+          "manufacturerName": "Mindray",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -440,14 +575,30 @@
       "manifestName": "Abbott i-STAT Alinity",
       "entryType": "STANDARD_PRODUCT",
       "category": "Medical / Healthcare / Laboratory Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "a1debf9b-405e-43e3-99f3-c45f5ed194f2",
+          "slug": "abbott-i-stat-alinity",
+          "name": "Abbott i-STAT Alinity",
+          "status": "draft",
+          "categorySlug": "medical-equipments",
+          "manufacturerName": "Abbott",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -456,14 +607,30 @@
       "manifestName": "Roche cobas pure integrated solutions",
       "entryType": "STANDARD_PRODUCT",
       "category": "Medical / Healthcare / Laboratory Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "ed40f762-42f6-4a25-a525-021769f3568a",
+          "slug": "roche-cobas-pure-integrated-solutions",
+          "name": "Roche cobas pure integrated solutions",
+          "status": "draft",
+          "categorySlug": "medical-equipments",
+          "manufacturerName": "Roche",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -472,14 +639,30 @@
       "manifestName": "Eppendorf Centrifuge 5910 Ri",
       "entryType": "STANDARD_PRODUCT",
       "category": "Medical / Healthcare / Laboratory Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "d8aa5e6b-ef94-4426-8182-ac0958f1ad65",
+          "slug": "eppendorf-centrifuge-5910-ri",
+          "name": "Eppendorf Centrifuge 5910 Ri",
+          "status": "draft",
+          "categorySlug": "medical-equipments",
+          "manufacturerName": "Eppendorf",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -488,20 +671,38 @@
       "manifestName": "Thermo Scientific TSX Series Ultra-Low Temperature Freezers",
       "entryType": "PRODUCT_FAMILY",
       "category": "Medical / Healthcare / Laboratory Equipment",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "9cee22a0-1362-4a6d-a1d9-0c5a50370f64",
+          "slug": "thermo-scientific-tsx-series-ultra-low-temperature-freezers",
+          "name": "Thermo Scientific TSX Series Ultra-Low Temperature Freezers",
+          "status": "draft",
+          "categorySlug": "medical-equipments",
+          "manufacturerName": "Thermo Fisher Scientific",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [
         {
           "manifestVariant": "TSX Series ULT Freezer",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "9cee22a0-1362-4a6d-a1d9-0c5a50370f64"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -510,14 +711,30 @@
       "manifestName": "BD MAX System",
       "entryType": "STANDARD_PRODUCT",
       "category": "Medical / Healthcare / Laboratory Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "04f295c9-40dd-44db-aa5d-8a5051af8d63",
+          "slug": "bd-max-system",
+          "name": "BD MAX System",
+          "status": "draft",
+          "categorySlug": "medical-equipments",
+          "manufacturerName": "BD",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -526,14 +743,30 @@
       "manifestName": "HAMILTON-C6",
       "entryType": "STANDARD_PRODUCT",
       "category": "Medical / Healthcare / Laboratory Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "64cba854-5682-4d6c-b5c1-8683edc8d3d9",
+          "slug": "hamilton-c6",
+          "name": "HAMILTON-C6",
+          "status": "draft",
+          "categorySlug": "medical-equipments",
+          "manufacturerName": "Hamilton Medical",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -542,14 +775,30 @@
       "manifestName": "Kärcher K 5 Premium Smart Control Flex Home",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home / Garden / Facility Supplies",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "852a341a-a31c-4f4f-ac6b-727de6d01841",
+          "slug": "k-rcher-k-5-premium-smart-control-flex-home",
+          "name": "Kärcher K 5 Premium Smart Control Flex Home",
+          "status": "draft",
+          "categorySlug": "home-garden-wares",
+          "manufacturerName": "Kärcher",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -558,14 +807,30 @@
       "manifestName": "Kärcher WD 6 P S V-30/6/22/T Car & Pet",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home / Garden / Facility Supplies",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "58ca55c7-8be6-4370-8e94-8ed0cf23e3cd",
+          "slug": "k-rcher-wd-6-p-s-v-30-6-22-t-car-and-pet",
+          "name": "Kärcher WD 6 P S V-30/6/22/T Car & Pet",
+          "status": "draft",
+          "categorySlug": "home-garden-wares",
+          "manufacturerName": "Kärcher",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -574,14 +839,30 @@
       "manifestName": "Nilfisk SC250 34C B EU/UK",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home / Garden / Facility Supplies",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "82cf8e5c-910a-429d-93c7-394b754ae557",
+          "slug": "nilfisk-sc250-34c-b-eu-uk",
+          "name": "Nilfisk SC250 34C B EU/UK",
+          "status": "draft",
+          "categorySlug": "home-garden-wares",
+          "manufacturerName": "Nilfisk",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -590,14 +871,30 @@
       "manifestName": "Kärcher Puzzi 10/1",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home / Garden / Facility Supplies",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "52a70a38-0927-4bfa-98b8-8556d2157331",
+          "slug": "k-rcher-puzzi-10-1",
+          "name": "Kärcher Puzzi 10/1",
+          "status": "draft",
+          "categorySlug": "home-garden-wares",
+          "manufacturerName": "Kärcher",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -606,14 +903,30 @@
       "manifestName": "Kärcher BR 30/4 C Bp",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home / Garden / Facility Supplies",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "a62f4fa4-91b9-4660-9c48-d246a891b76c",
+          "slug": "k-rcher-br-30-4-c-bp",
+          "name": "Kärcher BR 30/4 C Bp",
+          "status": "draft",
+          "categorySlug": "home-garden-wares",
+          "manufacturerName": "Kärcher",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -622,14 +935,30 @@
       "manifestName": "Husqvarna Automower 450X NERA",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home / Garden / Facility Supplies",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "d53d14d9-aa18-40dd-86ef-223a5ec478f0",
+          "slug": "husqvarna-automower-450x-nera",
+          "name": "Husqvarna Automower 450X NERA",
+          "status": "draft",
+          "categorySlug": "home-garden-wares",
+          "manufacturerName": "Husqvarna",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -638,14 +967,30 @@
       "manifestName": "Bosch AdvancedRotak 44-750",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home / Garden / Facility Supplies",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "2f6d145d-0886-4b5e-b1e6-3e37cf86da12",
+          "slug": "bosch-advancedrotak-44-750",
+          "name": "Bosch AdvancedRotak 44-750",
+          "status": "draft",
+          "categorySlug": "home-garden-wares",
+          "manufacturerName": "Bosch",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -654,14 +999,30 @@
       "manifestName": "Kärcher T 11/1 Classic HEPA",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home / Garden / Facility Supplies",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "152f7b46-07c0-485a-89ca-503286e0809d",
+          "slug": "k-rcher-t-11-1-classic-hepa",
+          "name": "Kärcher T 11/1 Classic HEPA",
+          "status": "draft",
+          "categorySlug": "home-garden-wares",
+          "manufacturerName": "Kärcher",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -670,14 +1031,30 @@
       "manifestName": "Kärcher WV 7 Signature Line",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home / Garden / Facility Supplies",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "ff7a9f1f-d4f8-4c34-a382-5ee64d93d784",
+          "slug": "k-rcher-wv-7-signature-line",
+          "name": "Kärcher WV 7 Signature Line",
+          "status": "draft",
+          "categorySlug": "home-garden-wares",
+          "manufacturerName": "Kärcher",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -686,14 +1063,30 @@
       "manifestName": "GARDENA smart Water Control 19033-20",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home / Garden / Facility Supplies",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "b0058701-6133-4fea-8055-e803a262fb02",
+          "slug": "gardena-smart-water-control-19033-20",
+          "name": "GARDENA smart Water Control 19033-20",
+          "status": "draft",
+          "categorySlug": "home-garden-wares",
+          "manufacturerName": "GARDENA",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -702,14 +1095,30 @@
       "manifestName": "Atlas Copco GA 15 VSDs",
       "entryType": "STANDARD_PRODUCT",
       "category": "Industrial Machinery / Tools / Processing Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "bf9ba289-b6e7-412c-ba90-f3790e777d00",
+          "slug": "atlas-copco-ga-15-vsds",
+          "name": "Atlas Copco GA 15 VSDs",
+          "status": "draft",
+          "categorySlug": "machineries",
+          "manufacturerName": "Atlas Copco",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -718,14 +1127,30 @@
       "manifestName": "Haas VF-2",
       "entryType": "STANDARD_PRODUCT",
       "category": "Industrial Machinery / Tools / Processing Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "af566bb0-b854-4afb-a736-57edf2c9ef82",
+          "slug": "haas-vf-2",
+          "name": "Haas VF-2",
+          "status": "draft",
+          "categorySlug": "machineries",
+          "manufacturerName": "Haas Automation",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -734,14 +1159,30 @@
       "manifestName": "Mazak QUICK TURN 250MSY",
       "entryType": "STANDARD_PRODUCT",
       "category": "Industrial Machinery / Tools / Processing Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "2d4a4211-c29a-424d-b1e9-d583df9ff07f",
+          "slug": "mazak-quick-turn-250msy",
+          "name": "Mazak QUICK TURN 250MSY",
+          "status": "draft",
+          "categorySlug": "machineries",
+          "manufacturerName": "Mazak",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -750,14 +1191,30 @@
       "manifestName": "Robot-Coupe CL 50",
       "entryType": "STANDARD_PRODUCT",
       "category": "Industrial Machinery / Tools / Processing Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "b76704ac-fa04-4adc-81b8-61dfd5edf72c",
+          "slug": "robot-coupe-cl-50",
+          "name": "Robot-Coupe CL 50",
+          "status": "draft",
+          "categorySlug": "machineries",
+          "manufacturerName": "Robot-Coupe",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -766,14 +1223,30 @@
       "manifestName": "Robot-Coupe CL 50 Ultra",
       "entryType": "STANDARD_PRODUCT",
       "category": "Industrial Machinery / Tools / Processing Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "64f2bf5c-f9bb-4a81-b95b-7145e786e61a",
+          "slug": "robot-coupe-cl-50-ultra",
+          "name": "Robot-Coupe CL 50 Ultra",
+          "status": "draft",
+          "categorySlug": "machineries",
+          "manufacturerName": "Robot-Coupe",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -782,14 +1255,30 @@
       "manifestName": "RATIONAL iCombi Pro 10-1/1",
       "entryType": "STANDARD_PRODUCT",
       "category": "Industrial Machinery / Tools / Processing Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "a8f92d4f-c32e-4823-ae95-d204496119df",
+          "slug": "rational-icombi-pro-10-1-1",
+          "name": "RATIONAL iCombi Pro 10-1/1",
+          "status": "draft",
+          "categorySlug": "machineries",
+          "manufacturerName": "RATIONAL",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -798,14 +1287,30 @@
       "manifestName": "Hobart Legacy+ HL600",
       "entryType": "STANDARD_PRODUCT",
       "category": "Industrial Machinery / Tools / Processing Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "44e58d55-8c45-46bd-aba3-313ceb8eab29",
+          "slug": "hobart-legacy-hl600",
+          "name": "Hobart Legacy+ HL600",
+          "status": "draft",
+          "categorySlug": "machineries",
+          "manufacturerName": "Hobart",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -814,14 +1319,30 @@
       "manifestName": "Hobart HCM450",
       "entryType": "STANDARD_PRODUCT",
       "category": "Industrial Machinery / Tools / Processing Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "734ff5da-a942-4d28-94cf-af25e825aba0",
+          "slug": "hobart-hcm450",
+          "name": "Hobart HCM450",
+          "status": "draft",
+          "categorySlug": "machineries",
+          "manufacturerName": "Hobart",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -830,14 +1351,30 @@
       "manifestName": "Toyota Lifter LHM230",
       "entryType": "STANDARD_PRODUCT",
       "category": "Industrial Machinery / Tools / Processing Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "41130722-03d9-4b0b-b75a-f98512f959fe",
+          "slug": "toyota-lifter-lhm230",
+          "name": "Toyota Lifter LHM230",
+          "status": "draft",
+          "categorySlug": "machineries",
+          "manufacturerName": "Toyota Material Handling",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -846,14 +1383,30 @@
       "manifestName": "Nilfisk ATTIX 965-21 SD XC",
       "entryType": "STANDARD_PRODUCT",
       "category": "Industrial Machinery / Tools / Processing Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "8b56a9a7-0d4a-4f0e-8d5e-67584f74869a",
+          "slug": "nilfisk-attix-965-21-sd-xc",
+          "name": "Nilfisk ATTIX 965-21 SD XC",
+          "status": "draft",
+          "categorySlug": "machineries",
+          "manufacturerName": "Nilfisk",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -862,14 +1415,30 @@
       "manifestName": "Custom Product Sourcing",
       "entryType": "PROCUREMENT_SERVICE",
       "category": "General Procurement / Custom Sourcing",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "bac013d2-89f9-4fc1-89a6-5a6e11391956",
+          "slug": "custom-product-sourcing",
+          "name": "Custom Product Sourcing",
+          "status": "draft",
+          "categorySlug": "general-procurement",
+          "manufacturerName": null,
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "SERVICE_VISUAL_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": [
         "Service entry is intentionally not matched to physical products."
       ]
@@ -880,14 +1449,30 @@
       "manifestName": "Bulk & Institutional Procurement",
       "entryType": "PROCUREMENT_SERVICE",
       "category": "General Procurement / Custom Sourcing",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "85a419ab-c6f6-4343-9057-949a05b7952b",
+          "slug": "bulk-and-institutional-procurement",
+          "name": "Bulk & Institutional Procurement",
+          "status": "draft",
+          "categorySlug": "general-procurement",
+          "manufacturerName": null,
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "SERVICE_VISUAL_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": [
         "Service entry is intentionally not matched to physical products."
       ]
@@ -898,14 +1483,30 @@
       "manifestName": "OEM & Private-Label Sourcing",
       "entryType": "PROCUREMENT_SERVICE",
       "category": "General Procurement / Custom Sourcing",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "9646c5f8-537f-4f86-b522-9aa848a44e7e",
+          "slug": "oem-and-private-label-sourcing",
+          "name": "OEM & Private-Label Sourcing",
+          "status": "draft",
+          "categorySlug": "general-procurement",
+          "manufacturerName": null,
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "SERVICE_VISUAL_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": [
         "Service entry is intentionally not matched to physical products."
       ]
@@ -916,14 +1517,30 @@
       "manifestName": "Project-Based Procurement",
       "entryType": "PROCUREMENT_SERVICE",
       "category": "General Procurement / Custom Sourcing",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "f0277df5-bf52-4bbb-8a10-0d9f5fc64fef",
+          "slug": "project-based-procurement",
+          "name": "Project-Based Procurement",
+          "status": "draft",
+          "categorySlug": "general-procurement",
+          "manufacturerName": null,
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "SERVICE_VISUAL_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": [
         "Service entry is intentionally not matched to physical products."
       ]
@@ -934,14 +1551,30 @@
       "manifestName": "Tender & BOQ/BOM Procurement",
       "entryType": "PROCUREMENT_SERVICE",
       "category": "General Procurement / Custom Sourcing",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "97ff8ca1-7a01-463e-936c-14c78e72ae20",
+          "slug": "tender-and-boq-bom-procurement",
+          "name": "Tender & BOQ/BOM Procurement",
+          "status": "draft",
+          "categorySlug": "general-procurement",
+          "manufacturerName": null,
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "SERVICE_VISUAL_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": [
         "Service entry is intentionally not matched to physical products."
       ]
@@ -952,14 +1585,30 @@
       "manifestName": "Replacement Parts & Components Sourcing",
       "entryType": "PROCUREMENT_SERVICE",
       "category": "General Procurement / Custom Sourcing",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "842aa774-3b76-4889-93ea-1add5ac8d8f0",
+          "slug": "replacement-parts-and-components-sourcing",
+          "name": "Replacement Parts & Components Sourcing",
+          "status": "draft",
+          "categorySlug": "general-procurement",
+          "manufacturerName": null,
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "SERVICE_VISUAL_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": [
         "Service entry is intentionally not matched to physical products."
       ]
@@ -970,14 +1619,30 @@
       "manifestName": "International Supplier Sourcing",
       "entryType": "PROCUREMENT_SERVICE",
       "category": "General Procurement / Custom Sourcing",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "81b8e1ef-36a9-46c8-9cbc-c22e3e6dbd72",
+          "slug": "international-supplier-sourcing",
+          "name": "International Supplier Sourcing",
+          "status": "draft",
+          "categorySlug": "general-procurement",
+          "manufacturerName": null,
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "SERVICE_VISUAL_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": [
         "Service entry is intentionally not matched to physical products."
       ]
@@ -988,14 +1653,30 @@
       "manifestName": "Supplier Verification & Product Matching",
       "entryType": "PROCUREMENT_SERVICE",
       "category": "General Procurement / Custom Sourcing",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "160260d1-17ff-4fc9-a4f8-f56ab082c30e",
+          "slug": "supplier-verification-and-product-matching",
+          "name": "Supplier Verification & Product Matching",
+          "status": "draft",
+          "categorySlug": "general-procurement",
+          "manufacturerName": null,
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "SERVICE_VISUAL_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": [
         "Service entry is intentionally not matched to physical products."
       ]
@@ -1006,14 +1687,30 @@
       "manifestName": "Multi-Vendor Procurement Consolidation",
       "entryType": "PROCUREMENT_SERVICE",
       "category": "General Procurement / Custom Sourcing",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "668ceb86-da65-4210-972f-35bf75b9dd6e",
+          "slug": "multi-vendor-procurement-consolidation",
+          "name": "Multi-Vendor Procurement Consolidation",
+          "status": "draft",
+          "categorySlug": "general-procurement",
+          "manufacturerName": null,
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "SERVICE_VISUAL_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": [
         "Service entry is intentionally not matched to physical products."
       ]
@@ -1024,14 +1721,30 @@
       "manifestName": "Special Specification / Hard-to-Find Procurement",
       "entryType": "PROCUREMENT_SERVICE",
       "category": "General Procurement / Custom Sourcing",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "62832d52-d187-435d-ae29-8850ad7f8c38",
+          "slug": "special-specification-hard-to-find-procurement",
+          "name": "Special Specification / Hard-to-Find Procurement",
+          "status": "draft",
+          "categorySlug": "general-procurement",
+          "manufacturerName": null,
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "SERVICE_VISUAL_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": [
         "Service entry is intentionally not matched to physical products."
       ]
@@ -1042,14 +1755,30 @@
       "manifestName": "Miele WQ 1200 WPS Nova Edition",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home Appliances / Living Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "bb1a00d5-ead1-4bb7-b92e-72b94731ef46",
+          "slug": "miele-wq-1200-wps-nova-edition",
+          "name": "Miele WQ 1200 WPS Nova Edition",
+          "status": "draft",
+          "categorySlug": "home-appliances",
+          "manufacturerName": "Miele",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1058,14 +1787,30 @@
       "manifestName": "Bosch Serie 8 WGB256A41",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home Appliances / Living Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "f4c5c0a3-6f9e-41aa-91e0-ab8c8b05da01",
+          "slug": "bosch-serie-8-wgb256a41",
+          "name": "Bosch Serie 8 WGB256A41",
+          "status": "draft",
+          "categorySlug": "home-appliances",
+          "manufacturerName": "Bosch",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1074,14 +1819,30 @@
       "manifestName": "LG WashTower WT1210BBF",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home Appliances / Living Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "fad35c59-bf1f-4704-a3ca-1f188bf7bf6b",
+          "slug": "lg-washtower-wt1210bbf",
+          "name": "LG WashTower WT1210BBF",
+          "status": "draft",
+          "categorySlug": "home-appliances",
+          "manufacturerName": "LG",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1090,14 +1851,30 @@
       "manifestName": "Bosch Serie 6 KGN49AIBT",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home Appliances / Living Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "e9e0c0b3-e4ae-4849-b05c-cc6c7723b74a",
+          "slug": "bosch-serie-6-kgn49aibt",
+          "name": "Bosch Serie 6 KGN49AIBT",
+          "status": "draft",
+          "categorySlug": "home-appliances",
+          "manufacturerName": "Bosch",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1106,14 +1883,30 @@
       "manifestName": "Bosch Serie 8 HSG7584B1",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home Appliances / Living Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "62d99eab-4601-4bbe-8fd3-92aacc0c859a",
+          "slug": "bosch-serie-8-hsg7584b1",
+          "name": "Bosch Serie 8 HSG7584B1",
+          "status": "draft",
+          "categorySlug": "home-appliances",
+          "manufacturerName": "Bosch",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1122,14 +1915,30 @@
       "manifestName": "Siemens iQ700 SN87TX02CE",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home Appliances / Living Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "08f7fa0a-b31f-411d-9ccf-2174539ddc71",
+          "slug": "siemens-iq700-sn87tx02ce",
+          "name": "Siemens iQ700 SN87TX02CE",
+          "status": "draft",
+          "categorySlug": "home-appliances",
+          "manufacturerName": "Siemens",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1138,14 +1947,30 @@
       "manifestName": "Siemens EQ900 plus iAroma TQ923EZ3",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home Appliances / Living Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "2bfe7223-4d02-45fb-bcd4-a3fb106517ee",
+          "slug": "siemens-eq900-plus-iaroma-tq923ez3",
+          "name": "Siemens EQ900 plus iAroma TQ923EZ3",
+          "status": "draft",
+          "categorySlug": "home-appliances",
+          "manufacturerName": "Siemens",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1154,14 +1979,30 @@
       "manifestName": "Miele Guard L1 Comfort Titanium-PF",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home Appliances / Living Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "5b00a71a-af73-441f-bbdf-dbd8e8802662",
+          "slug": "miele-guard-l1-comfort-titanium-pf",
+          "name": "Miele Guard L1 Comfort Titanium-PF",
+          "status": "draft",
+          "categorySlug": "home-appliances",
+          "manufacturerName": "Miele",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1170,14 +2011,30 @@
       "manifestName": "Dyson Purifier Big+Quiet Formaldehyde BP04",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home Appliances / Living Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "924807cd-16ed-40a5-be24-4161c384b695",
+          "slug": "dyson-purifier-big-quiet-formaldehyde-bp04",
+          "name": "Dyson Purifier Big+Quiet Formaldehyde BP04",
+          "status": "draft",
+          "categorySlug": "home-appliances",
+          "manufacturerName": "Dyson",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1186,14 +2043,30 @@
       "manifestName": "Bosch Serie 8 MUMS8ZS00",
       "entryType": "STANDARD_PRODUCT",
       "category": "Home Appliances / Living Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "b5a452fe-4e99-436b-95e7-5b425c7a66ba",
+          "slug": "bosch-serie-8-mums8zs00",
+          "name": "Bosch Serie 8 MUMS8ZS00",
+          "status": "draft",
+          "categorySlug": "home-appliances",
+          "manufacturerName": "Bosch",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1202,14 +2075,30 @@
       "manifestName": "Epson WorkForce Enterprise AM-C550",
       "entryType": "STANDARD_PRODUCT",
       "category": "Office / Business / Commercial Technology",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "7fb14aa0-9c7e-42a9-ab88-90868dd96be4",
+          "slug": "epson-workforce-enterprise-am-c550",
+          "name": "Epson WorkForce Enterprise AM-C550",
+          "status": "draft",
+          "categorySlug": "office-business",
+          "manufacturerName": "Epson",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1218,14 +2107,30 @@
       "manifestName": "HP Color LaserJet Enterprise Flow MFP 6800zf",
       "entryType": "STANDARD_PRODUCT",
       "category": "Office / Business / Commercial Technology",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "95eb52f1-1931-42e4-bf21-b8bc1f339090",
+          "slug": "hp-color-laserjet-enterprise-flow-mfp-6800zf",
+          "name": "HP Color LaserJet Enterprise Flow MFP 6800zf",
+          "status": "draft",
+          "categorySlug": "office-business",
+          "manufacturerName": "HP",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1234,14 +2139,30 @@
       "manifestName": "Brother ADS-4900W",
       "entryType": "STANDARD_PRODUCT",
       "category": "Office / Business / Commercial Technology",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "38f9bb20-8eaa-4caf-b162-ff9dad6944f2",
+          "slug": "brother-ads-4900w",
+          "name": "Brother ADS-4900W",
+          "status": "draft",
+          "categorySlug": "office-business",
+          "manufacturerName": "Brother",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1250,14 +2171,30 @@
       "manifestName": "Logitech Rally Bar",
       "entryType": "STANDARD_PRODUCT",
       "category": "Office / Business / Commercial Technology",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "087161f3-3870-44d4-88cd-71eaaf8d50ac",
+          "slug": "logitech-rally-bar",
+          "name": "Logitech Rally Bar",
+          "status": "draft",
+          "categorySlug": "office-business",
+          "manufacturerName": "Logitech",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1266,14 +2203,30 @@
       "manifestName": "HP Poly Studio X70",
       "entryType": "STANDARD_PRODUCT",
       "category": "Office / Business / Commercial Technology",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "d1f76d6f-5133-464e-a18e-02db8b8c4b95",
+          "slug": "hp-poly-studio-x70",
+          "name": "HP Poly Studio X70",
+          "status": "draft",
+          "categorySlug": "office-business",
+          "manufacturerName": "HP Poly",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1282,14 +2235,30 @@
       "manifestName": "Cisco Catalyst 1300-48P-4X",
       "entryType": "STANDARD_PRODUCT",
       "category": "Office / Business / Commercial Technology",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "f56daa99-930a-4945-8ef1-412b8336f7cd",
+          "slug": "cisco-catalyst-1300-48p-4x",
+          "name": "Cisco Catalyst 1300-48P-4X",
+          "status": "draft",
+          "categorySlug": "office-business",
+          "manufacturerName": "Cisco",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1298,14 +2267,30 @@
       "manifestName": "APC Smart-UPS SRT3000XLI",
       "entryType": "STANDARD_PRODUCT",
       "category": "Office / Business / Commercial Technology",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "9d70a69b-850f-4e76-bf78-f3fda36e430e",
+          "slug": "apc-smart-ups-srt3000xli",
+          "name": "APC Smart-UPS SRT3000XLI",
+          "status": "draft",
+          "categorySlug": "office-business",
+          "manufacturerName": "APC / Schneider Electric",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1314,14 +2299,30 @@
       "manifestName": "BenQ LU935ST",
       "entryType": "STANDARD_PRODUCT",
       "category": "Office / Business / Commercial Technology",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "ed8f3d4e-5481-4eaf-a79b-75562aeca3bb",
+          "slug": "benq-lu935st",
+          "name": "BenQ LU935ST",
+          "status": "draft",
+          "categorySlug": "office-business",
+          "manufacturerName": "BenQ",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1330,14 +2331,30 @@
       "manifestName": "Samsung QM75C",
       "entryType": "STANDARD_PRODUCT",
       "category": "Office / Business / Commercial Technology",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "b1db1c8f-1837-4d8c-a547-c04bde8c847b",
+          "slug": "samsung-qm75c",
+          "name": "Samsung QM75C",
+          "status": "draft",
+          "categorySlug": "office-business",
+          "manufacturerName": "Samsung",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1346,14 +2363,30 @@
       "manifestName": "Zebra ZD421",
       "entryType": "STANDARD_PRODUCT",
       "category": "Office / Business / Commercial Technology",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "62b5c8fe-c299-4112-9eac-bdb2d3186c12",
+          "slug": "zebra-zd421",
+          "name": "Zebra ZD421",
+          "status": "draft",
+          "categorySlug": "office-business",
+          "manufacturerName": "Zebra",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1362,20 +2395,38 @@
       "manifestName": "Nike Air Max Dn8",
       "entryType": "PRODUCT_FAMILY",
       "category": "Fashion, Footwear, Bags & Lifestyle Accessories",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "2a533cc8-ea83-49e0-b4fd-992cb588bddf",
+          "slug": "nike-air-max-dn8",
+          "name": "Nike Air Max Dn8",
+          "status": "draft",
+          "categorySlug": "fashion-textiles",
+          "manufacturerName": "Nike",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [
         {
           "manifestVariant": "Air Max Dn8",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "2a533cc8-ea83-49e0-b4fd-992cb588bddf"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1384,20 +2435,38 @@
       "manifestName": "adidas Samba OG",
       "entryType": "PRODUCT_FAMILY",
       "category": "Fashion, Footwear, Bags & Lifestyle Accessories",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "12da7213-4685-4079-beb2-edf4ee9674de",
+          "slug": "adidas-samba-og",
+          "name": "adidas Samba OG",
+          "status": "draft",
+          "categorySlug": "fashion-textiles",
+          "manufacturerName": "adidas",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [
         {
           "manifestVariant": "Samba OG",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "12da7213-4685-4079-beb2-edf4ee9674de"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1406,20 +2475,38 @@
       "manifestName": "On Cloud 6",
       "entryType": "PRODUCT_FAMILY",
       "category": "Fashion, Footwear, Bags & Lifestyle Accessories",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "1cd62321-6869-4ecb-ae39-a1327c8f175d",
+          "slug": "on-cloud-6",
+          "name": "On Cloud 6",
+          "status": "draft",
+          "categorySlug": "fashion-textiles",
+          "manufacturerName": "On",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [
         {
           "manifestVariant": "Cloud 6",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "1cd62321-6869-4ecb-ae39-a1327c8f175d"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1428,20 +2515,38 @@
       "manifestName": "Coach Tabby Shoulder Bag 26",
       "entryType": "PRODUCT_FAMILY",
       "category": "Fashion, Footwear, Bags & Lifestyle Accessories",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "05243010-4af9-46c8-9b9e-91ca9ab2a186",
+          "slug": "coach-tabby-shoulder-bag-26",
+          "name": "Coach Tabby Shoulder Bag 26",
+          "status": "draft",
+          "categorySlug": "fashion-textiles",
+          "manufacturerName": "Coach",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [
         {
           "manifestVariant": "Tabby Shoulder Bag 26",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "05243010-4af9-46c8-9b9e-91ca9ab2a186"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1450,20 +2555,38 @@
       "manifestName": "Michael Kors Jet Set Travel Large Crossbody",
       "entryType": "PRODUCT_FAMILY",
       "category": "Fashion, Footwear, Bags & Lifestyle Accessories",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "8ebf1827-6c65-4562-bae9-17036c5c4fc5",
+          "slug": "michael-kors-jet-set-travel-large-crossbody",
+          "name": "Michael Kors Jet Set Travel Large Crossbody",
+          "status": "draft",
+          "categorySlug": "fashion-textiles",
+          "manufacturerName": "Michael Kors",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [
         {
           "manifestVariant": "Jet Set Travel Large Crossbody",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "8ebf1827-6c65-4562-bae9-17036c5c4fc5"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1472,20 +2595,38 @@
       "manifestName": "TUMI Alpha Bravo Navigation Backpack",
       "entryType": "PRODUCT_FAMILY",
       "category": "Fashion, Footwear, Bags & Lifestyle Accessories",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "ca37d242-8b8b-4bf3-ae53-9636d0884039",
+          "slug": "tumi-alpha-bravo-navigation-backpack",
+          "name": "TUMI Alpha Bravo Navigation Backpack",
+          "status": "draft",
+          "categorySlug": "fashion-textiles",
+          "manufacturerName": "TUMI",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [
         {
           "manifestVariant": "Navigation Backpack",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "ca37d242-8b8b-4bf3-ae53-9636d0884039"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1494,20 +2635,38 @@
       "manifestName": "Samsonite Proxis Spinner 75 cm",
       "entryType": "PRODUCT_FAMILY",
       "category": "Fashion, Footwear, Bags & Lifestyle Accessories",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "1d97ee6f-83ee-4970-9d5c-e27c2f3f6a34",
+          "slug": "samsonite-proxis-spinner-75-cm",
+          "name": "Samsonite Proxis Spinner 75 cm",
+          "status": "draft",
+          "categorySlug": "fashion-textiles",
+          "manufacturerName": "Samsonite",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [
         {
           "manifestVariant": "Proxis Spinner 75 cm",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "1d97ee6f-83ee-4970-9d5c-e27c2f3f6a34"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1516,20 +2675,38 @@
       "manifestName": "Ray-Ban Meta (Gen 2) Wayfarer",
       "entryType": "PRODUCT_FAMILY",
       "category": "Fashion, Footwear, Bags & Lifestyle Accessories",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "284546c6-4d48-43fb-9e73-fd5c274ce1ac",
+          "slug": "ray-ban-meta-gen-2-wayfarer",
+          "name": "Ray-Ban Meta (Gen 2) Wayfarer",
+          "status": "draft",
+          "categorySlug": "fashion-textiles",
+          "manufacturerName": "Ray-Ban / Meta",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [
         {
           "manifestVariant": "Ray-Ban Meta Gen 2 Wayfarer",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "284546c6-4d48-43fb-9e73-fd5c274ce1ac"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1538,20 +2715,38 @@
       "manifestName": "Montblanc Meisterstück Wallet 6cc",
       "entryType": "PRODUCT_FAMILY",
       "category": "Fashion, Footwear, Bags & Lifestyle Accessories",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "237bbcfc-d467-4b85-b2d7-46b7938910a3",
+          "slug": "montblanc-meisterst-ck-wallet-6cc",
+          "name": "Montblanc Meisterstück Wallet 6cc",
+          "status": "draft",
+          "categorySlug": "fashion-textiles",
+          "manufacturerName": "Montblanc",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [
         {
           "manifestVariant": "Meisterstück Wallet 6cc",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "237bbcfc-d467-4b85-b2d7-46b7938910a3"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1560,20 +2755,38 @@
       "manifestName": "Casio G-SHOCK GA-V01 Series",
       "entryType": "PRODUCT_FAMILY",
       "category": "Fashion, Footwear, Bags & Lifestyle Accessories",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "d61516c7-8b8b-4059-a01e-fd965483977e",
+          "slug": "casio-g-shock-ga-v01-series",
+          "name": "Casio G-SHOCK GA-V01 Series",
+          "status": "draft",
+          "categorySlug": "fashion-textiles",
+          "manufacturerName": "Casio",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [
         {
           "manifestVariant": "GA-V01",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "d61516c7-8b8b-4059-a01e-fd965483977e"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1582,14 +2795,30 @@
       "manifestName": "Dyson Supersonic r Professional",
       "entryType": "STANDARD_PRODUCT",
       "category": "Beauty / Salon / Spa Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "54cf02c5-b2d7-40e4-bd57-e553cd4e3d79",
+          "slug": "dyson-supersonic-r-professional",
+          "name": "Dyson Supersonic r Professional",
+          "status": "draft",
+          "categorySlug": "beauty-spa-salon",
+          "manufacturerName": "Dyson",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1598,14 +2827,30 @@
       "manifestName": "Wahl Cordless Legend",
       "entryType": "STANDARD_PRODUCT",
       "category": "Beauty / Salon / Spa Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "b625bb8a-0545-451d-8574-52efa261de2b",
+          "slug": "wahl-cordless-legend",
+          "name": "Wahl Cordless Legend",
+          "status": "draft",
+          "categorySlug": "beauty-spa-salon",
+          "manufacturerName": "Wahl",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1614,14 +2859,30 @@
       "manifestName": "Wahl 5 Star Hi-Viz Trimmer",
       "entryType": "STANDARD_PRODUCT",
       "category": "Beauty / Salon / Spa Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "79ea7cdf-7e71-47c1-9017-f2dad1e42b32",
+          "slug": "wahl-5-star-hi-viz-trimmer",
+          "name": "Wahl 5 Star Hi-Viz Trimmer",
+          "status": "draft",
+          "categorySlug": "beauty-spa-salon",
+          "manufacturerName": "Wahl",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1630,14 +2891,30 @@
       "manifestName": "Wahl 5 Star Vanish",
       "entryType": "STANDARD_PRODUCT",
       "category": "Beauty / Salon / Spa Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "7fcfb15f-66ef-4194-90bc-7ca6bb61ace4",
+          "slug": "wahl-5-star-vanish",
+          "name": "Wahl 5 Star Vanish",
+          "status": "draft",
+          "categorySlug": "beauty-spa-salon",
+          "manufacturerName": "Wahl",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1646,14 +2923,30 @@
       "manifestName": "ghd Chronos Max",
       "entryType": "STANDARD_PRODUCT",
       "category": "Beauty / Salon / Spa Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "58e6b941-dc90-48b2-942b-9ebcefbc80e8",
+          "slug": "ghd-chronos-max",
+          "name": "ghd Chronos Max",
+          "status": "draft",
+          "categorySlug": "beauty-spa-salon",
+          "manufacturerName": "ghd",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1662,14 +2955,30 @@
       "manifestName": "ghd Duet Blowdry",
       "entryType": "STANDARD_PRODUCT",
       "category": "Beauty / Salon / Spa Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "745c1e4f-698a-4587-aaeb-321e6188b205",
+          "slug": "ghd-duet-blowdry",
+          "name": "ghd Duet Blowdry",
+          "status": "draft",
+          "categorySlug": "beauty-spa-salon",
+          "manufacturerName": "ghd",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1678,14 +2987,30 @@
       "manifestName": "Takara Belmont Apollo 2",
       "entryType": "STANDARD_PRODUCT",
       "category": "Beauty / Salon / Spa Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "aad62693-6b17-463a-9c31-6b609f8941f3",
+          "slug": "takara-belmont-apollo-2",
+          "name": "Takara Belmont Apollo 2",
+          "status": "draft",
+          "categorySlug": "beauty-spa-salon",
+          "manufacturerName": "Takara Belmont",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1694,14 +3019,30 @@
       "manifestName": "Takara Belmont YUME ESPOIR PREMIUM",
       "entryType": "STANDARD_PRODUCT",
       "category": "Beauty / Salon / Spa Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "fa92dc4f-b298-4bf9-8335-23af9b973ab2",
+          "slug": "takara-belmont-yume-espoir-premium",
+          "name": "Takara Belmont YUME ESPOIR PREMIUM",
+          "status": "draft",
+          "categorySlug": "beauty-spa-salon",
+          "manufacturerName": "Takara Belmont",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1710,14 +3051,30 @@
       "manifestName": "Hydrafacial Syndeo",
       "entryType": "STANDARD_PRODUCT",
       "category": "Beauty / Salon / Spa Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "138f5f53-ecdf-4a65-8884-a90f79b408f5",
+          "slug": "hydrafacial-syndeo",
+          "name": "Hydrafacial Syndeo",
+          "status": "draft",
+          "categorySlug": "beauty-spa-salon",
+          "manufacturerName": "Hydrafacial",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1726,14 +3083,30 @@
       "manifestName": "Dermalux Flex MD",
       "entryType": "STANDARD_PRODUCT",
       "category": "Beauty / Salon / Spa Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "4c14a319-1f52-4359-8d7d-85035a4e2338",
+          "slug": "dermalux-flex-md",
+          "name": "Dermalux Flex MD",
+          "status": "draft",
+          "categorySlug": "beauty-spa-salon",
+          "manufacturerName": "Dermalux",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1742,14 +3115,30 @@
       "manifestName": "HP Engage One Pro G2q",
       "entryType": "STANDARD_PRODUCT",
       "category": "Retail / Store Setup / Merchandising Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "f1ad18e0-c8a1-4ac5-ac91-f8e22722b690",
+          "slug": "hp-engage-one-pro-g2q",
+          "name": "HP Engage One Pro G2q",
+          "status": "draft",
+          "categorySlug": "retail-store-setup",
+          "manufacturerName": "HP",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1758,14 +3147,30 @@
       "manifestName": "Zebra DS9308",
       "entryType": "STANDARD_PRODUCT",
       "category": "Retail / Store Setup / Merchandising Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "d51e95f4-eacd-47f0-9de3-2117c08a0501",
+          "slug": "zebra-ds9308",
+          "name": "Zebra DS9308",
+          "status": "draft",
+          "categorySlug": "retail-store-setup",
+          "manufacturerName": "Zebra",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1774,14 +3179,30 @@
       "manifestName": "Epson TM-T88VII",
       "entryType": "STANDARD_PRODUCT",
       "category": "Retail / Store Setup / Merchandising Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "75b3253e-c926-4a26-ad2e-8ee171204526",
+          "slug": "epson-tm-t88vii",
+          "name": "Epson TM-T88VII",
+          "status": "draft",
+          "categorySlug": "retail-store-setup",
+          "manufacturerName": "Epson",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1790,14 +3211,30 @@
       "manifestName": "Star Micronics CD4-1616 Choice Series Cash Drawer",
       "entryType": "STANDARD_PRODUCT",
       "category": "Retail / Store Setup / Merchandising Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "e317e7a3-e3b3-4695-97b3-2e75da23ff1e",
+          "slug": "star-micronics-cd4-1616-choice-series-cash-drawer",
+          "name": "Star Micronics CD4-1616 Choice Series Cash Drawer",
+          "status": "draft",
+          "categorySlug": "retail-store-setup",
+          "manufacturerName": "Star Micronics",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1806,14 +3243,30 @@
       "manifestName": "Verifone T650p",
       "entryType": "STANDARD_PRODUCT",
       "category": "Retail / Store Setup / Merchandising Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "b79e511a-721d-4d9c-b569-2bfd8d1f5e38",
+          "slug": "verifone-t650p",
+          "name": "Verifone T650p",
+          "status": "draft",
+          "categorySlug": "retail-store-setup",
+          "manufacturerName": "Verifone",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1822,14 +3275,30 @@
       "manifestName": "Datalogic Magellan 9600i Scanner/Scale",
       "entryType": "STANDARD_PRODUCT",
       "category": "Retail / Store Setup / Merchandising Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "6e67fa75-9e54-45f1-b4bb-b97f059964a8",
+          "slug": "datalogic-magellan-9600i-scanner-scale",
+          "name": "Datalogic Magellan 9600i Scanner/Scale",
+          "status": "draft",
+          "categorySlug": "retail-store-setup",
+          "manufacturerName": "Datalogic",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1838,14 +3307,30 @@
       "manifestName": "Sensormatic Synergy 2.5 ABS Pedestal",
       "entryType": "STANDARD_PRODUCT",
       "category": "Retail / Store Setup / Merchandising Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "fc8124d0-ec18-43ee-a758-955b6be6e72e",
+          "slug": "sensormatic-synergy-2-5-abs-pedestal",
+          "name": "Sensormatic Synergy 2.5 ABS Pedestal",
+          "status": "draft",
+          "categorySlug": "retail-store-setup",
+          "manufacturerName": "Sensormatic",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1854,20 +3339,38 @@
       "manifestName": "Vusion V300 Series Electronic Shelf Labels",
       "entryType": "PRODUCT_FAMILY",
       "category": "Retail / Store Setup / Merchandising Equipment",
-      "mappingStatus": "NO_FAMILY_MATCH",
-      "existingCandidates": [],
+      "mappingStatus": "FAMILY_ALREADY_MODELED",
+      "existingCandidates": [
+        {
+          "productId": "123af04a-0df2-42f5-bcf1-23d6d785c062",
+          "slug": "vusion-v300-series-electronic-shelf-labels",
+          "name": "Vusion V300 Series Electronic Shelf Labels",
+          "status": "draft",
+          "categorySlug": "retail-store-setup",
+          "manufacturerName": "VusionGroup",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [
         {
           "manifestVariant": "V300 Series ESL",
-          "matchingExistingProducts": [],
-          "status": "UNMATCHED"
+          "matchingExistingProducts": [
+            "123af04a-0df2-42f5-bcf1-23d6d785c062"
+          ],
+          "status": "MATCHED"
         }
       ],
       "mediaStatus": "FAMILY_HERO_REQUIRED",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1876,14 +3379,30 @@
       "manifestName": "Honeywell CT47 Mobile Computer",
       "entryType": "STANDARD_PRODUCT",
       "category": "Retail / Store Setup / Merchandising Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "31a5969f-0b6f-45d0-a02c-1e13ff00cea7",
+          "slug": "honeywell-ct47-mobile-computer",
+          "name": "Honeywell CT47 Mobile Computer",
+          "status": "draft",
+          "categorySlug": "retail-store-setup",
+          "manufacturerName": "Honeywell",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": []
     },
     {
@@ -1892,98 +3411,175 @@
       "manifestName": "Lozier Gondola Island 1/4-inch Backs",
       "entryType": "CONFIGURABLE_PRODUCT",
       "category": "Retail / Store Setup / Merchandising Equipment",
-      "mappingStatus": "CREATE_NEW_DRAFT",
-      "existingCandidates": [],
+      "mappingStatus": "EXACT_SLUG_MATCH",
+      "existingCandidates": [
+        {
+          "productId": "39aaf56e-569c-42d6-b3de-143c805153b5",
+          "slug": "lozier-gondola-island-1-4-inch-backs",
+          "name": "Lozier Gondola Island 1/4-inch Backs",
+          "status": "draft",
+          "categorySlug": "retail-store-setup",
+          "manufacturerName": "Lozier",
+          "brandName": null,
+          "matchStatus": "EXACT_SLUG_MATCH",
+          "score": 100,
+          "variantCount": 1,
+          "imageCount": 0,
+          "requestItemReferences": 0,
+          "quotationItemReferences": 0
+        }
+      ],
       "variantAnalysis": [],
       "mediaStatus": "MEDIA_MISSING",
       "mediaDetails": [],
       "historicalReferenceRisk": "SAFE_NO_REFERENCES",
-      "recommendedAction": "CREATE_NEW_DRAFT",
-      "contentStatus": "CONTENT_MISSING",
+      "recommendedAction": "REUSE_AFTER_REVIEW",
+      "contentStatus": "CONTENT_REUSABLE",
       "notes": [
         "Specification-driven configurable entry; no variants invented."
       ]
     }
   ],
   "databaseSummary": {
-    "products": 1134,
+    "products": 1234,
     "productStatuses": {
+      "draft": 113,
       "published": 1073,
-      "archived": 48,
-      "draft": 13
+      "archived": 48
     },
-    "variants": 1127,
+    "variants": 1235,
     "images": 263,
-    "manufacturers": 3,
+    "manufacturers": 64,
     "brands": 3
   },
   "manufacturerMapping": {
-    "Apple": "MISSING",
-    "Samsung": "MISSING",
-    "Google": "MISSING",
-    "DJI": "MISSING",
-    "Philips": "MISSING",
-    "GE HealthCare": "MISSING",
-    "Siemens Healthineers": "MISSING",
-    "Mindray": "MISSING",
-    "Abbott": "MISSING",
-    "Roche": "MISSING",
-    "Eppendorf": "MISSING",
-    "Thermo Fisher Scientific": "MISSING",
-    "BD": "MISSING",
-    "Hamilton Medical": "MISSING",
-    "Kärcher": "MISSING",
-    "Nilfisk": "MISSING",
-    "Husqvarna": "MISSING",
-    "Bosch": "MISSING",
-    "GARDENA": "MISSING",
-    "Atlas Copco": "MISSING",
-    "Haas Automation": "MISSING",
-    "Mazak": "MISSING",
-    "Robot-Coupe": "MISSING",
-    "RATIONAL": "MISSING",
-    "Hobart": "MISSING",
-    "Toyota Material Handling": "MISSING",
-    "Miele": "MISSING",
-    "LG": "MISSING",
-    "Siemens": "MISSING",
-    "Dyson": "MISSING",
-    "Epson": "MISSING",
-    "HP": "MISSING",
-    "Brother": "MISSING",
-    "Logitech": "MISSING",
-    "HP Poly": "MISSING",
-    "Cisco": "MISSING",
-    "APC / Schneider Electric": "MISSING",
-    "BenQ": "MISSING",
-    "Zebra": "MISSING",
-    "Nike": "MISSING",
-    "adidas": "MISSING",
-    "On": "MISSING",
-    "Coach": "MISSING",
-    "Michael Kors": "MISSING",
-    "TUMI": "MISSING",
-    "Samsonite": "MISSING",
-    "Ray-Ban / Meta": "MISSING",
-    "Montblanc": "MISSING",
-    "Casio": "MISSING",
-    "Wahl": "MISSING",
-    "ghd": "MISSING",
-    "Takara Belmont": "MISSING",
-    "Hydrafacial": "MISSING",
-    "Dermalux": "MISSING",
-    "Star Micronics": "MISSING",
-    "Verifone": "MISSING",
-    "Datalogic": "MISSING",
-    "Sensormatic": "MISSING",
-    "VusionGroup": "MISSING",
-    "Honeywell": "MISSING",
-    "Lozier": "MISSING"
+    "Apple": "EXACT_MATCH",
+    "Samsung": "EXACT_MATCH",
+    "Google": "EXACT_MATCH",
+    "DJI": "EXACT_MATCH",
+    "Philips": "EXACT_MATCH",
+    "GE HealthCare": "EXACT_MATCH",
+    "Siemens Healthineers": "EXACT_MATCH",
+    "Mindray": "EXACT_MATCH",
+    "Abbott": "EXACT_MATCH",
+    "Roche": "EXACT_MATCH",
+    "Eppendorf": "EXACT_MATCH",
+    "Thermo Fisher Scientific": "EXACT_MATCH",
+    "BD": "EXACT_MATCH",
+    "Hamilton Medical": "EXACT_MATCH",
+    "Kärcher": "EXACT_MATCH",
+    "Nilfisk": "EXACT_MATCH",
+    "Husqvarna": "EXACT_MATCH",
+    "Bosch": "EXACT_MATCH",
+    "GARDENA": "EXACT_MATCH",
+    "Atlas Copco": "EXACT_MATCH",
+    "Haas Automation": "EXACT_MATCH",
+    "Mazak": "EXACT_MATCH",
+    "Robot-Coupe": "EXACT_MATCH",
+    "RATIONAL": "EXACT_MATCH",
+    "Hobart": "EXACT_MATCH",
+    "Toyota Material Handling": "EXACT_MATCH",
+    "Miele": "EXACT_MATCH",
+    "LG": "EXACT_MATCH",
+    "Siemens": "EXACT_MATCH",
+    "Dyson": "EXACT_MATCH",
+    "Epson": "EXACT_MATCH",
+    "HP": "EXACT_MATCH",
+    "Brother": "EXACT_MATCH",
+    "Logitech": "EXACT_MATCH",
+    "HP Poly": "EXACT_MATCH",
+    "Cisco": "EXACT_MATCH",
+    "APC / Schneider Electric": "EXACT_MATCH",
+    "BenQ": "EXACT_MATCH",
+    "Zebra": "EXACT_MATCH",
+    "Nike": "EXACT_MATCH",
+    "adidas": "EXACT_MATCH",
+    "On": "EXACT_MATCH",
+    "Coach": "EXACT_MATCH",
+    "Michael Kors": "EXACT_MATCH",
+    "TUMI": "EXACT_MATCH",
+    "Samsonite": "EXACT_MATCH",
+    "Ray-Ban / Meta": "EXACT_MATCH",
+    "Montblanc": "EXACT_MATCH",
+    "Casio": "EXACT_MATCH",
+    "Wahl": "EXACT_MATCH",
+    "ghd": "EXACT_MATCH",
+    "Takara Belmont": "EXACT_MATCH",
+    "Hydrafacial": "EXACT_MATCH",
+    "Dermalux": "EXACT_MATCH",
+    "Star Micronics": "EXACT_MATCH",
+    "Verifone": "EXACT_MATCH",
+    "Datalogic": "EXACT_MATCH",
+    "Sensormatic": "EXACT_MATCH",
+    "VusionGroup": "EXACT_MATCH",
+    "Honeywell": "EXACT_MATCH",
+    "Lozier": "EXACT_MATCH"
   },
   "presentManufacturers": [
+    "Abbott",
+    "adidas",
+    "APC / Schneider Electric",
+    "Apple",
+    "Atlas Copco",
+    "BD",
+    "BenQ",
+    "Bosch",
+    "Brother",
+    "Casio",
+    "Cisco",
+    "Coach",
+    "Datalogic",
+    "Dermalux",
+    "DJI",
+    "Dyson",
+    "Eppendorf",
+    "Epson",
+    "GARDENA",
+    "GE HealthCare",
+    "ghd",
+    "Google",
+    "Haas Automation",
+    "Hamilton Medical",
+    "Hobart",
+    "Honeywell",
+    "HP",
+    "HP Poly",
+    "Husqvarna",
+    "Hydrafacial",
+    "Kärcher",
+    "LG",
+    "Logitech",
+    "Lozier",
+    "Mazak",
+    "Michael Kors",
+    "Miele",
+    "Mindray",
+    "Montblanc",
     "New manufacturer",
     "New manufacturer",
-    "New manufacturer"
+    "New manufacturer",
+    "Nike",
+    "Nilfisk",
+    "On",
+    "Philips",
+    "RATIONAL",
+    "Ray-Ban / Meta",
+    "Robot-Coupe",
+    "Roche",
+    "Samsonite",
+    "Samsung",
+    "Sensormatic",
+    "Siemens",
+    "Siemens Healthineers",
+    "Star Micronics",
+    "Takara Belmont",
+    "Thermo Fisher Scientific",
+    "Toyota Material Handling",
+    "TUMI",
+    "Verifone",
+    "VusionGroup",
+    "Wahl",
+    "Zebra"
   ],
   "presentBrands": [
     "Apple",
@@ -1991,6 +3587,39 @@
     "Samsung"
   ],
   "category8Audit": [
+    {
+      "productId": "12da7213-4685-4079-beb2-edf4ee9674de",
+      "slug": "adidas-samba-og",
+      "name": "adidas Samba OG",
+      "status": "draft",
+      "variantCount": 1,
+      "imageCount": 0,
+      "requestItemReferences": 0,
+      "quotationItemReferences": 0,
+      "classification": "MANUAL_REVIEW"
+    },
+    {
+      "productId": "d61516c7-8b8b-4059-a01e-fd965483977e",
+      "slug": "casio-g-shock-ga-v01-series",
+      "name": "Casio G-SHOCK GA-V01 Series",
+      "status": "draft",
+      "variantCount": 1,
+      "imageCount": 0,
+      "requestItemReferences": 0,
+      "quotationItemReferences": 0,
+      "classification": "MANUAL_REVIEW"
+    },
+    {
+      "productId": "05243010-4af9-46c8-9b9e-91ca9ab2a186",
+      "slug": "coach-tabby-shoulder-bag-26",
+      "name": "Coach Tabby Shoulder Bag 26",
+      "status": "draft",
+      "variantCount": 1,
+      "imageCount": 0,
+      "requestItemReferences": 0,
+      "quotationItemReferences": 0,
+      "classification": "KEEP_AND_MAP"
+    },
     {
       "productId": "0cb14119-7812-4e29-bb07-de745b066068",
       "slug": "fashion-textiles-ankle-work-boot",
@@ -3211,6 +4840,83 @@
       "requestItemReferences": 0,
       "quotationItemReferences": 0,
       "classification": "LEGACY_ARCHIVE_CANDIDATE"
+    },
+    {
+      "productId": "8ebf1827-6c65-4562-bae9-17036c5c4fc5",
+      "slug": "michael-kors-jet-set-travel-large-crossbody",
+      "name": "Michael Kors Jet Set Travel Large Crossbody",
+      "status": "draft",
+      "variantCount": 1,
+      "imageCount": 0,
+      "requestItemReferences": 0,
+      "quotationItemReferences": 0,
+      "classification": "MANUAL_REVIEW"
+    },
+    {
+      "productId": "237bbcfc-d467-4b85-b2d7-46b7938910a3",
+      "slug": "montblanc-meisterst-ck-wallet-6cc",
+      "name": "Montblanc Meisterstück Wallet 6cc",
+      "status": "draft",
+      "variantCount": 1,
+      "imageCount": 0,
+      "requestItemReferences": 0,
+      "quotationItemReferences": 0,
+      "classification": "KEEP_AND_MAP"
+    },
+    {
+      "productId": "2a533cc8-ea83-49e0-b4fd-992cb588bddf",
+      "slug": "nike-air-max-dn8",
+      "name": "Nike Air Max Dn8",
+      "status": "draft",
+      "variantCount": 1,
+      "imageCount": 0,
+      "requestItemReferences": 0,
+      "quotationItemReferences": 0,
+      "classification": "MANUAL_REVIEW"
+    },
+    {
+      "productId": "1cd62321-6869-4ecb-ae39-a1327c8f175d",
+      "slug": "on-cloud-6",
+      "name": "On Cloud 6",
+      "status": "draft",
+      "variantCount": 1,
+      "imageCount": 0,
+      "requestItemReferences": 0,
+      "quotationItemReferences": 0,
+      "classification": "MANUAL_REVIEW"
+    },
+    {
+      "productId": "284546c6-4d48-43fb-9e73-fd5c274ce1ac",
+      "slug": "ray-ban-meta-gen-2-wayfarer",
+      "name": "Ray-Ban Meta (Gen 2) Wayfarer",
+      "status": "draft",
+      "variantCount": 1,
+      "imageCount": 0,
+      "requestItemReferences": 0,
+      "quotationItemReferences": 0,
+      "classification": "MANUAL_REVIEW"
+    },
+    {
+      "productId": "1d97ee6f-83ee-4970-9d5c-e27c2f3f6a34",
+      "slug": "samsonite-proxis-spinner-75-cm",
+      "name": "Samsonite Proxis Spinner 75 cm",
+      "status": "draft",
+      "variantCount": 1,
+      "imageCount": 0,
+      "requestItemReferences": 0,
+      "quotationItemReferences": 0,
+      "classification": "MANUAL_REVIEW"
+    },
+    {
+      "productId": "ca37d242-8b8b-4bf3-ae53-9636d0884039",
+      "slug": "tumi-alpha-bravo-navigation-backpack",
+      "name": "TUMI Alpha Bravo Navigation Backpack",
+      "status": "draft",
+      "variantCount": 1,
+      "imageCount": 0,
+      "requestItemReferences": 0,
+      "quotationItemReferences": 0,
+      "classification": "MANUAL_REVIEW"
     }
   ]
 }

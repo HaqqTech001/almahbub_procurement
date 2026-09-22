@@ -63,4 +63,30 @@ describe("ops schemas", () => {
     expect(parsed.categoryId).toBe("0190c8a0-1000-7000-8000-000000000002");
     expect(parsed.status).toBe("draft");
   });
+
+  it("accepts master catalogue metadata on product create", () => {
+    const parsed = createOpsProductSchema.parse({
+      name: "Phone Pro Series",
+      summary: "Professional smartphone family.",
+      entryType: "PRODUCT_FAMILY",
+      availabilityStatus: "ON_REQUEST",
+      manufacturerUrl: "https://manufacturer.example/phone-pro",
+      releaseDate: "2026-09-18",
+      catalogueNotes: "Prefer one family hero image.",
+    });
+    expect(parsed.entryType).toBe("PRODUCT_FAMILY");
+    expect(parsed.availabilityStatus).toBe("ON_REQUEST");
+    expect(parsed.manufacturerUrl).toBe("https://manufacturer.example/phone-pro");
+    expect(parsed.releaseDate).toBeInstanceOf(Date);
+  });
+
+  it("rejects invalid manufacturer source URLs", () => {
+    expect(() =>
+      createOpsProductSchema.parse({
+        name: "Phone",
+        manufacturerUrl: "javascript:alert(1)",
+      }),
+    ).toThrow();
+  });
+
 });

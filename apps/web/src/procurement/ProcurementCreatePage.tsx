@@ -150,6 +150,7 @@ export function ProcurementCreatePage() {
   }, [load]);
 
   const productSlug = params.get("product");
+  const productVariant = params.get("variant")?.trim() || null;
   const initial = useMemo(() => {
     if (duplicateFrom) return undefined;
     const fromDraft = loadWizardDraft<Partial<RequestWizardDraft>>() ?? undefined;
@@ -179,11 +180,18 @@ export function ProcurementCreatePage() {
             : [
                 {
                   id: `prod-${catalogHit.id}`,
-                  description: catalogHit.name,
+                  description: productVariant
+                    ? `${catalogHit.name} — ${productVariant}`
+                    : catalogHit.name,
                   quantity: 1,
                   unit: catalogHit.unit ?? "pcs",
                   category: catalogHit.category,
-                  specifications: catalogHit.description ?? "",
+                  specifications: [
+                    productVariant ? `Selected variant: ${productVariant}` : "",
+                    catalogHit.description ?? "",
+                  ]
+                    .filter(Boolean)
+                    .join("\n"),
                 },
               ],
       };
@@ -209,7 +217,14 @@ export function ProcurementCreatePage() {
               },
             ],
     };
-  }, [catalogProducts, duplicateFrom, ieCommodity, productSlug, recent]);
+  }, [
+    catalogProducts,
+    duplicateFrom,
+    ieCommodity,
+    productSlug,
+    productVariant,
+    recent,
+  ]);
 
   const persist = async (payload: RequestWizardSubmitPayload) => {
     setError(null);

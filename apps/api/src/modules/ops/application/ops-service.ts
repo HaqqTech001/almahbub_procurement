@@ -192,6 +192,7 @@ const opsProductInclude = {
   manufacturer: true,
   images: { orderBy: { position: "asc" as const } },
   videos: { orderBy: { position: "asc" as const } },
+  variants: { orderBy: { createdAt: "asc" as const } },
 };
 
 type OpsProductRow = {
@@ -201,6 +202,17 @@ type OpsProductRow = {
   status: string;
   categoryId: string | null;
   description: string | null;
+  catalogueId?: string | null;
+  summary?: string | null;
+  entryType?: string;
+  availabilityStatus?: string;
+  manufacturerUrl?: string | null;
+  verificationStatus?: string | null;
+  mediaStatus?: string | null;
+  heroImagePolicy?: string | null;
+  sourceManifestVersion?: string | null;
+  releaseDate?: Date | null;
+  catalogueNotes?: string | null;
   brandId: string | null;
   manufacturerId: string | null;
   createdAt: Date;
@@ -221,6 +233,12 @@ type OpsProductRow = {
     caption: string | null;
     position: number;
   }[];
+  variants?: {
+    id: string;
+    sku: string | null;
+    name: string;
+    specifications: unknown;
+  }[];
 };
 
 function mapOpsProduct(row: OpsProductRow) {
@@ -232,6 +250,17 @@ function mapOpsProduct(row: OpsProductRow) {
     categoryId: row.categoryId,
     categoryName: row.category?.name ?? null,
     description: row.description,
+    catalogueId: row.catalogueId ?? null,
+    summary: row.summary ?? null,
+    entryType: row.entryType ?? "STANDARD_PRODUCT",
+    availabilityStatus: row.availabilityStatus ?? "ON_REQUEST",
+    manufacturerUrl: row.manufacturerUrl ?? null,
+    verificationStatus: row.verificationStatus ?? null,
+    mediaStatus: row.mediaStatus ?? null,
+    heroImagePolicy: row.heroImagePolicy ?? null,
+    sourceManifestVersion: row.sourceManifestVersion ?? null,
+    releaseDate: row.releaseDate?.toISOString().slice(0, 10) ?? null,
+    catalogueNotes: row.catalogueNotes ?? null,
     brandId: row.brandId,
     brandName: row.brand?.name ?? null,
     manufacturerId: row.manufacturerId,
@@ -249,6 +278,12 @@ function mapOpsProduct(row: OpsProductRow) {
       title: video.title,
       caption: video.caption,
       position: video.position,
+    })),
+    variants: (row.variants ?? []).map((variant) => ({
+      id: variant.id,
+      sku: variant.sku,
+      name: variant.name,
+      specifications: variant.specifications,
     })),
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
@@ -1224,6 +1259,12 @@ export class OpsService {
         status,
         categoryId: input.categoryId ?? null,
         description: input.description ?? null,
+        summary: input.summary ?? null,
+        entryType: input.entryType ?? "STANDARD_PRODUCT",
+        availabilityStatus: input.availabilityStatus ?? "ON_REQUEST",
+        manufacturerUrl: input.manufacturerUrl ?? null,
+        releaseDate: input.releaseDate ?? null,
+        catalogueNotes: input.catalogueNotes ?? null,
         brandId: input.brandId ?? null,
         manufacturerId: input.manufacturerId ?? null,
       },
@@ -1266,6 +1307,20 @@ export class OpsService {
           : {}),
         ...(input.description !== undefined
           ? { description: input.description }
+          : {}),
+        ...(input.summary !== undefined ? { summary: input.summary } : {}),
+        ...(input.entryType !== undefined ? { entryType: input.entryType } : {}),
+        ...(input.availabilityStatus !== undefined
+          ? { availabilityStatus: input.availabilityStatus }
+          : {}),
+        ...(input.manufacturerUrl !== undefined
+          ? { manufacturerUrl: input.manufacturerUrl }
+          : {}),
+        ...(input.releaseDate !== undefined
+          ? { releaseDate: input.releaseDate }
+          : {}),
+        ...(input.catalogueNotes !== undefined
+          ? { catalogueNotes: input.catalogueNotes }
           : {}),
         ...(input.brandId !== undefined ? { brandId: input.brandId } : {}),
         ...(input.manufacturerId !== undefined

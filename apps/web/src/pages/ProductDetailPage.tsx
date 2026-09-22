@@ -11,8 +11,29 @@ import {
 import { applyJsonLd, applyPageSeo } from "../lib/seo.js";
 import { SITE } from "../content/site.js";
 import { resolveMediaUrl } from "../lib/media-url.js";
-import { productRequestHref, formatSpecificationLabel, sourcingStatusLabel } from "../lib/catalog-display.js";
+import {
+  availabilityLabel,
+  entryTypeLabel,
+  productRequestHref,
+  formatSpecificationLabel,
+  sourcingStatusLabel,
+} from "../lib/catalog-display.js";
 import { useOptionalAuth } from "../auth/session/AuthProvider.js";
+
+function specificationValue(value: unknown): string {
+  if (Array.isArray(value)) return value.map((item) => String(item)).join(", ");
+  if (value && typeof value === "object") return JSON.stringify(value);
+  return String(value ?? "");
+}
+
+function visibleSpecifications(value: Record<string, unknown> | undefined) {
+  return Object.entries(value ?? {}).filter(
+    ([, item]) =>
+      item !== null &&
+      item !== undefined &&
+      specificationValue(item).trim().length > 0,
+  );
+}
 
 function ProductDetailSkeleton() {
   return (
@@ -45,6 +66,7 @@ export function ProductDetailPage() {
   const [imageFailed, setImageFailed] = useState(false);
   const [failedImages, setFailedImages] = useState<string[]>([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [selectedVariantName, setSelectedVariantName] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -55,9 +77,15 @@ export function ProductDetailPage() {
     setActiveImage(0);
     setFailedImages([]);
     setImageFailed(false);
+    setSelectedVariantName("");
     void getPublicProduct(slug)
       .then((row) => {
-        if (!cancelled) setProduct(row);
+        if (!cancelled) {
+          setProduct(row);
+          if (row.entryType === "PRODUCT_FAMILY") {
+            setSelectedVariantName(row.variants[0]?.name ?? "");
+          }
+        }
       })
       .catch((err: unknown) => {
         if (cancelled) return;
@@ -161,12 +189,21 @@ export function ProductDetailPage() {
   const current = selected && !failedImages.includes(selected.url) ? selected : gallery.find(image => !failedImages.includes(image.url));
   const imageSrc = resolveMediaUrl(current?.url);
   const showImage = Boolean(imageSrc) && !imageFailed;
-  const requestHref = productRequestHref(product.slug, { workspace, authenticated });
+  const requestHref = productRequestHref(product.slug, {
+    workspace,
+    authenticated,
+    variant:
+      product.entryType === "PRODUCT_FAMILY" ? selectedVariantName : null,
+  });
   const specificationVariant =
     (product.variants ?? []).find((variant) => variant.name === "Standard sourcing") ??
     product.variants?.[0];
   const specificationFields = specificationVariant?.typicalSpecificationFields ?? [];
   const sourcingLabel = sourcingStatusLabel(specificationVariant?.sourcingStatus);
+  const keySpecifications = visibleSpecifications(product.keySpecifications);
+  const productTypeLabel = entryTypeLabel(product.entryType);
+  const familyVariants =
+    product.entryType === "PRODUCT_FAMILY" ? product.variants ?? [] : [];
   const lightboxItems: MediaLightboxItem[] = gallery.flatMap((image) => {
     if (failedImages.includes(image.url)) return [];
     const src = resolveMediaUrl(image.url);
@@ -205,8 +242,10 @@ export function ProductDetailPage() {
           ) : null}
         </p>
         <h1>{product.name}</h1>
-        {product.description ? <p className="hamd-prose">{product.description}</p> : null}
-
+        {product.summary ? <p className="hamd-prose">{product.summary}</p> : null}
+        {product.description && product.description !== product.summary ? (
+          <p className="hamd-prose">{product.description}</p>
+        ) : null}
       </header>
       <div className="hamd-product-detail">
           <div
@@ -286,7 +325,76 @@ export function ProductDetailPage() {
                   <dd>{product.manufacturerName}</dd>
                 </div>
               ) : null}
+              {productTypeLabel ? (
+                <div>
+                  <dt>Type</dt>
+                  <dd>{productTypeLabel}</dd>
+                </div>
+              ) : null}
+              <div>
+                <dt>Availability</dt>
+                <dd>{availabilityLabel(product.availabilityStatus)}</dd>
+              </div>
+              {product.releaseDate ? (
+                <div>
+                  <dt>Release date</dt>
+                  <dd>{product.releaseDate}</dd>
+                </div>
+              ) : null}
             </dl>
+
+            {keySpecifications.length > 0 ? (
+              <section className="hamd-product-specs" aria-labelledby="product-key-specs-heading">
+                <h2 id="product-key-specs-heading">Key specifications</h2>
+                <dl className="hamd-product-detail__meta">
+                  {keySpecifications.map(([key, value]) => (
+                    <div key={key}>
+                      <dt>{formatSpecificationLabel(key.replace(/([a-z])([A-Z])/g, "$1 $2"))}</dt>
+                      <dd>{specificationValue(value)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            ) : null}
+
+            {familyVariants.length > 0 ? (
+              <section className="hamd-product-specs" aria-labelledby="product-variants-heading">
+                <h2 id="product-variants-heading">Available variants</h2>
+                <label htmlFor="product-family-variant">Choose a variant for your request</label>
+                <select
+                  id="product-family-variant"
+                  value={selectedVariantName}
+                  onChange={(event) => setSelectedVariantName(event.target.value)}
+                >
+                  {familyVariants.map((variant) => (
+                    <option key={variant.name} value={variant.name}>
+                      {variant.name}
+                    </option>
+                  ))}
+                </select>
+                <ul>
+                  {familyVariants.map((variant) => {
+                    const details = visibleSpecifications(variant.specifications);
+                    return (
+                      <li key={variant.name}>
+                        <strong>{variant.name}</strong>
+                        {details.length > 0 ? (
+                          <span>
+                            {" — "}
+                            {details
+                              .map(
+                                ([key, value]) =>
+                                  `${formatSpecificationLabel(key)}: ${specificationValue(value)}`,
+                              )
+                              .join(" · ")}
+                          </span>
+                        ) : null}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            ) : null}
 
             {specificationVariant ? (
               <section className="hamd-product-specs" aria-labelledby="product-specs-heading">
@@ -310,7 +418,11 @@ export function ProductDetailPage() {
             ) : null}
             <div className="hamd-product-detail__actions">
               <ButtonLink href={requestHref} variant="primary">
-                Request This Product
+                {product.entryType === "PROCUREMENT_SERVICE"
+                  ? "Submit Sourcing Request"
+                  : product.entryType === "PRODUCT_FAMILY"
+                    ? "Request This Series"
+                    : "Request This Product"}
               </ButtonLink>
             </div>
           </div>

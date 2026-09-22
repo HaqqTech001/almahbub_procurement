@@ -8,6 +8,7 @@ import { parseEnvironment } from "../../../config/env.js";
 import type { AuthContext } from "../../../shared/auth/auth-context.js";
 import {
   WeddingCampaignService,
+  isPublicWeddingWaitingTrackUsable,
   markWeddingCampaignUnhydratedForTests,
   markWeddingWaitingTracksUnhydratedForTests,
   resetWeddingCampaignForTests,
@@ -386,4 +387,41 @@ it("does not infer promotion or music enablement from campaign or enabled track 
  const service=new WeddingCampaignService(parseEnvironment({NODE_ENV:"test"}),database as never);
  await service.ensureCampaignHydrated(); await service.listWaitingTracks(false);
  expect(service.getCampaign()).toMatchObject({modalEnabled:false,waitingMusicEnabled:false,waitingMusicLoop:false});
+});
+
+
+describe("public wedding waiting-audio usability", () => {
+  it("allows relative local media in test/development", () => {
+    expect(
+      isPublicWeddingWaitingTrackUsable(
+        { src: "/api/v1/public/catalog-media/w/a.mp3" },
+        "test",
+      ),
+    ).toBe(true);
+  });
+
+  it("suppresses stale relative local media in production", () => {
+    expect(
+      isPublicWeddingWaitingTrackUsable(
+        {
+          src: "/api/v1/public/catalog-media/9c7f5d2e-8a61-4c95-b1d7-2f8a6e3c4b90/a.mp3",
+        },
+        "production",
+      ),
+    ).toBe(false);
+  });
+
+  it("allows durable absolute object-storage media in production", () => {
+    expect(
+      isPublicWeddingWaitingTrackUsable(
+        { src: "https://cdn.example/catalog/wedding/a.mp3" },
+        "production",
+      ),
+    ).toBe(true);
+  });
+
+  it("rejects an empty source in every environment", () => {
+    expect(isPublicWeddingWaitingTrackUsable({ src: "   " }, "test")).toBe(false);
+    expect(isPublicWeddingWaitingTrackUsable({ src: "" }, "production")).toBe(false);
+  });
 });

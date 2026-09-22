@@ -113,6 +113,27 @@ function isOps(auth?: AuthContext): boolean {
   return Boolean(auth?.permissionKeys.has("ops:access"));
 }
 
+export function isPublicWeddingWaitingTrackUsable(
+  row: Pick<WeddingWaitingTrack, "src">,
+  nodeEnv: string,
+): boolean {
+  const src = row.src.trim();
+  if (!src) return false;
+
+  // Local catalog-media URLs are valid in development/test, where the local
+  // media store is supported. Production forbids the local media driver, so
+  // persisted relative URLs point at ephemeral/stale local files and must not
+  // be exposed to public listeners.
+  if (nodeEnv !== "production") return true;
+
+  try {
+    const url = new URL(src);
+    return url.protocol === "https:" || url.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
 function weddingHostIdentity(userId: string, sessionId: string): string {
   return `host:${userId}:${sessionId}`;
 }
@@ -893,6 +914,10 @@ export class WeddingCampaignService {
         message: "You do not have permission to manage the wedding campaign.",
       });
     }
+  }
+
+  private isPublicWaitingTrackUsable(row: WeddingWaitingTrack): boolean {
+    return isPublicWeddingWaitingTrackUsable(row, this.environment.NODE_ENV);
   }
 
   private presentWaitingTrack(row: WeddingWaitingTrack, includeStorage: boolean): WeddingWaitingTrack {

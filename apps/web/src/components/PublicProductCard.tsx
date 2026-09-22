@@ -2,7 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { OptimizedImage } from "@hamd/ui/primitives";
 
-import type { CatalogCardModel } from "../lib/catalog-display.js";
+import {
+  availabilityLabel,
+  entryTypeLabel,
+  type CatalogCardModel,
+} from "../lib/catalog-display.js";
 
 export function PublicProductCard({
   product,
@@ -15,9 +19,8 @@ export function PublicProductCard({
   const imageSrc = (product.imageSources ?? [product.imageSrc]).find(src => src && !failedSources.includes(src));
   const showImage = Boolean(imageSrc);
 
-  // Public grids must not turn unavailable media into giant placeholder cards.
-  // Ops and direct product management retain their own recoverable fallback UI.
-  if (!showImage) return null;
+  // Verified manifest-owned products may intentionally render without photography
+  // while exact/licensed media is still pending. Never invent or substitute a photo.
 
   return (
     <article className="hamd-disc-card hamd-disc-card--grid">
@@ -46,6 +49,12 @@ export function PublicProductCard({
         </span>
         <span className="hamd-disc-card__body">
           <h3 className="hamd-disc-card__title">{product.name}</h3>
+          {entryTypeLabel(product.entryType) ? (
+            <span className="hamd-disc-card__meta">{entryTypeLabel(product.entryType)}</span>
+          ) : null}
+          <span className="hamd-disc-card__meta">
+            {availabilityLabel(product.availabilityStatus)}
+          </span>
           <span className="hamd-sr-only">{product.imageAlt}</span>
         </span>
       </Link>

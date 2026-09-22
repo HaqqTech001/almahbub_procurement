@@ -284,6 +284,54 @@ describe("catalog service", () => {
     expect(error).toMatchObject({ statusCode: 404, code: "NOT_FOUND" });
   });
 
+  it("releases only verified v2 master-manifest products without photography", async () => {
+    const masterProduct = {
+      ...publishedPhone,
+      id: "master-product",
+      catalogueId: "ALM-001",
+      sourceManifestVersion: "2.0-starter",
+      verificationStatus: "VERIFIED_2026-09-20",
+      images: [],
+    };
+    const { database } = createDatabase({ products: [masterProduct] });
+
+    const result = await new CatalogService(
+      database,
+      async () => "invalid",
+      [],
+      fixtureHash,
+      true,
+    ).listProducts(publicProductListQuerySchema.parse({}));
+
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0]).toMatchObject({
+      slug: masterProduct.slug,
+      images: [],
+    });
+  });
+
+  it("does not extend fallback release to arbitrary catalogue-tagged products", async () => {
+    const nonMaster = {
+      ...publishedPhone,
+      id: "other-catalogue-product",
+      catalogueId: "OTHER-001",
+      sourceManifestVersion: "2.0-starter",
+      verificationStatus: "VERIFIED_2026-09-20",
+      images: [],
+    };
+    const { database } = createDatabase({ products: [nonMaster] });
+
+    const result = await new CatalogService(
+      database,
+      async () => "invalid",
+      [],
+      fixtureHash,
+      true,
+    ).listProducts(publicProductListQuerySchema.parse({}));
+
+    expect(result.data).toEqual([]);
+  });
+
   it("returns an empty catalogue without inventing rows", async () => {
     const { database } = createDatabase({ products: [], productCount: 0 });
     const result = await new CatalogService(
@@ -295,6 +343,43 @@ describe("catalog service", () => {
     expect(result.data).toEqual([]);
     expect(result.page.total).toBe(0);
     expect(result.page.hasMore).toBe(false);
+  });
+
+  it("maps master catalogue family metadata without exposing editorial fields", () => {
+    const mapped = toPublicProduct({
+      ...publishedPhone,
+      summary: "Apple's current Pro iPhone family.",
+      entryType: "PRODUCT_FAMILY",
+      availabilityStatus: "ON_REQUEST",
+      keySpecifications: { chip: "A20 Pro" },
+      releaseDate: new Date("2026-09-18T00:00:00.000Z"),
+      variants: [
+        {
+          name: "iPhone 18 Pro",
+          specifications: { storage: ["256GB", "512GB"] },
+        },
+        {
+          name: "iPhone 18 Pro Max",
+          specifications: { storage: ["256GB", "512GB"] },
+        },
+      ],
+    });
+
+    expect(mapped).toMatchObject({
+      summary: "Apple's current Pro iPhone family.",
+      entryType: "PRODUCT_FAMILY",
+      availabilityStatus: "ON_REQUEST",
+      keySpecifications: { chip: "A20 Pro" },
+      releaseDate: "2026-09-18",
+    });
+    expect(mapped.variants.map((variant) => variant.name)).toEqual([
+      "iPhone 18 Pro",
+      "iPhone 18 Pro Max",
+    ]);
+    expect(mapped).not.toHaveProperty("manufacturerUrl");
+    expect(mapped).not.toHaveProperty("verificationStatus");
+    expect(mapped).not.toHaveProperty("mediaStatus");
+    expect(mapped).not.toHaveProperty("sourceManifestVersion");
   });
 
   it("returns an empty images array when a product has no photography", () => {
@@ -349,7 +434,7 @@ describe("catalog service", () => {
     expect(mapped.variants).toEqual([]);
   });
 
-  it("exposes structured variant specifications without raw JSON", () => {
+  it("exposes normalized fields plus verified variant specifications", () => {
     const mapped = toPublicProduct({
       ...publishedPhone,
       variants: [
@@ -371,6 +456,11 @@ describe("catalog service", () => {
       unit: "unit",
       typicalSpecificationFields: ["screen size", "storage"],
       sourcingStatus: "available_for_procurement",
+      specifications: {
+        unit: "unit",
+        typicalSpecificationFields: ["screen size", "storage"],
+        sourcingStatus: "available_for_procurement",
+      },
     });
   });
 
