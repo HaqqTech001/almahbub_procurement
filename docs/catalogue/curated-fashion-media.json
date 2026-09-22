@@ -89,12 +89,16 @@
       "catalogueId": "ALM-078",
       "slug": "ray-ban-meta-gen-2-wayfarer",
       "productName": "Ray-Ban Meta (Gen 2) Wayfarer",
-      "status": "needs_exact_licensed_media",
-      "source": "manufacturer_reference",
-      "sourcePageUrl": "",
-      "imageUrl": null,
-      "altText": "Ray-Ban Meta Gen 2 Wayfarer.",
-      "identityEvidence": "Reusable exact Gen 2 Wayfarer product media not yet verified."
+      "status": "approved_for_import",
+      "source": "wikimedia_commons",
+      "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Rayban_x_Meta_glasses_Generazione_2_con_lenti_Polaroid,_wayfarer.jpg",
+      "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Rayban_x_Meta_glasses_Generazione_2_con_lenti_Polaroid%2C_wayfarer.jpg/1280px-Rayban_x_Meta_glasses_Generazione_2_con_lenti_Polaroid%2C_wayfarer.jpg",
+      "altText": "Ray-Ban Meta Gen 2 Wayfarer smart glasses with Polaroid lenses.",
+      "identityEvidence": "Exact Ray-Ban Meta generation 2 Wayfarer photograph; Commons description identifies the model as second-generation Wayfarer.",
+      "credit": "ItzANormalFioko",
+      "license": "CC BY-SA 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "changes": "No editorial changes. Wikimedia 1280px derivative used for catalogue delivery."
     },
     {
       "catalogueId": "ALM-079",
