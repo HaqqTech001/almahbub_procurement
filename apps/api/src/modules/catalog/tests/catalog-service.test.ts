@@ -284,6 +284,54 @@ describe("catalog service", () => {
     expect(error).toMatchObject({ statusCode: 404, code: "NOT_FOUND" });
   });
 
+  it("releases only verified v2 master-manifest products without photography", async () => {
+    const masterProduct = {
+      ...publishedPhone,
+      id: "master-product",
+      catalogueId: "ALM-001",
+      sourceManifestVersion: "2.0-starter",
+      verificationStatus: "VERIFIED_2026-09-20",
+      images: [],
+    };
+    const { database } = createDatabase({ products: [masterProduct] });
+
+    const result = await new CatalogService(
+      database,
+      async () => "invalid",
+      [],
+      fixtureHash,
+      true,
+    ).listProducts(publicProductListQuerySchema.parse({}));
+
+    expect(result.data).toHaveLength(1);
+    expect(result.data[0]).toMatchObject({
+      slug: masterProduct.slug,
+      images: [],
+    });
+  });
+
+  it("does not extend fallback release to arbitrary catalogue-tagged products", async () => {
+    const nonMaster = {
+      ...publishedPhone,
+      id: "other-catalogue-product",
+      catalogueId: "OTHER-001",
+      sourceManifestVersion: "2.0-starter",
+      verificationStatus: "VERIFIED_2026-09-20",
+      images: [],
+    };
+    const { database } = createDatabase({ products: [nonMaster] });
+
+    const result = await new CatalogService(
+      database,
+      async () => "invalid",
+      [],
+      fixtureHash,
+      true,
+    ).listProducts(publicProductListQuerySchema.parse({}));
+
+    expect(result.data).toEqual([]);
+  });
+
   it("returns an empty catalogue without inventing rows", async () => {
     const { database } = createDatabase({ products: [], productCount: 0 });
     const result = await new CatalogService(
