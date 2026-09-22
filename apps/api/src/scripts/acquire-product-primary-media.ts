@@ -20,6 +20,7 @@ import { createDatabaseClient } from "@hamd/database";
 import { parseEnvironment } from "../config/env.js";
 import { classifyProductPrimaryMatch } from "../modules/catalog/application/product-primary-media-match.js";
 import { isBlockedTestBedProduct } from "../modules/catalog/application/catalog-media-importer.js";
+import { isDisallowedFashionCatalogueProduct } from "../modules/catalog/application/catalogue-merchandising-policy.js";
 import {
   sniffCatalogMediaMime,
   validateCatalogMediaUpload,
@@ -471,7 +472,20 @@ async function main(): Promise<void> {
   let duplicateRejected = 0;
 
   try {
-    const candidates = rows.filter((row) => !row.hasPrimary && !isBlockedTestBedProduct(row.slug) && (!after || row.slug > after) && (!category || row.categorySlug === category)).slice(0, limit);
+    const candidates = rows
+      .filter(
+        (row) =>
+          !row.hasPrimary &&
+          !isBlockedTestBedProduct(row.slug) &&
+          !isDisallowedFashionCatalogueProduct({
+            categorySlug: row.categorySlug,
+            slug: row.slug,
+            name: row.name,
+          }) &&
+          (!after || row.slug > after) &&
+          (!category || row.categorySlug === category),
+      )
+      .slice(0, limit);
     const seenHashes = new Set<string>();
     let lastProcessedSlug: string | null = null;
     for (const product of candidates) {
