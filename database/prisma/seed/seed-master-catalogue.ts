@@ -234,7 +234,7 @@ async function main(): Promise<void> {
   let createCount = 0;
   let updateCount = 0;
   let variantCount = 0;
-  let manufacturerCreates = 0;
+  const missingManufacturerNames = new Set<string>();
   const legacySlugCollisions: Array<{
     catalogueId: string;
     slug: string;
@@ -257,7 +257,9 @@ async function main(): Promise<void> {
             [entry.manufacturer],
           )
         : { rows: [] as Array<{ id: string }> };
-      if (entry.manufacturer && !existingManufacturer.rows[0]) manufacturerCreates += 1;
+      if (entry.manufacturer && !existingManufacturer.rows[0]) {
+        missingManufacturerNames.add(entry.manufacturer.toLowerCase());
+      }
 
       const mId = await manufacturerId(client, entry.manufacturer, execute);
       const existing = await client.query<{ id: string; catalogue_id: string | null }>(
@@ -440,7 +442,7 @@ async function main(): Promise<void> {
         `Products to create:         ${createCount}`,
         `Products to update/adopt:   ${updateCount}`,
         `Variant rows ensured:       ${variantCount}`,
-        `Manufacturers to create:    ${manufacturerCreates}`,
+        `Manufacturers to create:    ${missingManufacturerNames.size}`,
         `Legacy slug collisions:      ${legacySlugCollisions.length}`,
         ...(legacySlugCollisions.length
           ? legacySlugCollisions.map(
