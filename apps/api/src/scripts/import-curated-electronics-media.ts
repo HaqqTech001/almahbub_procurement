@@ -42,6 +42,10 @@ type CuratedEntry = {
   imageUrl: string | null;
   altText: string;
   identityEvidence: string;
+  credit?: string;
+  license?: string;
+  licenseUrl?: string;
+  changes?: string;
 };
 
 function value(argv: string[], name: string): string | undefined {
@@ -89,6 +93,12 @@ async function main(): Promise<void> {
 
   const environment = parseEnvironment(process.env);
   if (!environment.DATABASE_URL) throw new Error("DATABASE_URL is required.");
+
+  if (execute && environment.CATALOG_MEDIA_DRIVER === "local") {
+    throw new Error(
+      "Refusing curated production media import with CATALOG_MEDIA_DRIVER=local. Configure Supabase or S3 catalogue storage first.",
+    );
+  }
 
   const database = createDatabaseClient(environment.DATABASE_URL);
   const store = createCatalogMediaStore({
@@ -208,7 +218,15 @@ async function main(): Promise<void> {
             productId: product.id,
             url: stored.publicUrl,
             altText: entry.altText,
-            caption: `Official product media source: ${entry.sourcePageUrl}`,
+            caption: [
+              entry.credit ? `Photo/render: ${entry.credit}.` : null,
+              entry.license ? `License: ${entry.license}.` : null,
+              entry.licenseUrl ? `License: ${entry.licenseUrl}` : null,
+              entry.sourcePageUrl ? `Source: ${entry.sourcePageUrl}` : null,
+              entry.changes ? entry.changes : null,
+            ]
+              .filter(Boolean)
+              .join(" "),
             storageKey: stored.filename,
             mimeType: mime,
             fileSize: bytes.length,
