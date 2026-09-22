@@ -10,6 +10,24 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "bosch-serie-6-kgn49aibt": {
+    src: "https://media3.bsh-group.com/Product_Shots/19966825_KGN49AIBT_STP_def.webp",
+    alt: "Bosch Serie 6 KGN49AIBT fridge freezer",
+    sourceUrl: "https://www.bosch-home.com/de/de/product/kuehlen-gefrieren/kuehl-gefrier-kombinationen/freistehende-kuehl-gefrier-kombinationen-gefrierteil-unten/KGN49AIBT",
+    source: "manufacturer",
+  },
+  "bosch-serie-8-hsg7584b1": {
+    src: "https://media3.bsh-group.com/Product_Shots/20123457_HSG7584B1_STP_def.webp",
+    alt: "Bosch Serie 8 HSG7584B1 steam oven",
+    sourceUrl: "https://www.bosch-home.com/de/de/product/kochen-backen/dampfbackoefen-dampfgarer/dampfbackoefen/HSG7584B1",
+    source: "manufacturer",
+  },
+  "bosch-serie-8-mums8zs00": {
+    src: "https://media3.bsh-group.com/Product_Shots/25829289_MUMS8ZS00_STP__def.webp",
+    alt: "Bosch Serie 8 MUMS8ZS00 kitchen machine",
+    sourceUrl: "https://www.bosch-home.com/de/de/product/kuechenmaschinen/mum-kuechenmaschinen/kuechenmaschinen-serie8/MUMS8ZS00",
+    source: "manufacturer",
+  },
   "benq-lu935st": {
     src: "https://image.benq.com/is/image/benqco/lu935st-front?$ResponsivePreset$",
     alt: "BenQ LU935ST laser short-throw projector",
