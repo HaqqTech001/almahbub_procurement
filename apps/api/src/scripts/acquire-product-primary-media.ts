@@ -622,6 +622,22 @@ async function main(): Promise<void> {
           });
           continue;
         }
+
+        if (product.entryType === "PRODUCT_FAMILY") {
+          needsReview += 1;
+          report.push({
+            ...baseReport,
+            coreType: product.name,
+            status: "needs_review",
+            reason:
+              "Official product-family page did not expose a usable hero image. Fail-closed: unrelated third-party fallback media is not permitted for product families.",
+            source: "manufacturer",
+            sourceUrl: product.manufacturerUrl,
+            searchQuery: "official_manufacturer_page",
+            searchQueries: ["official_manufacturer_page"],
+          });
+          continue;
+        }
       }
 
       const match =
