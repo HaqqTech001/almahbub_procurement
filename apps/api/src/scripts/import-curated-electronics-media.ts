@@ -53,20 +53,39 @@ function value(argv: string[], name: string): string | undefined {
   return item?.slice(name.length + 1);
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function download(url: string): Promise<Buffer> {
-  const response = await fetch(url, {
-    headers: {
-      "User-Agent": USER_AGENT,
-      Accept: "image/*,*/*",
-      Referer: new URL(url).origin,
-    },
-    redirect: "follow",
-    signal: AbortSignal.timeout(30000),
-  });
-  if (!response.ok) {
-    throw new Error(`Download failed (${response.status}) for ${url}`);
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "User-Agent": USER_AGENT,
+          Accept: "image/*,*/*",
+          Referer: new URL(url).origin,
+        },
+        redirect: "follow",
+        signal: AbortSignal.timeout(45000),
+      });
+      if (response.status === 429 || response.status >= 500) {
+        throw new Error(`Download failed (${response.status}) for ${url}`);
+      }
+      if (!response.ok) {
+        throw new Error(`Download failed (${response.status}) for ${url}`);
+      }
+      return Buffer.from(await response.arrayBuffer());
+    } catch (error) {
+      lastError = error;
+      if (attempt === 3) break;
+      await sleep(750 * 2 ** attempt);
+    }
   }
-  return Buffer.from(await response.arrayBuffer());
+  throw lastError instanceof Error
+    ? lastError
+    : new Error(`Download failed for ${url}`);
 }
 
 function extensionForMime(mime: string): ".jpg" | ".png" | ".webp" | ".gif" {
@@ -207,11 +226,27 @@ async function main(): Promise<void> {
           throw new Error(issues.join(", ") || "Unsupported image format.");
         }
 
-        const stored = await store.put({
-          productId: product.id,
-          originalFilename: filename,
-          bytes,
-        });
+        let stored: Awaited<ReturnType<typeof store.put>> | null = null;
+        let storeError: unknown;
+        for (let attempt = 0; attempt < 4; attempt += 1) {
+          try {
+            stored = await store.put({
+              productId: product.id,
+              originalFilename: filename,
+              bytes,
+            });
+            break;
+          } catch (error) {
+            storeError = error;
+            if (attempt === 3) break;
+            await sleep(1000 * 2 ** attempt);
+          }
+        }
+        if (!stored) {
+          throw storeError instanceof Error
+            ? storeError
+            : new Error("Catalogue media storage upload failed after retries.");
+        }
 
         await database.productImage.create({
           data: mediaWriteData({
