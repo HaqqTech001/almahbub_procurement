@@ -10,6 +10,12 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "dyson-purifier-big-quiet-formaldehyde-bp04": {
+    src: "https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/410624-01.png?$responsive$=&fmt=png-alpha",
+    alt: "Dyson Purifier Big+Quiet Formaldehyde BP04",
+    sourceUrl: "https://www.dyson.de/raumklima/luftreiniger/purifier-big-quiet-formaldehyde/nachtblau-gold-bp04",
+    source: "manufacturer",
+  },
   "bosch-serie-6-kgn49aibt": {
     src: "https://media3.bsh-group.com/Product_Shots/19966825_KGN49AIBT_STP_def.webp",
     alt: "Bosch Serie 6 KGN49AIBT fridge freezer",
