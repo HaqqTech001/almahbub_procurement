@@ -24,6 +24,7 @@ import { masterCatalogueMediaDecision } from "../modules/catalog/application/mas
 import { masterCatalogueIdentityEvidence } from "../modules/catalog/application/master-catalogue-media-identity.js";
 import { parseManufacturerMediaCandidate } from "../modules/catalog/application/manufacturer-media-candidate.js";
 import { isBlockedTestBedProduct } from "../modules/catalog/application/catalog-media-importer.js";
+import { isDisallowedFashionCatalogueProduct } from "../modules/catalog/application/catalogue-merchandising-policy.js";
 import {
   sniffCatalogMediaMime,
   validateCatalogMediaUpload,
@@ -45,7 +46,6 @@ type ManifestMediaEntry = {
   entryType: "STANDARD_PRODUCT" | "PRODUCT_FAMILY" | "PROCUREMENT_SERVICE" | "CONFIGURABLE_PRODUCT";
   manufacturer?: string | null;
   manufacturerUrl?: string | null;
-  manufacturer?: string | null;
   heroImagePolicy: string;
   searchAliases?: string[];
   variants?: Array<{ name?: string }>;
@@ -561,14 +561,21 @@ async function main(): Promise<void> {
   let duplicateRejected = 0;
 
   try {
-    const candidates = rows.filter(
-      (row) =>
-        !row.hasPrimary &&
-        !isBlockedTestBedProduct(row.slug) &&
-        (!after || row.slug > after) &&
-        (!category || row.categorySlug === category) &&
-        (!productSlug || row.slug === productSlug),
-    ).slice(0, limit);
+    const candidates = rows
+      .filter(
+        (row) =>
+          !row.hasPrimary &&
+          !isBlockedTestBedProduct(row.slug) &&
+          !isDisallowedFashionCatalogueProduct({
+            categorySlug: row.categorySlug,
+            slug: row.slug,
+            name: row.name,
+          }) &&
+          (!after || row.slug > after) &&
+          (!category || row.categorySlug === category) &&
+          (!productSlug || row.slug === productSlug),
+      )
+      .slice(0, limit);
     const seenHashes = new Set<string>();
     let lastProcessedSlug: string | null = null;
     for (const product of candidates) {
