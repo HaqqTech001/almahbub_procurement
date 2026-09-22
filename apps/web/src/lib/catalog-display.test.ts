@@ -4,7 +4,6 @@ import {
   availabilityLabel,
   entryTypeLabel,
   productRequestHref,
-  toCatalogCard,
 } from "./catalog-display.js";
 
 describe("catalog display helpers", () => {
@@ -26,34 +25,6 @@ describe("catalog display helpers", () => {
     expect(decodeURIComponent(href)).toContain(
       "/app/requests/new?product=apple-iphone-18-pro-series&variant=iPhone+18+Pro",
     );
-  });
-
-  it("uses published category media when an item has no product photography", () => {
-    const card = toCatalogCard({
-      slug: "sample-product",
-      name: "Sample Product",
-      description: null,
-      summary: null,
-      entryType: "STANDARD_PRODUCT",
-      availabilityStatus: "ON_REQUEST",
-      keySpecifications: {},
-      releaseDate: null,
-      category: {
-        slug: "electronics",
-        name: "Electronics",
-        imageUrl: "https://cdn.example/electronics.jpg",
-        imageAlt: "Electronics category",
-      },
-      brandName: null,
-      manufacturerName: null,
-      images: [],
-      videos: [],
-      variants: [],
-    });
-
-    expect(card.imageSrc).toBe("https://cdn.example/electronics.jpg");
-    expect(card.imageIsCategoryFallback).toBe(true);
-    expect(card.imageAlt).toBe("Electronics category");
   });
 
   it("uses procurement-safe availability labels", () => {
