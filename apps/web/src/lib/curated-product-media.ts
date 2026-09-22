@@ -10,6 +10,24 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "apc-smart-ups-srt3000xli": {
+    src: "https://download.se.com/files?default_image=DefaultProductImage.png&p_Doc_Ref=SPD_JPRO-A2MPQW_FL_V&p_File_Type=rendition_369_jpg",
+    alt: "APC Smart-UPS SRT3000XLI 3000VA UPS",
+    sourceUrl: "https://www.se.com/ae/en/product/SRT3000XLI/apc-smartups-srt-3000va-230v/",
+    source: "manufacturer",
+  },
+  "dji-mini-5-pro": {
+    src: "https://se-cdn.djiits.com/tpc/uploads/spu/cover/89bd715bc6795bc6f966bf4d18130e36%40small.png?format=webp",
+    alt: "DJI Mini 5 Pro drone",
+    sourceUrl: "https://store.dji.com/de/product/dji-mini-5-pro-140w-gan-charging-combo?from=site-nav&set_region=DE&vid=242571",
+    source: "manufacturer",
+  },
+  "epson-workforce-enterprise-am-c550": {
+    src: "https://mediaserver.goepson.com/adaptivemedia/rendition?assetDescr=AM-C550_hero-awards-headon_690x460%402x&clid=SAPDAM&id=ff5c23378412464091673a7d4e21bd4ac5cf3e4e&prclid=banner&prid=1200Wx1200H&vid=96d40831d5ab2c4ced0e7520427e9458fbddc350",
+    alt: "Epson WorkForce Enterprise AM-C550 multifunction printer",
+    sourceUrl: "https://epson.com/For-Work/Printers/Inkjet/WorkForce-Enterprise-AM-C550-A4-Color-Multifunction-Printer/p/C11CJ92201",
+    source: "manufacturer",
+  },
   "honeywell-ct47-mobile-computer": {
     src: "https://honeywell.scene7.com/is/image/Honeywell65/sps-pss-ct47-primary",
     alt: "Honeywell CT47 handheld mobile computer",
