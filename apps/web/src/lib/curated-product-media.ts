@@ -10,6 +10,30 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "honeywell-ct47-mobile-computer": {
+    src: "https://honeywell.scene7.com/is/image/Honeywell65/sps-pss-ct47-primary",
+    alt: "Honeywell CT47 handheld mobile computer",
+    sourceUrl: "https://automation.honeywell.com/us/en/products/productivity-solutions/mobile-computers/handheld-computers/ct47-handheld-computer",
+    source: "manufacturer",
+  },
+  "wahl-5-star-hi-viz-trimmer": {
+    src: "https://www.wahlpro.com/media/catalog/product/3/0/3023699-hi-viz_hero.jpg?quality=85&width=1920",
+    alt: "Wahl 5 Star Hi-Viz Trimmer",
+    sourceUrl: "https://www.wahlpro.com/shop/hi-viz-trimmer-3023699",
+    source: "manufacturer",
+  },
+  "wahl-5-star-vanish": {
+    src: "https://www.wahlpro.com/media/catalog/product/v/a/vanish-shaver-min.jpg?quality=85&width=1920",
+    alt: "Wahl 5 Star Vanish Shaver",
+    sourceUrl: "https://www.wahlpro.com/shop/vanish-shaver-08173-700",
+    source: "manufacturer",
+  },
+  "wahl-cordless-legend": {
+    src: "https://www.wahlpro.com/media/catalog/product/c/o/cordlesslegend-hero-3000x3000-min_1.jpg?quality=85&width=1920",
+    alt: "Wahl Cordless Legend clipper",
+    sourceUrl: "https://www.wahlpro.com/shop/cordless-legend-08594",
+    source: "manufacturer",
+  },
   "dyson-supersonic-r-professional": {
     src: "https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/522238-01.png?%24responsive%24=&fmt=png-alpha",
     alt: "Dyson Supersonic r Professional hair dryer",
