@@ -8,13 +8,15 @@
  * - downloads and validates the binary before storage
  *
  * Usage:
- *   pnpm media:import-curated-electronics
- *   pnpm media:import-curated-electronics -- --slug=apple-ipad-air-m4-series
- *   pnpm media:import-curated-electronics -- --execute
+ *   pnpm catalogue:media-import
+ *   pnpm catalogue:media-import -- --slug=apple-ipad-air-m4-series
+ *   pnpm catalogue:media-import -- --execute
+ *
+ * Legacy alias remains: pnpm media:import-curated-electronics
  */
 import "../load-env.js";
 
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -29,14 +31,35 @@ import { createCatalogMediaStore } from "../modules/catalog/infrastructure/catal
 import { mediaWriteData } from "../shared/database/database-client.js";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "../../../../");
-const CURATED_PATH = join(ROOT, "docs", "catalogue", "curated-electronics-media.json");
+const CURATED_DIR = join(ROOT, "docs", "catalogue");
 const USER_AGENT = "AlmahbubCuratedMedia/1.0";
+
+async function loadCuratedEntries(): Promise<CuratedEntry[]> {
+  const files = (await readdir(CURATED_DIR))
+    .filter((name) => /^curated-.*-media\.json$/i.test(name))
+    .sort();
+  const entries: CuratedEntry[] = [];
+  const seen = new Set<string>();
+  for (const name of files) {
+    const parsed = JSON.parse(
+      await readFile(join(CURATED_DIR, name), "utf8"),
+    ) as { entries?: CuratedEntry[] };
+    for (const entry of Array.isArray(parsed.entries) ? parsed.entries : []) {
+      if (seen.has(entry.slug)) {
+        throw new Error(`Duplicate curated media slug ${entry.slug} across manifests.`);
+      }
+      seen.add(entry.slug);
+      entries.push(entry);
+    }
+  }
+  return entries;
+}
 
 type CuratedEntry = {
   catalogueId: string;
   slug: string;
   productName: string;
-  status: "ready_for_rights_review" | "approved_for_import" | "pending_direct_asset_url" | "needs_family_licensed_media";
+  status: string;
   source: string;
   sourcePageUrl: string;
   imageUrl: string | null;
@@ -100,10 +123,7 @@ async function main(): Promise<void> {
   const execute = argv.includes("--execute");
   const slug = value(argv, "--slug");
 
-  const parsed = JSON.parse(await readFile(CURATED_PATH, "utf8")) as {
-    entries?: CuratedEntry[];
-  };
-  const allEntries = Array.isArray(parsed.entries) ? parsed.entries : [];
+  const allEntries = await loadCuratedEntries();
   const selected = allEntries.filter((entry) => !slug || entry.slug === slug);
 
   if (slug && selected.length !== 1) {
