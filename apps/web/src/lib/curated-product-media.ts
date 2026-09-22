@@ -10,6 +10,24 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "eppendorf-centrifuge-5910-ri": {
+    src: "https://www.eppendorf.com/product-media/img/global/966241/Eppendorf_Centrifugation_Centrifuge-5910-Ri_side-view-open_product.jpg?imwidth=540",
+    alt: "Eppendorf Centrifuge 5910 Ri",
+    sourceUrl: "https://www.eppendorf.com/de-de/Produkte/Zentrifugation/IVD-Produkte/Centrifuge-5910Ri-p-PF-963295",
+    source: "manufacturer",
+  },
+  "hobart-hcm450": {
+    src: "https://cdn2.webdamdb.com/1280_QPsLC82Lu9S91Qfa.png?1721775125=",
+    alt: "Hobart HCM450 vertical cutter mixer",
+    sourceUrl: "https://www.hobartcorp.com/products/food-prep/mixers/cutter-mixers",
+    source: "manufacturer",
+  },
+  "nilfisk-sc250-34c-b-eu-uk": {
+    src: "https://www.nilfisk.com/product-images-1920/SC250-masked-ps-Original-ETEEJJ.webp",
+    alt: "Nilfisk SC250 34C B scrubber dryer",
+    sourceUrl: "https://www.nilfisk.com/global/professional/products/floor-cleaning/scrubber-dryers/walk-behind-scrubber-and-dryers/small/sc250-34c-b-eu-uk%2B9087380020/",
+    source: "manufacturer",
+  },
   "gardena-smart-water-control-19033-20": {
     src: "https://media.husqvarnagroup.com/image/SS-405844.png?fit=bounds&format=webply&height=520&optimize=low&width=750",
     alt: "GARDENA smart Water Control 19033-20",
