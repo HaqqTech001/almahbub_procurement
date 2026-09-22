@@ -45,7 +45,7 @@ export function toCatalogCard(
   const primary = images[0];
   const serviceVisual = product.entryType === "PROCUREMENT_SERVICE" ? procurementServiceVisual(product.slug) : null;
   const curatedMedia = curatedProductMedia(product.slug);
-  const imageSrc = resolveMediaUrl(primary?.url) ?? serviceVisual?.src ?? curatedMedia?.src;
+  const imageSrc = serviceVisual?.src ?? curatedMedia?.src ?? resolveMediaUrl(primary?.url);
   const maker = product.brandName || product.manufacturerName;
   const hasVideo = (product.videos ?? []).some(
     (video) => video.url.trim().length > 0,
@@ -68,9 +68,9 @@ export function toCatalogCard(
     manufacturerName: product.manufacturerName,
     ...(imageSrc ? { imageSrc } : {}),
     imageSources: [
-      ...images.map(image => resolveMediaUrl(image.url)),
       serviceVisual?.src,
       curatedMedia?.src,
+      ...images.map(image => resolveMediaUrl(image.url)),
     ].filter((src): src is string => Boolean(src)),
     imageAlt:
       primary?.altText?.trim() ||
