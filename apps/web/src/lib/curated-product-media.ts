@@ -10,6 +10,24 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "apple-airpods-5": {
+    src: "https://www.apple.com/newsroom/images/2026/09/apple-introduces-airpods-5-with-best-in-class-open-ear-active-noise-cancellation/article/Apple-AirPods-5-hero-260909_big.jpg.large.jpg",
+    alt: "Apple AirPods 5 with charging case",
+    sourceUrl: "https://www.apple.com/newsroom/2026/09/apple-introduces-airpods-5-with-best-in-class-open-ear-active-noise-cancellation/",
+    source: "manufacturer",
+  },
+  "miele-guard-l1-comfort-titanium-pf": {
+    src: "https://media.miele.com/dam/1ff48f01-ca24-4948-822d-b3bb006f62f9/20000214241_HighresDigitalRGB.png",
+    alt: "Miele Guard L1 Comfort Titanium-PF vacuum cleaner",
+    sourceUrl: "https://www.miele.de/product/12559020/bodenstaubsauger-mit-beutel-guard-l1-comfort-titanium-pf",
+    source: "manufacturer",
+  },
+  "miele-wq-1200-wps-nova-edition": {
+    src: "https://media.miele.com/dam/c73fca2f-f44b-4279-a1df-b3bb008aedee/20000217091_HighresDigitalRGB.png",
+    alt: "Miele WQ 1200 WPS Nova Edition washing machine",
+    sourceUrl: "https://www.miele.de/product/12698680/w2-waschmaschine-frontlader-wq-1200-wps-nova-edition",
+    source: "manufacturer",
+  },
   "apc-smart-ups-srt3000xli": {
     src: "https://download.se.com/files?default_image=DefaultProductImage.png&p_Doc_Ref=SPD_JPRO-A2MPQW_FL_V&p_File_Type=rendition_369_jpg",
     alt: "APC Smart-UPS SRT3000XLI 3000VA UPS",
