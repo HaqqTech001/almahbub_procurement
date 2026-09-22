@@ -10,6 +10,18 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "bd-max-system": {
+    src: "https://www.bd.com/content/dam/bd-assets/bd-com/en-us/images/product-family/integrated-diagnostic-solutions/bd-max-system/max-system_C_DS_MD_0616-0021.png",
+    alt: "BD MAX molecular diagnostic system",
+    sourceUrl: "https://www.bd.com/en-sea/products-and-solutions/products/product-families/bd-max-system",
+    source: "manufacturer",
+  },
+  "hydrafacial-syndeo": {
+    src: "https://www.hydrafacial.com/cdn/shop/files/Untitled_design_17.png?v=1756408706",
+    alt: "Hydrafacial Syndeo treatment device",
+    sourceUrl: "https://www.hydrafacial.com/pages/the-device",
+    source: "manufacturer",
+  },
   "k-rcher-wd-6-p-s-v-30-6-22-t-car-and-pet": {
     src: "https://d1y4tv7o00gnfq.cloudfront.net/mam/16283880/mainproduct/8354d91d-5cca-468e-ba99-44d815a20a23/d0.jpg",
     alt: "Kärcher WD 6 P S V-30/6/22/T Car & Pet wet and dry vacuum",
