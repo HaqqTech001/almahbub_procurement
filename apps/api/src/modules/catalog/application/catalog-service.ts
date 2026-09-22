@@ -194,7 +194,11 @@ function manifestFallbackEligible(
       product.category?.status === PUBLIC_CATALOG_STATUS &&
       /^ALM-\d{3}$/.test(product.catalogueId?.trim() ?? "") &&
       product.sourceManifestVersion === "2.0-starter" &&
-      product.verificationStatus?.startsWith("VERIFIED_"),
+      Boolean(
+        product.verificationStatus?.startsWith("VERIFIED_") ||
+          product.verificationStatus === "PREVERIFIED_RECHECK_BEFORE_PRODUCTION" ||
+          product.verificationStatus === "NOT_APPLICABLE",
+      ),
   );
 }
 
