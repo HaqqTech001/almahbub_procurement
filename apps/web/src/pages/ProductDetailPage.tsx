@@ -19,6 +19,7 @@ import {
   sourcingStatusLabel,
 } from "../lib/catalog-display.js";
 import { useOptionalAuth } from "../auth/session/AuthProvider.js";
+import { procurementServiceVisual } from "../lib/procurement-service-visuals.js";
 
 function specificationValue(value: unknown): string {
   if (Array.isArray(value)) return value.map((item) => String(item)).join(", ");
@@ -187,7 +188,11 @@ export function ProductDetailPage() {
   );
   const selected = gallery[activeImage] ?? gallery[0];
   const current = selected && !failedImages.includes(selected.url) ? selected : gallery.find(image => !failedImages.includes(image.url));
-  const imageSrc = resolveMediaUrl(current?.url);
+  const serviceVisual =
+    product.entryType === "PROCUREMENT_SERVICE"
+      ? procurementServiceVisual(product.slug)
+      : null;
+  const imageSrc = resolveMediaUrl(current?.url) ?? serviceVisual?.src;
   const showImage = Boolean(imageSrc) && !imageFailed;
   const requestHref = productRequestHref(product.slug, {
     workspace,
@@ -255,7 +260,18 @@ export function ProductDetailPage() {
             aria-label={gallery.length > 1 ? "Product image gallery" : undefined}
             onKeyDown={onGalleryKeyDown}
           >
-            {showImage ? (
+            {showImage && serviceVisual && !current ? (
+              <OptimizedImage
+                key={imageSrc}
+                src={imageSrc}
+                alt={serviceVisual.alt}
+                className="hamd-product-detail__media"
+                width={960}
+                height={720}
+                priority
+                onLoadError={() => setImageFailed(true)}
+              />
+            ) : showImage ? (
               <button
                 type="button"
                 className="hamd-product-detail__zoom"

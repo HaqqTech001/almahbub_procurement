@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 420" role="img" aria-labelledby="title desc">
+  <title id="title">Supplier Verification & Product Matching</title>
+  <desc id="desc">Original Almahbub International procurement service illustration.</desc>
+  <rect width="700" height="420" rx="28" fill="#F7F3E8"/>
+  <rect x="22" y="22" width="656" height="376" rx="22" fill="none" stroke="#E5D8B8" stroke-width="3"/>
+  <path d="M250 85l95 35v70c0 62-37 105-95 135-58-30-95-73-95-135v-70z" fill="none" stroke="#B58A2A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M205 190l30 30 65-75" fill="none" stroke="#B58A2A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><rect x="405" y="135" width="115" height="90" rx="12" fill="none" stroke="#B58A2A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="350" y="365" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#171717">Supplier Verification &amp; Product Matching</text>
+</svg>

@@ -1,6 +1,6 @@
 import "../load-env.js";
 
-import { readFile, readdir } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -87,6 +87,30 @@ async function main(): Promise<void> {
         .map((product) => [product.catalogueId, product]),
     );
 
+    const serviceVisualSlugs = new Set<string>();
+    await Promise.all(
+      entries
+        .filter((entry) => entry.entryType === "PROCUREMENT_SERVICE")
+        .map(async (entry) => {
+          try {
+            await access(
+              join(
+                ROOT,
+                "apps",
+                "web",
+                "public",
+                "catalogue",
+                "service-visuals",
+                `${entry.slug}.svg`,
+              ),
+            );
+            serviceVisualSlugs.add(entry.slug);
+          } catch {
+            /* missing service visual remains visible in the audit */
+          }
+        }),
+    );
+
     const rows = entries.map((entry) => {
       const product = productByCatalogueId.get(entry.catalogueId);
       const covered = Boolean(
@@ -95,7 +119,7 @@ async function main(): Promise<void> {
             (image.isPrimary || image.position === 0) &&
             image.url.trim().length > 0,
         ),
-      );
+      ) || serviceVisualSlugs.has(entry.slug);
       const curatedEntry = curatedBySlug.get(entry.slug);
 
       let status:
