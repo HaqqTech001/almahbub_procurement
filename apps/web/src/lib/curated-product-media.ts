@@ -10,6 +10,18 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "benq-lu935st": {
+    src: "https://image.benq.com/is/image/benqco/lu935st-front?$ResponsivePreset$",
+    alt: "BenQ LU935ST laser short-throw projector",
+    sourceUrl: "https://www.benq.com/en-us/business/projector/lu935st.html",
+    source: "manufacturer",
+  },
+  "brother-ads-4900w": {
+    src: "https://assets.brother.com/transform/c3b2618c-ad7e-4730-bcc3-6caaafa0be90/17531_ADS4900W-Spinner-1-846x846-jpg?io=transform%3Afit%2Cwidth%3A1000",
+    alt: "Brother ADS-4900W professional desktop scanner",
+    sourceUrl: "https://www.brother-usa.com/p/desktop-scanners/ADS4900W",
+    source: "manufacturer",
+  },
   "apple-ipad-air-m4-series": {
     src: "https://www.apple.com/newsroom/images/2026/03/apple-introduces-the-new-ipad-air-powered-by-m4/tile/Apple-iPad-Air-M4-multitasking-260302-lp.jpg.og.jpg?202608191652",
     alt: "Apple iPad Air with M4",
