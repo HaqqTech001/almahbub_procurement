@@ -10,6 +10,18 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "nike-air-max-dn8": {
+    src: "https://nmp.about.nike.com/about/prod/3a348c07-6124-4466-a330-2325bf8a3651/nike-air-max-dn8.jpg?m=eyJlZGl0cyI6eyJqcGVnIjp7InF1YWxpdHkiOjEwMH0sIndlYnAiOnsicXVhbGl0eSI6MTAwfSwiZXh0cmFjdCI6eyJsZWZ0Ijo3NSwidG9wIjowLCJ3aWR0aCI6MzAxMywiaGVpZ2h0IjoyMDExfSwicmVzaXplIjp7IndpZHRoIjozODQwfX19&s=50dd8018a75af0125f4ec63218e496e5ce551148ca1dc7d650e428d1a8e0854d",
+    alt: "Nike Air Max Dn8",
+    sourceUrl: "https://about.nike.com/en/newsroom/releases/nike-air-max-dn8-official-images",
+    source: "manufacturer",
+  },
+  "samsung-galaxy-s26-series": {
+    src: "https://img.global.news.samsung.com/de/wp-content/uploads/2026/03/Samsung-Mobile-Galaxy-Unpacked-2026-Galaxy-S26-Series-A-First-Look_main2.jpg",
+    alt: "Samsung Galaxy S26 Ultra, Galaxy S26 Plus and Galaxy S26",
+    sourceUrl: "https://news.samsung.com/de/galaxy-unpacked-2026-ein-erster-blick-auf-die-neue-samsung-galaxy-s26-serie",
+    source: "manufacturer",
+  },
   "on-cloud-6": {
     src: "https://images.ctfassets.net/hnk2vsx53n6l/2pHLf8aCLrQxrGCjJk26bG/55c4b7f6e1d9c8d9c3fc265c6ce1a173/5e1e876ff3833fccd30a05e41c41ce1acadab687.png?fm=webp",
     alt: "On Cloud 6 lifestyle shoe",
