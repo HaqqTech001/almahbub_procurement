@@ -56,13 +56,13 @@
       "status": "approved_for_import",
       "source": "wikimedia_commons",
       "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:Pixel_11_Pro_XL_(Obsidian,_back).svg",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Pixel%2011%20Pro%20XL%20%28Obsidian%2C%20back%29.svg?width=1200",
+      "imageUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Pixel_11_Pro_XL_%28Obsidian%2C_back%29.svg/1280px-Pixel_11_Pro_XL_%28Obsidian%2C_back%29.svg.png",
       "altText": "Google Pixel 11 Pro XL schematic rear view in Obsidian, used as a representative model image for the Pixel 11 Pro Series.",
       "identityEvidence": "Exact Pixel 11 Pro XL schematic; representative model from the Pixel 11 Pro Series.",
       "credit": "Mliu92",
       "license": "CC BY-SA 4.0",
       "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "changes": "No editorial changes. Wikimedia rendered derivative used for catalogue delivery."
+      "changes": "No editorial changes. Wikimedia rendered PNG derivative of the licensed SVG used for catalogue delivery."
     },
     {
       "catalogueId": "ALM-005",
@@ -123,13 +123,13 @@
       "status": "approved_for_import",
       "source": "wikimedia_commons",
       "sourcePageUrl": "https://commons.wikimedia.org/wiki/File:DJI_Mini_5_Pro_in_de_lucht.jpg",
-      "imageUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/DJI%20Mini%205%20Pro%20in%20de%20lucht.jpg?width=1600",
+      "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/d/d8/DJI_Mini_5_Pro_in_de_lucht.jpg",
       "altText": "DJI Mini 5 Pro in flight.",
       "identityEvidence": "Exact DJI Mini 5 Pro photograph; Commons category and structured data identify the model.",
       "credit": "Zefke",
       "license": "CC BY-SA 4.0",
       "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "changes": "No editorial changes. Wikimedia 1600px derivative used for catalogue delivery; browser may resize further."
+      "changes": "No editorial changes. Direct Wikimedia Commons original used for reliable catalogue import; browser may resize further."
     },
     {
       "catalogueId": "ALM-010",
