@@ -17,6 +17,7 @@ export type CatalogCardModel = {
   imageSrc?: string;
   imageSources?: string[];
   imageAlt: string;
+  imageIsCategoryFallback: boolean;
   hasVideo: boolean;
 };
 
@@ -41,7 +42,10 @@ export function toCatalogCard(
 ): CatalogCardModel {
   const images = orderedProductImages(product.images);
   const primary = images[0];
-  const imageSrc = resolveMediaUrl(primary?.url);
+  const productImageSrc = resolveMediaUrl(primary?.url);
+  const categoryImageSrc = resolveMediaUrl(product.category?.imageUrl ?? undefined);
+  const imageSrc = productImageSrc ?? categoryImageSrc;
+  const imageIsCategoryFallback = !productImageSrc && Boolean(categoryImageSrc);
   const maker = product.brandName || product.manufacturerName;
   const hasVideo = (product.videos ?? []).some(
     (video) => video.url.trim().length > 0,
@@ -63,10 +67,15 @@ export function toCatalogCard(
     brandName: product.brandName,
     manufacturerName: product.manufacturerName,
     ...(imageSrc ? { imageSrc } : {}),
-    imageSources: images.map(image => resolveMediaUrl(image.url)).filter((src): src is string => Boolean(src)),
+    imageSources: [
+      ...images.map(image => resolveMediaUrl(image.url)),
+      categoryImageSrc,
+    ].filter((src): src is string => Boolean(src)),
     imageAlt:
       primary?.altText?.trim() ||
+      product.category?.imageAlt?.trim() ||
       `${product.name}${maker ? ` - ${maker}` : ""}`,
+    imageIsCategoryFallback,
     hasVideo,
   };
 }
