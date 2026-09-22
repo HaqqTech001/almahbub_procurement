@@ -70,15 +70,29 @@ async function main(): Promise<void> {
       failures.push(`Expected ${EXPECTED_PRODUCTS} master products; found ${products.rows.length}.`);
     }
 
+    const manifestById = new Map(manifest.entries.map((entry) => [entry.catalogueId, entry]));
     const seen = new Set(products.rows.map((row) => row.catalogueId));
     for (const id of ids) {
       if (!seen.has(id)) failures.push(`Missing master product ${id}.`);
     }
 
     for (const row of products.rows) {
+      const entry = manifestById.get(row.catalogueId);
       if (!/^ALM-\d{3}$/.test(row.catalogueId)) failures.push(`${row.catalogueId}: invalid catalogue id.`);
+      if (!entry) {
+        failures.push(`${row.catalogueId}: missing from manifest.`);
+        continue;
+      }
       if (row.sourceManifestVersion !== EXPECTED_VERSION) failures.push(`${row.catalogueId}: unexpected source manifest version.`);
-      if (!row.verificationStatus?.startsWith("VERIFIED_")) failures.push(`${row.catalogueId}: not verified.`);
+      if (row.verificationStatus !== entry.verificationStatus) failures.push(`${row.catalogueId}: database QA status does not match manifest.`);
+
+      const releaseEligible =
+        entry.verificationStatus.startsWith("VERIFIED_") ||
+        entry.verificationStatus === "PREVERIFIED_RECHECK_BEFORE_PRODUCTION" ||
+        (entry.verificationStatus === "NOT_APPLICABLE" &&
+          entry.entryType === "PROCUREMENT_SERVICE");
+
+      if (!releaseEligible) failures.push(`${row.catalogueId}: QA status ${entry.verificationStatus} is not release-eligible.`);
       if (row.categoryStatus !== "published") failures.push(`${row.catalogueId}: parent category is not published.`);
       if (!["draft", "published"].includes(row.status)) failures.push(`${row.catalogueId}: lifecycle is ${row.status}.`);
     }
@@ -97,7 +111,11 @@ async function main(): Promise<void> {
          where catalogue_id = any($1::text[])
            and status = 'draft'
            and source_manifest_version = $2
-           and verification_status like 'VERIFIED_%'`,
+           and (
+             verification_status like 'VERIFIED_%'
+             or verification_status = 'PREVERIFIED_RECHECK_BEFORE_PRODUCTION'
+             or verification_status = 'NOT_APPLICABLE'
+           )`,
         [ids, EXPECTED_VERSION],
       );
       await client.query("COMMIT");
@@ -112,7 +130,7 @@ async function main(): Promise<void> {
       masterProducts: products.rows.length,
       draftsToPublish: draftCount,
       alreadyPublished,
-      mediaFallbackPolicy: "VERIFIED_MASTER_ONLY",
+      mediaFallbackPolicy: "MASTER_QA_RELEASE_STATES",
       databaseMutations: execute ? draftCount : 0,
       result: "PASS",
     }, null, 2));
