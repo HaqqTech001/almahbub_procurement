@@ -236,6 +236,7 @@ export function refreshRequest(accessToken?: string | null): Promise<AuthSession
     body: csrf ? { csrfToken: csrf } : {},
     csrf: true,
     accessToken: accessToken ?? null,
+    signal: AbortSignal.timeout(8_000),
   });
 }
 
