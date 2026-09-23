@@ -1,5 +1,3 @@
-import { OWNER_INTEGRATED_EXPORT_LOGO } from "./owner-integrated-export-logo.js";
-
 /**
  * Almahbub Group information architecture.
  * Two separately registered businesses. No invented legal claims.
@@ -33,7 +31,7 @@ export const INTEGRATED_EXPORT_BRAND = {
   /** Compact fallback for text-only UI where the full logo cannot fit. */
   provisionalMark: "IE",
   /** Owner-approved official Integrated Export logo supplied for the V2 launch. */
-  logoSrc: OWNER_INTEGRATED_EXPORT_LOGO,
+  logoSrc: "/media/brands/almahbub-integrated-export.jpg",
   logoAlt: "Almahbub Integrated Export Ltd. logo",
   endorsement: "Part of Almahbub Group",
   /**
