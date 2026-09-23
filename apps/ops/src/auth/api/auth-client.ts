@@ -75,6 +75,35 @@ export type InvitationPreview = {
 
 type Envelope<T> = { data: T; error?: { code?: string; message?: string } };
 
+function isAuthSessionPayload(value: unknown): value is AuthSessionPayload {
+  if (!value || typeof value !== "object") return false;
+  const row = value as Record<string, unknown>;
+  const user = row.user;
+  return (
+    typeof row.accessToken === "string" &&
+    row.accessToken.trim().length > 0 &&
+    typeof row.expiresIn === "number" &&
+    Number.isFinite(row.expiresIn) &&
+    row.expiresIn > 0 &&
+    typeof row.organizationId === "string" &&
+    row.organizationId.trim().length > 0 &&
+    Boolean(user && typeof user === "object" && typeof (user as Record<string, unknown>).id === "string")
+  );
+}
+
+function assertAuthSessionPayload(value: unknown): AuthSessionPayload {
+  if (!isAuthSessionPayload(value)) {
+    throw new AuthApiError({
+      message:
+        "The authentication service returned an invalid session response. Check the Ops API URL/proxy configuration.",
+      status: 502,
+      code: "INVALID_AUTH_RESPONSE",
+      details: value,
+    });
+  }
+  return value;
+}
+
 function authUrl(path: string, forceSameOrigin = false): string {
   const base = forceSameOrigin ? "" : browserApiBase();
   const normalized = path.startsWith("/") ? path : `/${path}`;
@@ -85,10 +114,23 @@ function authUrl(path: string, forceSameOrigin = false): string {
 async function parseJson(response: Response): Promise<unknown> {
   const text = await response.text();
   if (!text) return null;
+  const contentType = response.headers.get("content-type") ?? "";
+  if (!contentType.toLowerCase().includes("application/json")) {
+    throw new AuthApiError({
+      message:
+        "The authentication endpoint returned a non-JSON response. The Ops API route is not configured correctly.",
+      status: response.status || 502,
+      code: "INVALID_AUTH_RESPONSE",
+    });
+  }
   try {
     return JSON.parse(text) as unknown;
   } catch {
-    return null;
+    throw new AuthApiError({
+      message: "The authentication service returned malformed JSON.",
+      status: response.status || 502,
+      code: "INVALID_AUTH_RESPONSE",
+    });
   }
 }
 
@@ -190,7 +232,7 @@ export async function authFetch<T>(
   return body as T;
 }
 
-export function loginRequest(input: {
+export async function loginRequest(input: {
   email: string;
   password: string;
   organizationId?: string;
@@ -199,7 +241,7 @@ export function loginRequest(input: {
   deviceName?: string;
   devicePlatform?: string;
 }): Promise<AuthSessionPayload> {
-  return authFetch<AuthSessionPayload>("/login", {
+  const payload = await authFetch<unknown>("/login", {
     method: "POST",
     body: {
       email: input.email,
@@ -213,17 +255,19 @@ export function loginRequest(input: {
       ...(input.devicePlatform ? { devicePlatform: input.devicePlatform } : {}),
     },
   });
+  return assertAuthSessionPayload(payload);
 }
 
-export function refreshRequest(accessToken?: string | null): Promise<AuthSessionPayload> {
+export async function refreshRequest(accessToken?: string | null): Promise<AuthSessionPayload> {
   const csrf = getCsrfToken() ?? readCookie("hamd_csrf") ?? undefined;
-  return authFetch<AuthSessionPayload>("/refresh", {
+  const payload = await authFetch<unknown>("/refresh", {
     method: "POST",
     body: csrf ? { csrfToken: csrf } : {},
     csrf: true,
     accessToken: accessToken ?? null,
     signal: AbortSignal.timeout(8_000),
   });
+  return assertAuthSessionPayload(payload);
 }
 
 export function logoutRequest(accessToken: string): Promise<void> {
