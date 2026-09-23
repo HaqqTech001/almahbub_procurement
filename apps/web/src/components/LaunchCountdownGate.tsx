@@ -22,7 +22,8 @@ type Remaining = {
   seconds: number;
 };
 
-function remaining(now: number, target = LAUNCH_AT): Remaining {\n  const total = Math.max(0, target - now);
+function remaining(now: number, target = LAUNCH_AT): Remaining {
+  const total = Math.max(0, target - now);
   const secondsTotal = Math.floor(total / 1000);
   return {
     total,
@@ -90,7 +91,8 @@ export function LaunchCountdownGate() {
   }, [preview]);
 
   useEffect(() => {
-    if (preview == null && Date.now() >= LAUNCH_AT) return;\n    const timer = window.setInterval(() => setNow(Date.now()), preview == null ? 1000 : 250);
+    if (preview == null && Date.now() >= LAUNCH_AT) return;
+    const timer = window.setInterval(() => setNow(Date.now()), preview == null ? 1000 : 250);
     return () => window.clearInterval(timer);
   }, [preview]);
 
