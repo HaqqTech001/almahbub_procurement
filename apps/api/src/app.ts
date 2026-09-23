@@ -67,7 +67,15 @@ export function createApp(
 ): express.Express {
   const app = express();
   const logger = createLogger(environment);
-  const allowedOrigins = new Set(environment.CORS_ORIGINS);
+  const allowedOrigins = new Set([
+    ...environment.CORS_ORIGINS,
+    ...(environment.NODE_ENV === "production"
+      ? [
+          "https://almahbubinternational.com",
+          "https://www.almahbubinternational.com",
+        ]
+      : []),
+  ]);
 
   app.disable("x-powered-by");
   if (environment.TRUST_PROXY > 0) {
