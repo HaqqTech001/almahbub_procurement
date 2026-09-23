@@ -133,13 +133,27 @@ export function LaunchCountdownGate() {
     return () => window.clearTimeout(timer);
   }, [revealing, preview, revealComplete]);
 
-  if (revealComplete || isExcludedPath(location.pathname)) return null;
+  const excluded = isExcludedPath(location.pathname);
 
   const totalWindow = 48 * 60 * 60 * 1000;
   const progress = Math.max(0, Math.min(1, 1 - left.total / totalWindow));
   const finalSeconds = left.total <= 30_000;
   const critical = left.total <= 10_000;
   const reveal = revealing;
+  useEffect(() => {
+    if (!revealComplete || preview == null) return;
+    // Rehearsals remain replayable instead of disappearing permanently after reveal.
+    const timer = window.setTimeout(() => {
+      const restartedAt = Date.now();
+      setPreviewStartedAt(restartedAt);
+      setNow(restartedAt);
+      setRevealComplete(false);
+    }, 900);
+    return () => window.clearTimeout(timer);
+  }, [revealComplete, preview]);
+
+  if (excluded || (revealComplete && preview == null)) return null;
+
   const rootClass = [
     "hamd-launch",
     finalSeconds ? "hamd-launch--final" : "",
