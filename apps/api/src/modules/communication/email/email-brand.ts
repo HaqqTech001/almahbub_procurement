@@ -14,7 +14,10 @@ export type EmailBrand = {
 };
 
 export function appPublicUrl(environment: Pick<Environment, "APP_PUBLIC_URL">): string {
-  return environment.APP_PUBLIC_URL?.replace(/\/$/, "") ?? "http://localhost:5173";
+  return (
+    environment.APP_PUBLIC_URL?.replace(/\/$/, "") ??
+    "https://almahbubinternational.com"
+  );
 }
 
 export function formatFromAddress(
@@ -44,7 +47,7 @@ export function createEmailBrand(
   return {
     brandName: ALMAHBUB_BRAND_NAME,
     publicUrl,
-    logoUrl: environment.EMAIL_LOGO_URL?.trim() || `${publicUrl}/almahbub.svg`,
+    logoUrl: environment.EMAIL_LOGO_URL?.trim() || `${publicUrl}/almahbub.png`,
     logoAlt: ALMAHBUB_BRAND_NAME,
     contactEmail,
     fromAddress: formatFromAddress(environment),
