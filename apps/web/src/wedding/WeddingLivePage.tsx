@@ -600,6 +600,18 @@ export function WeddingLivePage() {
           exitHref={displayCampaign.sitePath}
           exitLabel="Back to Wedding"
         />
+        {WEDDING_REHEARSAL_ENABLED ? (
+          <aside className="hamd-wedding-rehearsal" aria-label="Wedding rehearsal controls">
+            <strong>Rehearsal only</strong>
+            <span>Uses the real guest portal UI without starting a production broadcast.</span>
+            <div className="hamd-wedding-rehearsal__actions">
+              <button type="button" className="hamd-btn hamd-btn--secondary" aria-pressed={rehearsal === "waiting"} onClick={() => setRehearsal("waiting")}>Waiting room</button>
+              <button type="button" className="hamd-btn hamd-btn--secondary" aria-pressed={rehearsal === "live"} onClick={() => setRehearsal("live")}>Guest live view</button>
+              <button type="button" className="hamd-btn hamd-btn--secondary" aria-pressed={rehearsal === "ended"} onClick={() => setRehearsal("ended")}>Post-live</button>
+              <button type="button" className="hamd-btn hamd-btn--ghost" onClick={() => setRehearsal(null)}>Real campaign</button>
+            </div>
+          </aside>
+        ) : null}
         <details className="hamd-wedding-participation-menu">
           <summary>Waiting room &amp; updates</summary>
           <WeddingParticipation onJoinInteraction={() => { if (!waitingMutedRef.current) startWaitingMusic(); }} />
