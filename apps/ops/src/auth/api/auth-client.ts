@@ -399,30 +399,27 @@ export async function authFetch<T>(
   try {
     response = await fetch(authUrl(path, primarySameOrigin), {
       ...requestInit,
-      signal: timeoutSignal(primarySameOrigin ? 1_700 : 2_400, options.signal),
+      // Render cold starts and TLS/preflight can legitimately exceed 2-3 seconds.
+      // Do not abort a healthy API request and then retry against the Ops frontend.
+      signal: timeoutSignal(primarySameOrigin ? 8_000 : 12_000, options.signal),
     });
-  } catch {
-    if (primarySameOrigin) {
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
       throw new AuthApiError({
-        message:
-          "Unable to reach the authentication service through the Ops API route.",
+        message: "The authentication service took too long to respond. Please try again.",
         status: 0,
-        code: "NETWORK_ERROR",
+        code: "REQUEST_TIMEOUT",
+        details: error,
       });
     }
-    try {
-      response = await fetch(authUrl(path, true), {
-        ...requestInit,
-        signal: timeoutSignal(1_700, options.signal),
-      });
-    } catch {
-      throw new AuthApiError({
-        message:
-          "Unable to reach the authentication service. Check that the API is online and the Ops deployment exposes /api or VITE_API_URL.",
-        status: 0,
-        code: "NETWORK_ERROR",
-      });
-    }
+    throw new AuthApiError({
+      message: primarySameOrigin
+        ? "Unable to reach the authentication service through the Ops API route."
+        : "Unable to reach the configured authentication service.",
+      status: 0,
+      code: "NETWORK_ERROR",
+      details: error,
+    });
   }
 
   if (response.status === 204) {
