@@ -1,3 +1,5 @@
+import { OWNER_INTEGRATED_EXPORT_LOGO } from "./owner-integrated-export-logo.js";
+
 /**
  * Almahbub Group information architecture.
  * Two separately registered businesses. No invented legal claims.
@@ -20,18 +22,18 @@ export const GROUP = {
 } as const;
 
 /**
- * Provisional Integrated Export visual system.
- * Replace logoSrc / accents when the owner supplies official brand assets.
- * Not an official corporate identity - complementary agro/export palette.
+ * Integrated Export visual system.
+ * Official logo supplied by the owner for the V2 launch.
+ * Colour tokens remain complementary to the approved mark.
  */
 export const INTEGRATED_EXPORT_BRAND = {
   slug: "almahbub-integrated-export",
   wordmark: "Almahbub Integrated Export Ltd.",
   wordmarkShort: "Integrated Export",
-  /** Provisional letters for compact marks - not an official logo. */
+  /** Compact fallback for text-only UI where the full logo cannot fit. */
   provisionalMark: "IE",
-  /** Official Integrated Export mark (`almahbub-product-media/integrated.jpg`). */
-  logoSrc: "/media/brands/almahbub-integrated-export.jpg",
+  /** Owner-approved official Integrated Export logo supplied for the V2 launch. */
+  logoSrc: OWNER_INTEGRATED_EXPORT_LOGO,
   logoAlt: "Almahbub Integrated Export Ltd. logo",
   endorsement: "Part of Almahbub Group",
   /**
