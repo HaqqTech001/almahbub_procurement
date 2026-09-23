@@ -7,7 +7,7 @@ import {
   type CategoryPreview,
 } from "../api/catalog-api.js";
 import { PresentationImage } from "../components/PresentationImage.js";
-import { resolveMediaUrl } from "../lib/media-url.js";
+import { toCatalogCard } from "../lib/catalog-display.js";
 import "../styles/commerce.css";
 
 export function ProcurementCategoryPage() {
@@ -19,12 +19,10 @@ export function ProcurementCategoryPage() {
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
-  const [failedImages, setFailedImages] = useState<string[]>([]);
   useEffect(() => {
     let active = true;
     setError(null);
     setResult(null);
-    setFailedImages([]);
     void getPublicCategoryPreview(slug)
       .then((data) => {
         if (active) setResult({ slug, data });
@@ -62,11 +60,9 @@ export function ProcurementCategoryPage() {
     );
   const { category, products } = result.data;
   const visible = products
-    .filter(
-      (product) =>
-        product.category?.slug === category.slug && product.images[0]?.url && !failedImages.includes(product.slug),
-    )
-    .slice(0, 16);
+    .filter((product) => product.category?.slug === category.slug)
+    .slice(0, 16)
+    .map((product) => toCatalogCard(product));
   return (
     <div className="commerce-wrap commerce-page">
       <nav aria-label="Breadcrumb">
@@ -98,18 +94,17 @@ export function ProcurementCategoryPage() {
           <ul className="commerce-grid commerce-category-products">
             {visible.map((product, index) => (
               <li key={product.slug}>
-                <Link to={`/product/${encodeURIComponent(product.slug)}`}>
-                  <img
-                    src={resolveMediaUrl(product.images[0]!.url)}
-                    alt={product.images[0]!.altText || product.name}
+                <Link to={product.href}>
+                  <PresentationImage
+                    src={product.imageSrc}
+                    fallbackSrc={product.imageSources?.find(
+                      (source) => source !== product.imageSrc,
+                    )}
+                    alt={product.imageAlt}
                     loading={index < 2 ? "eager" : "lazy"}
-                    decoding="async"
-                    width={480}
-                    height={320}
-                    onError={() => setFailedImages(current => [...current, product.slug])}
                   />
                   <h3>{product.name}</h3>
-                  <p>{category.name}</p>
+                  <p>{product.categoryName ?? category.name}</p>
                 </Link>
               </li>
             ))}
