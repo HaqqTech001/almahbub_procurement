@@ -10,6 +10,18 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "hp-engage-one-pro-g2q": {
+    src: "https://jp.ext.hp.com/content/dam/jp-ext-hp-com/jp/ja/ec/retail-solutions/engage_one_pro_g2/images/gallery_thumb1.jpg",
+    alt: "HP Engage One Pro G2 point-of-sale system",
+    sourceUrl: "https://jp.ext.hp.com/retail-solutions/engage_one_pro_g2/",
+    source: "manufacturer",
+  },
+  "siemens-iq700-sn87tx02ce": {
+    src: "https://media3.bsh-group.com/Product_Shots/3000x3000/24775630_SN87TX02CE_STP_def.jpg",
+    alt: "Siemens iQ700 SN87TX02CE integrated dishwasher",
+    sourceUrl: "https://www.siemens-home.bsh-group.com/de/de/product/geschirrspueler/einbau/vollintegrierte-geschirrspueler/vollintegrierte-geschirrspueler-60cm/SN87TX02CE",
+    source: "manufacturer",
+  },
   "ray-ban-meta-gen-2-wayfarer": {
     src: "https://images2.ray-ban.com//prod-onecp-record-files/pieyewear/e69aa702-beee-48b6-9bd6-b3a10041cd94/0RW4012__601_1M__P21__shad__al31.png?impolicy=RB_Product_clone&width=720&bgc=%23f2f2f2",
     alt: "Ray-Ban Meta Gen 2 Wayfarer smart glasses in black",
