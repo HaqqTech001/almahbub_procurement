@@ -10,6 +10,36 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "atlas-copco-ga-15-vsds": {
+    src: "https://gross-druckluft.eu/cdn/shop/files/GA15VSDsOil-injectedscrewcompressor-ForPPT.jpg?v=1751870942",
+    alt: "Atlas Copco GA 15 VSDs rotary screw air compressor",
+    sourceUrl: "https://gross-druckluft.eu/products/kompressor-typ-atlas-copco-ga-15-vsds-p-10",
+    source: "retailer",
+  },
+  "cisco-catalyst-1300-48p-4x": {
+    src: "https://www.cyberpuerta.mx/img/product/XS/CP-CISCO-C1300-48P-4X-140ce7.jpg",
+    alt: "Cisco Catalyst C1300-48P-4X managed PoE switch",
+    sourceUrl: "https://www.abasteo.mx/Redes/Switches/Switch-Cisco-Catalyst-1300-48-Puertos-Gigabit-Ethernet-10-100-1000-48-x-PoE-375W-4-Puertos-SFP-176-Gbit-s-64000-Entradas-Administrado.html",
+    source: "retailer",
+  },
+  "k-rcher-k-5-premium-smart-control-flex-home": {
+    src: "https://www.karcher-centar-mlazmatik.rs/images/products/big/3649.jpg",
+    alt: "Kärcher K 5 Premium Smart Control Flex Home pressure washer",
+    sourceUrl: "https://www.karcher-centar-mlazmatik.rs/artikal/karcher-perac-k-5-premium-smart-control-flex-home",
+    source: "retailer",
+  },
+  "lozier-gondola-island-1-4-inch-backs": {
+    src: "https://www.shelving.com/cdn/shop/files/GondolaShelving-Island_Starter_grande.jpg?v=1728049415",
+    alt: "Lozier Gondola Island double-sided retail shelving unit",
+    sourceUrl: "https://www.shelving.com/products/lozier-gondola-island-starter-unit",
+    source: "retailer",
+  },
+  "michael-kors-jet-set-travel-large-crossbody": {
+    src: "https://www.luckybag.fr/cdn/shop/files/32S6GTVC7B-149_1.jpg?v=1770813478",
+    alt: "Michael Kors Jet Set Travel Large Crossbody in Vanilla Acorn",
+    sourceUrl: "https://www.luckybag.fr/en-nl/products/michael-kors-sac-bandouliere-jet-set-travel-32s6gtvc7b-beige-vanillaacrn",
+    source: "retailer",
+  },
   "dermalux-flex-md": {
     src: "https://us.currentbody.com/cdn/shop/files/CBflex82.jpg?v=1694789799&width=800",
     alt: "Dermalux Flex MD LED light therapy device",
