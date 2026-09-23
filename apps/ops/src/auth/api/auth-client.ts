@@ -18,8 +18,8 @@ export type AuthUser = {
 export type AuthSessionPayload = {
   accessToken: string;
   expiresIn: number;
-  user: AuthUser;
-  organizationId: string;
+  user?: AuthUser;
+  organizationId?: string;
   /** Present for SPA routes where hamd_csrf cookie path is not readable. */
   csrfToken?: string;
 };
@@ -128,58 +128,112 @@ function normalizeAuthUser(value: unknown): AuthUser | null {
   };
 }
 
-function normalizeAuthSessionPayload(
+function decodeJwtPayload(token: string): Record<string, unknown> | null {
+  const parts = token.split(".");
+  if (parts.length < 2 || !parts[1]) return null;
+  try {
+    const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, "=");
+    const json = decodeURIComponent(
+      Array.from(atob(padded))
+        .map((char) => "%" + char.charCodeAt(0).toString(16).padStart(2, "0"))
+        .join(""),
+    );
+    const parsed = JSON.parse(json) as unknown;
+    return parsed && typeof parsed === "object"
+      ? (parsed as Record<string, unknown>)
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function deriveExpiresIn(token: string): number {
+  const claims = decodeJwtPayload(token);
+  const exp = numberValue(claims?.exp);
+  if (exp) {
+    const remaining = Math.floor(exp - Date.now() / 1000);
+    if (remaining > 0) return remaining;
+  }
+  return 3600;
+}
+
+function candidateObjects(
   value: unknown,
   depth = 0,
-): AuthSessionPayload | null {
-  if (!value || typeof value !== "object" || depth > 4) return null;
+  seen = new Set<object>(),
+): Record<string, unknown>[] {
+  if (!value || typeof value !== "object" || depth > 5) return [];
+  const objectValue = value as object;
+  if (seen.has(objectValue)) return [];
+  seen.add(objectValue);
 
   const row = value as Record<string, unknown>;
-  const organization =
-    row.organization && typeof row.organization === "object"
-      ? (row.organization as Record<string, unknown>)
-      : null;
-  const organisation =
-    row.organisation && typeof row.organisation === "object"
-      ? (row.organisation as Record<string, unknown>)
-      : null;
+  const result = [row];
+  for (const child of Object.values(row)) {
+    if (child && typeof child === "object") {
+      result.push(...candidateObjects(child, depth + 1, seen));
+    }
+  }
+  return result;
+}
 
-  const accessToken = stringValue(
-    row.accessToken,
-    row.access_token,
-    row.token,
-    row.jwt,
-  );
-  const expiresIn = numberValue(
-    row.expiresIn,
-    row.expires_in,
-    row.ttl,
-    row.accessTokenExpiresIn,
-  );
-  const organizationId = stringValue(
-    row.organizationId,
-    row.organisationId,
-    row.organization_id,
-    row.organisation_id,
-    organization?.id,
-    organisation?.id,
-  );
-  const user = normalizeAuthUser(row.user ?? row.account ?? row.profile);
+function normalizeAuthSessionPayload(value: unknown): AuthSessionPayload | null {
+  const rows = candidateObjects(value);
 
-  if (accessToken && expiresIn && organizationId && user) {
-    const csrfToken = stringValue(row.csrfToken, row.csrf_token) ?? undefined;
+  for (const row of rows) {
+    const accessToken = stringValue(
+      row.accessToken,
+      row.access_token,
+      row.token,
+      row.jwt,
+      row.access,
+    );
+    if (!accessToken) continue;
+
+    const claims = decodeJwtPayload(accessToken);
+    const expiresIn =
+      numberValue(
+        row.expiresIn,
+        row.expires_in,
+        row.ttl,
+        row.accessTokenExpiresIn,
+      ) ?? deriveExpiresIn(accessToken);
+
+    const organization =
+      row.organization && typeof row.organization === "object"
+        ? (row.organization as Record<string, unknown>)
+        : null;
+    const organisation =
+      row.organisation && typeof row.organisation === "object"
+        ? (row.organisation as Record<string, unknown>)
+        : null;
+
+    const organizationId =
+      stringValue(
+        row.organizationId,
+        row.organisationId,
+        row.organization_id,
+        row.organisation_id,
+        organization?.id,
+        organisation?.id,
+        claims?.org,
+        claims?.organizationId,
+        claims?.organization_id,
+      ) ?? undefined;
+
+    const user =
+      normalizeAuthUser(row.user ?? row.account ?? row.profile) ?? undefined;
+    const csrfToken =
+      stringValue(row.csrfToken, row.csrf_token) ?? undefined;
+
     return {
       accessToken,
       expiresIn,
-      user,
-      organizationId,
+      ...(user ? { user } : {}),
+      ...(organizationId ? { organizationId } : {}),
       ...(csrfToken ? { csrfToken } : {}),
     };
-  }
-
-  for (const key of ["data", "session", "result", "payload"]) {
-    const nested = normalizeAuthSessionPayload(row[key], depth + 1);
-    if (nested) return nested;
   }
 
   return null;
@@ -196,7 +250,7 @@ function assertAuthSessionPayload(value: unknown): AuthSessionPayload {
 
   throw new AuthApiError({
     message:
-      "The authentication service returned a response that does not contain a usable session.",
+      "The authentication service response did not contain an access token.",
     status: 502,
     code: "INVALID_AUTH_RESPONSE",
     details: { keys },
