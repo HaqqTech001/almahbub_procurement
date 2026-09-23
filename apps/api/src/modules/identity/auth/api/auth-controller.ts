@@ -415,6 +415,7 @@ export class AuthController {
         httpOnly: true,
         secure,
         sameSite: authCookieSameSite(this.environment),
+        partitioned: authCookiePartitioned(this.environment),
         path: "/api/v1/auth",
         maxAge: 10 * 60 * 1000,
       });
@@ -521,6 +522,15 @@ function authCookieSameSite(environment: Environment): "lax" | "none" {
   return secure ? "none" : "lax";
 }
 
+function authCookiePartitioned(environment: Environment): boolean {
+  const secure =
+    environment.COOKIE_SECURE ?? environment.NODE_ENV === "production";
+  // Chrome and other modern browsers can block ordinary third-party cookies.
+  // CHIPS/Partitioned keeps the httpOnly refresh cookie usable by the
+  // Almahbub top-level site while the API remains on onrender.com.
+  return secure;
+}
+
 function sanitizeReturnTo(value: string): string {
   if (!value.startsWith("/") || value.startsWith("//")) return "/app";
   if (value === "/") return "/app";
@@ -540,6 +550,7 @@ function setRefreshCookies(
     httpOnly: true,
     secure,
     sameSite: authCookieSameSite(environment),
+    partitioned: authCookiePartitioned(environment),
     path: "/api/v1/auth",
     maxAge,
   });
@@ -550,6 +561,7 @@ function setRefreshCookies(
     httpOnly: false,
     secure,
     sameSite: authCookieSameSite(environment),
+    partitioned: authCookiePartitioned(environment),
     path: "/",
     maxAge,
   });
@@ -566,6 +578,7 @@ function clearRefreshCookies(
     httpOnly: true,
     secure,
     sameSite: authCookieSameSite(environment),
+    partitioned: authCookiePartitioned(environment),
     path: "/api/v1/auth",
   };
   response.clearCookie(refreshCookieName, refreshOptions);
