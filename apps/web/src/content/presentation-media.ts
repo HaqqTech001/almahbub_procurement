@@ -32,3 +32,8 @@ export function presentationSource(src: string | null | undefined, fallback?: st
   // Unmapped runtime media continues to respect administrator-selected sources.
   return fallback || resolveMediaUrl(src) || undefined;
 }
+
+export function iePresentationGalleryForSlug(slug: string): string[] {
+  const prefix = `/media/ie/commodities/${slug}/`;
+  return IE_PRESENTATION_GALLERY.filter((path) => path.startsWith(prefix));
+}
