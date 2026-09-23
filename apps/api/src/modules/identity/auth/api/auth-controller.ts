@@ -53,9 +53,11 @@ export class AuthController {
         result.refreshToken,
         this.environment,
       );
-      response.status(200).json({
-        data: { ...withoutRefreshToken(result), csrfToken },
-      });
+      sendAuthSessionResponse(
+        response,
+        { ...withoutRefreshToken(result), csrfToken },
+        200,
+      );
     } catch (error) {
       next(error);
     }
@@ -80,9 +82,11 @@ export class AuthController {
         result.refreshToken,
         this.environment,
       );
-      response.json({
-        data: { ...withoutRefreshToken(result), csrfToken },
-      });
+      sendAuthSessionResponse(
+        response,
+        { ...withoutRefreshToken(result), csrfToken },
+        200,
+      );
     } catch (error) {
       const csrfFailed =
         error instanceof AppError && error.code === "CSRF_VALIDATION_FAILED";
@@ -200,9 +204,11 @@ export class AuthController {
         result.refreshToken,
         this.environment,
       );
-      response.status(201).json({
-        data: { ...withoutRefreshToken(result), csrfToken },
-      });
+      sendAuthSessionResponse(
+        response,
+        { ...withoutRefreshToken(result), csrfToken },
+        201,
+      );
     } catch (error) {
       next(error);
     }
@@ -386,9 +392,11 @@ export class AuthController {
         result.refreshToken,
         this.environment,
       );
-      response.json({
-        data: { ...withoutRefreshToken(result), csrfToken },
-      });
+      sendAuthSessionResponse(
+        response,
+        { ...withoutRefreshToken(result), csrfToken },
+        200,
+      );
     } catch (error) {
       next(error);
     }
@@ -643,6 +651,27 @@ function verifyCsrf(
       message: "A valid CSRF token is required.",
     });
   }
+}
+
+function sendAuthSessionResponse(
+  response: Response,
+  data: Record<string, unknown>,
+  statusCode: number,
+): void {
+  // Emit the platform envelope explicitly so auth responses cannot be
+  // accidentally transformed into { data: null } by generic middleware.
+  response.status(statusCode).json({
+    success: true,
+    message: "Authentication completed successfully.",
+    data,
+    meta: {},
+    errors: [],
+    requestId:
+      typeof response.locals.requestId === "string"
+        ? response.locals.requestId
+        : undefined,
+    timestamp: new Date().toISOString(),
+  });
 }
 
 function invalidRefresh(): AppError {
