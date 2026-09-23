@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
+import "../styles/launch-countdown.css";
 
 const LAUNCH_AT = new Date("2026-09-24T21:00:00+01:00").getTime();
 
