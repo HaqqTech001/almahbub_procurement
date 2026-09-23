@@ -8,6 +8,7 @@ import type { IeCommodity } from "../commodities/index.js";
 import { IeCommodityImage } from "../IeCommodityImage.js";
 import { IeCommodityMediaPlaceholder } from "../IeCommodityMediaPlaceholder.js";
 import { IE_PATHS } from "../ie-paths.js";
+import { iePresentationGalleryForSlug } from "../../content/presentation-media.js";
 
 type IeCommodityDetailViewProps = {
   commodity: IeCommodity;
@@ -19,6 +20,11 @@ type IeCommodityDetailViewProps = {
  */
 export function IeCommodityDetailView({ commodity }: IeCommodityDetailViewProps) {
   const quoteHref = useIeQuoteHref(commodity.slug);
+  const canonicalGallery = iePresentationGalleryForSlug(commodity.slug);
+  const gallery = canonicalGallery.map((src, index) => ({
+    src,
+    alt: `${commodity.name} gallery image ${index + 1}`,
+  }));
 
   return (
     <div className="hamd-aie-commodity-detail__layout">
@@ -147,7 +153,7 @@ export function IeCommodityDetailView({ commodity }: IeCommodityDetailViewProps)
         </section>
       ) : null}
 
-      {commodity.gallery && commodity.gallery.length > 0 ? (
+      {gallery.length > 0 ? (
         <section
           className="hamd-aie-commodity-detail__section"
           aria-labelledby="aie-commodity-gallery"
@@ -156,11 +162,15 @@ export function IeCommodityDetailView({ commodity }: IeCommodityDetailViewProps)
             Gallery
           </h2>
           <ul className="hamd-aie-commodity-detail__gallery">
-            {commodity.gallery.map((asset) => (
+            {gallery.map((asset) => (
               <li key={asset.src} className="hamd-aie-commodity-detail__gallery-item">
                 <figure>
                   <div className="hamd-aie-commodity-detail__gallery-tile">
-                    <IeCommodityImage src={asset.src} alt={asset.alt} />
+                    <IeCommodityImage
+                      slug={commodity.slug}
+                      src={asset.src}
+                      alt={asset.alt}
+                    />
                   </div>
                   <figcaption className="hamd-aie-commodity-detail__media-caption">
                     {REPRESENTATIVE_MEDIA_CAPTION}
