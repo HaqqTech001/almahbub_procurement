@@ -96,8 +96,20 @@ class WeddingPortalErrorBoundary extends Component<
   }
 }
 
+type WeddingRehearsalState = "waiting" | "live" | "ended";
+
+const WEDDING_REHEARSAL_ENABLED =
+  import.meta.env.DEV || import.meta.env.VITE_ENABLE_WEDDING_REHEARSAL === "true";
+
+function rehearsalState(search: string): WeddingRehearsalState | null {
+  if (!WEDDING_REHEARSAL_ENABLED) return null;
+  const value = new URLSearchParams(search).get("weddingPreview");
+  return value === "waiting" || value === "live" || value === "ended" ? value : null;
+}
+
 export function WeddingLivePage() {
   const auth = useAuth();
+  const location = useLocation();
   const { resolved, setTheme } = useTheme();
   const videoRef = useRef<HTMLVideoElement>(null);
   const roomRef = useRef<WeddingLiveSession | null>(null);
@@ -142,8 +154,23 @@ export function WeddingLivePage() {
   const configuredRef = useRef(true);
   const disconnectTimer = useRef<number | undefined>(undefined);
 
-  const loginHref = `/login?returnTo=${encodeURIComponent(campaign.livePath)}`;
-  const commentChannel = weddingCommentChannel(campaign);
+  const rehearsal = useMemo(() => rehearsalState(location.search), [location.search]);
+  const displayCampaign = useMemo<WeddingCampaignRecord>(() => {
+    if (!rehearsal) return campaign;
+    if (rehearsal === "waiting") return { ...campaign, streamStatus: "upcoming", liveMode: "none", endedKind: "none", waitingMusicEnabled: true };
+    if (rehearsal === "live") return { ...campaign, streamStatus: "live", liveMode: "test", endedKind: "none" };
+    return { ...campaign, streamStatus: "ended", liveMode: "none", endedKind: "production" };
+  }, [campaign, rehearsal]);
+  const setRehearsal = (value: WeddingRehearsalState | null) => {
+    const params = new URLSearchParams(location.search);
+    if (value) params.set("weddingPreview", value);
+    else params.delete("weddingPreview");
+    const query = params.toString();
+    window.history.replaceState(null, "", location.pathname + (query ? `?${query}` : ""));
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  };
+  const loginHref = `/login?returnTo=${encodeURIComponent(displayCampaign.livePath)}`;
+  const commentChannel = weddingCommentChannel(displayCampaign);
   const liveActive = displayCampaign.streamStatus === "live";
   const connecting = Boolean(
     auth.status === "authenticated" && liveActive && statusReady && !connected && !error && configuredRef.current,
@@ -341,7 +368,7 @@ export function WeddingLivePage() {
     } finally {
       connectingRef.current = false;
     }
-  }, [displayCampaign.liveMode]);
+  }, [displayCampaign.liveMode, displayCampaign.primaryFeedId, quality, rehearsal]);
 
   useEffect(() => {
     if (auth.status !== "authenticated") return;
@@ -482,7 +509,7 @@ export function WeddingLivePage() {
       const when = formatWeddingWhen(displayCampaign.streamAt);
       const parts = countdownParts(displayCampaign.streamAt, now);
       return (
-        <WeddingWaitingStage campaign={campaign}>
+        <WeddingWaitingStage campaign={displayCampaign}>
           {when ? <p>{when}</p> : <p>Time to be announced</p>}
           {parts ? (
             <p>
