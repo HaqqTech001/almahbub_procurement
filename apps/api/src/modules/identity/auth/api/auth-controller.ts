@@ -1,4 +1,4 @@
-import { randomBytes, timingSafeEqual } from "node:crypto";
+import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 
 import type { Request, RequestHandler, Response } from "express";
 
@@ -64,11 +64,11 @@ export class AuthController {
   public readonly refresh: RequestHandler = async (request, response, next) => {
     try {
       const input = refreshSchema.parse(request.body ?? {});
-      verifyCsrf(request, input.csrfToken);
       const refreshToken = request.cookies?.[refreshCookieName];
       if (typeof refreshToken !== "string" || refreshToken.length === 0) {
         throw invalidRefresh();
       }
+      verifyCsrf(request, input.csrfToken, refreshToken, this.environment);
       const result = await this.service.refresh({
         ...input,
         refreshToken,
@@ -414,7 +414,7 @@ export class AuthController {
       response.cookie(googleStateCookieName, `${state}.${encodeURIComponent(returnTo)}`, {
         httpOnly: true,
         secure,
-        sameSite: "lax",
+        sameSite: authCookieSameSite(this.environment),
         path: "/api/v1/auth",
         maxAge: 10 * 60 * 1000,
       });
@@ -512,6 +512,15 @@ export class AuthController {
 
 const googleStateCookieName = "hamd_google_oauth";
 
+function authCookieSameSite(environment: Environment): "lax" | "none" {
+  const secure =
+    environment.COOKIE_SECURE ?? environment.NODE_ENV === "production";
+  // Production may serve the buyer/ops SPAs and API from different sites.
+  // Credentialed fetches require SameSite=None; Secure. Development stays
+  // Lax so localhost HTTP continues to work.
+  return secure ? "none" : "lax";
+}
+
 function sanitizeReturnTo(value: string): string {
   if (!value.startsWith("/") || value.startsWith("//")) return "/app";
   if (value === "/") return "/app";
@@ -526,11 +535,11 @@ function setRefreshCookies(
   const secure =
     environment.COOKIE_SECURE ?? environment.NODE_ENV === "production";
   const maxAge = environment.REFRESH_TOKEN_TTL_SECONDS * 1000;
-  const csrfToken = randomBytes(32).toString("base64url");
+  const csrfToken = csrfTokenForRefresh(refreshToken, environment);
   response.cookie(refreshCookieName, refreshToken, {
     httpOnly: true,
     secure,
-    sameSite: "lax",
+    sameSite: authCookieSameSite(environment),
     path: "/api/v1/auth",
     maxAge,
   });
@@ -540,7 +549,7 @@ function setRefreshCookies(
   response.cookie(csrfCookieName, csrfToken, {
     httpOnly: false,
     secure,
-    sameSite: "lax",
+    sameSite: authCookieSameSite(environment),
     path: "/",
     maxAge,
   });
@@ -556,7 +565,7 @@ function clearRefreshCookies(
   const refreshOptions = {
     httpOnly: true,
     secure,
-    sameSite: "lax" as const,
+    sameSite: authCookieSameSite(environment),
     path: "/api/v1/auth",
   };
   response.clearCookie(refreshCookieName, refreshOptions);
@@ -567,8 +576,29 @@ function clearRefreshCookies(
   });
 }
 
-function verifyCsrf(request: Request, bodyToken?: string | undefined): void {
-  const cookie = request.cookies?.[csrfCookieName];
+function csrfTokenForRefresh(
+  refreshToken: string,
+  environment: Environment,
+): string {
+  const secret = environment.JWT_ACCESS_SECRET;
+  if (!secret) {
+    // Authentication cannot issue access tokens without this secret anyway.
+    // Keep a deterministic development/test fallback for controller tests.
+    return createHmac("sha256", refreshToken)
+      .update("hamd-csrf")
+      .digest("base64url");
+  }
+  return createHmac("sha256", secret)
+    .update(refreshToken)
+    .digest("base64url");
+}
+
+function verifyCsrf(
+  request: Request,
+  bodyToken: string | undefined,
+  refreshToken: string,
+  environment: Environment,
+): void {
   const header = request.get("x-csrf-token");
   const candidate =
     typeof header === "string" && header.length > 0
@@ -577,19 +607,22 @@ function verifyCsrf(request: Request, bodyToken?: string | undefined): void {
         ? bodyToken.trim()
         : undefined;
 
-  if (typeof cookie !== "string" || cookie.length === 0 || typeof candidate !== "string") {
+  if (typeof candidate !== "string") {
     throw new AppError({
       statusCode: 403,
       code: "CSRF_VALIDATION_FAILED",
       message: "A valid CSRF token is required.",
     });
   }
-  const cookieBuf = Buffer.from(cookie, "utf8");
+
+  const expected = csrfTokenForRefresh(refreshToken, environment);
+  const expectedBuf = Buffer.from(expected, "utf8");
   const candidateBuf = Buffer.from(candidate, "utf8");
+
   if (
-    cookieBuf.length === 0 ||
-    cookieBuf.length !== candidateBuf.length ||
-    !timingSafeEqual(cookieBuf, candidateBuf)
+    expectedBuf.length === 0 ||
+    expectedBuf.length !== candidateBuf.length ||
+    !timingSafeEqual(expectedBuf, candidateBuf)
   ) {
     throw new AppError({
       statusCode: 403,
