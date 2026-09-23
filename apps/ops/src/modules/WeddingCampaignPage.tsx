@@ -225,6 +225,30 @@ export function WeddingCampaignPage() {
             <Link className="hamd-btn hamd-btn--primary" to="/wedding/studio">
               Open Broadcast Studio
             </Link>
+            <a
+              className="hamd-btn hamd-btn--secondary"
+              href="/rowdotul-hamd-26/live?weddingPreview=waiting"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Preview Guest Waiting Room
+            </a>
+            <a
+              className="hamd-btn hamd-btn--secondary"
+              href="/rowdotul-hamd-26/live?weddingPreview=live"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Preview Guest Live View
+            </a>
+            <a
+              className="hamd-btn hamd-btn--ghost"
+              href="/rowdotul-hamd-26/live?weddingPreview=ended"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Preview Post-live
+            </a>
           </div>
         </section>
       ) : null}
