@@ -1,5 +1,6 @@
 import { AuthApiError, readCookie } from "./auth-errors.js";
 import { getCsrfToken, setCsrfToken } from "../session/token-store.js";
+import { browserApiBase } from "../../lib/api-origin.js";
 
 export type AuthUser = {
   id: string;
@@ -75,12 +76,7 @@ export type InvitationPreview = {
 type Envelope<T> = { data: T; error?: { code?: string; message?: string } };
 
 function apiBase(): string {
-  const base = (
-    typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL
-      ? String(import.meta.env.VITE_API_URL)
-      : ""
-  ).replace(/\/$/, "");
-  return base;
+  return browserApiBase();
 }
 
 function authUrl(path: string): string {
@@ -165,11 +161,19 @@ export async function authFetch<T>(
       credentials: "include",
       signal: options.signal,
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw new AuthApiError({
+        message: "Authentication request was cancelled.",
+        status: 0,
+        code: "REQUEST_CANCELLED",
+      });
+    }
     throw new AuthApiError({
       message: "Unable to reach the authentication service.",
       status: 0,
       code: "NETWORK_ERROR",
+      details: error,
     });
   }
 
