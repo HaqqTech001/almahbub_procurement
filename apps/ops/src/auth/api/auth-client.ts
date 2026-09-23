@@ -239,6 +239,14 @@ function normalizeAuthSessionPayload(value: unknown): AuthSessionPayload | null 
   return null;
 }
 
+function extractCsrfToken(value: unknown): string | null {
+  for (const row of candidateObjects(value)) {
+    const csrf = stringValue(row.csrfToken, row.csrf_token);
+    if (csrf) return csrf;
+  }
+  return null;
+}
+
 function assertAuthSessionPayload(value: unknown): AuthSessionPayload {
   const normalized = normalizeAuthSessionPayload(value);
   if (normalized) return normalized;
@@ -446,6 +454,19 @@ export async function loginRequest(input: {
   const normalized = normalizeAuthSessionPayload(payload);
   if (normalized) return normalized;
 
+  const loginCsrf = extractCsrfToken(payload);
+  if (loginCsrf) setCsrfToken(loginCsrf);
+
+  // Some production proxies/backends establish the refresh session cookie but
+  // omit the access token from the login JSON. Exchange that fresh cookie for
+  // the canonical session immediately instead of failing the sign-in.
+  try {
+    const exchanged = await refreshRequest(null);
+    if (exchanged.accessToken) return exchanged;
+  } catch {
+    // Continue to the same-origin login fallback below.
+  }
+
   // A reachable VITE_API_URL may still point at an outdated/legacy service.
   // If it returns the wrong JSON contract, retry the Ops origin's /api proxy.
   if (browserApiBase()) {
@@ -454,6 +475,17 @@ export async function loginRequest(input: {
       body,
       forceSameOrigin: true,
     });
+    const sameOriginSession = normalizeAuthSessionPayload(sameOriginPayload);
+    if (sameOriginSession) return sameOriginSession;
+
+    const sameOriginCsrf = extractCsrfToken(sameOriginPayload);
+    if (sameOriginCsrf) setCsrfToken(sameOriginCsrf);
+    try {
+      const exchanged = await refreshRequest(null);
+      if (exchanged.accessToken) return exchanged;
+    } catch {
+      // Preserve the precise invalid-response error below.
+    }
     return assertAuthSessionPayload(sameOriginPayload);
   }
 
