@@ -470,43 +470,16 @@ export async function loginRequest(input: {
     method: "POST",
     body,
   });
-  const normalized = normalizeAuthSessionPayload(payload);
-  if (normalized) return normalized;
+
+  // A successful login endpoint must issue an access token directly. Do not
+  // hide a malformed/stale API response by immediately calling /refresh:
+  // that only produces a secondary 401 when no valid refresh cookie exists
+  // and makes the real deployment problem look like a credential failure.
+  const session = normalizeAuthSessionPayload(payload);
+  if (session) return session;
 
   const loginCsrf = extractCsrfToken(payload);
   if (loginCsrf) setCsrfToken(loginCsrf);
-
-  // Some production proxies/backends establish the refresh session cookie but
-  // omit the access token from the login JSON. Exchange that fresh cookie for
-  // the canonical session immediately instead of failing the sign-in.
-  try {
-    const exchanged = await refreshRequest(null);
-    if (exchanged.accessToken) return exchanged;
-  } catch {
-    // Continue to the same-origin login fallback below.
-  }
-
-  // A reachable VITE_API_URL may still point at an outdated/legacy service.
-  // If it returns the wrong JSON contract, retry the Ops origin's /api proxy.
-  if (browserApiBase()) {
-    const sameOriginPayload = await authFetch<unknown>("/login", {
-      method: "POST",
-      body,
-      forceSameOrigin: true,
-    });
-    const sameOriginSession = normalizeAuthSessionPayload(sameOriginPayload);
-    if (sameOriginSession) return sameOriginSession;
-
-    const sameOriginCsrf = extractCsrfToken(sameOriginPayload);
-    if (sameOriginCsrf) setCsrfToken(sameOriginCsrf);
-    try {
-      const exchanged = await refreshRequest(null);
-      if (exchanged.accessToken) return exchanged;
-    } catch {
-      // Preserve the precise invalid-response error below.
-    }
-    return assertAuthSessionPayload(sameOriginPayload);
-  }
 
   return assertAuthSessionPayload(payload);
 }
