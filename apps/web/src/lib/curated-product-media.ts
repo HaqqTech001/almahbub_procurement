@@ -10,6 +10,36 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "ray-ban-meta-gen-2-wayfarer": {
+    src: "https://images2.ray-ban.com//prod-onecp-record-files/pieyewear/e69aa702-beee-48b6-9bd6-b3a10041cd94/0RW4012__601_1M__P21__shad__al31.png?impolicy=RB_Product_clone&width=720&bgc=%23f2f2f2",
+    alt: "Ray-Ban Meta Gen 2 Wayfarer smart glasses in black",
+    sourceUrl: "https://www.ray-ban.com/usa/electronics/RW4012ray-ban%2Bmeta%2Bwayfarer%2B-%2Bgen%2B2-black/8056262721308",
+    source: "manufacturer",
+  },
+  "samsung-galaxy-tab-s11-series": {
+    src: "https://images.samsung.com/kdp/static/mkt/tablets/galaxy-tab-s11/galaxy-tab-s11-features-kv.jpg",
+    alt: "Samsung Galaxy Tab S11 with S Pen",
+    sourceUrl: "https://www.samsung.com/sec/tablets/galaxy-tab-s11/",
+    source: "manufacturer",
+  },
+  "samsung-qm75c": {
+    src: "https://images.samsung.com/is/image/samsung/p6pim/us/lh75qmcebgcxgo/gallery/us-smart-signage-qm32c-565384-lh75qmcebgcxgo-549168038?%24product-details-jpg%24=",
+    alt: "Samsung QM75C commercial display front view",
+    sourceUrl: "https://www.samsung.com/us/business/smart-signage/uhd-4k-signage/75-inch-qmc-series-commercial-display-sku-lh75qmcebgcxgo/",
+    source: "manufacturer",
+  },
+  "verifone-t650p": {
+    src: "https://cdn.prod.website-files.com/6877dbe2d81008ec40dd7770/68dd2c9303b17a37b854ee06_download.png",
+    alt: "Verifone T650p portable payment terminal",
+    sourceUrl: "https://www.verifone.com/hardware-product/verifone-t650p",
+    source: "manufacturer",
+  },
+  "thermo-scientific-tsx-series-ultra-low-temperature-freezers": {
+    src: "https://www.thermofisher.com/TFS-Assets/LPD/product-images/TSXUniversal_700-Front.jpg-650.jpg",
+    alt: "Thermo Scientific TSX Universal Series ultra-low freezer",
+    sourceUrl: "https://www.thermofisher.com/order/catalog/product/TSX70086FA",
+    source: "manufacturer",
+  },
   "epson-tm-t88vii": {
     src: "https://press.epson.eu/app/uploads/2025/05/tm-t88vii_front_bk.tif_.jpg",
     alt: "Epson TM-T88VII POS receipt printer in black",
