@@ -1,5 +1,6 @@
 import { AuthApiError, readCookie } from "./auth-errors.js";
 import { getCsrfToken, setCsrfToken } from "../session/token-store.js";
+import { browserApiBase } from "../../lib/api-origin.js";
 
 export type AuthUser = {
   id: string;
@@ -74,21 +75,10 @@ export type InvitationPreview = {
 
 type Envelope<T> = { data: T; error?: { code?: string; message?: string } };
 
-function apiBase(): string {
-  const base = (
-    typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL
-      ? String(import.meta.env.VITE_API_URL)
-      : ""
-  ).replace(/\/$/, "");
-  return base;
-}
-
-function authUrl(path: string): string {
-  const base = apiBase();
+function authUrl(path: string, forceSameOrigin = false): string {
+  const base = forceSameOrigin ? "" : browserApiBase();
   const normalized = path.startsWith("/") ? path : `/${path}`;
-  if (!base) {
-    return `/api/v1/auth${normalized}`;
-  }
+  if (!base) return `/api/v1/auth${normalized}`;
   return `${base}/api/v1/auth${normalized}`;
 }
 
@@ -156,21 +146,28 @@ export async function authFetch<T>(
     if (csrf) headers["x-csrf-token"] = csrf;
   }
 
+  const requestInit: RequestInit = {
+    method: options.method ?? (options.body !== undefined ? "POST" : "GET"),
+    headers,
+    body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
+    credentials: "include",
+    signal: options.signal,
+  };
+
   let response: Response;
   try {
-    response = await fetch(authUrl(path), {
-      method: options.method ?? (options.body !== undefined ? "POST" : "GET"),
-      headers,
-      body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
-      credentials: "include",
-      signal: options.signal,
-    });
+    response = await fetch(authUrl(path), requestInit);
   } catch {
-    throw new AuthApiError({
-      message: "Unable to reach the authentication service.",
-      status: 0,
-      code: "NETWORK_ERROR",
-    });
+    try {
+      response = await fetch(authUrl(path, true), requestInit);
+    } catch {
+      throw new AuthApiError({
+        message:
+          "Unable to reach the authentication service. Check that the API is online and the Ops deployment exposes /api or VITE_API_URL.",
+        status: 0,
+        code: "NETWORK_ERROR",
+      });
+    }
   }
 
   if (response.status === 204) {
