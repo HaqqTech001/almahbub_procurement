@@ -164,6 +164,13 @@
 }
 .commerce-category-hero img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 12px; }
 .commerce-category-products { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.commerce-category-products img {
+  object-fit: contain;
+  object-position: center;
+  padding: 10px;
+  box-sizing: border-box;
+  background: var(--hamd-color-surface, #fff);
+}
 .commerce-category-empty { padding-block: 24px; }
 @media (max-width: 700px) {
   .commerce-category-hero { grid-template-columns: minmax(0, 1fr); }
