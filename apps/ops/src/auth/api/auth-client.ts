@@ -255,13 +255,32 @@ function assertAuthSessionPayload(value: unknown): AuthSessionPayload {
     value && typeof value === "object"
       ? Object.keys(value as Record<string, unknown>).slice(0, 12)
       : [];
+  const row =
+    value && typeof value === "object"
+      ? (value as Record<string, unknown>)
+      : null;
+  const dataKeys =
+    row?.data && typeof row.data === "object"
+      ? Object.keys(row.data as Record<string, unknown>).slice(0, 12)
+      : [];
+
+  const keySummary =
+    keys.length > 0
+      ? ` Top-level keys: ${keys.join(", ")}.`
+      : " No top-level JSON keys were returned.";
+  const dataSummary =
+    dataKeys.length > 0
+      ? ` Data keys: ${dataKeys.join(", ")}.`
+      : row && "data" in row
+        ? " The data field is empty or not an object."
+        : "";
 
   throw new AuthApiError({
     message:
-      "The authentication service response did not contain an access token.",
+      `The authentication service response did not contain an access token.${keySummary}${dataSummary}`,
     status: 502,
     code: "INVALID_AUTH_RESPONSE",
-    details: { keys },
+    details: { keys, dataKeys },
   });
 }
 
