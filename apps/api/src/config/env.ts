@@ -279,9 +279,12 @@ export function parseEnvironment(
   source: NodeJS.ProcessEnv = process.env,
 ): Environment {
   const adminAliases = {
-    ADMIN_NAME: source.ADMIN_NAME ?? source.ALMAHBUB_ADMIN_NAME,
-    ADMIN_EMAIL: source.ADMIN_EMAIL ?? source.ALMAHBUB_ADMIN_EMAIL,
-    ADMIN_PASSWORD: source.ADMIN_PASSWORD ?? source.ALMAHBUB_ADMIN_PASSWORD,
+    // The dedicated Almahbub Ops credentials are authoritative when present.
+    // This prevents stale generic ADMIN_* variables on a host from silently
+    // replacing the separately configured Almahbub administrator account.
+    ADMIN_NAME: source.ALMAHBUB_ADMIN_NAME ?? source.ADMIN_NAME,
+    ADMIN_EMAIL: source.ALMAHBUB_ADMIN_EMAIL ?? source.ADMIN_EMAIL,
+    ADMIN_PASSWORD: source.ALMAHBUB_ADMIN_PASSWORD ?? source.ADMIN_PASSWORD,
   };
   return parseSharedEnvironment(environmentSchema, {
     ...source,
