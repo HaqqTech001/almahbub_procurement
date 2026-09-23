@@ -37,6 +37,16 @@ function visibleSpecifications(value: Record<string, unknown> | undefined) {
   );
 }
 
+function cleanSpecificationLabel(value: string): string {
+  const normalized = value
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (normalized.toLowerCase() === "variant dimensions") return "Options";
+  return formatSpecificationLabel(normalized);
+}
+
 function ProductDetailSkeleton() {
   return (
     <Section id="product-loading" title="Product" description="Loading published details.">
@@ -65,7 +75,6 @@ export function ProductDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [missing, setMissing] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
-  const [imageFailed, setImageFailed] = useState(false);
   const [failedImages, setFailedImages] = useState<string[]>([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [selectedVariantName, setSelectedVariantName] = useState("");
@@ -78,7 +87,6 @@ export function ProductDetailPage() {
     setProduct(null);
     setActiveImage(0);
     setFailedImages([]);
-    setImageFailed(false);
     setSelectedVariantName("");
     void getPublicProduct(slug)
       .then((row) => {
@@ -188,14 +196,25 @@ export function ProductDetailPage() {
     (video) => video.url.trim().length > 0,
   );
   const selected = gallery[activeImage] ?? gallery[0];
-  const current = selected && !failedImages.includes(selected.url) ? selected : gallery.find(image => !failedImages.includes(image.url));
+  const current =
+    selected && !failedImages.includes(selected.url)
+      ? selected
+      : gallery.find((image) => !failedImages.includes(image.url));
   const serviceVisual =
     product.entryType === "PROCUREMENT_SERVICE"
       ? procurementServiceVisual(product.slug)
       : null;
   const curatedMedia = curatedProductMedia(product.slug);
-  const imageSrc = serviceVisual?.src ?? curatedMedia?.src ?? resolveMediaUrl(current?.url);
-  const showImage = Boolean(imageSrc) && !imageFailed;
+  const preferredFallbacks = [
+    serviceVisual ? { src: serviceVisual.src, alt: serviceVisual.alt } : null,
+    curatedMedia ? { src: curatedMedia.src, alt: curatedMedia.alt } : null,
+  ].filter(
+    (item): item is { src: string; alt: string } =>
+      Boolean(item?.src) && !failedImages.includes(item!.src),
+  );
+  const preferredFallback = preferredFallbacks[0];
+  const imageSrc = preferredFallback?.src ?? resolveMediaUrl(current?.url);
+  const showImage = Boolean(imageSrc);
   const requestHref = productRequestHref(product.slug, {
     workspace,
     authenticated,
@@ -207,6 +226,12 @@ export function ProductDetailPage() {
     product.variants?.[0];
   const specificationFields = specificationVariant?.typicalSpecificationFields ?? [];
   const sourcingLabel = sourcingStatusLabel(specificationVariant?.sourcingStatus);
+  const hasSpecificationGuidance = Boolean(
+    specificationVariant &&
+      (specificationFields.length > 0 ||
+        specificationVariant.unit ||
+        sourcingLabel),
+  );
   const keySpecifications = visibleSpecifications(product.keySpecifications);
   const productTypeLabel = entryTypeLabel(product.entryType);
   const familyVariants =
@@ -224,11 +249,9 @@ export function ProductDetailPage() {
     if (event.key === "ArrowRight") {
       event.preventDefault();
       setActiveImage((index) => (index + 1) % gallery.length);
-      setImageFailed(false);
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
       setActiveImage((index) => (index - 1 + gallery.length) % gallery.length);
-      setImageFailed(false);
     }
   };
 
@@ -262,16 +285,16 @@ export function ProductDetailPage() {
             aria-label={gallery.length > 1 ? "Product image gallery" : undefined}
             onKeyDown={onGalleryKeyDown}
           >
-            {showImage && (serviceVisual || curatedMedia) ? (
+            {showImage && preferredFallback ? (
               <OptimizedImage
                 key={imageSrc}
                 src={imageSrc}
-                alt={serviceVisual?.alt ?? curatedMedia?.alt ?? product.name}
+                alt={preferredFallback.alt}
                 className="hamd-product-detail__media"
                 width={960}
                 height={720}
                 priority
-                onLoadError={() => setImageFailed(true)}
+                onLoadError={() => setFailedImages((previous) => [...previous, imageSrc!])}
               />
             ) : showImage ? (
               <button
@@ -289,8 +312,7 @@ export function ProductDetailPage() {
                   priority
                   onLoadError={() => {
                     if (current) setFailedImages(previous => [...previous, current.url]);
-                    setImageFailed(false);
-                  }}
+                                }}
                 />
               </button>
             ) : (
@@ -319,8 +341,7 @@ export function ProductDetailPage() {
                       aria-pressed={index === activeImage}
                       onClick={() => {
                         setActiveImage(index);
-                        setImageFailed(false);
-                      }}
+                                        }}
                     >
                       <OptimizedImage
                         src={resolveMediaUrl(image.url)}
@@ -372,7 +393,7 @@ export function ProductDetailPage() {
                 <dl className="hamd-product-detail__meta">
                   {keySpecifications.map(([key, value]) => (
                     <div key={key}>
-                      <dt>{formatSpecificationLabel(key.replace(/([a-z])([A-Z])/g, "$1 $2"))}</dt>
+                      <dt>{cleanSpecificationLabel(key)}</dt>
                       <dd>{specificationValue(value)}</dd>
                     </div>
                   ))}
@@ -402,14 +423,13 @@ export function ProductDetailPage() {
                       <li key={variant.name}>
                         <strong>{variant.name}</strong>
                         {details.length > 0 ? (
-                          <span>
-                            {" — "}
+                          <span className="hamd-product-variant__details">
                             {details
                               .map(
                                 ([key, value]) =>
-                                  `${formatSpecificationLabel(key)}: ${specificationValue(value)}`,
+                                  `${cleanSpecificationLabel(key)}: ${specificationValue(value)}`,
                               )
-                              .join(" · ")}
+                              .join(", ")}
                           </span>
                         ) : null}
                       </li>
@@ -419,7 +439,7 @@ export function ProductDetailPage() {
               </section>
             ) : null}
 
-            {specificationVariant ? (
+            {specificationVariant && hasSpecificationGuidance ? (
               <section className="hamd-product-specs" aria-labelledby="product-specs-heading">
                 <h2 id="product-specs-heading">Specifications to include</h2>
                 {specificationVariant.unit ? (
@@ -430,7 +450,7 @@ export function ProductDetailPage() {
                 {specificationFields.length > 0 ? (
                   <ul>
                     {specificationFields.map((field) => (
-                      <li key={field}>{formatSpecificationLabel(field)}</li>
+                      <li key={field}>{cleanSpecificationLabel(field)}</li>
                     ))}
                   </ul>
                 ) : null}
