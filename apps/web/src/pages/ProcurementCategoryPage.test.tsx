@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, expect, it, vi } from "vitest";
 import { ProcurementCategoryPage } from "./ProcurementCategoryPage.js";
@@ -78,10 +78,33 @@ describe("category landing", () => {
       "/product/printer-0",
     );
     expect(getPublicCategoryPreview).toHaveBeenCalledWith("office-business");
-    fireEvent.error(
-      screen.getByRole("img", { name: "Printer 0", exact: true }),
-    );
-    expect(screen.queryByRole("link", { name: /Printer 0/ })).toBeNull();
+    expect(screen.getByRole("img", { name: "Printer 0", exact: true })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Printer 0/ })).toBeInTheDocument();
+  });
+  it("keeps category products visible when database images are empty", async () => {
+    vi.mocked(getPublicCategoryPreview).mockResolvedValue({
+      category,
+      limit: 16,
+      products: [
+        {
+          slug: "printer-without-db-image",
+          name: "Printer without DB image",
+          description: null,
+          category,
+          brandName: null,
+          manufacturerName: null,
+          entryType: "STANDARD_PRODUCT",
+          availabilityStatus: "ON_REQUEST",
+          images: [],
+          videos: [],
+          variants: [],
+        },
+      ],
+    });
+    renderPage();
+    expect(
+      await screen.findByRole("link", { name: /Printer without DB image/ }),
+    ).toHaveAttribute("href", "/product/printer-without-db-image");
   });
   it("offers sourcing when no approved media-backed products exist", async () => {
     vi.mocked(getPublicCategoryPreview).mockResolvedValue({
