@@ -75,33 +75,136 @@ export type InvitationPreview = {
 
 type Envelope<T> = { data: T; error?: { code?: string; message?: string } };
 
-function isAuthSessionPayload(value: unknown): value is AuthSessionPayload {
-  if (!value || typeof value !== "object") return false;
+function stringValue(...values: unknown[]): string | null {
+  for (const value of values) {
+    if (typeof value === "string" && value.trim().length > 0) {
+      return value.trim();
+    }
+  }
+  return null;
+}
+
+function numberValue(...values: unknown[]): number | null {
+  for (const value of values) {
+    const parsed =
+      typeof value === "number"
+        ? value
+        : typeof value === "string" && value.trim()
+          ? Number(value)
+          : Number.NaN;
+    if (Number.isFinite(parsed) && parsed > 0) return parsed;
+  }
+  return null;
+}
+
+function normalizeAuthUser(value: unknown): AuthUser | null {
+  if (!value || typeof value !== "object") return null;
   const row = value as Record<string, unknown>;
-  const user = row.user;
-  return (
-    typeof row.accessToken === "string" &&
-    row.accessToken.trim().length > 0 &&
-    typeof row.expiresIn === "number" &&
-    Number.isFinite(row.expiresIn) &&
-    row.expiresIn > 0 &&
-    typeof row.organizationId === "string" &&
-    row.organizationId.trim().length > 0 &&
-    Boolean(user && typeof user === "object" && typeof (user as Record<string, unknown>).id === "string")
+  const id = stringValue(row.id, row.userId, row.user_id);
+  const email = stringValue(row.email);
+  if (!id || !email) return null;
+
+  const firstName = stringValue(row.firstName, row.first_name) ?? "";
+  const lastName = stringValue(row.lastName, row.last_name) ?? "";
+  const fallbackDisplayName = [firstName, lastName].filter(Boolean).join(" ");
+
+  return {
+    id,
+    email,
+    firstName,
+    lastName,
+    displayName:
+      stringValue(row.displayName, row.display_name) ||
+      fallbackDisplayName ||
+      null,
+    locale: stringValue(row.locale) ?? "en",
+    timeZone: stringValue(row.timeZone, row.time_zone),
+    emailVerifiedAt: stringValue(row.emailVerifiedAt, row.email_verified_at),
+    createdAt: stringValue(row.createdAt, row.created_at),
+    lastAuthenticatedAt: stringValue(
+      row.lastAuthenticatedAt,
+      row.last_authenticated_at,
+    ),
+  };
+}
+
+function normalizeAuthSessionPayload(
+  value: unknown,
+  depth = 0,
+): AuthSessionPayload | null {
+  if (!value || typeof value !== "object" || depth > 4) return null;
+
+  const row = value as Record<string, unknown>;
+  const organization =
+    row.organization && typeof row.organization === "object"
+      ? (row.organization as Record<string, unknown>)
+      : null;
+  const organisation =
+    row.organisation && typeof row.organisation === "object"
+      ? (row.organisation as Record<string, unknown>)
+      : null;
+
+  const accessToken = stringValue(
+    row.accessToken,
+    row.access_token,
+    row.token,
+    row.jwt,
   );
+  const expiresIn = numberValue(
+    row.expiresIn,
+    row.expires_in,
+    row.ttl,
+    row.accessTokenExpiresIn,
+  );
+  const organizationId = stringValue(
+    row.organizationId,
+    row.organisationId,
+    row.organization_id,
+    row.organisation_id,
+    organization?.id,
+    organisation?.id,
+  );
+  const user = normalizeAuthUser(row.user ?? row.account ?? row.profile);
+
+  if (accessToken && expiresIn && organizationId && user) {
+    const csrfToken = stringValue(row.csrfToken, row.csrf_token) ?? undefined;
+    return {
+      accessToken,
+      expiresIn,
+      user,
+      organizationId,
+      ...(csrfToken ? { csrfToken } : {}),
+    };
+  }
+
+  for (const key of ["data", "session", "result", "payload"]) {
+    const nested = normalizeAuthSessionPayload(row[key], depth + 1);
+    if (nested) return nested;
+  }
+
+  return null;
+}
+
+function isAuthSessionPayload(value: unknown): value is AuthSessionPayload {
+  return normalizeAuthSessionPayload(value) !== null;
 }
 
 function assertAuthSessionPayload(value: unknown): AuthSessionPayload {
-  if (!isAuthSessionPayload(value)) {
-    throw new AuthApiError({
-      message:
-        "The authentication service returned an invalid session response. Check the Ops API URL/proxy configuration.",
-      status: 502,
-      code: "INVALID_AUTH_RESPONSE",
-      details: value,
-    });
-  }
-  return value;
+  const normalized = normalizeAuthSessionPayload(value);
+  if (normalized) return normalized;
+
+  const keys =
+    value && typeof value === "object"
+      ? Object.keys(value as Record<string, unknown>).slice(0, 12)
+      : [];
+
+  throw new AuthApiError({
+    message:
+      "The authentication service returned a response that does not contain a usable session.",
+    status: 502,
+    code: "INVALID_AUTH_RESPONSE",
+    details: { keys },
+  });
 }
 
 function authUrl(path: string, forceSameOrigin = false): string {
@@ -290,7 +393,8 @@ export async function loginRequest(input: {
     method: "POST",
     body,
   });
-  if (isAuthSessionPayload(payload)) return payload;
+  const normalized = normalizeAuthSessionPayload(payload);
+  if (normalized) return normalized;
 
   // A reachable VITE_API_URL may still point at an outdated/legacy service.
   // If it returns the wrong JSON contract, retry the Ops origin's /api proxy.
@@ -316,7 +420,8 @@ export async function refreshRequest(accessToken?: string | null): Promise<AuthS
     accessToken: accessToken ?? null,
     signal: AbortSignal.timeout(4_100),
   });
-  if (isAuthSessionPayload(payload)) return payload;
+  const normalized = normalizeAuthSessionPayload(payload);
+  if (normalized) return normalized;
 
   if (browserApiBase()) {
     const sameOriginPayload = await authFetch<unknown>("/refresh", {
