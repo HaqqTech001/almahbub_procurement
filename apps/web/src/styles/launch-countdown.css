@@ -1085,3 +1085,9 @@
 @keyframes hamd-curtain-reveal{0%{transform:scaleX(0)}32%{transform:scaleX(1)}48%{transform:scaleX(1)}100%{transform:scaleX(0)}}
 @keyframes hamd-launch-fade{to{opacity:0;visibility:hidden}}
 @media(prefers-reduced-motion:reduce){.hamd-launch__final-seconds strong{animation:none}.hamd-launch--reveal .hamd-launch__curtain{display:none}.hamd-launch--reveal .hamd-launch__panel,.hamd-launch--reveal .hamd-launch__final-seconds,.hamd-launch--reveal .hamd-launch__sparkles{animation:none;opacity:0;visibility:hidden}}
+
+.hamd-launch__rehearsal-controls{position:fixed;right:.75rem;bottom:.75rem;z-index:50;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;max-width:min(42rem,calc(100vw - 1.5rem));padding:.55rem;border:1px solid rgb(255 255 255/.14);border-radius:1rem;background:rgb(7 17 31/.94);box-shadow:0 1rem 3rem rgb(0 0 0/.35);backdrop-filter:blur(12px)}
+.hamd-launch__rehearsal-controls b{padding:0 .35rem;color:#f4d98e;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase}
+.hamd-launch__rehearsal-controls button{appearance:none;border:1px solid rgb(231 198 116/.3);border-radius:.65rem;padding:.45rem .62rem;background:rgb(255 255 255/.06);color:#f8fafc;font:inherit;font-size:.7rem;cursor:pointer}
+.hamd-launch__rehearsal-controls button:hover,.hamd-launch__rehearsal-controls button:focus-visible{background:rgb(231 198 116/.18);outline:2px solid rgb(231 198 116/.55);outline-offset:1px}
+@media(max-width:640px){.hamd-launch__rehearsal-controls{left:.5rem;right:.5rem;bottom:.5rem;justify-content:center}.hamd-launch__rehearsal-controls b{width:100%;text-align:center}}
