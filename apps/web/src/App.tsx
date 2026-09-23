@@ -9,6 +9,7 @@ import {
 } from "./auth/onboarding/WorkspaceShell.js";
 import { HostLoading } from "./components/HostChrome.js";
 import { RouteChunkErrorBoundary } from "./app/RouteChunkErrorBoundary.js";
+import { LaunchCountdownGate } from "./components/LaunchCountdownGate.js";
 
 const HomePage = lazy(() =>
   import("./pages/HomePage.js").then((m) => ({ default: m.HomePage })),
@@ -378,6 +379,7 @@ export function App() {
 
   return (
     <>
+      <LaunchCountdownGate />
       <CelebrationHost />
       <Routes>
       {/*
