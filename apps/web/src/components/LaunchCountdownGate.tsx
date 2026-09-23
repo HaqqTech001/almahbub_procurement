@@ -90,7 +90,7 @@ export function LaunchCountdownGate() {
   }, []);
 
   const left = useMemo(() => remaining(now), [now]);
-  const story = LAUNCH_STORIES[storyIndex];
+  const story = LAUNCH_STORIES[storyIndex] ?? LAUNCH_STORIES[0];
 
   if (left.total <= 0 || isExcludedPath(location.pathname)) return null;
 
@@ -104,7 +104,16 @@ export function LaunchCountdownGate() {
       <div className="hamd-launch__grain" aria-hidden="true" />
       <div className="hamd-launch__sparkles" aria-hidden="true">
         {Array.from({ length: 18 }, (_, index) => (
-          <i key={index} style={{ "--spark-index": index } as CSSProperties} />
+          <i
+            key={index}
+            style={
+              {
+                "--spark-index": index,
+                "--spark-left": `${(index * 47 + 9) % 100}%`,
+                "--spark-top": `${(index * 73 + 13) % 100}%`,
+              } as CSSProperties
+            }
+          />
         ))}
       </div>
 
