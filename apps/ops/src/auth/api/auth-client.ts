@@ -111,6 +111,24 @@ function authUrl(path: string, forceSameOrigin = false): string {
   return `${base}/api/v1/auth${normalized}`;
 }
 
+function timeoutSignal(ms: number, inherited?: AbortSignal): AbortSignal {
+  if (!inherited) return AbortSignal.timeout(ms);
+  if (inherited.aborted) return inherited;
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), ms);
+  const abort = () => controller.abort();
+  inherited.addEventListener("abort", abort, { once: true });
+  controller.signal.addEventListener(
+    "abort",
+    () => {
+      window.clearTimeout(timeout);
+      inherited.removeEventListener("abort", abort);
+    },
+    { once: true },
+  );
+  return controller.signal;
+}
+
 async function parseJson(response: Response): Promise<unknown> {
   const text = await response.text();
   if (!text) return null;
@@ -193,15 +211,20 @@ export async function authFetch<T>(
     headers,
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
     credentials: "include",
-    signal: options.signal,
   };
 
   let response: Response;
   try {
-    response = await fetch(authUrl(path), requestInit);
+    response = await fetch(authUrl(path), {
+      ...requestInit,
+      signal: timeoutSignal(2_400, options.signal),
+    });
   } catch {
     try {
-      response = await fetch(authUrl(path, true), requestInit);
+      response = await fetch(authUrl(path, true), {
+        ...requestInit,
+        signal: timeoutSignal(1_700, options.signal),
+      });
     } catch {
       throw new AuthApiError({
         message:
