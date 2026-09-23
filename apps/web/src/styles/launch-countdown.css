@@ -732,3 +732,336 @@
     font-size: 0.72rem;
   }
 }
+
+
+/* Single-screen launch composition: everything must fit inside one viewport. */
+.hamd-launch {
+  height: 100dvh;
+  min-height: 100dvh;
+  padding: clamp(0.45rem, 1.2vh, 0.85rem);
+  overflow: hidden;
+}
+
+.hamd-launch__panel {
+  display: grid;
+  grid-template-rows: auto auto auto auto auto auto auto;
+  align-content: center;
+  gap: clamp(0.35rem, 0.8vh, 0.7rem);
+  width: min(68rem, 100%);
+  max-height: calc(100dvh - 1rem);
+  padding:
+    clamp(0.75rem, 1.8vh, 1.35rem)
+    clamp(0.8rem, 2vw, 1.6rem);
+  overflow: hidden;
+}
+
+.hamd-launch__evolution {
+  margin: 0 auto;
+  padding: clamp(0.35rem, 0.7vh, 0.55rem);
+}
+
+.hamd-launch__evolution-step {
+  padding: clamp(0.35rem, 0.7vh, 0.5rem) 0.55rem;
+}
+
+.hamd-launch__identity-row {
+  gap: clamp(0.4rem, 0.8vh, 0.8rem);
+}
+
+.hamd-launch__identity {
+  padding: clamp(0.38rem, 0.75vh, 0.58rem) 0.65rem;
+}
+
+.hamd-launch__logo-shell {
+  width: clamp(2.3rem, 5.2vh, 3rem);
+  height: clamp(2.3rem, 5.2vh, 3rem);
+}
+
+.hamd-launch__export-logo-shell {
+  width: clamp(3.15rem, 7vh, 4rem);
+  height: clamp(2.2rem, 5vh, 2.85rem);
+}
+
+.hamd-launch__eyebrow {
+  margin: clamp(0.55rem, 1.2vh, 1rem) 0 0.35rem;
+  font-size: clamp(0.58rem, 1.15vh, 0.7rem);
+}
+
+.hamd-launch h1 {
+  font-size: clamp(1.7rem, 5.4vh, 4.25rem);
+  line-height: 0.98;
+}
+
+.hamd-launch__lead {
+  margin: clamp(0.45rem, 1vh, 0.8rem) auto 0;
+  font-size: clamp(0.78rem, 1.65vh, 1rem);
+  line-height: 1.48;
+}
+
+.hamd-launch__story-dots {
+  margin-top: clamp(0.45rem, 0.9vh, 0.8rem);
+}
+
+.hamd-launch__countdown {
+  margin: clamp(0.65rem, 1.4vh, 1rem) auto 0;
+  gap: clamp(0.15rem, 0.45vw, 0.45rem);
+}
+
+.hamd-launch__unit {
+  padding: clamp(0.45rem, 1.05vh, 0.75rem) 0.25rem;
+  border-radius: 0.9rem;
+}
+
+.hamd-launch__number {
+  font-size: clamp(1.6rem, 4.8vh, 3.3rem);
+}
+
+.hamd-launch__label {
+  margin-top: 0.25rem;
+  font-size: clamp(0.52rem, 1vh, 0.66rem);
+}
+
+.hamd-launch__separator {
+  font-size: clamp(1.35rem, 3.5vh, 2.35rem);
+}
+
+.hamd-launch__date {
+  margin-top: clamp(0.45rem, 0.9vh, 0.7rem);
+  font-size: clamp(0.68rem, 1.2vh, 0.82rem);
+}
+
+.hamd-launch__progress {
+  margin: clamp(0.45rem, 0.9vh, 0.7rem) auto 0;
+}
+
+.hamd-launch__note {
+  margin: clamp(0.35rem, 0.7vh, 0.55rem) 0 0;
+  font-size: clamp(0.62rem, 1vh, 0.72rem);
+}
+
+/* Short laptop / tablet heights. */
+@media (max-height: 820px) {
+  .hamd-launch__panel {
+    gap: 0.3rem;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+
+  .hamd-launch__evolution {
+    padding: 0.28rem;
+  }
+
+  .hamd-launch__evolution-step {
+    padding: 0.3rem 0.45rem;
+  }
+
+  .hamd-launch__identity {
+    padding: 0.3rem 0.5rem;
+  }
+
+  .hamd-launch__identity strong {
+    font-size: 0.76rem;
+  }
+
+  .hamd-launch__identity small,
+  .hamd-launch__evolution-step small {
+    font-size: 0.52rem;
+  }
+
+  .hamd-launch h1 {
+    font-size: clamp(1.55rem, 4.7vh, 3.25rem);
+  }
+
+  .hamd-launch__lead {
+    font-size: clamp(0.72rem, 1.45vh, 0.9rem);
+    line-height: 1.4;
+  }
+
+  .hamd-launch__countdown {
+    margin-top: 0.5rem;
+  }
+
+  .hamd-launch__unit {
+    padding: 0.35rem 0.2rem;
+  }
+}
+
+/* Very short screens: preserve every section, compress further instead of scrolling. */
+@media (max-height: 680px) {
+  .hamd-launch {
+    padding: 0.3rem;
+  }
+
+  .hamd-launch__panel {
+    max-height: calc(100dvh - 0.6rem);
+    gap: 0.22rem;
+    padding: 0.42rem 0.55rem;
+    border-radius: 1.1rem;
+  }
+
+  .hamd-launch__evolution {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 0.22rem;
+    padding: 0.2rem;
+  }
+
+  .hamd-launch__evolution-step {
+    padding: 0.22rem 0.32rem;
+  }
+
+  .hamd-launch__evolution-step small {
+    font-size: 0.46rem;
+  }
+
+  .hamd-launch__evolution-step strong {
+    font-size: 0.62rem;
+  }
+
+  .hamd-launch__identity-row {
+    gap: 0.3rem;
+  }
+
+  .hamd-launch__identity {
+    padding: 0.22rem 0.4rem;
+  }
+
+  .hamd-launch__identity strong {
+    font-size: 0.68rem;
+  }
+
+  .hamd-launch__identity small {
+    font-size: 0.48rem;
+  }
+
+  .hamd-launch__logo-shell {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .hamd-launch__export-logo-shell {
+    width: 2.8rem;
+    height: 1.9rem;
+  }
+
+  .hamd-launch__eyebrow {
+    margin: 0.35rem 0 0.2rem;
+    font-size: 0.5rem;
+  }
+
+  .hamd-launch h1 {
+    font-size: clamp(1.35rem, 4.1vh, 2.45rem);
+  }
+
+  .hamd-launch__lead {
+    width: min(48rem, 100%);
+    margin-top: 0.3rem;
+    font-size: 0.68rem;
+    line-height: 1.32;
+  }
+
+  .hamd-launch__story-dots {
+    margin-top: 0.28rem;
+  }
+
+  .hamd-launch__story-dots button {
+    height: 0.2rem;
+  }
+
+  .hamd-launch__countdown {
+    margin-top: 0.35rem;
+  }
+
+  .hamd-launch__number {
+    font-size: clamp(1.35rem, 4vh, 2.35rem);
+  }
+
+  .hamd-launch__label {
+    font-size: 0.48rem;
+  }
+
+  .hamd-launch__date {
+    margin-top: 0.25rem;
+    font-size: 0.62rem;
+  }
+
+  .hamd-launch__progress {
+    margin-top: 0.28rem;
+  }
+
+  .hamd-launch__note {
+    margin-top: 0.25rem;
+    font-size: 0.56rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .hamd-launch__panel {
+    align-content: center;
+  }
+
+  .hamd-launch__identity-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hamd-launch__group-link {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: min(14rem, 70%);
+    margin: -0.1rem auto;
+  }
+
+  .hamd-launch__identity--international {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .hamd-launch__identity--export {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .hamd-launch__identity strong {
+    white-space: normal;
+  }
+
+  .hamd-launch__evolution {
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .hamd-launch__evolution-step--new {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+}
+
+@media (max-width: 520px) and (max-height: 760px) {
+  .hamd-launch__identity-row {
+    gap: 0.22rem;
+  }
+
+  .hamd-launch__identity {
+    gap: 0.38rem;
+    padding: 0.28rem 0.34rem;
+  }
+
+  .hamd-launch__identity strong {
+    font-size: 0.62rem;
+  }
+
+  .hamd-launch__identity small {
+    font-size: 0.44rem;
+  }
+
+  .hamd-launch__group-link {
+    font-size: 0.48rem;
+  }
+
+  .hamd-launch h1 {
+    font-size: clamp(1.25rem, 4.2vh, 2.15rem);
+  }
+
+  .hamd-launch__lead {
+    font-size: 0.64rem;
+  }
+}
