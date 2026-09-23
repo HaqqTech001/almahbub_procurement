@@ -4,6 +4,7 @@ import { LoginScreen, useRequestCooldown, safeInternalPath, type LoginFormValues
 import { ThemeToggle } from "../../components/ThemeToggle.js";
 import { AuthApiError, formatAuthError } from "../api/auth-errors.js";
 import { AuthBoot } from "../guards/RequireAuth.js";
+import { hasOpsAccess } from "../guards/RequireOpsAccess.js";
 import { useAuth } from "../session/AuthProvider.js";
 
 export function LoginPage() {
@@ -39,7 +40,28 @@ export function LoginPage() {
   }
 
   if (auth.status === "authenticated") {
-    return <Navigate to={returnTo} replace />;
+    if (hasOpsAccess(auth.permissions)) {
+      return <Navigate to={returnTo} replace />;
+    }
+    return (
+      <div className="hamd-ops-auth">
+        <div className="hamd-auth-card" role="alert">
+          <p className="hamd-auth-eyebrow">Almahbub Operations</p>
+          <h1>Operations access required</h1>
+          <p>
+            This account is signed in successfully, but it does not have permission
+            to open the Operations Console.
+          </p>
+          <button
+            type="button"
+            className="hamd-btn hamd-btn--primary"
+            onClick={() => void auth.logout()}
+          >
+            Sign out and use another account
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const onSubmit = async (values: LoginFormValues) => {
