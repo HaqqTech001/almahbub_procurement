@@ -190,6 +190,7 @@ export async function authFetch<T>(
     accessToken?: string | null;
     csrf?: boolean;
     signal?: AbortSignal;
+    forceSameOrigin?: boolean;
   } = {},
 ): Promise<T> {
   const headers: Record<string, string> = {
@@ -214,12 +215,21 @@ export async function authFetch<T>(
   };
 
   let response: Response;
+  const primarySameOrigin = options.forceSameOrigin === true;
   try {
-    response = await fetch(authUrl(path), {
+    response = await fetch(authUrl(path, primarySameOrigin), {
       ...requestInit,
-      signal: timeoutSignal(2_400, options.signal),
+      signal: timeoutSignal(primarySameOrigin ? 1_700 : 2_400, options.signal),
     });
   } catch {
+    if (primarySameOrigin) {
+      throw new AuthApiError({
+        message:
+          "Unable to reach the authentication service through the Ops API route.",
+        status: 0,
+        code: "NETWORK_ERROR",
+      });
+    }
     try {
       response = await fetch(authUrl(path, true), {
         ...requestInit,
@@ -264,32 +274,62 @@ export async function loginRequest(input: {
   deviceName?: string;
   devicePlatform?: string;
 }): Promise<AuthSessionPayload> {
+  const body = {
+    email: input.email,
+    password: input.password,
+    ...(input.organizationId ? { organizationId: input.organizationId } : {}),
+    ...(input.rememberMe !== undefined ? { rememberMe: input.rememberMe } : {}),
+    ...(input.deviceFingerprint
+      ? { deviceFingerprint: input.deviceFingerprint }
+      : {}),
+    ...(input.deviceName ? { deviceName: input.deviceName } : {}),
+    ...(input.devicePlatform ? { devicePlatform: input.devicePlatform } : {}),
+  };
+
   const payload = await authFetch<unknown>("/login", {
     method: "POST",
-    body: {
-      email: input.email,
-      password: input.password,
-      ...(input.organizationId ? { organizationId: input.organizationId } : {}),
-      ...(input.rememberMe !== undefined ? { rememberMe: input.rememberMe } : {}),
-      ...(input.deviceFingerprint
-        ? { deviceFingerprint: input.deviceFingerprint }
-        : {}),
-      ...(input.deviceName ? { deviceName: input.deviceName } : {}),
-      ...(input.devicePlatform ? { devicePlatform: input.devicePlatform } : {}),
-    },
+    body,
   });
+  if (isAuthSessionPayload(payload)) return payload;
+
+  // A reachable VITE_API_URL may still point at an outdated/legacy service.
+  // If it returns the wrong JSON contract, retry the Ops origin's /api proxy.
+  if (browserApiBase()) {
+    const sameOriginPayload = await authFetch<unknown>("/login", {
+      method: "POST",
+      body,
+      forceSameOrigin: true,
+    });
+    return assertAuthSessionPayload(sameOriginPayload);
+  }
+
   return assertAuthSessionPayload(payload);
 }
 
 export async function refreshRequest(accessToken?: string | null): Promise<AuthSessionPayload> {
   const csrf = getCsrfToken() ?? readCookie("hamd_csrf") ?? undefined;
+  const body = csrf ? { csrfToken: csrf } : {};
   const payload = await authFetch<unknown>("/refresh", {
     method: "POST",
-    body: csrf ? { csrfToken: csrf } : {},
+    body,
     csrf: true,
     accessToken: accessToken ?? null,
-    signal: AbortSignal.timeout(8_000),
+    signal: AbortSignal.timeout(4_100),
   });
+  if (isAuthSessionPayload(payload)) return payload;
+
+  if (browserApiBase()) {
+    const sameOriginPayload = await authFetch<unknown>("/refresh", {
+      method: "POST",
+      body,
+      csrf: true,
+      accessToken: accessToken ?? null,
+      signal: AbortSignal.timeout(1_700),
+      forceSameOrigin: true,
+    });
+    return assertAuthSessionPayload(sameOriginPayload);
+  }
+
   return assertAuthSessionPayload(payload);
 }
 
