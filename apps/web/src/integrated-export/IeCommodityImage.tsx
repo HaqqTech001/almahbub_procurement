@@ -1,4 +1,5 @@
 import { PresentationImage } from "../components/PresentationImage.js";
+import { IE_PRESENTATION_MEDIA } from "../content/presentation-media.js";
 
 
 type IeCommodityImageProps = {
@@ -17,7 +18,7 @@ type IeCommodityImageProps = {
  */
 export function IeCommodityImage({
   src,
-
+  slug,
   alt,
   className,
   loading = "lazy",
@@ -25,5 +26,5 @@ export function IeCommodityImage({
   decorative = false,
 }: IeCommodityImageProps) {
 
-  return <PresentationImage src={src} alt={alt} className={className} loading={loading} hero={hero} decorative={decorative} />;
+  return <PresentationImage src={src} fallbackSrc={slug ? IE_PRESENTATION_MEDIA[slug] : undefined} alt={alt} className={className} loading={loading} hero={hero} decorative={decorative} />;
 }
