@@ -798,3 +798,67 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Catalogue media QA: physical products must remain fully visible.
+   Product photography uses contain instead of cover so tall/wide equipment
+   is never cropped into a partial body view on cards or detail pages. */
+.hamd-product-detail__gallery {
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--hamd-radius-lg, 0.5rem);
+  background: var(--hamd-color-surface, #fff);
+}
+
+.hamd-product-detail__zoom {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.hamd-product-detail__media,
+.hamd-product-detail__media img,
+.hamd-product-detail__zoom .hamd-img,
+.hamd-product-detail__gallery > .hamd-img {
+  display: block;
+  width: 100%;
+  height: clamp(18rem, 42vw, 34rem);
+  max-width: 100%;
+  object-fit: contain !important;
+  object-position: center !important;
+  box-sizing: border-box;
+  padding: clamp(0.5rem, 1.5vw, 1.1rem);
+  background: var(--hamd-color-surface, #fff);
+}
+
+.hamd-product-detail__thumb img,
+.hamd-product-detail__thumb .hamd-img,
+.hamd-disc-card__media img,
+.hamd-disc-card__media .hamd-img {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+.hamd-disc-card__media {
+  background: var(--hamd-color-surface, #fff);
+}
+
+.hamd-product-variant__details {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--hamd-color-text-secondary, #344054);
+}
+
+@media (max-width: 640px) {
+  .hamd-product-detail__media,
+  .hamd-product-detail__media img,
+  .hamd-product-detail__zoom .hamd-img,
+  .hamd-product-detail__gallery > .hamd-img {
+    height: min(68vw, 24rem);
+    min-height: 16rem;
+    padding: 0.65rem;
+  }
+}
