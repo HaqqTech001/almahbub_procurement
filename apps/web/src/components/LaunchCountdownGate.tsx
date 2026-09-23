@@ -2,7 +2,16 @@ import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useLocation } from "react-router-dom";
 import "../styles/launch-countdown.css";
 
-const LAUNCH_AT = new Date("2026-09-24T21:00:00+01:00").getTime();
+const LAUNCH_AT = new Date("2026-09-25T21:00:00+01:00").getTime();
+
+const PREVIEW_PARAM = "launchPreview";
+const PREVIEW_SECONDS: Record<string, number> = { "30": 30, "15": 15, "10": 10, "5": 5, reveal: 0 };
+
+function previewSeconds(search: string): number | null {
+  if (!import.meta.env.DEV) return null;
+  const value = new URLSearchParams(search).get(PREVIEW_PARAM);
+  return value != null && value in PREVIEW_SECONDS ? PREVIEW_SECONDS[value]! : null;
+}
 
 type Remaining = {
   total: number;
@@ -72,6 +81,13 @@ export function LaunchCountdownGate() {
   const location = useLocation();
   const [now, setNow] = useState(() => Date.now());
   const [storyIndex, setStoryIndex] = useState(0);
+  const preview = useMemo(() => previewSeconds(location.search), [location.search]);
+  const [previewStartedAt, setPreviewStartedAt] = useState(() => Date.now());
+
+  useEffect(() => {
+    setPreviewStartedAt(Date.now());
+    setNow(Date.now());
+  }, [preview]);
 
   useEffect(() => {
     if (Date.now() >= LAUNCH_AT) return;
@@ -88,10 +104,11 @@ export function LaunchCountdownGate() {
     return () => window.clearInterval(storyTimer);
   }, []);
 
-  const left = useMemo(() => remaining(now), [now]);
+  const previewTarget = preview == null ? null : previewStartedAt + preview * 1000;
+  const left = useMemo(() => remaining(now, previewTarget ?? LAUNCH_AT), [now, previewTarget]);
   const story = LAUNCH_STORIES[storyIndex] ?? LAUNCH_STORIES[0];
 
-  if (left.total <= 0 || isExcludedPath(location.pathname)) return null;
+  if ((left.total <= 0 && preview !== 0) || isExcludedPath(location.pathname)) return null;
 
   const totalWindow = 48 * 60 * 60 * 1000;
   const progress = Math.max(0, Math.min(1, 1 - left.total / totalWindow));
@@ -208,7 +225,7 @@ export function LaunchCountdownGate() {
         </div>
 
         <div className="hamd-launch__date">
-          <span>24 September 2026</span>
+          <span>25 September 2026</span>
           <span className="hamd-launch__dot" aria-hidden="true" />
           <span>9:00 PM WAT</span>
         </div>
