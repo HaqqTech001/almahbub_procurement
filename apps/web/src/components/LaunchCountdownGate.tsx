@@ -2,7 +2,17 @@ import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useLocation } from "react-router-dom";
 import "../styles/launch-countdown.css";
 
-const LAUNCH_AT = new Date("2026-09-24T21:00:00+01:00").getTime();
+const LAUNCH_AT = new Date("2026-09-25T21:00:00+01:00").getTime();
+
+const PREVIEW_PARAM = "launchPreview";
+const REHEARSAL_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_LAUNCH_REHEARSAL === "true";
+const PREVIEW_SECONDS: Record<string, number> = { "30": 30, "15": 15, "10": 10, "5": 5, reveal: 0 };
+
+function previewSeconds(search: string): number | null {
+  if (!REHEARSAL_ENABLED) return null;
+  const value = new URLSearchParams(search).get(PREVIEW_PARAM);
+  return value != null && value in PREVIEW_SECONDS ? PREVIEW_SECONDS[value]! : null;
+}
 
 type Remaining = {
   total: number;
@@ -12,8 +22,8 @@ type Remaining = {
   seconds: number;
 };
 
-function remaining(now: number): Remaining {
-  const total = Math.max(0, LAUNCH_AT - now);
+function remaining(now: number, target = LAUNCH_AT): Remaining {
+  const total = Math.max(0, target - now);
   const secondsTotal = Math.floor(total / 1000);
   return {
     total,
@@ -72,12 +82,21 @@ export function LaunchCountdownGate() {
   const location = useLocation();
   const [now, setNow] = useState(() => Date.now());
   const [storyIndex, setStoryIndex] = useState(0);
+  const preview = useMemo(() => previewSeconds(location.search), [location.search]);
+  const [previewStartedAt, setPreviewStartedAt] = useState(() => Date.now());
+  const [revealComplete, setRevealComplete] = useState(false);
 
   useEffect(() => {
-    if (Date.now() >= LAUNCH_AT) return;
-    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    setPreviewStartedAt(Date.now());
+    setNow(Date.now());
+    setRevealComplete(false);
+  }, [preview]);
+
+  useEffect(() => {
+    if (preview == null && Date.now() >= LAUNCH_AT) return;
+    const timer = window.setInterval(() => setNow(Date.now()), preview == null ? 1000 : 250);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [preview]);
 
   useEffect(() => {
     if (Date.now() >= LAUNCH_AT) return;
@@ -88,16 +107,78 @@ export function LaunchCountdownGate() {
     return () => window.clearInterval(storyTimer);
   }, []);
 
-  const left = useMemo(() => remaining(now), [now]);
+  const previewTarget = preview == null ? null : previewStartedAt + preview * 1000;
+  const setRehearsal = (value: string | null) => {
+    // Reset locally as well as in the URL so pressing the same rehearsal button
+    // always starts a fresh run.
+    const startedAt = Date.now();
+    setPreviewStartedAt(startedAt);
+    setNow(startedAt);
+    setRevealComplete(false);
+    const params = new URLSearchParams(location.search);
+    if (value == null) params.delete(PREVIEW_PARAM);
+    else params.set(PREVIEW_PARAM, value);
+    const query = params.toString();
+    window.history.replaceState(null, "", location.pathname + (query ? `?${query}` : ""));
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  };
+  const left = useMemo(() => remaining(now, previewTarget ?? LAUNCH_AT), [now, previewTarget]);
   const story = LAUNCH_STORIES[storyIndex] ?? LAUNCH_STORIES[0];
+  const revealing = left.total <= 0;
 
-  if (left.total <= 0 || isExcludedPath(location.pathname)) return null;
+  useEffect(() => {
+    if (!revealing || preview === 0 || revealComplete) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timer = window.setTimeout(() => setRevealComplete(true), reducedMotion ? 120 : 2400);
+    return () => window.clearTimeout(timer);
+  }, [revealing, preview, revealComplete]);
+
+  const excluded = isExcludedPath(location.pathname);
 
   const totalWindow = 48 * 60 * 60 * 1000;
   const progress = Math.max(0, Math.min(1, 1 - left.total / totalWindow));
+  const finalSeconds = left.total <= 30_000;
+  const critical = left.total <= 10_000;
+  const reveal = revealing;
+  useEffect(() => {
+    if (!revealComplete || preview == null) return;
+    // Rehearsals remain replayable instead of disappearing permanently after reveal.
+    const timer = window.setTimeout(() => {
+      const restartedAt = Date.now();
+      setPreviewStartedAt(restartedAt);
+      setNow(restartedAt);
+      setRevealComplete(false);
+    }, 900);
+    return () => window.clearTimeout(timer);
+  }, [revealComplete, preview]);
+
+  if (excluded || (revealComplete && preview == null)) return null;
+
+  const rootClass = [
+    "hamd-launch",
+    finalSeconds ? "hamd-launch--final" : "",
+    critical ? "hamd-launch--critical" : "",
+    reveal ? "hamd-launch--reveal" : "",
+    preview != null ? "hamd-launch--preview" : "",
+  ].filter(Boolean).join(" ");
 
   return (
-    <div className="hamd-launch" role="dialog" aria-modal="true" aria-labelledby="hamd-launch-title">
+    <div className={rootClass} role="dialog" aria-modal="true" aria-labelledby="hamd-launch-title">
+      {preview != null ? <div className="hamd-launch__preview-badge">REHEARSAL · production timer unaffected</div> : null}
+      {REHEARSAL_ENABLED ? (
+        <aside className="hamd-launch__rehearsal-controls" aria-label="Launch rehearsal controls">
+          <b>Launch rehearsal</b>
+          {["30", "15", "10", "5"].map((seconds) => (
+            <button key={seconds} type="button" onClick={() => setRehearsal(seconds)}>
+              Final {seconds}s
+            </button>
+          ))}
+          <button type="button" onClick={() => setRehearsal("reveal")}>Reveal</button>
+          <button type="button" onClick={() => setRehearsal(null)}>Real timer</button>
+        </aside>
+      ) : null}
+      <div className="hamd-launch__curtain hamd-launch__curtain--left" aria-hidden="true" />
+      <div className="hamd-launch__curtain hamd-launch__curtain--right" aria-hidden="true" />
       <div className="hamd-launch__aurora hamd-launch__aurora--one" aria-hidden="true" />
       <div className="hamd-launch__aurora hamd-launch__aurora--two" aria-hidden="true" />
       <div className="hamd-launch__grain" aria-hidden="true" />
@@ -197,6 +278,12 @@ export function LaunchCountdownGate() {
           ))}
         </div>
 
+        {finalSeconds ? (
+          <div className="hamd-launch__final-seconds" aria-live="assertive">
+            <small>{reveal ? "Welcome to Almahbub V2" : "Launching in"}</small>
+            {!reveal ? <strong>{Math.max(0, Math.ceil(left.total / 1000))}</strong> : <strong>LIVE</strong>}
+          </div>
+        ) : null}
         <div className="hamd-launch__countdown" aria-label="Countdown to launch">
           <TimeUnit value={left.days} label="Days" />
           <span className="hamd-launch__separator" aria-hidden="true">:</span>
@@ -208,7 +295,7 @@ export function LaunchCountdownGate() {
         </div>
 
         <div className="hamd-launch__date">
-          <span>24 September 2026</span>
+          <span>25 September 2026</span>
           <span className="hamd-launch__dot" aria-hidden="true" />
           <span>9:00 PM WAT</span>
         </div>

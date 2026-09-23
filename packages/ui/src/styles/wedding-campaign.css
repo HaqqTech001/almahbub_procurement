@@ -878,3 +878,9 @@ html.dark .hamd-wedding-portal__comments {
 .hamd-wedding-reentry:focus-visible { outline: 3px solid #c8a86b; outline-offset: 3px; }
 @media (max-width: 640px) { .hamd-wedding-reentry { width: 44px; height: 44px; inset-inline-end: max(0.5rem, env(safe-area-inset-right)); } }
 @media (prefers-reduced-motion: reduce) { .hamd-wedding-reentry > span:first-child { animation: none; } }
+
+.hamd-wedding-rehearsal{position:fixed;right:.75rem;bottom:.75rem;z-index:120;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;max-width:min(38rem,calc(100vw - 1.5rem));padding:.55rem;border:1px solid rgb(255 255 255/.16);border-radius:1rem;background:rgb(31 20 29/.94);box-shadow:0 1rem 3rem rgb(0 0 0/.35);backdrop-filter:blur(12px)}
+.hamd-wedding-rehearsal b{padding:0 .35rem;color:#f5d8c8;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase}
+.hamd-wedding-rehearsal button{border:1px solid rgb(245 216 200/.3);border-radius:.65rem;padding:.45rem .62rem;background:rgb(255 255 255/.07);color:inherit;font:inherit;font-size:.7rem;cursor:pointer}
+.hamd-wedding-rehearsal button:hover,.hamd-wedding-rehearsal button:focus-visible{background:rgb(245 216 200/.17);outline:2px solid rgb(245 216 200/.5);outline-offset:1px}
+@media(max-width:640px){.hamd-wedding-rehearsal{left:.5rem;right:.5rem;bottom:.5rem;justify-content:center}.hamd-wedding-rehearsal b{width:100%;text-align:center}}

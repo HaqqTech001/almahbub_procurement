@@ -1,6 +1,6 @@
 import { ModuleSkeleton } from "@hamd/ui/module-layout";
 import { Component, useCallback, useEffect, useMemo, useRef, useState, type ErrorInfo, type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { WeddingParticipation } from "./WeddingParticipation.js";
 import {
   DEFAULT_WEDDING_CAMPAIGN,
@@ -96,8 +96,20 @@ class WeddingPortalErrorBoundary extends Component<
   }
 }
 
+type WeddingRehearsalState = "waiting" | "live" | "ended";
+
+const WEDDING_REHEARSAL_ENABLED =
+  import.meta.env.DEV || import.meta.env.VITE_ENABLE_WEDDING_REHEARSAL === "true";
+
+function rehearsalState(search: string): WeddingRehearsalState | null {
+  if (!WEDDING_REHEARSAL_ENABLED) return null;
+  const value = new URLSearchParams(search).get("weddingPreview");
+  return value === "waiting" || value === "live" || value === "ended" ? value : null;
+}
+
 export function WeddingLivePage() {
   const auth = useAuth();
+  const location = useLocation();
   const { resolved, setTheme } = useTheme();
   const videoRef = useRef<HTMLVideoElement>(null);
   const roomRef = useRef<WeddingLiveSession | null>(null);
@@ -142,9 +154,24 @@ export function WeddingLivePage() {
   const configuredRef = useRef(true);
   const disconnectTimer = useRef<number | undefined>(undefined);
 
-  const loginHref = `/login?returnTo=${encodeURIComponent(campaign.livePath)}`;
-  const commentChannel = weddingCommentChannel(campaign);
-  const liveActive = campaign.streamStatus === "live";
+  const rehearsal = useMemo(() => rehearsalState(location.search), [location.search]);
+  const displayCampaign = useMemo<WeddingCampaignRecord>(() => {
+    if (!rehearsal) return campaign;
+    if (rehearsal === "waiting") return { ...campaign, streamStatus: "upcoming", liveMode: "none", endedKind: "none", waitingMusicEnabled: true };
+    if (rehearsal === "live") return { ...campaign, streamStatus: "live", liveMode: "test", endedKind: "none" };
+    return { ...campaign, streamStatus: "ended", liveMode: "none", endedKind: "production" };
+  }, [campaign, rehearsal]);
+  const setRehearsal = (value: WeddingRehearsalState | null) => {
+    const params = new URLSearchParams(location.search);
+    if (value) params.set("weddingPreview", value);
+    else params.delete("weddingPreview");
+    const query = params.toString();
+    window.history.replaceState(null, "", location.pathname + (query ? `?${query}` : ""));
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  };
+  const loginHref = `/login?returnTo=${encodeURIComponent(displayCampaign.livePath)}`;
+  const commentChannel = weddingCommentChannel(displayCampaign);
+  const liveActive = displayCampaign.streamStatus === "live";
   const connecting = Boolean(
     auth.status === "authenticated" && liveActive && statusReady && !connected && !error && configuredRef.current,
   );
@@ -177,11 +204,11 @@ export function WeddingLivePage() {
 
   const playableWaiting = useMemo(
     () =>
-      campaign.waitingMusicEnabled !== true ? [] : enabledWeddingWaitingTracks(waitingTracks),
-    [campaign.waitingMusicEnabled, waitingTracks],
+      displayCampaign.waitingMusicEnabled !== true ? [] : enabledWeddingWaitingTracks(waitingTracks),
+    [displayCampaign.waitingMusicEnabled, waitingTracks],
   );
   const currentWaiting = playableWaiting.find((row) => row.id === currentWaitingId) ?? null;
-  const waitingAllowed = shouldPlayWeddingWaitingMusic(campaign);
+  const waitingAllowed = shouldPlayWeddingWaitingMusic(displayCampaign);
   const startWaitingMusic = useCallback(() => {
     const node = waitingAudioRef.current;
     if (!node || !waitingAllowed || waitingLockRef.current) return;
@@ -206,10 +233,10 @@ export function WeddingLivePage() {
       waitingLockRef.current = true;
       return;
     }
-    if (campaign.endedKind === "test") {
+    if (displayCampaign.endedKind === "test") {
       waitingLockRef.current = false;
     }
-  }, [campaign.endedKind, waitingAllowed]);
+  }, [displayCampaign.endedKind, waitingAllowed]);
 
   useEffect(() => {
     if (playableWaiting.length === 0) {
@@ -220,10 +247,10 @@ export function WeddingLivePage() {
     if (stillCurrent) return;
     const recovered = recoverWeddingWaitingTrackIndex(playableWaiting, currentWaitingIdRef.current, {
       failedIds: failedWaitingIdsRef.current,
-      loop: campaign.waitingMusicLoop !== false,
+      loop: displayCampaign.waitingMusicLoop !== false,
     });
     setCurrentWaitingId(playableWaiting[recovered]?.id ?? playableWaiting[0]?.id ?? null);
-  }, [campaign.waitingMusicLoop, playableWaiting]);
+  }, [displayCampaign.waitingMusicLoop, playableWaiting]);
 
   useEffect(() => {
     const node = waitingAudioRef.current;
@@ -257,10 +284,10 @@ export function WeddingLivePage() {
   }, [currentWaiting?.src, waitingAllowed, waitingMuted, waitingVolume, startWaitingMusic]);
 
   const advanceWaitingTrack = (fromError: boolean) => {
-    if (waitingLockRef.current || !shouldPlayWeddingWaitingMusic(campaign)) return;
+    if (waitingLockRef.current || !shouldPlayWeddingWaitingMusic(displayCampaign)) return;
     const index = playableWaiting.findIndex((row) => row.id === currentWaitingIdRef.current);
     const next = nextWeddingWaitingTrackIndex(playableWaiting, index, {
-      loop: campaign.waitingMusicLoop !== false,
+      loop: displayCampaign.waitingMusicLoop !== false,
       failedIds: failedWaitingIdsRef.current,
     });
     if (next < 0) {
@@ -300,7 +327,12 @@ export function WeddingLivePage() {
     setError(null);
     setReconnect(false);
     try {
-      const mode = campaign.liveMode === "test" ? "test" : "production";
+      if (rehearsal === "live") {
+        setConnected(true);
+        setError(null);
+        return;
+      }
+      const mode = displayCampaign.liveMode === "test" ? "test" : "production";
       const session = await fetchWeddingLiveToken("viewer", mode);
       roomRef.current?.disconnect();
       const live = await connectWeddingViewer({
@@ -308,7 +340,7 @@ export function WeddingLivePage() {
         token: session.token,
         video: videoRef.current,
         onReconnecting: setReconnect,
-        primaryIdentity: campaign.primaryFeedId,
+        primaryIdentity: displayCampaign.primaryFeedId,
         quality,
         onFeeds: (rows) => {
           setFeeds(rows);
@@ -336,7 +368,7 @@ export function WeddingLivePage() {
     } finally {
       connectingRef.current = false;
     }
-  }, [campaign.liveMode]);
+  }, [displayCampaign.liveMode, displayCampaign.primaryFeedId, quality, rehearsal]);
 
   useEffect(() => {
     if (auth.status !== "authenticated") return;
@@ -358,7 +390,7 @@ export function WeddingLivePage() {
       disconnectTimer.current = undefined;
     }
     if (auth.status !== "authenticated" || !statusReady) return;
-    if (campaign.streamStatus !== "live") {
+    if (displayCampaign.streamStatus !== "live") {
       roomRef.current?.disconnect();
       roomRef.current = null;
       setConnected(false);
@@ -377,22 +409,22 @@ export function WeddingLivePage() {
         }
       }, 200);
     };
-  }, [auth.status, campaign.streamStatus, campaign.liveMode, connectViewer, statusReady]);
+  }, [auth.status, displayCampaign.streamStatus, displayCampaign.liveMode, connectViewer, statusReady]);
 
   const headerStatus: WeddingPortalStatus = useMemo(() => {
-    if (campaign.endedKind === "test" && campaign.streamStatus !== "live") return "ENDED";
-    if (campaign.streamStatus === "ended") return "ENDED";
+    if (displayCampaign.endedKind === "test" && displayCampaign.streamStatus !== "live") return "ENDED";
+    if (displayCampaign.streamStatus === "ended") return "ENDED";
     if (connecting) return "CONNECTING";
-    if (campaign.streamStatus === "live" && campaign.liveMode === "test") return "TEST LIVE";
-    if (campaign.streamStatus === "live") return "LIVE";
+    if (displayCampaign.streamStatus === "live" && displayCampaign.liveMode === "test") return "TEST LIVE";
+    if (displayCampaign.streamStatus === "live") return "LIVE";
     return "WAITING";
-  }, [campaign.endedKind, campaign.liveMode, campaign.streamStatus, connecting]);
+  }, [displayCampaign.endedKind, displayCampaign.liveMode, displayCampaign.streamStatus, connecting]);
 
   const overlay = (() => {
     if (auth.status !== "authenticated") {
       return (
         <>
-          <h1>{campaign.title}</h1>
+          <h1>{displayCampaign.title}</h1>
           <p>Sign in to join the live celebration.</p>
           <div className="hamd-wedding-portal__overlay-actions">
             <Link className="hamd-btn hamd-btn--primary" to={loginHref}>
@@ -402,33 +434,33 @@ export function WeddingLivePage() {
         </>
       );
     }
-    if (campaign.endedKind === "test" && campaign.streamStatus !== "live") {
+    if (displayCampaign.endedKind === "test" && displayCampaign.streamStatus !== "live") {
       return (
         <>
           <h1>Test broadcast ended.</h1>
           <div className="hamd-wedding-portal__overlay-actions">
-            <Link className="hamd-btn hamd-btn--primary" to={campaign.sitePath}>
+            <Link className="hamd-btn hamd-btn--primary" to={displayCampaign.sitePath}>
               Back to Wedding
             </Link>
           </div>
         </>
       );
     }
-    if (campaign.streamStatus === "ended") {
+    if (displayCampaign.streamStatus === "ended") {
       return (
         <>
           <h1>Thank you for celebrating with us.</h1>
           <p>Waiting music is off because this celebration has ended.</p>
           <div className="hamd-wedding-portal__overlay-actions">
-            <Link className="hamd-btn hamd-btn--primary" to={`${campaign.sitePath}#gallery`}>
+            <Link className="hamd-btn hamd-btn--primary" to={`${displayCampaign.sitePath}#gallery`}>
               View Gallery
             </Link>
-            {campaign.recordingAvailable && campaign.recordingDownloadEnabled ? (
+            {displayCampaign.recordingAvailable && displayCampaign.recordingDownloadEnabled ? (
               <a className="hamd-btn hamd-btn--secondary" href="/api/v1/wedding/recording/download">
                 Watch Recording
               </a>
             ) : null}
-            <Link className="hamd-btn hamd-btn--secondary" to={campaign.sitePath}>
+            <Link className="hamd-btn hamd-btn--secondary" to={displayCampaign.sitePath}>
               Back to Wedding
             </Link>
           </div>
@@ -452,7 +484,7 @@ export function WeddingLivePage() {
                 Try Again
               </button>
             ) : null}
-            <Link className="hamd-btn hamd-btn--secondary" to={campaign.sitePath}>
+            <Link className="hamd-btn hamd-btn--secondary" to={displayCampaign.sitePath}>
               Back to Wedding
             </Link>
           </div>
@@ -462,7 +494,7 @@ export function WeddingLivePage() {
     if (reconnect) {
       return <p>Reconnecting to the live celebration...</p>;
     }
-    if (feedLost && campaign.streamStatus === "live") {
+    if (feedLost && displayCampaign.streamStatus === "live") {
       return (
         <>
           <p>This camera is reconnecting.</p>
@@ -473,11 +505,11 @@ export function WeddingLivePage() {
     if (connecting) {
       return <p>Connecting to the live celebration...</p>;
     }
-    if (campaign.streamStatus !== "live") {
-      const when = formatWeddingWhen(campaign.streamAt);
-      const parts = countdownParts(campaign.streamAt, now);
+    if (displayCampaign.streamStatus !== "live") {
+      const when = formatWeddingWhen(displayCampaign.streamAt);
+      const parts = countdownParts(displayCampaign.streamAt, now);
       return (
-        <WeddingWaitingStage campaign={campaign}>
+        <WeddingWaitingStage campaign={displayCampaign}>
           {when ? <p>{when}</p> : <p>Time to be announced</p>}
           {parts ? (
             <p>
@@ -555,7 +587,7 @@ export function WeddingLivePage() {
   })();
 
   return (
-    <WeddingPortalErrorBoundary sitePath={campaign.sitePath}>
+    <WeddingPortalErrorBoundary sitePath={displayCampaign.sitePath}>
       <WeddingLivePortalShell>
         <WeddingLiveHeader
           status={headerStatus}
@@ -565,9 +597,21 @@ export function WeddingLivePage() {
               onToggle={() => setTheme(resolved === "dark" ? "light" : "dark")}
             />
           }
-          exitHref={campaign.sitePath}
+          exitHref={displayCampaign.sitePath}
           exitLabel="Back to Wedding"
         />
+        {WEDDING_REHEARSAL_ENABLED ? (
+          <aside className="hamd-wedding-rehearsal" aria-label="Wedding rehearsal controls">
+            <strong>Rehearsal only</strong>
+            <span>Uses the real guest portal UI without starting a production broadcast.</span>
+            <div className="hamd-wedding-rehearsal__actions">
+              <button type="button" className="hamd-btn hamd-btn--secondary" aria-pressed={rehearsal === "waiting"} onClick={() => setRehearsal("waiting")}>Waiting room</button>
+              <button type="button" className="hamd-btn hamd-btn--secondary" aria-pressed={rehearsal === "live"} onClick={() => setRehearsal("live")}>Guest live view</button>
+              <button type="button" className="hamd-btn hamd-btn--secondary" aria-pressed={rehearsal === "ended"} onClick={() => setRehearsal("ended")}>Post-live</button>
+              <button type="button" className="hamd-btn hamd-btn--ghost" onClick={() => setRehearsal(null)}>Real campaign</button>
+            </div>
+          </aside>
+        ) : null}
         <details className="hamd-wedding-participation-menu">
           <summary>Waiting room &amp; updates</summary>
           <WeddingParticipation onJoinInteraction={() => { if (!waitingMutedRef.current) startWaitingMusic(); }} />
@@ -736,7 +780,7 @@ export function WeddingLivePage() {
             onPlaying={() => { setWaitingPlaying(true); setNeedWaitingSound(false); }}
             onPause={() => setWaitingPlaying(false)}
             loop={
-              campaign.waitingMusicLoop !== false &&
+              displayCampaign.waitingMusicLoop !== false &&
               playableWaiting.length === 1
             }
             onEnded={() => { setWaitingPlaying(false); advanceWaitingTrack(false); }}

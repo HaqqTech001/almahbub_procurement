@@ -128,7 +128,7 @@ export function isPublicWeddingWaitingTrackUsable(
 
   try {
     const url = new URL(src);
-    return url.protocol === "https:" || url.protocol === "http:";
+    return url.protocol === "https:";
   } catch {
     return false;
   }
@@ -921,11 +921,14 @@ export class WeddingCampaignService {
   }
 
   private presentWaitingTrack(row: WeddingWaitingTrack, includeStorage: boolean): WeddingWaitingTrack {
+    const usable = includeStorage || this.isPublicWaitingTrackUsable(row);
     return {
       ...row,
+      src: usable ? row.src : "",
       storageKey: includeStorage ? row.storageKey : "",
       sortOrder: row.position,
-      enabled: row.isEnabled,
+      enabled: usable && row.isEnabled,
+      isEnabled: usable && row.isEnabled,
     };
   }
 
