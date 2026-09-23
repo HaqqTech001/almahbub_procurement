@@ -1,0 +1,300 @@
+.hamd-launch {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  min-height: 100dvh;
+  padding: clamp(1rem, 3vw, 2rem);
+  background:
+    radial-gradient(circle at 16% 18%, rgb(194 147 53 / 0.18), transparent 28%),
+    radial-gradient(circle at 82% 24%, rgb(63 93 153 / 0.22), transparent 30%),
+    linear-gradient(145deg, #07111f 0%, #0b1728 42%, #111827 100%);
+  color: #f8fafc;
+}
+
+.hamd-launch::before,
+.hamd-launch::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.hamd-launch::before {
+  width: min(68vw, 54rem);
+  height: min(68vw, 54rem);
+  border: 1px solid rgb(219 177 83 / 0.12);
+  box-shadow:
+    0 0 0 5rem rgb(219 177 83 / 0.025),
+    0 0 0 10rem rgb(219 177 83 / 0.015);
+  animation: hamd-launch-orbit 18s linear infinite;
+}
+
+.hamd-launch::after {
+  width: 22rem;
+  height: 22rem;
+  right: -8rem;
+  bottom: -9rem;
+  background: radial-gradient(circle, rgb(219 177 83 / 0.22), transparent 67%);
+}
+
+.hamd-launch__aurora {
+  position: absolute;
+  width: 34rem;
+  height: 34rem;
+  border-radius: 50%;
+  filter: blur(72px);
+  opacity: 0.23;
+  pointer-events: none;
+  animation: hamd-launch-drift 10s ease-in-out infinite alternate;
+}
+
+.hamd-launch__aurora--one {
+  top: -12rem;
+  left: -10rem;
+  background: #d2a548;
+}
+
+.hamd-launch__aurora--two {
+  right: -10rem;
+  bottom: -12rem;
+  background: #244f8c;
+  animation-delay: -4s;
+}
+
+.hamd-launch__grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(255 255 255 / 0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 82%, transparent);
+}
+
+.hamd-launch__panel {
+  position: relative;
+  z-index: 2;
+  width: min(64rem, 100%);
+  text-align: center;
+  padding: clamp(1.5rem, 5vw, 4rem);
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 2rem;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.055), rgb(255 255 255 / 0.018));
+  box-shadow:
+    0 2rem 5rem rgb(0 0 0 / 0.34),
+    inset 0 1px 0 rgb(255 255 255 / 0.08);
+  backdrop-filter: blur(18px);
+}
+
+.hamd-launch__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-inline: auto;
+  text-align: left;
+}
+
+.hamd-launch__brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  border: 1px solid rgb(229 190 93 / 0.6);
+  background: linear-gradient(145deg, #d8ad4d, #8b651d);
+  color: #07111f;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  box-shadow: 0 0 2rem rgb(218 174 75 / 0.2);
+}
+
+.hamd-launch__brand strong,
+.hamd-launch__brand small {
+  display: block;
+}
+
+.hamd-launch__brand strong {
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.hamd-launch__brand small {
+  margin-top: 0.08rem;
+  color: #aebbd0;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hamd-launch__eyebrow {
+  margin: clamp(2rem, 5vw, 3.4rem) 0 0.8rem;
+  color: #e7c674;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.hamd-launch h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2.25rem, 7vw, 5.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+.hamd-launch h1 span {
+  display: block;
+  margin-top: 0.16em;
+  color: transparent;
+  background: linear-gradient(90deg, #fff6d7 0%, #ddb656 50%, #fff1bd 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.hamd-launch__lead {
+  width: min(42rem, 100%);
+  margin: 1.2rem auto 0;
+  color: #b8c4d5;
+  font-size: clamp(0.95rem, 2vw, 1.12rem);
+  line-height: 1.7;
+}
+
+.hamd-launch__countdown {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+  align-items: center;
+  width: min(47rem, 100%);
+  margin: clamp(2rem, 6vw, 3.5rem) auto 0;
+  gap: clamp(0.25rem, 1.5vw, 0.9rem);
+}
+
+.hamd-launch__unit {
+  min-width: 0;
+  padding: clamp(0.9rem, 2.8vw, 1.4rem) 0.35rem;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 1.2rem;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.055), rgb(255 255 255 / 0.018));
+}
+
+.hamd-launch__number {
+  display: block;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.hamd-launch__label {
+  display: block;
+  margin-top: 0.45rem;
+  color: #8290a6;
+  font-size: clamp(0.62rem, 1.5vw, 0.72rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hamd-launch__separator {
+  color: #caa54d;
+  font-size: clamp(1.8rem, 5vw, 3.4rem);
+  transform: translateY(-0.2rem);
+  opacity: 0.75;
+}
+
+.hamd-launch__date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  color: #d8dfeb;
+  font-size: 0.9rem;
+}
+
+.hamd-launch__dot {
+  width: 0.32rem;
+  height: 0.32rem;
+  border-radius: 50%;
+  background: #d4ad4d;
+  box-shadow: 0 0 0 0.3rem rgb(212 173 77 / 0.08);
+}
+
+.hamd-launch__progress {
+  width: min(34rem, 100%);
+  height: 0.22rem;
+  margin: 1.5rem auto 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.06);
+}
+
+.hamd-launch__progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left center;
+  background: linear-gradient(90deg, #8d651e, #e4bf65, #fff0b2);
+  transition: transform 1s linear;
+}
+
+.hamd-launch__note {
+  margin: 1rem 0 0;
+  color: #718097;
+  font-size: 0.76rem;
+}
+
+@keyframes hamd-launch-drift {
+  from { transform: translate3d(-1rem, -0.5rem, 0) scale(0.96); }
+  to { transform: translate3d(1.5rem, 1rem, 0) scale(1.04); }
+}
+
+@keyframes hamd-launch-orbit {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .hamd-launch {
+    padding: 0.7rem;
+  }
+
+  .hamd-launch__panel {
+    padding: 1.35rem 0.85rem 1.5rem;
+    border-radius: 1.5rem;
+  }
+
+  .hamd-launch__countdown {
+    gap: 0.18rem;
+  }
+
+  .hamd-launch__unit {
+    border-radius: 0.85rem;
+    padding-inline: 0.2rem;
+  }
+
+  .hamd-launch__separator {
+    font-size: 1.6rem;
+  }
+
+  .hamd-launch__date {
+    gap: 0.5rem;
+    font-size: 0.78rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamd-launch__aurora,
+  .hamd-launch::before {
+    animation: none;
+  }
+}
