@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useLocation } from "react-router-dom";
 import "../styles/launch-countdown.css";
 
@@ -63,10 +63,22 @@ export function LaunchCountdownGate() {
       <div className="hamd-launch__aurora hamd-launch__aurora--one" aria-hidden="true" />
       <div className="hamd-launch__aurora hamd-launch__aurora--two" aria-hidden="true" />
       <div className="hamd-launch__grain" aria-hidden="true" />
+      <div className="hamd-launch__sparkles" aria-hidden="true">
+        {Array.from({ length: 18 }, (_, index) => (
+          <i key={index} style={{ "--spark-index": index } as CSSProperties} />
+        ))}
+      </div>
 
       <main className="hamd-launch__panel">
         <div className="hamd-launch__brand">
-          <span className="hamd-launch__brand-mark" aria-hidden="true">A</span>
+          <span className="hamd-launch__logo-shell">
+            <img
+              src="/almahbub.svg"
+              alt="Almahbub International logo"
+              className="hamd-launch__logo"
+            />
+            <span className="hamd-launch__logo-glint" aria-hidden="true" />
+          </span>
           <span>
             <strong>Almahbub International</strong>
             <small>Global Procurement & Integrated Export</small>
