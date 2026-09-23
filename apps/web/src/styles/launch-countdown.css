@@ -298,3 +298,130 @@
     animation: none;
   }
 }
+
+
+.hamd-launch__logo-shell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 3.15rem;
+  height: 3.15rem;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 1px solid rgb(232 196 104 / 0.5);
+  background: radial-gradient(circle at 35% 30%, #ffffff 0%, #f7edcf 34%, #d3aa4f 100%);
+  box-shadow:
+    0 0 0 0.28rem rgb(216 173 77 / 0.06),
+    0 0 2.2rem rgb(216 173 77 / 0.24);
+}
+
+.hamd-launch__logo {
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.hamd-launch__logo-glint {
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(
+    115deg,
+    transparent 35%,
+    rgb(255 255 255 / 0.9) 48%,
+    transparent 58%
+  );
+  transform: translateX(-140%) rotate(8deg);
+  animation: hamd-logo-glint 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hamd-launch__sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hamd-launch__sparkles i {
+  --spark-x: calc((var(--spark-index) * 47) % 100);
+  --spark-y: calc((var(--spark-index) * 73) % 100);
+  position: absolute;
+  left: calc(var(--spark-x) * 1%);
+  top: calc(var(--spark-y) * 1%);
+  width: calc(2px + (var(--spark-index) % 3) * 1px);
+  height: calc(2px + (var(--spark-index) % 3) * 1px);
+  border-radius: 50%;
+  background: #ffe8a3;
+  box-shadow:
+    0 0 0.45rem #f1c860,
+    0 0 1rem rgb(241 200 96 / 0.65);
+  opacity: 0;
+  animation: hamd-sparkle 3.8s ease-in-out infinite;
+  animation-delay: calc(var(--spark-index) * -0.23s);
+}
+
+.hamd-launch__sparkles i::before,
+.hamd-launch__sparkles i::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  background: currentColor;
+  opacity: 0.75;
+}
+
+.hamd-launch__sparkles i::before {
+  width: 1px;
+  height: 12px;
+}
+
+.hamd-launch__sparkles i::after {
+  width: 12px;
+  height: 1px;
+}
+
+.hamd-launch__panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, transparent 0 42%, rgb(255 255 255 / 0.045) 50%, transparent 58% 100%);
+  transform: translateX(-120%);
+  animation: hamd-panel-shine 6s ease-in-out infinite;
+}
+
+@keyframes hamd-sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.4) rotate(0deg);
+  }
+  45% {
+    opacity: 0.95;
+    transform: scale(1.35) rotate(45deg);
+  }
+  70% {
+    opacity: 0.22;
+    transform: scale(0.7) rotate(90deg);
+  }
+}
+
+@keyframes hamd-logo-glint {
+  0%, 58% {
+    transform: translateX(-140%) rotate(8deg);
+  }
+  78%, 100% {
+    transform: translateX(140%) rotate(8deg);
+  }
+}
+
+@keyframes hamd-panel-shine {
+  0%, 62% {
+    transform: translateX(-120%);
+  }
+  84%, 100% {
+    transform: translateX(120%);
+  }
+}
