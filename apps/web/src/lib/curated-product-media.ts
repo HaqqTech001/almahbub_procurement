@@ -191,9 +191,9 @@ export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>
     source: "manufacturer",
   },
   "nike-air-max-dn8": {
-    src: "https://nmp.about.nike.com/about/prod/3a348c07-6124-4466-a330-2325bf8a3651/nike-air-max-dn8.jpg?m=eyJlZGl0cyI6eyJqcGVnIjp7InF1YWxpdHkiOjEwMH0sIndlYnAiOnsicXVhbGl0eSI6MTAwfSwiZXh0cmFjdCI6eyJsZWZ0Ijo3NSwidG9wIjowLCJ3aWR0aCI6MzAxMywiaGVpZ2h0IjoyMDExfSwicmVzaXplIjp7IndpZHRoIjozODQwfX19&s=50dd8018a75af0125f4ec63218e496e5ce551148ca1dc7d650e428d1a8e0854d",
-    alt: "Nike Air Max Dn8",
-    sourceUrl: "https://about.nike.com/en/newsroom/releases/nike-air-max-dn8-official-images",
+    src: "https://static.nike.com/a/images/q_auto:eco/t_product_v1/f_auto/dpr_1.0/h_386,c_limit/u_9ddf04c7-2a9a-4d76-add1-d15af8f0263d,c_scale,fl_relative,w_1.0,h_1.0,fl_layer_apply/0b313018-da77-4696-a335-340fe123b8e2/AIR+MAX+DN8.png",
+    alt: "Nike Air Max Dn8 shoe",
+    sourceUrl: "https://www.nike.com/mx/t/tenis-para-hombre-nike-air-max-dn8-Id6xJy7F/IO7846-100",
     source: "manufacturer",
   },
   "samsung-galaxy-s26-series": {
