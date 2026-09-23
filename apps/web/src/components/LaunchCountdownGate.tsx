@@ -5,10 +5,11 @@ import "../styles/launch-countdown.css";
 const LAUNCH_AT = new Date("2026-09-25T21:00:00+01:00").getTime();
 
 const PREVIEW_PARAM = "launchPreview";
+const REHEARSAL_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_LAUNCH_REHEARSAL === "true";
 const PREVIEW_SECONDS: Record<string, number> = { "30": 30, "15": 15, "10": 10, "5": 5, reveal: 0 };
 
 function previewSeconds(search: string): number | null {
-  if (!import.meta.env.DEV) return null;
+  if (!REHEARSAL_ENABLED) return null;
   const value = new URLSearchParams(search).get(PREVIEW_PARAM);
   return value != null && value in PREVIEW_SECONDS ? PREVIEW_SECONDS[value]! : null;
 }
@@ -21,8 +22,7 @@ type Remaining = {
   seconds: number;
 };
 
-function remaining(now: number): Remaining {
-  const total = Math.max(0, LAUNCH_AT - now);
+function remaining(now: number, target = LAUNCH_AT): Remaining {\n  const total = Math.max(0, target - now);
   const secondsTotal = Math.floor(total / 1000);
   return {
     total,
@@ -90,8 +90,7 @@ export function LaunchCountdownGate() {
   }, [preview]);
 
   useEffect(() => {
-    if (Date.now() >= LAUNCH_AT) return;
-    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    if (preview == null && Date.now() >= LAUNCH_AT) return;\n    const timer = window.setInterval(() => setNow(Date.now()), preview == null ? 1000 : 250);
     return () => window.clearInterval(timer);
   }, [preview]);
 
@@ -105,6 +104,14 @@ export function LaunchCountdownGate() {
   }, []);
 
   const previewTarget = preview == null ? null : previewStartedAt + preview * 1000;
+  const setRehearsal = (value: string | null) => {
+    const params = new URLSearchParams(location.search);
+    if (value == null) params.delete(PREVIEW_PARAM);
+    else params.set(PREVIEW_PARAM, value);
+    const query = params.toString();
+    window.history.replaceState(null, "", location.pathname + (query ? `?${query}` : ""));
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  };
   const left = useMemo(() => remaining(now, previewTarget ?? LAUNCH_AT), [now, previewTarget]);
   const story = LAUNCH_STORIES[storyIndex] ?? LAUNCH_STORIES[0];
 
@@ -126,6 +133,18 @@ export function LaunchCountdownGate() {
   return (
     <div className={rootClass} role="dialog" aria-modal="true" aria-labelledby="hamd-launch-title">
       {preview != null ? <div className="hamd-launch__preview-badge">REHEARSAL · production timer unaffected</div> : null}
+      {REHEARSAL_ENABLED ? (
+        <aside className="hamd-launch__rehearsal-controls" aria-label="Launch rehearsal controls">
+          <b>Launch rehearsal</b>
+          {["30", "15", "10", "5"].map((seconds) => (
+            <button key={seconds} type="button" onClick={() => setRehearsal(seconds)}>
+              Final {seconds}s
+            </button>
+          ))}
+          <button type="button" onClick={() => setRehearsal("reveal")}>Reveal</button>
+          <button type="button" onClick={() => setRehearsal(null)}>Real timer</button>
+        </aside>
+      ) : null}
       <div className="hamd-launch__curtain hamd-launch__curtain--left" aria-hidden="true" />
       <div className="hamd-launch__curtain hamd-launch__curtain--right" aria-hidden="true" />
       <div className="hamd-launch__aurora hamd-launch__aurora--one" aria-hidden="true" />
