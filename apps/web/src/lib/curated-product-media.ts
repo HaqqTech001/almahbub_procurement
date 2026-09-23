@@ -2,7 +2,7 @@ export type CuratedProductMedia = {
   src: string;
   alt: string;
   sourceUrl: string;
-  source: "manufacturer" | "wikimedia";
+  source: "manufacturer" | "wikimedia" | "retailer";
 };
 
 /**
@@ -10,6 +10,36 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "datalogic-magellan-9600i-scanner-scale": {
+    src: "https://www.barcodesinc.com/media/catalog/product/2/b/a/1/2ba10ced98b08af980b31be940bede864b0ecd2e_magellan_9600i_1.jpg",
+    alt: "Datalogic Magellan 9600i scanner scale",
+    sourceUrl: "https://www.barcodesinc.com/datalogic/part-96222212000-000530.htm",
+    source: "retailer",
+  },
+  "hp-color-laserjet-enterprise-flow-mfp-6800zf": {
+    src: "https://www.tech-america.com/dd2/img/item/A-1500x1500/8747475-1.jpg",
+    alt: "HP Color LaserJet Enterprise Flow MFP 6800zf",
+    sourceUrl: "https://www.tech-america.com/item/hp-laserjet-enterprise-6800zf-wired-laser-multifunction-printer/6qn36a-bgj",
+    source: "retailer",
+  },
+  "rational-icombi-pro-10-1-1": {
+    src: "https://ultrafeu.vteximg.com.br/arquivos/ids/169381/1.png?v=638965680553600000",
+    alt: "RATIONAL iCombi Pro 10-1/1 combi oven",
+    sourceUrl: "https://www.ultrafeu.com.br/forno-combinado-c-max-10-evo-10-funcoes-1000-receitas-10-gns-pratica/p",
+    source: "retailer",
+  },
+  "montblanc-meisterst-ck-wallet-6cc": {
+    src: "https://www.burrells.co.uk/media/catalog/product/cache/a927f0e36fbef236bc45221e5b67550a/3/1/31-54-092_grey.jpg",
+    alt: "Montblanc Meisterstück Wallet 6cc in black leather",
+    sourceUrl: "https://www.burrells.co.uk/montblanc-meisterstuck-wallet-6cc-14548",
+    source: "retailer",
+  },
+  "takara-belmont-apollo-2": {
+    src: "https://www.salonfurniture.co.uk/assets/images/zoom/barber-chair-takara-belmont-apollo-2-020.jpg",
+    alt: "Takara Belmont Apollo 2 barber chair",
+    sourceUrl: "https://www.salonfurniture.co.uk/apollo-2-barber-chair",
+    source: "retailer",
+  },
   "hp-engage-one-pro-g2q": {
     src: "https://jp.ext.hp.com/content/dam/jp-ext-hp-com/jp/ja/ec/retail-solutions/engage_one_pro_g2/images/gallery_thumb1.jpg",
     alt: "HP Engage One Pro G2 point-of-sale system",
