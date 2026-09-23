@@ -1,42 +1,67 @@
-export const PROCUREMENT_SERVICE_VISUALS: Readonly<Record<string, { src: string; alt: string }>> = {
+type ServiceVisual = { src: string; alt: string };
+
+function serviceSvg(title: string, subtitle: string, icon: string): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="${title}">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#102033"/>
+        <stop offset="1" stop-color="#182b42"/>
+      </linearGradient>
+      <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#f0cd68"/>
+        <stop offset="1" stop-color="#b58a2a"/>
+      </linearGradient>
+    </defs>
+    <rect width="900" height="620" rx="34" fill="url(#bg)"/>
+    <rect x="28" y="28" width="844" height="564" rx="26" fill="none" stroke="#27415f" stroke-width="3"/>
+    <circle cx="450" cy="235" r="112" fill="#0c1726" stroke="url(#gold)" stroke-width="5"/>
+    <text x="450" y="260" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="88" font-weight="700" fill="#f0cd68">${icon}</text>
+    <text x="450" y="420" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="30" font-weight="700" fill="#ffffff">${title}</text>
+    <text x="450" y="468" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="20" fill="#c7d2e3">${subtitle}</text>
+    <rect x="305" y="515" width="290" height="7" rx="4" fill="url(#gold)"/>
+  </svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
+export const PROCUREMENT_SERVICE_VISUALS: Readonly<Record<string, ServiceVisual>> = {
   "custom-product-sourcing": {
-    src: "/catalogue/service-visuals/custom-product-sourcing.svg",
+    src: serviceSvg("Custom Product Sourcing", "Specification-led international sourcing", "⌕"),
     alt: "Custom Product Sourcing service illustration",
   },
   "bulk-and-institutional-procurement": {
-    src: "/catalogue/service-visuals/bulk-and-institutional-procurement.svg",
+    src: serviceSvg("Bulk & Institutional Procurement", "Large-volume organisational procurement", "▦"),
     alt: "Bulk and Institutional Procurement service illustration",
   },
   "oem-and-private-label-sourcing": {
-    src: "/catalogue/service-visuals/oem-and-private-label-sourcing.svg",
+    src: serviceSvg("OEM & Private-Label Sourcing", "Manufacturing, branding and private-label supply", "⚙"),
     alt: "OEM and Private-Label Sourcing service illustration",
   },
   "project-based-procurement": {
-    src: "/catalogue/service-visuals/project-based-procurement.svg",
+    src: serviceSvg("Project-Based Procurement", "Coordinated sourcing for defined projects", "☑"),
     alt: "Project-Based Procurement service illustration",
   },
   "tender-and-boq-bom-procurement": {
-    src: "/catalogue/service-visuals/tender-and-boq-bom-procurement.svg",
+    src: serviceSvg("Tender & BOQ/BOM Procurement", "Tender, bill-of-quantities and bill-of-material sourcing", "≣"),
     alt: "Tender and BOQ/BOM Procurement service illustration",
   },
   "replacement-parts-and-components-sourcing": {
-    src: "/catalogue/service-visuals/replacement-parts-and-components-sourcing.svg",
+    src: serviceSvg("Replacement Parts & Components", "Compatible and manufacturer-specified components", "⚙"),
     alt: "Replacement Parts and Components Sourcing service illustration",
   },
   "international-supplier-sourcing": {
-    src: "/catalogue/service-visuals/international-supplier-sourcing.svg",
+    src: serviceSvg("International Supplier Sourcing", "Supplier discovery across global markets", "◎"),
     alt: "International Supplier Sourcing service illustration",
   },
   "supplier-verification-and-product-matching": {
-    src: "/catalogue/service-visuals/supplier-verification-and-product-matching.svg",
+    src: serviceSvg("Supplier Verification & Matching", "Supplier checks and product specification matching", "✓"),
     alt: "Supplier Verification and Product Matching service illustration",
   },
   "multi-vendor-procurement-consolidation": {
-    src: "/catalogue/service-visuals/multi-vendor-procurement-consolidation.svg",
+    src: serviceSvg("Multi-Vendor Consolidation", "Combine multiple supplier orders into one workflow", "⇄"),
     alt: "Multi-Vendor Procurement Consolidation service illustration",
   },
   "special-specification-hard-to-find-procurement": {
-    src: "/catalogue/service-visuals/special-specification-hard-to-find-procurement.svg",
+    src: serviceSvg("Special Specification Procurement", "Hard-to-find and non-standard sourcing", "✦"),
     alt: "Special Specification and Hard-to-Find Procurement service illustration",
   },
 };
