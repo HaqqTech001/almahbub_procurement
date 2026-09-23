@@ -10,6 +10,36 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "dermalux-flex-md": {
+    src: "https://us.currentbody.com/cdn/shop/files/CBflex82.jpg?v=1694789799&width=800",
+    alt: "Dermalux Flex MD LED light therapy device",
+    sourceUrl: "https://us.currentbody.com/products/dermalux-flex-md",
+    source: "retailer",
+  },
+  "mazak-quick-turn-250msy": {
+    src: "https://www.mazak.com.cn/content/mazak/local-sites/cn/zh/products/qte/jcr%3Acontent/root/container/container_539716508/container_475163330_/container_615537095/hideable_container_c/container/teaser_copy_80082891.coreimg.100.1920.jpeg/1737944562340/img-qt250msy-640-396.jpeg",
+    alt: "Mazak QUICK TURN 250MSY CNC turning center",
+    sourceUrl: "https://www.mazak.com.cn/cn-zh/products/qte/",
+    source: "manufacturer",
+  },
+  "sensormatic-synergy-2-5-abs-pedestal": {
+    src: "https://eshop.altumas.com/cdn/shop/products/synergy_2.5_acrylic_pedestal_1190_wht_2s.png?v=1573709574",
+    alt: "Sensormatic Synergy 2.5 ABS retail security pedestal",
+    sourceUrl: "https://eshop.altumas.com/products/sensormatic-synergy-2-5-abs-pedestal",
+    source: "retailer",
+  },
+  "star-micronics-cd4-1616-choice-series-cash-drawer": {
+    src: "https://i.ebayimg.com/images/g/WnwAAOSwFXlmTJqf/s-l1200.jpg",
+    alt: "Star Micronics CD4-1616 Choice Series cash drawer",
+    sourceUrl: "https://www.ebay.ca/itm/235323431817",
+    source: "retailer",
+  },
+  "takara-belmont-yume-espoir-premium": {
+    src: "https://img07.shop-pro.jp/PA01435/132/product/191122130.jpg?cmsp_timestamp=20260327115439",
+    alt: "Takara Belmont YUME ESPOIR Premium shampoo unit",
+    sourceUrl: "https://www.bgreuse.com/?pid=191122130",
+    source: "retailer",
+  },
   "datalogic-magellan-9600i-scanner-scale": {
     src: "https://www.barcodesinc.com/media/catalog/product/2/b/a/1/2ba10ced98b08af980b31be940bede864b0ecd2e_magellan_9600i_1.jpg",
     alt: "Datalogic Magellan 9600i scanner scale",
