@@ -93,7 +93,7 @@ export function LaunchCountdownGate() {
     if (Date.now() >= LAUNCH_AT) return;
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [preview]);
 
   useEffect(() => {
     if (Date.now() >= LAUNCH_AT) return;
@@ -112,9 +112,22 @@ export function LaunchCountdownGate() {
 
   const totalWindow = 48 * 60 * 60 * 1000;
   const progress = Math.max(0, Math.min(1, 1 - left.total / totalWindow));
+  const finalSeconds = left.total <= 30_000;
+  const critical = left.total <= 10_000;
+  const reveal = left.total <= 0;
+  const rootClass = [
+    "hamd-launch",
+    finalSeconds ? "hamd-launch--final" : "",
+    critical ? "hamd-launch--critical" : "",
+    reveal ? "hamd-launch--reveal" : "",
+    preview != null ? "hamd-launch--preview" : "",
+  ].filter(Boolean).join(" ");
 
   return (
-    <div className="hamd-launch" role="dialog" aria-modal="true" aria-labelledby="hamd-launch-title">
+    <div className={rootClass} role="dialog" aria-modal="true" aria-labelledby="hamd-launch-title">
+      {preview != null ? <div className="hamd-launch__preview-badge">REHEARSAL · production timer unaffected</div> : null}
+      <div className="hamd-launch__curtain hamd-launch__curtain--left" aria-hidden="true" />
+      <div className="hamd-launch__curtain hamd-launch__curtain--right" aria-hidden="true" />
       <div className="hamd-launch__aurora hamd-launch__aurora--one" aria-hidden="true" />
       <div className="hamd-launch__aurora hamd-launch__aurora--two" aria-hidden="true" />
       <div className="hamd-launch__grain" aria-hidden="true" />
@@ -214,6 +227,12 @@ export function LaunchCountdownGate() {
           ))}
         </div>
 
+        {finalSeconds ? (
+          <div className="hamd-launch__final-seconds" aria-live="assertive">
+            <small>{reveal ? "Welcome to Almahbub V2" : "Launching in"}</small>
+            {!reveal ? <strong>{Math.max(0, Math.ceil(left.total / 1000))}</strong> : <strong>LIVE</strong>}
+          </div>
+        ) : null}
         <div className="hamd-launch__countdown" aria-label="Countdown to launch">
           <TimeUnit value={left.days} label="Days" />
           <span className="hamd-launch__separator" aria-hidden="true">:</span>
