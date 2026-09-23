@@ -137,8 +137,8 @@ export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>
     source: "manufacturer",
   },
   "samsung-qm75c": {
-    src: "https://images.samsung.com/is/image/samsung/p6pim/us/lh75qmcebgcxgo/gallery/us-smart-signage-qm32c-565384-lh75qmcebgcxgo-549168038?%24product-details-jpg%24=",
-    alt: "Samsung QM75C commercial display front view",
+    src: "https://images.samsung.com/is/image/samsung/p6pim/us/lh75qmcebgcxgo/gallery/us-smart-signage-qm32c-565384-lh75qmcebgcxgo-549168025?%24product-details-jpg%24=",
+    alt: "Samsung QM75C commercial display perspective view",
     sourceUrl: "https://www.samsung.com/us/business/smart-signage/uhd-4k-signage/75-inch-qmc-series-commercial-display-sku-lh75qmcebgcxgo/",
     source: "manufacturer",
   },
