@@ -414,7 +414,7 @@ export class AuthController {
       response.cookie(googleStateCookieName, `${state}.${encodeURIComponent(returnTo)}`, {
         httpOnly: true,
         secure,
-        sameSite: "lax",
+        sameSite: authCookieSameSite(this.environment),
         path: "/api/v1/auth",
         maxAge: 10 * 60 * 1000,
       });
@@ -512,6 +512,15 @@ export class AuthController {
 
 const googleStateCookieName = "hamd_google_oauth";
 
+function authCookieSameSite(environment: Environment): "lax" | "none" {
+  const secure =
+    environment.COOKIE_SECURE ?? environment.NODE_ENV === "production";
+  // Production may serve the buyer/ops SPAs and API from different sites.
+  // Credentialed fetches require SameSite=None; Secure. Development stays
+  // Lax so localhost HTTP continues to work.
+  return secure ? "none" : "lax";
+}
+
 function sanitizeReturnTo(value: string): string {
   if (!value.startsWith("/") || value.startsWith("//")) return "/app";
   if (value === "/") return "/app";
@@ -530,7 +539,7 @@ function setRefreshCookies(
   response.cookie(refreshCookieName, refreshToken, {
     httpOnly: true,
     secure,
-    sameSite: "lax",
+    sameSite: authCookieSameSite(environment),
     path: "/api/v1/auth",
     maxAge,
   });
@@ -540,7 +549,7 @@ function setRefreshCookies(
   response.cookie(csrfCookieName, csrfToken, {
     httpOnly: false,
     secure,
-    sameSite: "lax",
+    sameSite: authCookieSameSite(environment),
     path: "/",
     maxAge,
   });
@@ -556,7 +565,7 @@ function clearRefreshCookies(
   const refreshOptions = {
     httpOnly: true,
     secure,
-    sameSite: "lax" as const,
+    sameSite: authCookieSameSite(environment),
     path: "/api/v1/auth",
   };
   response.clearCookie(refreshCookieName, refreshOptions);
