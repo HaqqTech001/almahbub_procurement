@@ -118,6 +118,23 @@ export function LaunchCountdownGate() {
       </div>
 
       <main className="hamd-launch__panel">
+        <div className="hamd-launch__evolution" aria-label="Almahbub International evolution and new business launch">
+          <div className="hamd-launch__evolution-step hamd-launch__evolution-step--past">
+            <small>Previously</small>
+            <strong>Almahbub International V1</strong>
+          </div>
+          <span className="hamd-launch__evolution-arrow" aria-hidden="true">→</span>
+          <div className="hamd-launch__evolution-step hamd-launch__evolution-step--current">
+            <small>Now evolving to</small>
+            <strong>Almahbub International V2</strong>
+          </div>
+          <span className="hamd-launch__evolution-plus" aria-hidden="true">+</span>
+          <div className="hamd-launch__evolution-step hamd-launch__evolution-step--new">
+            <small>New business entity</small>
+            <strong>Integrated Export Ltd.</strong>
+          </div>
+        </div>
+
         <div className="hamd-launch__identity-row" aria-label="Almahbub Group businesses">
           <div className="hamd-launch__identity hamd-launch__identity--international">
             <span className="hamd-launch__logo-shell">
