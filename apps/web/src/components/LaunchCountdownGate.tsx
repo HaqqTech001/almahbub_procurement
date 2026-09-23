@@ -84,10 +84,12 @@ export function LaunchCountdownGate() {
   const [storyIndex, setStoryIndex] = useState(0);
   const preview = useMemo(() => previewSeconds(location.search), [location.search]);
   const [previewStartedAt, setPreviewStartedAt] = useState(() => Date.now());
+  const [revealComplete, setRevealComplete] = useState(false);
 
   useEffect(() => {
     setPreviewStartedAt(Date.now());
     setNow(Date.now());
+    setRevealComplete(false);
   }, [preview]);
 
   useEffect(() => {
@@ -107,6 +109,12 @@ export function LaunchCountdownGate() {
 
   const previewTarget = preview == null ? null : previewStartedAt + preview * 1000;
   const setRehearsal = (value: string | null) => {
+    // Reset locally as well as in the URL so pressing the same rehearsal button
+    // always starts a fresh run.
+    const startedAt = Date.now();
+    setPreviewStartedAt(startedAt);
+    setNow(startedAt);
+    setRevealComplete(false);
     const params = new URLSearchParams(location.search);
     if (value == null) params.delete(PREVIEW_PARAM);
     else params.set(PREVIEW_PARAM, value);
@@ -116,14 +124,22 @@ export function LaunchCountdownGate() {
   };
   const left = useMemo(() => remaining(now, previewTarget ?? LAUNCH_AT), [now, previewTarget]);
   const story = LAUNCH_STORIES[storyIndex] ?? LAUNCH_STORIES[0];
+  const revealing = left.total <= 0;
 
-  if ((left.total <= 0 && preview !== 0) || isExcludedPath(location.pathname)) return null;
+  useEffect(() => {
+    if (!revealing || preview === 0 || revealComplete) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timer = window.setTimeout(() => setRevealComplete(true), reducedMotion ? 120 : 2400);
+    return () => window.clearTimeout(timer);
+  }, [revealing, preview, revealComplete]);
+
+  if (revealComplete || isExcludedPath(location.pathname)) return null;
 
   const totalWindow = 48 * 60 * 60 * 1000;
   const progress = Math.max(0, Math.min(1, 1 - left.total / totalWindow));
   const finalSeconds = left.total <= 30_000;
   const critical = left.total <= 10_000;
-  const reveal = left.total <= 0;
+  const reveal = revealing;
   const rootClass = [
     "hamd-launch",
     finalSeconds ? "hamd-launch--final" : "",
