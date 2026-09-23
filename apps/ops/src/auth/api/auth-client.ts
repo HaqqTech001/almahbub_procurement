@@ -185,10 +185,6 @@ function normalizeAuthSessionPayload(
   return null;
 }
 
-function isAuthSessionPayload(value: unknown): value is AuthSessionPayload {
-  return normalizeAuthSessionPayload(value) !== null;
-}
-
 function assertAuthSessionPayload(value: unknown): AuthSessionPayload {
   const normalized = normalizeAuthSessionPayload(value);
   if (normalized) return normalized;
