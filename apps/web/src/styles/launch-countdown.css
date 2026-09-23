@@ -1065,3 +1065,23 @@
     font-size: 0.64rem;
   }
 }
+
+
+/* Launch-day rehearsal/final-30s sequence */
+.hamd-launch__preview-badge{position:fixed;top:.65rem;left:50%;z-index:20;transform:translateX(-50%);padding:.38rem .7rem;border:1px solid rgb(231 198 116/.4);border-radius:999px;background:#07111f;color:#f4d98e;font-size:.62rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.hamd-launch__final-seconds{position:absolute;inset:50% auto auto 50%;z-index:8;transform:translate(-50%,-50%);display:grid;place-items:center;pointer-events:none;text-shadow:0 0 2rem rgb(228 191 101/.35)}
+.hamd-launch__final-seconds small{font-size:clamp(.7rem,2vw,1rem);font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#f4d98e}
+.hamd-launch__final-seconds strong{font-size:clamp(7rem,28vw,19rem);font-variant-numeric:tabular-nums;line-height:.82;color:#fff7da;animation:hamd-final-pulse 1s ease-in-out infinite}
+.hamd-launch--final .hamd-launch__panel{opacity:.24;transform:scale(.965);transition:opacity .8s ease,transform .8s ease}
+.hamd-launch--final .hamd-launch__sparkles i{animation-duration:1.8s}
+.hamd-launch--critical .hamd-launch__aurora{opacity:.48;animation-duration:3s}
+.hamd-launch--critical .hamd-launch__final-seconds strong{animation-duration:.5s}
+.hamd-launch__curtain{position:fixed;inset:0 auto 0 0;width:50.5%;z-index:30;pointer-events:none;background:linear-gradient(90deg,#050a12,#111827 70%,#8f6a25 100%);transform:scaleX(0);transition:transform 1.35s cubic-bezier(.7,0,.2,1)}
+.hamd-launch__curtain--left{left:0;transform-origin:left}
+.hamd-launch__curtain--right{left:auto;right:0;transform-origin:right;background:linear-gradient(270deg,#050a12,#111827 70%,#8f6a25 100%)}
+.hamd-launch--reveal .hamd-launch__curtain{animation:hamd-curtain-reveal 2.2s cubic-bezier(.7,0,.2,1) forwards}
+.hamd-launch--reveal .hamd-launch__panel,.hamd-launch--reveal .hamd-launch__final-seconds,.hamd-launch--reveal .hamd-launch__sparkles{animation:hamd-launch-fade 1.4s .55s ease forwards}
+@keyframes hamd-final-pulse{0%,100%{transform:scale(.96);filter:drop-shadow(0 0 .5rem rgb(228 191 101/.25))}50%{transform:scale(1.035);filter:drop-shadow(0 0 2rem rgb(228 191 101/.65))}}
+@keyframes hamd-curtain-reveal{0%{transform:scaleX(0)}32%{transform:scaleX(1)}48%{transform:scaleX(1)}100%{transform:scaleX(0)}}
+@keyframes hamd-launch-fade{to{opacity:0;visibility:hidden}}
+@media(prefers-reduced-motion:reduce){.hamd-launch__final-seconds strong{animation:none}.hamd-launch--reveal .hamd-launch__curtain{display:none}.hamd-launch--reveal .hamd-launch__panel,.hamd-launch--reveal .hamd-launch__final-seconds,.hamd-launch--reveal .hamd-launch__sparkles{animation:none;opacity:0;visibility:hidden}}
