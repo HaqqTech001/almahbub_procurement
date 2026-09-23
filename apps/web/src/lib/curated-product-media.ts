@@ -10,6 +10,18 @@ export type CuratedProductMedia = {
  * has not yet been imported. Database-backed ProductImage rows always win.
  */
 export const CURATED_PRODUCT_MEDIA: Readonly<Record<string, CuratedProductMedia>> = {
+  "siemens-eq900-plus-iaroma-tq923ez3": {
+    src: "https://static.verkcdn.com/kuvastin/w%3A768/h%3A945/rt%3Afit/q%3A90/ex%3A1/sh%3A0.5/plain/images/71/2_1053514-768x945.jpg",
+    alt: "Siemens EQ900 plus iAroma TQ923EZ3 automatic coffee machine",
+    sourceUrl: "https://www.verkkokauppa.com/en/product/1053514/Siemens-TQ923EZ3-EQ900-Plus-coffee-machine",
+    source: "retailer",
+  },
+  "vusion-v300-series-electronic-shelf-labels": {
+    src: "https://static.wixstatic.com/media/affa1b_c126c3a80cb249c5b6f95941d674b505~mv2.webp",
+    alt: "Vusion V300 BWRY Series electronic shelf label",
+    sourceUrl: "https://www.yysolutions.co.jp/vusion-esl",
+    source: "retailer",
+  },
   "atlas-copco-ga-15-vsds": {
     src: "https://gross-druckluft.eu/cdn/shop/files/GA15VSDsOil-injectedscrewcompressor-ForPPT.jpg?v=1751870942",
     alt: "Atlas Copco GA 15 VSDs rotary screw air compressor",
