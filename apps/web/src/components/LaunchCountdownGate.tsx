@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useLocation } from "react-router-dom";
 import "../styles/launch-countdown.css";
-import { OWNER_INTEGRATED_EXPORT_LOGO } from "../content/owner-integrated-export-logo.js";
 
 const LAUNCH_AT = new Date("2026-09-24T21:00:00+01:00").getTime();
 
@@ -160,7 +159,7 @@ export function LaunchCountdownGate() {
           <div className="hamd-launch__identity hamd-launch__identity--export">
             <span className="hamd-launch__export-logo-shell">
               <img
-                src={OWNER_INTEGRATED_EXPORT_LOGO}
+                src="/media/brands/almahbub-integrated-export.jpg"
                 alt="Almahbub Integrated Export Ltd. logo"
                 className="hamd-launch__export-logo"
               />
