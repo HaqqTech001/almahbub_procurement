@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useLocation } from "react-router-dom";
 import "../styles/launch-countdown.css";
+import { OWNER_INTEGRATED_EXPORT_LOGO } from "../content/owner-integrated-export-logo.js";
 
 const LAUNCH_AT = new Date("2026-09-24T21:00:00+01:00").getTime();
 
@@ -41,9 +42,37 @@ function TimeUnit({ value, label }: { value: number; label: string }) {
   );
 }
 
+const LAUNCH_STORIES = [
+  {
+    id: "v2",
+    eyebrow: "Almahbub International · V2",
+    title: "The next version of how we source.",
+    accent: "Smarter. Clearer. More capable.",
+    body:
+      "Almahbub International is not starting over. V2 builds on the original platform with a stronger procurement experience, clearer workflows and a more refined digital presence.",
+  },
+  {
+    id: "integrated-export",
+    eyebrow: "A new business joins the group",
+    title: "Introducing Almahbub Integrated Export Ltd.",
+    accent: "Agro commodities. Bulk supply. Export.",
+    body:
+      "A distinct business entity under Almahbub Group, created for agricultural commodity sourcing, bulk supply and export-focused enquiries.",
+  },
+  {
+    id: "group",
+    eyebrow: "Almahbub Group",
+    title: "Two businesses. One broader ecosystem.",
+    accent: "Global procurement meets Nigerian export.",
+    body:
+      "Almahbub International continues the procurement journey while Almahbub Integrated Export Ltd. opens a dedicated path for agro and export trade.",
+  },
+] as const;
+
 export function LaunchCountdownGate() {
   const location = useLocation();
   const [now, setNow] = useState(() => Date.now());
+  const [storyIndex, setStoryIndex] = useState(0);
 
   useEffect(() => {
     if (Date.now() >= LAUNCH_AT) return;
@@ -51,7 +80,17 @@ export function LaunchCountdownGate() {
     return () => window.clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    if (Date.now() >= LAUNCH_AT) return;
+    const storyTimer = window.setInterval(
+      () => setStoryIndex((current) => (current + 1) % LAUNCH_STORIES.length),
+      5600,
+    );
+    return () => window.clearInterval(storyTimer);
+  }, []);
+
   const left = useMemo(() => remaining(now), [now]);
+  const story = LAUNCH_STORIES[storyIndex];
 
   if (left.total <= 0 || isExcludedPath(location.pathname)) return null;
 
@@ -70,30 +109,68 @@ export function LaunchCountdownGate() {
       </div>
 
       <main className="hamd-launch__panel">
-        <div className="hamd-launch__brand">
-          <span className="hamd-launch__logo-shell">
-            <img
-              src="/almahbub.svg"
-              alt="Almahbub International logo"
-              className="hamd-launch__logo"
-            />
-            <span className="hamd-launch__logo-glint" aria-hidden="true" />
+        <div className="hamd-launch__identity-row" aria-label="Almahbub Group businesses">
+          <div className="hamd-launch__identity hamd-launch__identity--international">
+            <span className="hamd-launch__logo-shell">
+              <img
+                src="/almahbub.svg"
+                alt="Almahbub International logo"
+                className="hamd-launch__logo"
+              />
+              <span className="hamd-launch__logo-glint" aria-hidden="true" />
+            </span>
+            <span>
+              <strong>Almahbub International</strong>
+              <small>V2 · Global Procurement</small>
+            </span>
+          </div>
+
+          <span className="hamd-launch__group-link" aria-hidden="true">
+            <i />
+            <b>Almahbub Group</b>
+            <i />
           </span>
-          <span>
-            <strong>Almahbub International</strong>
-            <small>Global Procurement & Integrated Export</small>
-          </span>
+
+          <div className="hamd-launch__identity hamd-launch__identity--export">
+            <span className="hamd-launch__export-logo-shell">
+              <img
+                src={OWNER_INTEGRATED_EXPORT_LOGO}
+                alt="Almahbub Integrated Export Ltd. logo"
+                className="hamd-launch__export-logo"
+              />
+            </span>
+            <span>
+              <strong>Almahbub Integrated Export Ltd.</strong>
+              <small>New · Agro & Export</small>
+            </span>
+          </div>
         </div>
 
-        <p className="hamd-launch__eyebrow">A new chapter goes live</p>
-        <h1 id="hamd-launch-title">
-          Built for global sourcing.
-          <span>Launching very soon.</span>
-        </h1>
-        <p className="hamd-launch__lead">
-          A refined procurement and export experience connecting businesses to
-          products, suppliers and Nigerian agricultural supply.
-        </p>
+        <section
+          key={story.id}
+          className={`hamd-launch__story hamd-launch__story--${story.id}`}
+          aria-live="polite"
+        >
+          <p className="hamd-launch__eyebrow">{story.eyebrow}</p>
+          <h1 id="hamd-launch-title">
+            {story.title}
+            <span>{story.accent}</span>
+          </h1>
+          <p className="hamd-launch__lead">{story.body}</p>
+        </section>
+
+        <div className="hamd-launch__story-dots" aria-label="Launch story">
+          {LAUNCH_STORIES.map((item, index) => (
+            <button
+              key={item.id}
+              type="button"
+              className={index === storyIndex ? "is-active" : ""}
+              aria-label={`Show ${item.eyebrow}`}
+              aria-pressed={index === storyIndex}
+              onClick={() => setStoryIndex(index)}
+            />
+          ))}
+        </div>
 
         <div className="hamd-launch__countdown" aria-label="Countdown to launch">
           <TimeUnit value={left.days} label="Days" />
@@ -116,7 +193,7 @@ export function LaunchCountdownGate() {
         </div>
 
         <p className="hamd-launch__note">
-          The website opens automatically when the countdown reaches zero.
+          V2 and Almahbub Integrated Export Ltd. go live together when the countdown reaches zero.
         </p>
       </main>
     </div>
