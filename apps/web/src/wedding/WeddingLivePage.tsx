@@ -46,18 +46,6 @@ import {
   type WeddingLiveSession,
 } from "./connect-wedding-viewer.js";
 
-function countdownParts(targetIso: string, now: Date) {
-  const delta = Date.parse(targetIso) - now.getTime();
-  if (!Number.isFinite(delta) || delta <= 0) return null;
-  const total = Math.floor(delta / 1000);
-  return {
-    days: Math.floor(total / 86400),
-    hours: Math.floor((total % 86400) / 3600),
-    minutes: Math.floor((total % 3600) / 60),
-    seconds: total % 60,
-  };
-}
-
 class WeddingPortalErrorBoundary extends Component<
   { children: ReactNode; sitePath: string },
   { failed: boolean }
@@ -536,7 +524,6 @@ export function WeddingLivePage() {
     }
     if (displayCampaign.streamStatus !== "live") {
       const when = formatWeddingWhen(displayCampaign.streamAt);
-      const parts = countdownParts(displayCampaign.streamAt, now);
       return (
         <WeddingWaitingStage campaign={displayCampaign}>
           <div className="hamd-wedding-waiting__welcome">
@@ -544,14 +531,6 @@ export function WeddingLivePage() {
             <h2>We&apos;re getting everything ready</h2>
             <p>The live celebration will begin soon. Stay with us and enjoy the music while you wait.</p>
             {when ? <p className="hamd-wedding-waiting__when">{when}</p> : null}
-            {parts ? (
-              <div className="hamd-wedding-waiting__countdown" aria-label="Time until live celebration">
-                <strong>{parts.days}<small>days</small></strong>
-                <strong>{parts.hours}<small>hours</small></strong>
-                <strong>{parts.minutes}<small>mins</small></strong>
-                <strong>{parts.seconds}<small>secs</small></strong>
-              </div>
-            ) : null}
           </div>
           {!waitingLoaded ? <ModuleSkeleton variant="list" count={1} /> : waitingLoadError ? <p role="alert">Unable to load waiting music. Checking again shortly.</p> : null}
           {currentWaiting && waitingAllowed ? (
