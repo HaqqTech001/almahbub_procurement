@@ -275,6 +275,11 @@ const WeddingLivePage = lazy(() =>
     default: m.WeddingLivePage,
   })),
 );
+const WeddingGalleryPage = lazy(() =>
+  import("./wedding/WeddingGalleryPage.js").then((m) => ({
+    default: m.WeddingGalleryPage,
+  })),
+);
 const ShipmentDetailPage = lazy(() =>
   import("./shipments/ShipmentDetailPage.js").then((m) => ({
     default: m.ShipmentDetailPage,
@@ -497,6 +502,7 @@ export function App() {
         <Route path="/industries/:slug" element={page(IndustryDetailPage)} />
         <Route path="/faq" element={page(FaqPage)} />
         <Route path="/rowdotul-hamd-26" element={page(WeddingLandingPage)} />
+        <Route path="/rowdotul-hamd-26/gallery" element={page(WeddingGalleryPage)} />
         <Route path="/contact" element={page(ContactPage)} />
         <Route
           path="/privacy"
