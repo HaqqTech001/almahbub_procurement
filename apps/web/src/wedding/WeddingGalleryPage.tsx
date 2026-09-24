@@ -13,7 +13,7 @@ export function WeddingGalleryPage() {
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [filter, setFilter] = useState<Filter>("all");
-  const [lightbox, setLightbox] = useState<{ items: Array<{ src: string; kind: "image" | "video"; alt: string }>; index: number } | null>(null);
+  const [lightbox, setLightbox] = useState<{ items: Array<{ src: string; kind: "image" | "video"; alt?: string | undefined }>; index: number } | null>(null);
 
   useEffect(() => {
     void fetchWeddingCampaign().then(setCampaign);
