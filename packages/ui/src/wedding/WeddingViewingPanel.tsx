@@ -12,7 +12,7 @@ export type WeddingViewingPanelProps = {
 export function WeddingViewingPanel({ videoRef, overlay, className }: WeddingViewingPanelProps) {
   return (
     <div className={cx("hamd-wedding-portal__stage", className)}>
-      <video ref={videoRef} autoPlay playsInline />
+      <video ref={videoRef} autoPlay playsInline controls controlsList="nodownload noplaybackrate" />
       {overlay ? <div className="hamd-wedding-portal__overlay">{overlay}</div> : null}
     </div>
   );
