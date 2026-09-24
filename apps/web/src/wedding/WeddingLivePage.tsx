@@ -455,7 +455,11 @@ export function WeddingLivePage() {
         </div>
       );
     }
-    if (displayCampaign.streamStatus === "ended") {
+    const streamStartsAt = Date.parse(displayCampaign.streamAt);
+    const genuinePostLive =
+      displayCampaign.streamStatus === "ended" &&
+      (!Number.isFinite(streamStartsAt) || Date.now() >= streamStartsAt);
+    if (genuinePostLive) {
       return (
         <div className="hamd-wedding-postlive">
           <span className="hamd-wedding-postlive__mark" aria-hidden="true">✦</span>
