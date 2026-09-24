@@ -109,6 +109,7 @@ const LIVE_CAMPAIGN_POLL_MS = 8_000;
 const COMMENTS_POLL_MS = 12_000;
 const LIVE_COMMENTS_POLL_MS = 8_000;
 const WAITING_AUDIO_POLL_MS = 60_000;
+const WEDDING_PLAYBACK_STATE_KEY = "hamd:wedding:playlist-playback";
 
 function rehearsalState(search: string): WeddingRehearsalState | null {
   if (!WEDDING_REHEARSAL_ENABLED) return null;
@@ -153,6 +154,7 @@ export function WeddingLivePage() {
   const waitingVolumeRef = useRef(waitingVolume);
   const currentWaitingIdRef = useRef<string | null>(null);
   const failedWaitingIdsRef = useRef(new Set<string>());
+  const playbackRestoredForRef = useRef<string | null>(null);
   waitingMutedRef.current = waitingMuted;
   waitingVolumeRef.current = waitingVolume;
   currentWaitingIdRef.current = currentWaitingId;
@@ -215,7 +217,13 @@ export function WeddingLivePage() {
     [displayCampaign.waitingMusicEnabled, waitingTracks],
   );
   const currentWaiting = playableWaiting.find((row) => row.id === currentWaitingId) ?? null;
-  const waitingAllowed = shouldPlayWeddingWaitingMusic(displayCampaign);
+  // The soundtrack belongs to the waiting + post-live experience. During a
+  // broadcast it is paused, then resumes from the saved track/time after conclusion.
+  const waitingAllowed =
+    shouldPlayWeddingWaitingMusic(displayCampaign) ||
+    (displayCampaign.streamStatus === "ended" &&
+      displayCampaign.endedKind !== "test" &&
+      displayCampaign.waitingMusicEnabled === true);
   const startWaitingMusic = useCallback(() => {
     const node = waitingAudioRef.current;
     if (!node || !waitingAllowed || waitingLockRef.current) return;
@@ -286,9 +294,22 @@ export function WeddingLivePage() {
       node.pause();
       return undefined;
     }
-    startWaitingMusic();
+    const saved = readWaitingPlayback();
+    if (saved?.trackId === currentWaiting.id && playbackRestoredForRef.current !== currentWaiting.id) {
+      const restore = () => {
+        if (Number.isFinite(saved.time) && saved.time > 0 && (!Number.isFinite(node.duration) || saved.time < node.duration)) {
+          node.currentTime = saved.time;
+        }
+        playbackRestoredForRef.current = currentWaiting.id;
+        startWaitingMusic();
+      };
+      if (node.readyState >= 1) restore();
+      else node.addEventListener("loadedmetadata", restore, { once: true });
+    } else {
+      startWaitingMusic();
+    }
     return undefined;
-  }, [currentWaiting?.src, waitingAllowed, waitingMuted, waitingVolume, startWaitingMusic]);
+  }, [currentWaiting?.id, currentWaiting?.src, waitingAllowed, waitingMuted, waitingVolume, startWaitingMusic]);
 
   const advanceWaitingTrack = (fromError: boolean) => {
     if (waitingLockRef.current || !shouldPlayWeddingWaitingMusic(displayCampaign)) return;
@@ -306,6 +327,8 @@ export function WeddingLivePage() {
       waitingAudioRef.current?.pause();
       return;
     }
+    playbackRestoredForRef.current = null;
+    clearWaitingPlayback();
     setCurrentWaitingId(nextId);
   };
 
@@ -707,6 +730,7 @@ export function WeddingLivePage() {
             src={currentWaiting.src}
             preload="metadata"
             onPlaying={() => { setWaitingPlaying(true); setNeedWaitingSound(false); }}
+            onTimeUpdate={(event) => persistWaitingPlayback(event.currentTarget, currentWaitingIdRef.current)}
             onPause={() => setWaitingPlaying(false)}
             loop={
               displayCampaign.waitingMusicLoop !== false &&
@@ -736,6 +760,38 @@ function playMediaElement(node: HTMLMediaElement): Promise<void> {
     return Promise.reject(error);
   }
   return Promise.resolve();
+}
+
+type WeddingPlaybackState = { trackId: string; time: number };
+
+function readWaitingPlayback(): WeddingPlaybackState | null {
+  try {
+    const raw = localStorage.getItem(WEDDING_PLAYBACK_STATE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<WeddingPlaybackState>;
+    return typeof parsed.trackId === "string" && Number.isFinite(parsed.time)
+      ? { trackId: parsed.trackId, time: Math.max(0, Number(parsed.time)) }
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function persistWaitingPlayback(node: HTMLMediaElement, trackId: string | null): void {
+  if (!trackId || !Number.isFinite(node.currentTime)) return;
+  try {
+    localStorage.setItem(WEDDING_PLAYBACK_STATE_KEY, JSON.stringify({ trackId, time: node.currentTime }));
+  } catch {
+    /* private mode */
+  }
+}
+
+function clearWaitingPlayback(): void {
+  try {
+    localStorage.removeItem(WEDDING_PLAYBACK_STATE_KEY);
+  } catch {
+    /* private mode */
+  }
 }
 
 function readWaitingMute(): boolean {
