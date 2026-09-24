@@ -1075,3 +1075,53 @@ html.dark .hamd-wedding-portal__comments {
 .light .hamd-wedding-participation .hamd-btn--secondary{background:#fff;color:#4a2938;border-color:rgba(74,41,56,.25)}
 [data-theme="light"] .hamd-wedding-participation p,
 .light .hamd-wedding-participation p{color:#59434d}
+
+
+/* Rowdotul HAMD'26 premium floral responsive treatment */
+.hamd-wedding-page{position:relative;isolation:isolate;background:
+ radial-gradient(circle at 8% 8%,rgba(244,181,157,.30),transparent 22rem),
+ radial-gradient(circle at 92% 12%,rgba(216,164,91,.18),transparent 20rem),
+ radial-gradient(circle at 12% 92%,rgba(122,29,76,.08),transparent 24rem),
+ linear-gradient(180deg,#fffaf2 0%,#fff5e9 48%,#fffaf6 100%);overflow:hidden}
+.hamd-wedding-page:before,.hamd-wedding-page:after{content:"";position:absolute;z-index:-1;pointer-events:none;width:min(36vw,30rem);aspect-ratio:1;background:
+ radial-gradient(circle at 22% 25%,rgba(255,255,255,.98) 0 5%,rgba(244,188,164,.72) 6% 12%,transparent 13%),
+ radial-gradient(circle at 55% 18%,rgba(255,244,218,.95) 0 4%,rgba(216,164,91,.55) 5% 10%,transparent 11%),
+ radial-gradient(circle at 75% 50%,rgba(255,255,255,.95) 0 5%,rgba(231,157,167,.55) 6% 12%,transparent 13%),
+ radial-gradient(ellipse at 42% 58%,rgba(151,133,82,.32) 0 8%,transparent 9%),
+ radial-gradient(ellipse at 68% 72%,rgba(119,104,62,.25) 0 7%,transparent 8%);filter:blur(.2px);opacity:.72}
+.hamd-wedding-page:before{top:-7rem;right:-6rem;transform:rotate(18deg)}
+.hamd-wedding-page:after{bottom:-8rem;left:-6rem;transform:rotate(205deg)}
+.hamd-wedding-page__hero{width:min(100% - 2rem,68rem);padding-top:clamp(1.25rem,5vw,4rem)}
+.hamd-wedding-invite{border-color:rgba(176,123,67,.25);background:linear-gradient(145deg,rgba(255,255,255,.93),rgba(255,246,234,.92));box-shadow:0 2rem 5rem rgba(94,48,49,.12)}
+.hamd-wedding-page__section{position:relative;border-radius:1.25rem}
+.hamd-wedding-countdown__cell{background:rgba(255,255,255,.78);border-color:rgba(130,40,77,.14);box-shadow:0 .4rem 1.2rem rgba(88,43,53,.05)}
+.hamd-wedding-portal{background:
+ radial-gradient(circle at 8% 10%,rgba(116,26,75,.24),transparent 30rem),
+ radial-gradient(circle at 92% 92%,rgba(193,130,67,.12),transparent 28rem),
+ linear-gradient(145deg,#160b13,#24101e 52%,#12090f);color:#fff8f1}
+.hamd-wedding-portal__stage{border:1px solid rgba(225,174,103,.25);box-shadow:0 1.5rem 4rem rgba(0,0,0,.32)}
+.hamd-wedding-portal__stage video{width:100%;height:100%;object-fit:contain;background:#090507}
+.hamd-wedding-portal__controls{align-items:center;justify-content:flex-start}
+.hamd-wedding-portal__controls>label{min-height:2.75rem}
+[data-theme="light"] .hamd-wedding-portal,.light .hamd-wedding-portal{background:
+ radial-gradient(circle at 5% 8%,rgba(244,181,157,.26),transparent 22rem),
+ radial-gradient(circle at 95% 92%,rgba(216,164,91,.16),transparent 22rem),
+ linear-gradient(180deg,#fffaf2,#fff5ea);color:#2f2027}
+@media(max-width:1023px){
+ .hamd-wedding-page:before,.hamd-wedding-page:after{width:22rem;opacity:.52}
+ .hamd-wedding-page__hero,.hamd-wedding-page__section{width:min(100% - 1.25rem,52rem)}
+ .hamd-wedding-portal__stage{width:100%;aspect-ratio:16/9;min-height:0}
+}
+@media(max-width:640px){
+ .hamd-wedding-page:before{width:16rem;top:-4rem;right:-6rem}.hamd-wedding-page:after{width:15rem;bottom:-5rem;left:-5rem}
+ .hamd-wedding-page__hero,.hamd-wedding-page__section{width:calc(100% - 1rem);padding:1rem 0}
+ .hamd-wedding-invite{padding:2rem .9rem 1.5rem;border-radius:1.1rem}
+ .hamd-wedding-countdown{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.35rem}
+ .hamd-wedding-countdown__cell{min-width:0;padding:.6rem .2rem}.hamd-wedding-countdown__cell strong{font-size:1.15rem}.hamd-wedding-countdown__cell span{font-size:.58rem}
+ .hamd-wedding-page__actions{display:grid;grid-template-columns:1fr}.hamd-wedding-page__actions .hamd-btn{width:100%;justify-content:center}
+ .hamd-wedding-portal__media{padding:.55rem}
+ .hamd-wedding-portal__stage{border-radius:.75rem;aspect-ratio:16/9}
+ .hamd-wedding-portal__controls{display:flex;flex-wrap:wrap;padding:.55rem 0;gap:.45rem}
+ .hamd-wedding-portal__controls>label{flex:1 1 9rem}
+ .hamd-wedding-portal__messages-btn{flex:1 1 auto}
+}
