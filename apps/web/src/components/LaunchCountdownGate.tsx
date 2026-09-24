@@ -5,7 +5,10 @@ import "../styles/launch-countdown.css";
 const LAUNCH_AT = new Date("2026-09-25T21:00:00+01:00").getTime();
 
 const PREVIEW_PARAM = "launchPreview";
-const REHEARSAL_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_LAUNCH_REHEARSAL === "true";
+// TEMPORARY PUBLIC ACCEPTANCE TEST: force the real launch component into a 60-second rehearsal.
+// LAUNCH_AT remains untouched; remove this flag after visual acceptance.
+const PUBLIC_ONE_MINUTE_REHEARSAL = true;
+const REHEARSAL_ENABLED = PUBLIC_ONE_MINUTE_REHEARSAL || import.meta.env.DEV || import.meta.env.VITE_ENABLE_LAUNCH_REHEARSAL === "true";
 const PREVIEW_SECONDS: Record<string, number> = { "60": 60, "30": 30, "15": 15, "10": 10, "5": 5, reveal: 0 };
 
 function previewSeconds(search: string): number | null {
@@ -84,7 +87,7 @@ export function LaunchCountdownGate() {
   const [storyIndex, setStoryIndex] = useState(0);
   const previewFromUrl = useMemo(() => previewSeconds(location.search), [location.search]);
   // Temporary launch acceptance test: simulate one minute remaining without changing LAUNCH_AT.
-  const preview = previewFromUrl ?? (REHEARSAL_ENABLED ? 60 : null);
+  const preview = previewFromUrl ?? (PUBLIC_ONE_MINUTE_REHEARSAL ? 60 : null);
   const [previewStartedAt, setPreviewStartedAt] = useState(() => Date.now());
   const [revealComplete, setRevealComplete] = useState(false);
 
