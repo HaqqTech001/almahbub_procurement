@@ -101,6 +101,15 @@ type WeddingRehearsalState = "waiting" | "live" | "ended";
 const WEDDING_REHEARSAL_ENABLED =
   import.meta.env.DEV || import.meta.env.VITE_ENABLE_WEDDING_REHEARSAL === "true";
 
+// Keep public live traffic gentle on the single Render API instance.
+// Campaign state changes quickly only around a broadcast transition; comments can
+// refresh a little faster while the room is live without polling every 4 seconds.
+const CAMPAIGN_POLL_MS = 15_000;
+const LIVE_CAMPAIGN_POLL_MS = 8_000;
+const COMMENTS_POLL_MS = 12_000;
+const LIVE_COMMENTS_POLL_MS = 8_000;
+const WAITING_AUDIO_POLL_MS = 60_000;
+
 function rehearsalState(search: string): WeddingRehearsalState | null {
   if (!WEDDING_REHEARSAL_ENABLED) return null;
   const value = new URLSearchParams(search).get("weddingPreview");
@@ -183,9 +192,10 @@ export function WeddingLivePage() {
       void fetchWeddingCampaign().then(setCampaign);
     };
     load();
-    const timer = window.setInterval(load, 4000);
+    const interval = campaign.streamStatus === "live" ? LIVE_CAMPAIGN_POLL_MS : CAMPAIGN_POLL_MS;
+    const timer = window.setInterval(load, interval);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [campaign.streamStatus]);
 
   useEffect(() => {
     const load = () => {
@@ -195,7 +205,7 @@ export function WeddingLivePage() {
         .finally(() => setWaitingLoaded(true));
     };
     load();
-    const timer = window.setInterval(load, 8000);
+    const timer = window.setInterval(load, WAITING_AUDIO_POLL_MS);
     return () => window.clearInterval(timer);
   }, []);
 
@@ -304,9 +314,10 @@ export function WeddingLivePage() {
       void listWeddingComments(commentChannel).then(setComments).catch(() => undefined);
     };
     load();
-    const timer = window.setInterval(load, 4000);
+    const interval = displayCampaign.streamStatus === "live" ? LIVE_COMMENTS_POLL_MS : COMMENTS_POLL_MS;
+    const timer = window.setInterval(load, interval);
     return () => window.clearInterval(timer);
-  }, [commentChannel]);
+  }, [commentChannel, displayCampaign.streamStatus]);
 
   const connectViewer = useCallback(async () => {
     if (
