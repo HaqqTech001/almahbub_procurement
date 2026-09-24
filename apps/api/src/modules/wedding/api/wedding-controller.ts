@@ -119,6 +119,18 @@ export class WeddingCampaignController {
     }
   };
 
+  public readonly setWaiting: RequestHandler = async (request, response, next) => {
+    try {
+      if (!request.auth) throw unauthenticated();
+      await this.service.refreshCampaign();
+      const data = this.service.setStreamStatus(request.auth, "upcoming");
+      await this.service.flushCampaignPersistence();
+      response.json({ data });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public readonly endLive: RequestHandler = async (request, response, next) => {
     try {
       if (!request.auth) throw unauthenticated();
