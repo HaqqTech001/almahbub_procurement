@@ -91,9 +91,8 @@ export function RegisterPage() {
     setError(null);
     try {
       await registerRequest(compactRegisterBody(values));
-      navigate(`/otp?email=${encodeURIComponent(values.email)}`, {
-        replace: true,
-      });
+      const otp = new URLSearchParams({ email: values.email, returnTo });
+      navigate(`/otp?${otp.toString()}`, { replace: true });
     } catch (err) {
       throw new Error(formatAuthError(err, "Registration failed."));
     } finally {
