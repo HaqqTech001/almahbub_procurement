@@ -1051,3 +1051,27 @@ html.dark .hamd-wedding-portal__comments {
  .hamd-wedding-portal__body--live .hamd-wedding-portal__stage{grid-column:1;aspect-ratio:16/9;width:100%}
  .hamd-wedding-portal__body--live .hamd-wedding-portal__controls{grid-column:1}
 }
+
+
+/* Guest participation controls and true light-mode contrast */
+.hamd-wedding-participation{display:grid;gap:.75rem}
+.hamd-wedding-participation h2{margin:0 0 .25rem}
+.hamd-wedding-participation p{margin:0;line-height:1.55}
+.hamd-wedding-participation__action{justify-self:start;min-height:2.75rem;padding:.68rem 1rem;border-radius:.75rem;font-weight:700}
+.hamd-wedding-portal__theme{display:inline-grid;place-items:center;width:2.75rem;min-width:2.75rem;height:2.75rem;padding:0;border-radius:50%}
+[data-theme="light"] .hamd-wedding-portal__header *,
+.light .hamd-wedding-portal__header *{color:#2f2027}
+[data-theme="light"] .hamd-wedding-portal__theme,
+.light .hamd-wedding-portal__theme{background:#fff;border:1px solid rgba(47,32,39,.18);color:#2f2027;box-shadow:0 .2rem .7rem rgba(47,32,39,.08)}
+[data-theme="light"] .hamd-wedding-portal__header a,
+.light .hamd-wedding-portal__header a{color:#3a2630}
+[data-theme="light"] .hamd-wedding-participation,
+.light .hamd-wedding-participation{color:#2f2027}
+[data-theme="light"] .hamd-wedding-participation a,
+.light .hamd-wedding-participation a{color:#6f1948}
+[data-theme="light"] .hamd-wedding-participation .hamd-btn--primary,
+.light .hamd-wedding-participation .hamd-btn--primary{background:#741a4b;color:#fff;border-color:#741a4b}
+[data-theme="light"] .hamd-wedding-participation .hamd-btn--secondary,
+.light .hamd-wedding-participation .hamd-btn--secondary{background:#fff;color:#4a2938;border-color:rgba(74,41,56,.25)}
+[data-theme="light"] .hamd-wedding-participation p,
+.light .hamd-wedding-participation p{color:#59434d}
