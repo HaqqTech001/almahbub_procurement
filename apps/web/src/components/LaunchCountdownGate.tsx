@@ -6,7 +6,7 @@ const LAUNCH_AT = new Date("2026-09-25T21:00:00+01:00").getTime();
 
 const PREVIEW_PARAM = "launchPreview";
 const REHEARSAL_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_LAUNCH_REHEARSAL === "true";
-const PREVIEW_SECONDS: Record<string, number> = { "30": 30, "15": 15, "10": 10, "5": 5, reveal: 0 };
+const PREVIEW_SECONDS: Record<string, number> = { "60": 60, "30": 30, "15": 15, "10": 10, "5": 5, reveal: 0 };
 
 function previewSeconds(search: string): number | null {
   if (!REHEARSAL_ENABLED) return null;
@@ -82,7 +82,9 @@ export function LaunchCountdownGate() {
   const location = useLocation();
   const [now, setNow] = useState(() => Date.now());
   const [storyIndex, setStoryIndex] = useState(0);
-  const preview = useMemo(() => previewSeconds(location.search), [location.search]);
+  const previewFromUrl = useMemo(() => previewSeconds(location.search), [location.search]);
+  // Temporary launch acceptance test: simulate one minute remaining without changing LAUNCH_AT.
+  const preview = previewFromUrl ?? (REHEARSAL_ENABLED ? 60 : null);
   const [previewStartedAt, setPreviewStartedAt] = useState(() => Date.now());
   const [revealComplete, setRevealComplete] = useState(false);
 
@@ -168,7 +170,7 @@ export function LaunchCountdownGate() {
       {REHEARSAL_ENABLED ? (
         <aside className="hamd-launch__rehearsal-controls" aria-label="Launch rehearsal controls">
           <b>Launch rehearsal</b>
-          {["30", "15", "10", "5"].map((seconds) => (
+          {["60", "30", "15", "10", "5"].map((seconds) => (
             <button key={seconds} type="button" onClick={() => setRehearsal(seconds)}>
               Final {seconds}s
             </button>
