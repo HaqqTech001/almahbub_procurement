@@ -159,16 +159,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const category = classifyRefreshFailure(error);
         lastRefreshKind.current = category;
         logSessionEvent("refresh_failed", { category });
-        if (category === "expired") {
-          logSessionEvent("logout_reason", { reason: "refresh_expired" });
-          clearAccessToken();
-          setSessionHint(false);
-          setUser(null);
-          setOrganizationId(null);
-          setOrganizationName(null);
-          setPermissions([]);
-          setStatus("expired");
-        }
+        // Do not tear down the entire Ops UI on a failed background refresh.
+        // Authenticated requests can still use the current access token and retry refresh.
+        // A confirmed 401 from sessionAwareFetch remains the authority that marks a session lost.
         return false;
       }
     }).finally(() => {
