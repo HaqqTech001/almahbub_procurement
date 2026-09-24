@@ -233,56 +233,13 @@ export function WeddingCampaignPage() {
                 : "The celebration is live."
               : "Open Broadcast Studio to preview cameras and start the live celebration."}
           </p>
-          <div className="hamd-entity-form__actions">
+          <div
+            className="hamd-entity-form__actions"
+            style={{ justifyContent: "center", width: "100%" }}
+          >
             <Link className="hamd-btn hamd-btn--primary" to="/wedding/studio">
               Open Broadcast Studio
             </Link>
-            {campaign.streamStatus === "ended" ? (
-              <button
-                type="button"
-                className="hamd-btn hamd-btn--secondary"
-                onClick={() => {
-                  void (async () => {
-                    const access = await token();
-                    const row = await opsFetch<WeddingCampaignRecord>("/wedding/live/waiting", {
-                      method: "POST",
-                      accessToken: access,
-                      body: {},
-                    });
-                    setCampaign({ ...DEFAULT_WEDDING_CAMPAIGN, ...row });
-                    setStatus("Wedding restored to Waiting / Ready. Guests will no longer see the post-live screen.");
-                  })().catch((err: unknown) => {
-                    setError(err instanceof Error ? err.message : "Unable to restore the waiting room.");
-                  });
-                }}
-              >
-                Reopen Waiting Room
-              </button>
-            ) : null}
-            <a
-              className="hamd-btn hamd-btn--secondary"
-              href={publicWeddingPreviewHref("waiting") || undefined}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Preview Guest Waiting Room
-            </a>
-            <a
-              className="hamd-btn hamd-btn--secondary"
-              href={publicWeddingPreviewHref("live") || undefined}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Preview Guest Live View
-            </a>
-            <a
-              className="hamd-btn hamd-btn--ghost"
-              href={publicWeddingPreviewHref("ended") || undefined}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Preview Post-live
-            </a>
           </div>
         </section>
       ) : null}
