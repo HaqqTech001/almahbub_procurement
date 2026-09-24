@@ -31,10 +31,13 @@ function countdownParts(targetIso: string, now: Date) {
   };
 }
 
+const WEDDING_REHEARSAL_ENABLED = import.meta.env.DEV || import.meta.env.VITE_ENABLE_WEDDING_REHEARSAL === "true";
+
 export function WeddingLandingPage() {
   const auth = useAuth();
   const [campaign, setCampaign] = useState<WeddingCampaignRecord>(DEFAULT_WEDDING_CAMPAIGN);
   const [now, setNow] = useState(() => new Date());
+  const [weddingRehearsalStartedAt] = useState(() => Date.now());
   const [comments, setComments] = useState<WeddingCommentDto[]>([]);
   const [gallery, setGallery] = useState<WeddingGalleryItemDto[]>([]);
   const [galleryLoading, setGalleryLoading] = useState(true);
@@ -66,7 +69,12 @@ export function WeddingLandingPage() {
     return () => window.clearInterval(timer);
   }, []);
 
-  const parts = countdownParts(campaign.streamAt, now);
+  // Wedding rehearsal mirrors the production countdown without changing streamAt.
+  // Enable on a deployed Vite build with VITE_ENABLE_WEDDING_REHEARSAL=true.
+  const countdownTarget = WEDDING_REHEARSAL_ENABLED
+    ? new Date(weddingRehearsalStartedAt + 60_000).toISOString()
+    : campaign.streamAt;
+  const parts = countdownParts(countdownTarget, now);
   const liveWindowOpen = now.getTime() >= Date.parse(campaign.streamAt);
   const productionLive = campaign.streamStatus === "live" && campaign.liveMode !== "test";
   const liveHref =
@@ -123,6 +131,9 @@ export function WeddingLandingPage() {
           <p>Venue details will be shared by the host.</p>
         )}
         <p>Live celebration begins at {formatWeddingWhen(campaign.streamAt)}.</p>
+        {WEDDING_REHEARSAL_ENABLED ? (
+          <p className="hamd-wedding-rehearsal-badge">REHEARSAL · production wedding time unaffected</p>
+        ) : null}
         {parts ? (
           <div className="hamd-wedding-countdown" aria-label="Countdown to the celebration">
             {(
