@@ -76,8 +76,8 @@ export function OtpVerificationPage() {
         }
         navigate(
           email
-            ? `/login?verified=1&email=${encodeURIComponent(email)}`
-            : "/login?verified=1",
+            ? `/login?verified=1&email=${encodeURIComponent(email)}&returnTo=${encodeURIComponent(returnTo)}`
+            : `/login?verified=1&returnTo=${encodeURIComponent(returnTo)}`,
           { replace: true },
         );
       }}
