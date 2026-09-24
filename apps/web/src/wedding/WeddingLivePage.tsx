@@ -462,23 +462,27 @@ export function WeddingLivePage() {
     }
     if (displayCampaign.endedKind === "test" && displayCampaign.streamStatus !== "live") {
       return (
-        <>
+        <div className="hamd-wedding-postlive">
+          <span className="hamd-wedding-postlive__mark" aria-hidden="true">✦</span>
+          <p className="hamd-wedding-postlive__eyebrow">Rehearsal complete</p>
           <h1>Test broadcast ended.</h1>
+          <p>This is the post-live screen guests will see after the celebration.</p>
           <div className="hamd-wedding-portal__overlay-actions">
-            <Link className="hamd-btn hamd-btn--primary" to={displayCampaign.sitePath}>
-              Back to Wedding
-            </Link>
+            <Link className="hamd-btn hamd-btn--primary" to="/rowdotul-hamd-26/gallery">View Gallery</Link>
+            <Link className="hamd-btn hamd-btn--secondary" to={displayCampaign.sitePath}>Back to Wedding</Link>
           </div>
-        </>
+        </div>
       );
     }
     if (displayCampaign.streamStatus === "ended") {
       return (
-        <>
-          <h1>Thank you for celebrating with us.</h1>
-          <p>We&apos;re grateful you joined the Rowdotul HAMD&apos;26 celebration.</p>
+        <div className="hamd-wedding-postlive">
+          <span className="hamd-wedding-postlive__mark" aria-hidden="true">✦</span>
+          <p className="hamd-wedding-postlive__eyebrow">Alhamdulillah</p>
+          <h1>The celebration has concluded</h1>
+          <p>Thank you for celebrating Rowdotul HAMD&apos;26 with us. The wedding soundtrack continues while you revisit the memories.</p>
           <div className="hamd-wedding-portal__overlay-actions">
-            <Link className="hamd-btn hamd-btn--primary" to={`${displayCampaign.sitePath}#gallery`}>
+            <Link className="hamd-btn hamd-btn--primary" to="/rowdotul-hamd-26/gallery">
               View Gallery
             </Link>
             {displayCampaign.recordingAvailable && displayCampaign.recordingDownloadEnabled ? (
@@ -490,7 +494,7 @@ export function WeddingLivePage() {
               Back to Wedding
             </Link>
           </div>
-        </>
+        </div>
       );
     }
     if (error) {
@@ -531,7 +535,7 @@ export function WeddingLivePage() {
     if (connecting) {
       return <p>Connecting to the live celebration...</p>;
     }
-    if (displayCampaign.streamStatus !== "live") {
+    if (displayCampaign.streamStatus !== "live" && displayCampaign.streamStatus !== "ended") {
       const when = formatWeddingWhen(displayCampaign.streamAt);
       const parts = countdownParts(displayCampaign.streamAt, now);
       return (
