@@ -1091,3 +1091,30 @@
 .hamd-launch__rehearsal-controls button{appearance:none;border:1px solid rgb(231 198 116/.3);border-radius:.65rem;padding:.45rem .62rem;background:rgb(255 255 255/.06);color:#f8fafc;font:inherit;font-size:.7rem;cursor:pointer}
 .hamd-launch__rehearsal-controls button:hover,.hamd-launch__rehearsal-controls button:focus-visible{background:rgb(231 198 116/.18);outline:2px solid rgb(231 198 116/.55);outline-offset:1px}
 @media(max-width:640px){.hamd-launch__rehearsal-controls{left:.5rem;right:.5rem;bottom:.5rem;justify-content:center}.hamd-launch__rehearsal-controls b{width:100%;text-align:center}}
+
+
+/* Final-seconds legibility: keep the centered countdown above the dimmed launch panel and decorative overlays. */
+.hamd-launch--final .hamd-launch__final-seconds {
+  z-index: 24;
+  isolation: isolate;
+  opacity: 1;
+  filter: none;
+}
+.hamd-launch--final .hamd-launch__final-seconds small {
+  color: #ffe69a;
+  text-shadow: 0 2px 10px #07111f, 0 0 1.4rem rgb(231 198 116 / .72);
+}
+.hamd-launch--final .hamd-launch__final-seconds strong {
+  color: #fffdf3;
+  -webkit-text-stroke: 1px rgb(255 231 159 / .28);
+  text-shadow:
+    0 4px 18px rgb(0 0 0 / .9),
+    0 0 1rem rgb(231 198 116 / .75),
+    0 0 3.2rem rgb(231 198 116 / .48);
+}
+.hamd-launch--final .hamd-launch__panel::after {
+  opacity: .12;
+}
+.hamd-launch--final .hamd-launch__grain {
+  opacity: .025;
+}
