@@ -620,62 +620,6 @@ export function WeddingLivePage() {
           {liveActive || connecting ? <div className="hamd-wedding-portal__media">
             <WeddingViewingPanel videoRef={videoRef} overlay={overlay} />
             <div className="hamd-wedding-portal__controls">
-              <button
-                type="button"
-                className="hamd-btn hamd-btn--secondary"
-                aria-label={muted ? "Unmute" : "Mute"}
-                onClick={() => {
-                  const node = videoRef.current;
-                  if (!node) return;
-                  node.muted = !node.muted;
-                  setMuted(node.muted);
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  {muted ? (
-                    <path
-                      d="M4 10v4h3l4 3V7L7 10H4zm11.5 1.5 2 2m0-2-2 2M15 9l6 6"
-                      stroke="currentColor"
-                      strokeWidth="1.7"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  ) : (
-                    <path
-                      d="M4 10v4h3l4 3V7L7 10H4zm11 1a3 3 0 0 1 0 2m3-4a6 6 0 0 1 0 6"
-                      stroke="currentColor"
-                      strokeWidth="1.7"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  )}
-                </svg>
-                {muted ? "Unmute" : "Mute"}
-              </button>
-              <label>
-                <span className="hamd-sr-only">Volume</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M4 10v4h3l4 3V7L7 10H4z"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value={volume}
-                  aria-label="Volume"
-                  onChange={(event) => {
-                    const next = Number(event.target.value);
-                    setVolume(next);
-                    if (videoRef.current) videoRef.current.volume = next;
-                  }}
-                />
-              </label>
               <label>
                 Quality
                 <select
@@ -693,26 +637,6 @@ export function WeddingLivePage() {
                   <option value="360p">360p</option>
                 </select>
               </label>
-              <button
-                type="button"
-                className="hamd-btn hamd-btn--secondary"
-                aria-label="Fullscreen"
-                onClick={() => {
-                  const node = videoRef.current;
-                  if (!node) return;
-                  if (node.requestFullscreen) void node.requestFullscreen();
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path
-                    d="M8 4H4v4M16 4h4v4M4 16v4h4M20 16v4h-4"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                Fullscreen
-              </button>
               {needsAudio ? (
                 <button
                   type="button"
