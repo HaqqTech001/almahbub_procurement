@@ -66,7 +66,9 @@ export function WeddingLandingPage() {
     return () => window.clearInterval(timer);
   }, []);
 
-  const parts = countdownParts(campaign.eventAt, now);
+  const parts = countdownParts(campaign.streamAt, now);
+  const liveWindowOpen = now.getTime() >= Date.parse(campaign.streamAt);
+  const productionLive = campaign.streamStatus === "live" && campaign.liveMode !== "test";
   const liveHref =
     auth.status === "authenticated"
       ? campaign.livePath
@@ -87,11 +89,13 @@ export function WeddingLandingPage() {
       <section className="hamd-wedding-page__hero">
         <WeddingInvitationCard campaign={campaign} now={now}>
           <div className="hamd-wedding-page__actions">
-            <Link className="hamd-btn hamd-btn--primary" to={liveHref}>
-              {campaign.streamStatus === "live" && campaign.liveMode !== "test"
-                ? "Join Live Now"
-                : "Join Live"}
-            </Link>
+            {liveWindowOpen || productionLive ? (
+              <Link className="hamd-btn hamd-btn--primary" to={liveHref}>
+                {productionLive ? "Join Live Now" : "Open Live Room"}
+              </Link>
+            ) : (
+              <a className="hamd-btn hamd-btn--primary" href="#wedding-details">Get Notified</a>
+            )}
             {campaign.testBroadcastEligible && campaign.liveMode === "test" ? (
               <Link className="hamd-btn hamd-btn--secondary" to={liveHref}>
                 Join Test Live
@@ -148,11 +152,13 @@ export function WeddingLandingPage() {
             : `Live celebration begins at ${formatWeddingWhen(campaign.streamAt)}.`}
         </p>
         <div className="hamd-wedding-page__actions">
-          <Link className="hamd-btn hamd-btn--primary" to={liveHref}>
-            {campaign.streamStatus === "live" && campaign.liveMode !== "test"
-              ? "Join Live Now"
-              : "Open waiting room"}
-          </Link>
+          {liveWindowOpen || productionLive ? (
+            <Link className="hamd-btn hamd-btn--primary" to={liveHref}>
+              {productionLive ? "Join Live Now" : "Open Live Room"}
+            </Link>
+          ) : (
+            <a className="hamd-btn hamd-btn--primary" href="#wedding-details">Get Notified</a>
+          )}
           {campaign.testBroadcastEligible && campaign.liveMode === "test" ? (
             <Link className="hamd-btn hamd-btn--secondary" to={liveHref}>
               Join Test Live
