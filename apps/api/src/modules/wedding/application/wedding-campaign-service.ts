@@ -511,10 +511,28 @@ export class WeddingCampaignService {
     return overlay;
   }
 
-  public viewerSummary(auth: AuthContext) {
+  public async viewerSummary(auth: AuthContext) {
     this.assertOps(auth);
+    const mode = overlay.liveMode === "test" ? "test" : "production";
+    const room = mode === "test" ? `${WEDDING_LIVEKIT_ROOM}-test` : WEDDING_LIVEKIT_ROOM;
+    let liveViewerCount = viewers.size;
+    if (this.isLiveKitConfigured() && overlay.streamStatus === "live") {
+      try {
+        const client = new RoomServiceClient(
+          this.environment.LIVEKIT_URL!,
+          this.environment.LIVEKIT_API_KEY!,
+          this.environment.LIVEKIT_API_SECRET!,
+        );
+        const participants = await client.listParticipants(room);
+        liveViewerCount = participants.filter((participant) =>
+          participant.identity.startsWith("viewer:"),
+        ).length;
+      } catch {
+        // Keep the last application-side count if LiveKit presence is temporarily unavailable.
+      }
+    }
     return {
-      viewerCount: viewers.size,
+      viewerCount: liveViewerCount,
       guests: [...viewers.values()].map((row) => ({
         id: row.id,
         displayName: row.displayName,
