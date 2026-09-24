@@ -202,6 +202,15 @@ export class WeddingCampaignService {
   public getCampaign(auth?: AuthContext): WeddingCampaignRecord {
     const eligible = this.isTestBroadcastEligible(auth);
     let campaign = canonicalizeWeddingEventDate(overlay);
+    // A completed test broadcast is historical rehearsal metadata only. It must
+    // never make the normal guest live route look concluded.
+    if (campaign.endedKind === "test" && campaign.streamStatus !== "live") {
+      campaign = {
+        ...campaign,
+        streamStatus: "upcoming",
+        liveMode: "none",
+      };
+    }
     if (!isOps(auth) && campaign.campaignStatus === "draft") {
       campaign = { ...campaign, modalEnabled: false };
     }
