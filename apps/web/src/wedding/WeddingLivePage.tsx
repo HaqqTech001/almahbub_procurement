@@ -419,13 +419,13 @@ export function WeddingLivePage() {
   }, [quality]);
 
   const headerStatus: WeddingPortalStatus = useMemo(() => {
-    if (displayCampaign.endedKind === "test" && displayCampaign.streamStatus !== "live") return "ENDED";
+    if (rehearsal === "ended") return "ENDED";
     if (displayCampaign.streamStatus === "ended") return "ENDED";
     if (connecting) return "CONNECTING";
     if (displayCampaign.streamStatus === "live" && displayCampaign.liveMode === "test") return "TEST LIVE";
     if (displayCampaign.streamStatus === "live") return "LIVE";
     return "WAITING";
-  }, [displayCampaign.endedKind, displayCampaign.liveMode, displayCampaign.streamStatus, connecting]);
+  }, [displayCampaign.liveMode, displayCampaign.streamStatus, connecting, rehearsal]);
 
   const overlay = (() => {
     if (auth.status !== "authenticated") {
@@ -441,7 +441,7 @@ export function WeddingLivePage() {
         </>
       );
     }
-    if (displayCampaign.endedKind === "test" && displayCampaign.streamStatus !== "live") {
+    if (rehearsal === "ended") {
       return (
         <div className="hamd-wedding-postlive">
           <span className="hamd-wedding-postlive__mark" aria-hidden="true">✦</span>
