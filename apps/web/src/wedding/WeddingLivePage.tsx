@@ -282,9 +282,8 @@ export function WeddingLivePage() {
         node.volume = from * (1 - t);
         if (t < 1) frame = requestAnimationFrame(fade);
         else {
+          persistWaitingPlayback(node, currentWaitingIdRef.current);
           node.pause();
-          node.removeAttribute("src");
-          node.load();
         }
       };
       frame = requestAnimationFrame(fade);
@@ -312,7 +311,7 @@ export function WeddingLivePage() {
   }, [currentWaiting?.id, currentWaiting?.src, waitingAllowed, waitingMuted, waitingVolume, startWaitingMusic]);
 
   const advanceWaitingTrack = (fromError: boolean) => {
-    if (waitingLockRef.current || !shouldPlayWeddingWaitingMusic(displayCampaign)) return;
+    if (waitingLockRef.current || !waitingAllowed) return;
     const index = playableWaiting.findIndex((row) => row.id === currentWaitingIdRef.current);
     const next = nextWeddingWaitingTrackIndex(playableWaiting, index, {
       loop: displayCampaign.waitingMusicLoop !== false,
@@ -535,7 +534,7 @@ export function WeddingLivePage() {
     if (connecting) {
       return <p>Connecting to the live celebration...</p>;
     }
-    if (displayCampaign.streamStatus !== "live" && displayCampaign.streamStatus !== "ended") {
+    if (displayCampaign.streamStatus !== "live") {
       const when = formatWeddingWhen(displayCampaign.streamAt);
       const parts = countdownParts(displayCampaign.streamAt, now);
       return (
