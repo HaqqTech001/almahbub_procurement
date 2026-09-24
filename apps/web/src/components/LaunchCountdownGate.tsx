@@ -87,11 +87,13 @@ export function LaunchCountdownGate() {
   const preview = previewFromUrl ?? (REHEARSAL_ENABLED ? 60 : null);
   const [previewStartedAt, setPreviewStartedAt] = useState(() => Date.now());
   const [revealComplete, setRevealComplete] = useState(false);
+  const [rehearsalFinished, setRehearsalFinished] = useState(false);
 
   useEffect(() => {
     setPreviewStartedAt(Date.now());
     setNow(Date.now());
     setRevealComplete(false);
+    setRehearsalFinished(false);
   }, [preview]);
 
   useEffect(() => {
@@ -117,6 +119,7 @@ export function LaunchCountdownGate() {
     setPreviewStartedAt(startedAt);
     setNow(startedAt);
     setRevealComplete(false);
+    setRehearsalFinished(false);
     const params = new URLSearchParams(location.search);
     if (value == null) params.delete(PREVIEW_PARAM);
     else params.set(PREVIEW_PARAM, value);
@@ -144,17 +147,12 @@ export function LaunchCountdownGate() {
   const reveal = revealing;
   useEffect(() => {
     if (!revealComplete || preview == null) return;
-    // Rehearsals remain replayable instead of disappearing permanently after reveal.
-    const timer = window.setTimeout(() => {
-      const restartedAt = Date.now();
-      setPreviewStartedAt(restartedAt);
-      setNow(restartedAt);
-      setRevealComplete(false);
-    }, 900);
-    return () => window.clearTimeout(timer);
+    // A rehearsal must reveal the real landing page too. Keep the URL controls
+    // available, but do not immediately restart the gate and cover the site again.
+    setRehearsalFinished(true);
   }, [revealComplete, preview]);
 
-  if (excluded || (revealComplete && preview == null)) return null;
+  if (excluded || revealComplete || rehearsalFinished) return null;
 
   const rootClass = [
     "hamd-launch",
