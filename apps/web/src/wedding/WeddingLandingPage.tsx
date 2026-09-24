@@ -168,25 +168,25 @@ export function WeddingLandingPage() {
       </section>
 
       {campaign.galleryEnabled ? (
-        <section className="hamd-wedding-page__section" id="gallery" aria-labelledby="wedding-gallery">
-          <h2 id="wedding-gallery">Wedding gallery</h2>
+        <section className="hamd-wedding-page__section hamd-wedding-page__section--gallery" id="gallery" aria-labelledby="wedding-gallery">
+          <div className="hamd-wedding-gallery__heading"><div><p className="hamd-wedding-gallery__eyebrow">Memories</p><h2 id="wedding-gallery">Wedding gallery</h2></div>{gallery.length > 0 ? <span>{gallery.length} {gallery.length === 1 ? "memory" : "memories"}</span> : null}</div>
           {galleryLoading ? <CollectionSkeleton label="Loading wedding gallery" gridClassName="hamd-wedding-gallery" aspectRatio="4 / 5" /> : galleryError ? <p role="alert">Unable to load wedding gallery. <button onClick={() => setGalleryAttempt(value => value + 1)}>Retry gallery</button></p> : gallery.length === 0 ? (
             <p>Photographs and clips appear here when the host publishes them.</p>
           ) : (
             <ul className="hamd-wedding-gallery">
               {gallery.map((item, index) => (
-                <li key={item.id}>
+                <li key={item.id} className="hamd-wedding-gallery__item">
                   <button
                     type="button"
                     className="hamd-wedding-gallery__tile"
                     onClick={() => setLightbox({ items: lightboxItems, index })}
                   >
                     {item.kind === "video" ? (
-                      <video src={item.src} muted playsInline />
+                      <><video src={item.src} muted playsInline preload="metadata" /><span className="hamd-wedding-gallery__play" aria-hidden="true">▶</span><span className="hamd-wedding-gallery__kind">Video</span></>
                     ) : (
                       <OptimizedImage src={item.src} alt={item.title || item.caption || "Wedding gallery image unavailable"} />
                     )}
-                    {item.title ? <span className="hamd-sr-only">{item.title}</span> : null}
+                    {item.title ? <span className="hamd-wedding-gallery__caption">{item.title}</span> : null}
                   </button>
                   {item.kind === "video" && item.downloadable ? (
                     <a className="hamd-btn hamd-btn--ghost" href={item.src} download>
