@@ -19,6 +19,13 @@ import { WeddingWaitingAudioPanel } from "./wedding/WeddingWaitingAudioPanel.js"
 import { WeddingParticipantsPanel } from "./wedding/WeddingParticipantsPanel.js";
 import type { WeddingWaitingTrack } from "@hamd/constants";
 
+function publicWeddingPreviewHref(state: "waiting" | "live" | "ended"): string {
+  const configured = String(import.meta.env.VITE_PUBLIC_WEB_URL ?? "").trim().replace(/\/$/, "");
+  const base = configured || (import.meta.env.DEV ? "http://127.0.0.1:3000" : "");
+  if (!base) return "";
+  return `${base}/rowdotul-hamd-26/live?weddingPreview=${state}`;
+}
+
 type Tab = "overview" | "live" | "waiting-music" | "gallery" | "comments" | "invitation" | "waiting" | "subscription";
 
 const TABS: Array<{ id: Tab; label: string }> = [
@@ -214,6 +221,11 @@ export function WeddingCampaignPage() {
               broadcast. Invitation, gallery, and comments remain available.
             </OpsAlert>
           ) : null}
+          {!publicWeddingPreviewHref("waiting") ? (
+            <OpsAlert tone="warning">
+              Public web URL is not configured for Ops. Set VITE_PUBLIC_WEB_URL to the deployed buyer/public website origin before using guest rehearsal links.
+            </OpsAlert>
+          ) : null}
           <p>
             {campaign.streamStatus === "live"
               ? campaign.liveMode === "test"
@@ -227,7 +239,7 @@ export function WeddingCampaignPage() {
             </Link>
             <a
               className="hamd-btn hamd-btn--secondary"
-              href="/rowdotul-hamd-26/live?weddingPreview=waiting"
+              href={publicWeddingPreviewHref("waiting") || undefined}
               target="_blank"
               rel="noreferrer"
             >
@@ -235,7 +247,7 @@ export function WeddingCampaignPage() {
             </a>
             <a
               className="hamd-btn hamd-btn--secondary"
-              href="/rowdotul-hamd-26/live?weddingPreview=live"
+              href={publicWeddingPreviewHref("live") || undefined}
               target="_blank"
               rel="noreferrer"
             >
@@ -243,7 +255,7 @@ export function WeddingCampaignPage() {
             </a>
             <a
               className="hamd-btn hamd-btn--ghost"
-              href="/rowdotul-hamd-26/live?weddingPreview=ended"
+              href={publicWeddingPreviewHref("ended") || undefined}
               target="_blank"
               rel="noreferrer"
             >
