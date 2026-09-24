@@ -152,7 +152,6 @@ export function WeddingLivePage() {
   const connectingRef = useRef(false);
   const unavailableRef = useRef(false);
   const configuredRef = useRef(true);
-  const disconnectTimer = useRef<number | undefined>(undefined);
 
   const rehearsal = useMemo(() => rehearsalState(location.search), [location.search]);
   const displayCampaign = useMemo<WeddingCampaignRecord>(() => {
@@ -368,7 +367,7 @@ export function WeddingLivePage() {
     } finally {
       connectingRef.current = false;
     }
-  }, [displayCampaign.liveMode, displayCampaign.primaryFeedId, quality, rehearsal]);
+  }, [displayCampaign.liveMode, displayCampaign.primaryFeedId, rehearsal]);
 
   useEffect(() => {
     if (auth.status !== "authenticated") return;
@@ -385,10 +384,6 @@ export function WeddingLivePage() {
   }, [auth.status]);
 
   useEffect(() => {
-    if (disconnectTimer.current) {
-      window.clearTimeout(disconnectTimer.current);
-      disconnectTimer.current = undefined;
-    }
     if (auth.status !== "authenticated" || !statusReady) return;
     if (displayCampaign.streamStatus !== "live") {
       roomRef.current?.disconnect();
@@ -397,19 +392,18 @@ export function WeddingLivePage() {
       return;
     }
     void connectViewer();
-    return () => {
-      const current = roomRef.current;
-      disconnectTimer.current = window.setTimeout(() => {
-        if (roomRef.current === current) {
-          current?.disconnect();
-          if (roomRef.current === current) {
-            roomRef.current = null;
-            setConnected(false);
-          }
-        }
-      }, 200);
-    };
   }, [auth.status, displayCampaign.streamStatus, displayCampaign.liveMode, connectViewer, statusReady]);
+
+  useEffect(() => {
+    return () => {
+      roomRef.current?.disconnect();
+      roomRef.current = null;
+    };
+  }, []);
+
+  useEffect(() => {
+    roomRef.current?.setQuality(quality);
+  }, [quality]);
 
   const headerStatus: WeddingPortalStatus = useMemo(() => {
     if (displayCampaign.endedKind === "test" && displayCampaign.streamStatus !== "live") return "ENDED";
