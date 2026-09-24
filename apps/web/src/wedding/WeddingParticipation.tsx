@@ -59,9 +59,9 @@ export function WeddingParticipation({ onJoinInteraction }: { onJoinInteraction?
       {error ? <HostAlert action={error.includes("Verify your account email") ? <Link to="/verify-email">Verify email</Link> : undefined}>{error}</HostAlert> : null}
       {!state ? (error ? <div><button type="button" onClick={() => setRetry((value) => value + 1)} disabled={loading}>Retry preferences</button><Link className="hamd-btn hamd-btn--secondary" to="/rowdotul-hamd-26">Continue to wedding</Link></div> : <ModuleSkeleton variant="list" count={2} />) : <>
         <p role="status">{state.subscribed ? "You are subscribed to Rowdotul HAMD'26 updates." : "Subscribe for Rowdotul HAMD'26 updates using your verified account email."}</p>
-        <button type="button" disabled={busy} onClick={() => void change("subscription")}>{state.subscribed ? "Unsubscribe from updates" : "Subscribe for updates"}</button>
+        <button className="hamd-btn hamd-btn--primary hamd-wedding-participation__action" type="button" disabled={busy} onClick={() => void change("subscription")}>{state.subscribed ? "Unsubscribe from updates" : "Subscribe for updates"}</button>
         <p role="status">{state.joined ? "You joined the waiting room." : "Join the waiting room to let the hosts know you are attending."}</p>
-        <button type="button" disabled={busy} onClick={() => void change("waiting")}>{state.joined ? "Leave waiting room" : "Join waiting room"}</button>
+        <button className="hamd-btn hamd-btn--secondary hamd-wedding-participation__action" type="button" disabled={busy} onClick={() => void change("waiting")}>{state.joined ? "Leave waiting room" : "Join waiting room"}</button>
         <p>Joining the waiting room does not subscribe you to email updates.</p>
       </>}
     </>}
