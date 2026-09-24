@@ -202,6 +202,24 @@ export class WeddingCampaignService {
   public getCampaign(auth?: AuthContext): WeddingCampaignRecord {
     const eligible = this.isTestBroadcastEligible(auth);
     let campaign = canonicalizeWeddingEventDate(overlay);
+    // An "ended" value persisted before the scheduled wedding cannot represent
+    // the real celebration ending. Treat that legacy/rehearsal state as waiting.
+    // After the scheduled stream time, only the explicit Ops End Live action
+    // persists the genuine production-ended state.
+    const streamStartsAt = Date.parse(campaign.streamAt);
+    if (
+      campaign.streamStatus === "ended" &&
+      Number.isFinite(streamStartsAt) &&
+      Date.now() < streamStartsAt
+    ) {
+      campaign = {
+        ...campaign,
+        streamStatus: "upcoming",
+        campaignStatus: "upcoming",
+        liveMode: "none",
+        endedKind: "none",
+      };
+    }
     // A completed test broadcast is historical rehearsal metadata only. It must
     // never make the normal guest live route look concluded.
     if (campaign.endedKind === "test" && campaign.streamStatus !== "live") {
