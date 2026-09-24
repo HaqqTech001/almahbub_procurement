@@ -118,8 +118,6 @@ export function WeddingLivePage() {
   const [error, setError] = useState<string | null>(null);
   const [reconnect, setReconnect] = useState(false);
   const [needsAudio, setNeedsAudio] = useState(false);
-  const [muted, setMuted] = useState(false);
-  const [volume, setVolume] = useState(1);
   const [quality, setQuality] = useState<ViewerQualityChoice>("auto");
   const [comments, setComments] = useState<WeddingCommentDto[]>([]);
   const [draft, setDraft] = useState("");
