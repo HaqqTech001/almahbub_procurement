@@ -14,6 +14,10 @@ import {
 import { useOptionalAuth } from "../auth/session/AuthProvider.js";
 import { fetchWeddingCampaign } from "../wedding/wedding-api.js";
 
+const WEDDING_REHEARSAL_ENABLED =
+  import.meta.env.DEV || import.meta.env.VITE_ENABLE_WEDDING_REHEARSAL === "true";
+const WEDDING_REHEARSAL_MODAL_DELAY_MS = 700;
+
 function readDismissed(campaignId: string): boolean {
   try {
     return window.sessionStorage.getItem(weddingModalDismissKey(campaignId)) === "1";
@@ -56,7 +60,7 @@ function suppressionReason(
   campaign: WeddingCampaignRecord,
 ): string | null {
   if (!isPublicCampaignRoute(pathname)) return `route:${pathname}`;
-  if (readDismissed(campaign.id)) return "session-dismissed";
+  if (!WEDDING_REHEARSAL_ENABLED && readDismissed(campaign.id)) return "session-dismissed";
   if (!campaign.modalEnabled) return "modalEnabled=false";
   if (!isWeddingModalEligible(campaign)) return "outside-display-window";
   return null;
@@ -75,7 +79,10 @@ function ensurePublicModalTimer(onFire: () => void): () => void {
   publicModalListeners.add(onFire);
   const now = Date.now();
   if (publicModalStartedAt == null) publicModalStartedAt = now;
-  const remaining = Math.max(0, WEDDING_MODAL_PUBLIC_DELAY_MS - (now - publicModalStartedAt));
+  const delayMs = WEDDING_REHEARSAL_ENABLED
+    ? WEDDING_REHEARSAL_MODAL_DELAY_MS
+    : WEDDING_MODAL_PUBLIC_DELAY_MS;
+  const remaining = Math.max(0, delayMs - (now - publicModalStartedAt));
   if (publicModalTimerId === -1) {
     onFire();
   } else if (publicModalTimerId == null) {
@@ -192,7 +199,7 @@ export function CelebrationHost() {
 
   useEffect(() => {
     if (!open) return;
-    if (readDismissed(campaign.id) && manuallyOpenedCampaign.current !== campaign.id) {
+    if (!WEDDING_REHEARSAL_ENABLED && readDismissed(campaign.id) && manuallyOpenedCampaign.current !== campaign.id) {
       debugWedding({ lateClose: "session-dismissed", campaignId: campaign.id });
       setOpen(false);
     }
@@ -210,7 +217,7 @@ export function CelebrationHost() {
       campaign={campaign}
       onNavigate={(href) => {
         manuallyOpenedCampaign.current = null;
-        writeDismissed(campaign.id);
+        if (!WEDDING_REHEARSAL_ENABLED) writeDismissed(campaign.id);
         setOpen(false);
         const live = href.includes("/live");
         if (live && auth?.status !== "authenticated") {
@@ -221,7 +228,7 @@ export function CelebrationHost() {
       }}
       onDismiss={() => {
         manuallyOpenedCampaign.current = null;
-        writeDismissed(campaign.id);
+        if (!WEDDING_REHEARSAL_ENABLED) writeDismissed(campaign.id);
         setOpen(false);
       }}
     /> : null}
