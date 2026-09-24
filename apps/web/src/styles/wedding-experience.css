@@ -11,3 +11,23 @@
 .hamd-wedding-gallery-page{padding-bottom:3rem}.hamd-wedding-gallery-page__hero{padding:clamp(2rem,7vw,5rem) 1rem 1.2rem;text-align:center}.hamd-wedding-gallery-page__hero>a{display:inline-block;margin-bottom:1.2rem;color:#76501d;text-decoration:none}.hamd-wedding-gallery-page__filters{display:flex;justify-content:center;gap:.5rem;padding:0 1rem 1.2rem}.hamd-wedding-gallery-page__filters button{padding:.55rem 1rem;border:1px solid rgb(104 73 29/.18);border-radius:999px;background:#f6ead8;color:#402d19}.hamd-wedding-gallery-page__filters button.is-active{background:var(--green);color:#fff}.hamd-wedding-gallery-page__grid{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;width:min(72rem,calc(100% - 2rem));margin:0 auto;padding:0}.hamd-wedding-gallery-page__grid li{min-width:0;overflow:hidden;border-radius:1rem;background:#e8dac4}.hamd-wedding-gallery-page__grid button{position:relative;display:block;width:100%;aspect-ratio:4/5;padding:0;overflow:hidden;border:0;background:#ddd;cursor:pointer}.hamd-wedding-gallery-page__grid img,.hamd-wedding-gallery-page__grid video{display:block;width:100%;height:100%;object-fit:cover}.hamd-wedding-gallery-page__grid button>span:not(.hamd-wedding-gallery-page__play){position:absolute;left:.5rem;right:.5rem;bottom:.5rem;padding:.45rem .55rem;border-radius:.55rem;background:rgb(0 0 0/.55);color:#fff;font-size:.72rem;text-align:left}.hamd-wedding-gallery-page__play{position:absolute;inset:50% auto auto 50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:3rem;height:3rem;border-radius:50%;background:rgb(255 244 217/.9);color:#2b1b0d}.hamd-wedding-gallery-page__empty{text-align:center;padding:3rem 1rem}
 @keyframes hamd-wedding-pulse{50%{transform:scale(1.04);filter:drop-shadow(0 0 1.5rem rgb(235 187 83/.7))}}
 @media(max-width:640px){.hamd-wedding-x>*{width:min(100% - 1rem,72rem)}.hamd-wedding-x__welcome{padding-top:.5rem}.hamd-wedding-x__stage,.hamd-wedding-x__details,.hamd-wedding-x__gallery-preview,.hamd-wedding-x__participation{border-radius:1.2rem}.hamd-wedding-x__actions{display:grid;grid-template-columns:1fr;width:100%}.hamd-wedding-x__primary,.hamd-wedding-x__secondary{width:100%;min-width:0}.hamd-wedding-x__quick{grid-template-columns:repeat(2,minmax(0,1fr))}.hamd-wedding-x__detail-grid{grid-template-columns:1fr}.hamd-wedding-x__detail-grid article{border-right:0;border-bottom:1px solid rgb(150 105 37/.16)}.hamd-wedding-x__gallery-preview{display:grid}.hamd-wedding-gallery-page__grid{grid-template-columns:repeat(2,minmax(0,1fr));width:calc(100% - 1rem);gap:.4rem}.hamd-wedding-x__rehearsal{position:relative;display:inline-block;top:auto;right:auto;margin-bottom:.8rem}.hamd-wedding-x__final{min-height:58vh}.hamd-wedding-x__final strong{font-size:clamp(8rem,45vw,13rem)}}
+
+/* Mobile containment: no wedding action, countdown cell or portal state may widen the viewport. */
+.hamd-wedding-x,.hamd-wedding-x *,.hamd-wedding-gallery-page,.hamd-wedding-gallery-page *{box-sizing:border-box}
+.hamd-wedding-x__stage,.hamd-wedding-x__countdown,.hamd-wedding-x__quick,.hamd-wedding-x__details,.hamd-wedding-x__gallery-preview{min-width:0;max-width:100%}
+.hamd-wedding-x__countdown>div,.hamd-wedding-x__quick>*{min-width:0;max-width:100%;overflow:hidden}
+.hamd-wedding-postlive{width:min(42rem,100%);margin:auto;padding:clamp(1.25rem,5vw,3rem);text-align:center}
+.hamd-wedding-postlive__mark{display:grid;place-items:center;width:3.5rem;height:3.5rem;margin:0 auto 1rem;border:1px solid rgb(215 173 85/.45);border-radius:50%;color:#e6bf69;font-size:1.35rem}
+.hamd-wedding-postlive__eyebrow{margin:0 0 .5rem;color:#d7ad55;font-size:.72rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+.hamd-wedding-postlive h1{margin:.25rem 0 .75rem;font-family:Georgia,"Times New Roman",serif;font-size:clamp(2rem,7vw,4rem);line-height:1}
+.hamd-wedding-postlive>p:not(.hamd-wedding-postlive__eyebrow){max-width:34rem;margin:.5rem auto 1.25rem;line-height:1.6}
+@media(max-width:640px){
+ .hamd-wedding-x__stage{padding:1.2rem .75rem}
+ .hamd-wedding-x__countdown{width:100%;grid-template-columns:repeat(4,minmax(0,1fr));gap:.35rem}
+ .hamd-wedding-x__countdown>div{padding:.8rem .15rem;border-radius:.85rem}
+ .hamd-wedding-x__countdown strong{font-size:clamp(1.45rem,8vw,2.35rem)}
+ .hamd-wedding-x__countdown span{font-size:.56rem;letter-spacing:0}
+ .hamd-wedding-x__quick{width:100%;gap:.45rem}
+ .hamd-wedding-x__quick a,.hamd-wedding-x__quick button{width:100%;max-width:100%;overflow-wrap:anywhere}
+ .hamd-wedding-postlive{padding:1.4rem .75rem}
+}
