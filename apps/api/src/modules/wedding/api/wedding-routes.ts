@@ -50,6 +50,7 @@ export function createWeddingRouter(
   router.get("/campaign", optionalAuthenticate, controller.getCampaign);
   router.patch("/campaign", authenticate, OPS, controller.updateCampaign);
   router.post("/live/start", authenticate, OPS, controller.startLive);
+  router.post("/live/waiting", authenticate, OPS, controller.setWaiting);
   router.post("/live/end", authenticate, OPS, controller.endLive);
   router.post("/live/stop-feed", authenticate, OPS, controller.stopMyBroadcast);
   router.post("/live/primary-feed", authenticate, OPS, controller.setPrimaryFeed);
