@@ -1125,3 +1125,32 @@ html.dark .hamd-wedding-portal__comments {
  .hamd-wedding-portal__controls>label{flex:1 1 9rem}
  .hamd-wedding-portal__messages-btn{flex:1 1 auto}
 }
+
+
+/* Wedding gallery — dense, bounded media grid inspired by native photo galleries */
+.hamd-wedding-page__section--gallery{width:min(100% - 2rem,76rem)}
+.hamd-wedding-gallery__heading{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-bottom:1rem}
+.hamd-wedding-gallery__heading h2{margin:.1rem 0 0}
+.hamd-wedding-gallery__heading>span,.hamd-wedding-gallery__eyebrow{margin:0;color:#7b4a60;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+.hamd-wedding-gallery{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(3px,.5vw,7px);width:100%;max-width:100%;overflow:hidden}
+.hamd-wedding-gallery__item{position:relative;min-width:0;max-width:100%;overflow:hidden;margin:0;padding:0}
+.hamd-wedding-gallery__tile{position:relative;display:block;width:100%;max-width:100%;aspect-ratio:1/1;margin:0;padding:0;border:0;border-radius:.35rem;overflow:hidden;background:#20151c;cursor:zoom-in;isolation:isolate}
+.hamd-wedding-gallery__tile img,.hamd-wedding-gallery__tile video{display:block;width:100%;height:100%;max-width:100%;object-fit:cover;object-position:center;background:#1a1117;transition:transform .25s ease}
+.hamd-wedding-gallery__tile:hover img,.hamd-wedding-gallery__tile:hover video{transform:scale(1.025)}
+.hamd-wedding-gallery__play{position:absolute;inset:50% auto auto 50%;z-index:2;display:grid;place-items:center;width:2.5rem;height:2.5rem;transform:translate(-50%,-50%);border:1px solid rgba(255,255,255,.5);border-radius:999px;background:rgba(22,10,17,.58);color:white;font-size:.8rem;padding-left:.12rem;backdrop-filter:blur(5px)}
+.hamd-wedding-gallery__kind{position:absolute;top:.45rem;right:.45rem;z-index:2;padding:.2rem .42rem;border-radius:999px;background:rgba(24,10,18,.62);color:white;font-size:.62rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;backdrop-filter:blur(4px)}
+.hamd-wedding-gallery__caption{position:absolute;inset:auto 0 0;z-index:2;overflow:hidden;padding:1.8rem .55rem .45rem;background:linear-gradient(transparent,rgba(20,8,15,.78));color:white;font-size:.72rem;text-align:left;text-overflow:ellipsis;white-space:nowrap}
+.hamd-wedding-gallery__item>.hamd-btn{position:absolute;z-index:3;right:.35rem;bottom:.35rem;min-height:2rem;padding:.3rem .55rem;background:rgba(255,255,255,.9);font-size:.65rem}
+@media(max-width:900px){.hamd-wedding-gallery{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:640px){
+ .hamd-wedding-page__section--gallery{width:100%;padding-inline:.35rem}
+ .hamd-wedding-gallery__heading{padding-inline:.4rem;margin-bottom:.65rem}
+ .hamd-wedding-gallery{grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
+ .hamd-wedding-gallery__tile{border-radius:.16rem}
+ .hamd-wedding-gallery__play{width:2rem;height:2rem;font-size:.68rem}
+ .hamd-wedding-gallery__kind{top:.28rem;right:.28rem;font-size:.52rem}
+ .hamd-wedding-gallery__caption{padding:1.25rem .35rem .3rem;font-size:.62rem}
+ .hamd-wedding-gallery__item>.hamd-btn{display:none}
+}
+@media(max-width:360px){.hamd-wedding-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.hamd-wedding-gallery__tile img,.hamd-wedding-gallery__tile video{transition:none}}
