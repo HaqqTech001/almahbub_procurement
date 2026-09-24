@@ -368,6 +368,30 @@ export function WeddingBroadcastPanel({
         </header>
       ) : null}
       <div className="hamd-wedding-ops-live">
+      {studio ? (
+        <section className="hamd-wedding-studio__summary" aria-label="Live broadcast summary">
+          <article>
+            <span>Broadcast</span>
+            <strong>{live ? (testLive ? "Test live" : "Live now") : configured ? "Ready" : "Setup required"}</strong>
+            <small>{live ? `${minutes}:${seconds} elapsed` : "Waiting to start"}</small>
+          </article>
+          <article>
+            <span>Audience</span>
+            <strong>{viewers}</strong>
+            <small>{viewers === 1 ? "guest watching now" : "guests watching now"}</small>
+          </article>
+          <article>
+            <span>Connection</span>
+            <strong>{configured ? connection : "Not configured"}</strong>
+            <small>{qualityWarn ? "Quality is being reduced" : "Broadcast network health"}</small>
+          </article>
+          <article>
+            <span>Capture</span>
+            <strong>{capture?.label ?? (cameraOn ? "Camera active" : "Camera not opened")}</strong>
+            <small>{capture ? `${capture.width}×${capture.height} · ${capture.frameRate} fps` : "Open preview to verify framing"}</small>
+          </article>
+        </section>
+      ) : null}
       {!configured ? (
         <OpsAlert tone="warning">
           Live streaming setup required. Configure the LiveKit connection before starting a
