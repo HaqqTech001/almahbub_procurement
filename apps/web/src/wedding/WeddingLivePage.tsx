@@ -444,7 +444,7 @@ export function WeddingLivePage() {
       return (
         <>
           <h1>Thank you for celebrating with us.</h1>
-          <p>Waiting music is off because this celebration has ended.</p>
+          <p>We&apos;re grateful you joined the Rowdotul HAMD&apos;26 celebration.</p>
           <div className="hamd-wedding-portal__overlay-actions">
             <Link className="hamd-btn hamd-btn--primary" to={`${displayCampaign.sitePath}#gallery`}>
               View Gallery
