@@ -164,10 +164,10 @@ export class WeddingCampaignController {
     }
   };
 
-  public readonly viewers: RequestHandler = (request, response, next) => {
+  public readonly viewers: RequestHandler = async (request, response, next) => {
     try {
       if (!request.auth) throw unauthenticated();
-      response.json({ data: this.service.viewerSummary(request.auth) });
+      response.json({ data: await this.service.viewerSummary(request.auth) });
     } catch (error) {
       next(error);
     }
