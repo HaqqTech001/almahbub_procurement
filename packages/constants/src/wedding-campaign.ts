@@ -51,7 +51,7 @@ export type WeddingCampaignRecord = {
   feeds?: WeddingBroadcastFeed[];
 };
 
-const EVENT_AT = "2026-09-26";
+const EVENT_AT = "2026-09-26T09:00:00+01:00";
 const MODAL_STARTS_AT = "2026-08-01T00:00:00+01:00";
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 
