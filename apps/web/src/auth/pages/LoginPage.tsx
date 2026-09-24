@@ -111,9 +111,8 @@ export function LoginPage() {
         return;
       }
       if (err instanceof AuthApiError && err.isUnverified) {
-        navigate(`/otp?email=${encodeURIComponent(values.email)}`, {
-          replace: true,
-        });
+        const otp = new URLSearchParams({ email: values.email, returnTo });
+        navigate(`/otp?${otp.toString()}`, { replace: true });
         return;
       }
       setError(formatAuthError(err, "Unable to sign in."));
