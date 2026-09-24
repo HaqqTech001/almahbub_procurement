@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { CollectionSkeleton, MediaLightbox, OptimizedImage, type MediaLightboxItem } from "@hamd/ui/primitives";
+import { CollectionSkeleton, MediaLightbox, OptimizedImage } from "@hamd/ui/primitives";
 import { DEFAULT_WEDDING_CAMPAIGN, type WeddingCampaignRecord } from "@hamd/constants";
 import { fetchWeddingCampaign, listWeddingGallery, type WeddingGalleryItemDto } from "./wedding-api.js";
 import "../styles/wedding-experience.css";
@@ -13,7 +13,7 @@ export function WeddingGalleryPage() {
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [filter, setFilter] = useState<Filter>("all");
-  const [lightbox, setLightbox] = useState<{ items: MediaLightboxItem[]; index: number } | null>(null);
+  const [lightbox, setLightbox] = useState<{ items: Array<{ src: string; kind: "image" | "video"; alt: string }>; index: number } | null>(null);
 
   useEffect(() => {
     void fetchWeddingCampaign().then(setCampaign);
