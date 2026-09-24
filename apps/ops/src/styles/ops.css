@@ -4500,3 +4500,13 @@ html.dark .hamd-ops-product-more__menu a:focus-visible {
   }
 }
 
+
+
+/* Rowdotul HAMD'26 Broadcast Studio operational summary */
+.hamd-wedding-studio__summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.75rem;margin:0 0 1rem}
+.hamd-wedding-studio__summary article{display:grid;gap:.28rem;min-height:7rem;padding:1rem;border:1px solid var(--border-subtle);border-radius:1rem;background:var(--surface-raised,rgba(255,255,255,.035));box-shadow:0 .5rem 1.8rem rgba(0,0,0,.06)}
+.hamd-wedding-studio__summary article>span{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.hamd-wedding-studio__summary article>strong{font-size:clamp(1.05rem,2vw,1.45rem);line-height:1.15}
+.hamd-wedding-studio__summary article>small{align-self:end;color:var(--text-muted);line-height:1.35}
+@media(max-width:900px){.hamd-wedding-studio__summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.hamd-wedding-studio__summary{grid-template-columns:1fr 1fr;gap:.55rem}.hamd-wedding-studio__summary article{min-height:6.3rem;padding:.8rem}.hamd-wedding-studio__summary article>strong{font-size:1rem}}
