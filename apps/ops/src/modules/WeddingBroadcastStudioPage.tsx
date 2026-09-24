@@ -44,6 +44,28 @@ export function WeddingBroadcastStudioPage() {
     });
   }, []);
 
+  useEffect(() => {
+    if (!live) return;
+    let cancelled = false;
+    const refreshViewers = async () => {
+      try {
+        const access = await token();
+        const summary = await opsFetch<{ viewerCount: number }>("/wedding/live/viewers", {
+          accessToken: access,
+        });
+        if (!cancelled) setViewers(summary.viewerCount ?? 0);
+      } catch {
+        // Viewer telemetry must never interrupt or end an active broadcast.
+      }
+    };
+    void refreshViewers();
+    const timer = window.setInterval(() => void refreshViewers(), 5000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [live]);
+
   return (
     <div className="hamd-wedding-studio-page">
       <div className="hamd-wedding-studio-page__theme">
