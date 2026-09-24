@@ -510,14 +510,20 @@ export function WeddingLivePage() {
       const parts = countdownParts(displayCampaign.streamAt, now);
       return (
         <WeddingWaitingStage campaign={displayCampaign}>
-          {when ? <p>{when}</p> : <p>Time to be announced</p>}
-          {parts ? (
-            <p>
-              {parts.days}d {parts.hours}h {parts.minutes}m {parts.seconds}s
-            </p>
-          ) : (
-            <p>Waiting for the live celebration to begin.</p>
-          )}
+          <div className="hamd-wedding-waiting__welcome">
+            <span className="hamd-wedding-waiting__music-mark" aria-hidden="true">♪</span>
+            <h2>We&apos;re getting everything ready</h2>
+            <p>The live celebration will begin soon. Stay with us and enjoy the music while you wait.</p>
+            {when ? <p className="hamd-wedding-waiting__when">{when}</p> : null}
+            {parts ? (
+              <div className="hamd-wedding-waiting__countdown" aria-label="Time until live celebration">
+                <strong>{parts.days}<small>days</small></strong>
+                <strong>{parts.hours}<small>hours</small></strong>
+                <strong>{parts.minutes}<small>mins</small></strong>
+                <strong>{parts.seconds}<small>secs</small></strong>
+              </div>
+            ) : null}
+          </div>
           {!waitingLoaded ? <ModuleSkeleton variant="list" count={1} /> : waitingLoadError ? <p role="alert">Unable to load waiting music. Checking again shortly.</p> : null}
           {currentWaiting && waitingAllowed ? (
             <div className="hamd-wedding-waiting__audio">
@@ -550,7 +556,7 @@ export function WeddingLivePage() {
                 </svg>
                 {needWaitingSound || !waitingPlaying && !waitingMuted ? "Play waiting music" : waitingMuted ? "Unmute" : "Mute"}
               </button>
-              {needWaitingSound ? <span role="status">Browser requires interaction</span> : waitingMuted ? <span role="status">Muted</span> : waitingPlaying ? <span role="status">Playing</span> : null}
+              {needWaitingSound ? <span role="status">Tap play to enjoy the music</span> : waitingMuted ? <span role="status">Muted</span> : waitingPlaying ? <span role="status">Playing</span> : null}
               {waitingPlaybackError ? <span role="alert">{waitingPlaybackError}</span> : null}
               <label>
                 <span className="hamd-sr-only">Waiting music volume</span>
@@ -688,13 +694,9 @@ export function WeddingLivePage() {
                   }}
                 >
                   <option value="auto">Auto</option>
-                  {feeds.some((feed) => (feed.captureHeight ?? 0) >= 1000) ? (
-                    <option value="1080p">1080p</option>
-                  ) : null}
-                  {feeds.some((feed) => (feed.captureHeight ?? 0) >= 700) || feeds.length > 0 ? (
-                    <option value="720p">720p</option>
-                  ) : null}
-                  {feeds.length > 0 ? <option value="360p">360p</option> : null}
+                  <option value="1080p">1080p HD</option>
+                  <option value="720p">720p HD</option>
+                  <option value="360p">360p</option>
                 </select>
               </label>
               <button
