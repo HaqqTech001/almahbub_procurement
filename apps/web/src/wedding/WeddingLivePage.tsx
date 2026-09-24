@@ -112,7 +112,6 @@ export function WeddingLivePage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const roomRef = useRef<WeddingLiveSession | null>(null);
   const [campaign, setCampaign] = useState<WeddingCampaignRecord>(DEFAULT_WEDDING_CAMPAIGN);
-  const [now, setNow] = useState(() => new Date());
   const [error, setError] = useState<string | null>(null);
   const [reconnect, setReconnect] = useState(false);
   const [needsAudio, setNeedsAudio] = useState(false);
@@ -171,11 +170,6 @@ export function WeddingLivePage() {
   const connecting = Boolean(
     auth.status === "authenticated" && liveActive && statusReady && !connected && !error && configuredRef.current,
   );
-
-  useEffect(() => {
-    const timer = window.setInterval(() => setNow(new Date()), 1000);
-    return () => window.clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     const load = () => {
