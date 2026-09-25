@@ -207,14 +207,16 @@ export function CelebrationExperienceModal({
           {isWeddingProductionLive(campaign) ? (
             <span className="hamd-wedding-live-pill">Live</span>
           ) : null}
-          <button
-            type="button"
-            className="hamd-btn hamd-btn--primary"
-            onClick={() => go(actions.primary.href)}
-          >
-            {actions.primary.label}
-          </button>
-          {actions.secondary ? (
+          {actions.primary.href.includes("/live") ? null : (
+            <button
+              type="button"
+              className="hamd-btn hamd-btn--primary"
+              onClick={() => go(actions.primary.href)}
+            >
+              {actions.primary.label}
+            </button>
+          )}
+          {actions.secondary && !actions.secondary.href.includes("/live") ? (
             <button
               type="button"
               className="hamd-btn hamd-btn--secondary"
