@@ -34,6 +34,12 @@ export const opsUserOpsAccessSchema = z.object({
   command: z.enum(["grant", "revoke"]),
 });
 
+export const opsUserProfileSchema = z.object({
+  firstName: z.string().trim().min(1).max(100),
+  lastName: z.string().trim().min(1).max(100),
+  displayName: z.string().trim().max(160).nullable().optional(),
+});
+
 export const opsReportSchema = z.object({
   domain: z.enum([
     "requests",
@@ -205,6 +211,7 @@ export type OpsListQuery = z.infer<typeof opsListQuerySchema>;
 export type OpsReportInput = z.infer<typeof opsReportSchema>;
 export type UserAccountStatusInput = z.infer<typeof opsUserAccountStatusSchema>;
 export type UserOpsAccessInput = z.infer<typeof opsUserOpsAccessSchema>;
+export type UserProfileInput = z.infer<typeof opsUserProfileSchema>;
 export type CreateOpsProductInput = z.infer<typeof createOpsProductSchema>;
 export type UpdateOpsProductInput = z.infer<typeof updateOpsProductSchema>;
 export type CreateOpsCategoryInput = z.infer<typeof createOpsCategorySchema>;
