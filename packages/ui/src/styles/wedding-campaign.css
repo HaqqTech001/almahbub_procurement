@@ -1154,3 +1154,28 @@ html.dark .hamd-wedding-portal__comments {
 }
 @media(max-width:360px){.hamd-wedding-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.hamd-wedding-gallery__tile img,.hamd-wedding-gallery__tile video{transition:none}}
+
+
+/* Waiting-room invitation contrast: the invitation card is always a light
+   parchment surface, including when the surrounding live portal is dark. */
+.hamd-wedding-portal .hamd-wedding-invite {
+  color: #3b1538;
+}
+.hamd-wedding-portal .hamd-wedding-invite .hamd-wedding-modal__campaign,
+.hamd-wedding-portal .hamd-wedding-invite .hamd-wedding-modal__meta-label {
+  color: #6b1d4a;
+}
+.hamd-wedding-portal .hamd-wedding-invite .hamd-wedding-modal__blessing {
+  color: #5c3a58;
+}
+.hamd-wedding-portal .hamd-wedding-invite .hamd-wedding-modal__family,
+.hamd-wedding-portal .hamd-wedding-invite .hamd-wedding-modal__invite,
+.hamd-wedding-portal .hamd-wedding-invite .hamd-wedding-invite__when,
+.hamd-wedding-portal .hamd-wedding-invite .hamd-wedding-invite__venue {
+  color: #4d354c;
+  opacity: 1;
+}
+.hamd-wedding-portal .hamd-wedding-invite .hamd-wedding-modal__names,
+.hamd-wedding-portal .hamd-wedding-invite .hamd-wedding-invite__names {
+  color: #3b1538;
+}
