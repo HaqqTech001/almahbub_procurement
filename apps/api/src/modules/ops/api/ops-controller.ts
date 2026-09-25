@@ -20,6 +20,7 @@ import {
   opsUserAccountStatusSchema,
   opsUserIdSchema,
   opsUserOpsAccessSchema,
+  opsUserProfileSchema,
   updateOpsCategorySchema,
   updateOpsProductImageSchema,
   updateOpsProductVideoSchema,
@@ -110,6 +111,22 @@ export class OpsController {
           userId,
           input,
         ),
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public readonly updateUserProfile: RequestHandler = async (
+    request,
+    response,
+    next,
+  ) => {
+    try {
+      const { userId } = opsUserIdSchema.parse(request.params);
+      const input = opsUserProfileSchema.parse(request.body);
+      response.json({
+        data: await this.service.updateUserProfile(requireAuth(request), userId, input),
       });
     } catch (error) {
       next(error);
