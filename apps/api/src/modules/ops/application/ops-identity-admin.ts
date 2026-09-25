@@ -116,7 +116,7 @@ export class OpsIdentityAdmin {
       });
     });
 
-    return this.loadMemberSnapshot(userId);
+    return this.loadMemberSnapshot(userId, context.organizationId);
   }
 
   public async updateOpsAccess(
@@ -219,7 +219,7 @@ export class OpsIdentityAdmin {
       },
     });
 
-    return this.loadMemberSnapshot(userId);
+    return this.loadMemberSnapshot(userId, context.organizationId);
   }
 
   private resolveNextStatus(
@@ -355,9 +355,12 @@ export class OpsIdentityAdmin {
     });
   }
 
-  private async loadMemberSnapshot(userId: string) {
+  private async loadMemberSnapshot(userId: string, organizationId: string | null) {
     const membership = await this.database.organizationMembership.findFirst({
-      where: { userId },
+      where: {
+        userId,
+        ...(organizationId ? { organizationId } : {}),
+      },
       orderBy: { createdAt: "asc" },
       include: {
         user: true,
