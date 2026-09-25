@@ -80,6 +80,9 @@ const LAUNCH_STORIES = [
 
 export function LaunchCountdownGate() {
   const location = useLocation();
+  // The launch is complete. The gate and its reveal/curtain effects must never
+  // cover normal site navigation after the production launch time.
+  const productionLaunchComplete = Date.now() >= LAUNCH_AT;
   const [now, setNow] = useState(() => Date.now());
   const [storyIndex, setStoryIndex] = useState(0);
   const previewFromUrl = useMemo(() => previewSeconds(location.search), [location.search]);
@@ -152,7 +155,7 @@ export function LaunchCountdownGate() {
     setRehearsalFinished(true);
   }, [revealComplete, preview]);
 
-  if (excluded || revealComplete || rehearsalFinished) return null;
+  if (productionLaunchComplete || excluded || revealComplete || rehearsalFinished) return null;
 
   const rootClass = [
     "hamd-launch",
