@@ -86,8 +86,7 @@ class WeddingPortalErrorBoundary extends Component<
 
 type WeddingRehearsalState = "waiting" | "live" | "ended";
 
-const WEDDING_REHEARSAL_ENABLED =
-  import.meta.env.DEV || import.meta.env.VITE_ENABLE_WEDDING_REHEARSAL === "true";
+const WEDDING_REHEARSAL_ENABLED = import.meta.env.DEV;
 
 // Keep public live traffic gentle on the single Render API instance.
 // Campaign state changes quickly only around a broadcast transition; comments can
