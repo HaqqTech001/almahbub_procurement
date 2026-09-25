@@ -4510,3 +4510,129 @@ html.dark .hamd-ops-product-more__menu a:focus-visible {
 .hamd-wedding-studio__summary article>small{align-self:end;color:var(--text-muted);line-height:1.35}
 @media(max-width:900px){.hamd-wedding-studio__summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:520px){.hamd-wedding-studio__summary{grid-template-columns:1fr 1fr;gap:.55rem}.hamd-wedding-studio__summary article{min-height:6.3rem;padding:.8rem}.hamd-wedding-studio__summary article>strong{font-size:1rem}}
+
+
+/* Wedding gallery: responsive media manager. Keep upload, previews and saved media
+   in their own full-width rows so phone layouts never form accidental columns. */
+.hamd-wedding-gallery {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.hamd-wedding-gallery__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+.hamd-wedding-gallery__header > div {
+  min-width: 0;
+}
+
+.hamd-wedding-gallery > .hamd-entity-dropzone {
+  width: 100%;
+  min-height: 12rem;
+  margin: 1rem 0;
+  box-sizing: border-box;
+}
+
+.hamd-wedding-gallery > .hamd-btn {
+  max-width: 100%;
+  white-space: normal;
+}
+
+.hamd-wedding-gallery-grid {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+}
+
+.hamd-wedding-gallery-tile,
+.hamd-wedding-gallery-tile__frame,
+.hamd-wedding-gallery-tile__meta {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.hamd-wedding-gallery-tile__meta input {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.hamd-wedding-gallery-tile__actions .hamd-btn {
+  flex: 0 1 auto;
+  max-width: 100%;
+  white-space: normal;
+}
+
+@media (max-width: 640px) {
+  .hamd-wedding-gallery {
+    overflow: hidden;
+  }
+
+  .hamd-wedding-gallery__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .hamd-wedding-gallery__header .hamd-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hamd-wedding-gallery > .hamd-entity-dropzone {
+    min-height: 11rem;
+    padding: 1.25rem 1rem;
+  }
+
+  .hamd-wedding-gallery-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.9rem;
+    margin: 0.9rem 0;
+  }
+
+  .hamd-wedding-gallery-tile {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hamd-wedding-gallery-tile__frame {
+    aspect-ratio: 16 / 10;
+  }
+
+  .hamd-wedding-gallery-tile__meta {
+    padding: 0.85rem;
+  }
+
+  .hamd-wedding-gallery-tile__actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .hamd-wedding-gallery-tile__actions .hamd-btn {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  .hamd-wedding-gallery > .hamd-btn--primary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 390px) {
+  .hamd-wedding-gallery-tile__actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
