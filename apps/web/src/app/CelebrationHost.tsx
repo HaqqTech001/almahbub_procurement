@@ -14,8 +14,7 @@ import {
 import { useOptionalAuth } from "../auth/session/AuthProvider.js";
 import { fetchWeddingCampaign } from "../wedding/wedding-api.js";
 
-const WEDDING_REHEARSAL_ENABLED =
-  import.meta.env.DEV || import.meta.env.VITE_ENABLE_WEDDING_REHEARSAL === "true";
+const WEDDING_REHEARSAL_ENABLED = import.meta.env.DEV;
 const WEDDING_REHEARSAL_MODAL_DELAY_MS = 700;
 
 function readDismissed(campaignId: string): boolean {
