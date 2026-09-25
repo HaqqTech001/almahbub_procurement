@@ -11,6 +11,7 @@ import {
   OpsApiError,
   patchUserAccountStatus,
   patchUserOpsAccess,
+  patchUserProfile,
   requireToken,
   type OpsDirectoryMember,
 } from "../api/ops-api.js";
@@ -37,6 +38,10 @@ export function UserDetailPage() {
   const [pending, setPending] = useState<PendingAction | null>(null);
   const [reason, setReason] = useState("");
   const [acting, setActing] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [displayName, setDisplayName] = useState("");
 
   const refresh = useCallback(async () => {
     setError(null);
@@ -44,6 +49,11 @@ export function UserDetailPage() {
       const token = await requireToken(auth.ensureSession);
       const live = await fetchOpsDirectory(token, { userId, pageSize: 1 });
       setMember(live.members[0] ?? null);
+      if (live.members[0]) {
+        setFirstName(live.members[0].firstName ?? "");
+        setLastName(live.members[0].lastName ?? "");
+        setDisplayName(live.members[0].displayName ?? "");
+      }
       if (!live.members[0]) setError("User not found.");
     } catch (err) {
       setMember(null);
@@ -98,6 +108,28 @@ export function UserDetailPage() {
     }
   };
 
+  const saveProfile = async () => {
+    if (!member || !firstName.trim() || !lastName.trim()) return;
+    setActing(true);
+    setError(null);
+    setSuccess(null);
+    try {
+      const token = await requireToken(auth.ensureSession);
+      const updated = await patchUserProfile(token, member.userId, {
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        displayName: displayName.trim() || null,
+      });
+      setMember(updated);
+      setEditing(false);
+      setSuccess("User profile updated.");
+    } catch (err) {
+      setError(err instanceof OpsApiError ? err.message : "Unable to update this user.");
+    } finally {
+      setActing(false);
+    }
+  };
+
   const name = member ? directoryDisplayName(member) : "";
   const statusKey = member ? directoryStatusKey(member) : "";
 
@@ -132,7 +164,22 @@ export function UserDetailPage() {
           />
 
           <section className="hamd-ops-profile__section">
-            <h2>Account</h2>
+            <div className="hamd-ops-profile__actions">
+              <h2>Account</h2>
+              <button type="button" className="hamd-btn hamd-btn--ghost" onClick={() => setEditing((value) => !value)}>
+                {editing ? "Cancel editing" : "Edit profile"}
+              </button>
+            </div>
+            {editing ? (
+              <div className="hamd-admin-user-confirm">
+                <label>First name<input value={firstName} maxLength={100} onChange={(event) => setFirstName(event.target.value)} /></label>
+                <label>Last name<input value={lastName} maxLength={100} onChange={(event) => setLastName(event.target.value)} /></label>
+                <label>Display name (optional)<input value={displayName} maxLength={160} onChange={(event) => setDisplayName(event.target.value)} /></label>
+                <button type="button" className="hamd-btn hamd-btn--primary" disabled={acting || !firstName.trim() || !lastName.trim()} onClick={() => void saveProfile()}>
+                  {acting ? "Saving…" : "Save profile"}
+                </button>
+              </div>
+            ) : null}
             <AttributeList
               items={[
                 { label: "Name", value: name },
