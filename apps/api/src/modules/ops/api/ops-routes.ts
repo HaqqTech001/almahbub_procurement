@@ -20,6 +20,10 @@ export function createOpsRouter(
   router.get("/audit-events", controller.auditEvents);
   router.get("/identity", controller.identity);
   router.patch(
+    "/identity/users/:userId",
+    controller.updateUserProfile,
+  );
+  router.patch(
     "/identity/users/:userId/status",
     controller.updateUserAccountStatus,
   );
