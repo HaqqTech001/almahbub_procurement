@@ -7,8 +7,7 @@ import { WeddingParticipation } from "./WeddingParticipation.js";
 import { fetchWeddingCampaign } from "./wedding-api.js";
 import "../styles/wedding-experience.css";
 
-const WEDDING_REHEARSAL_ENABLED =
-  import.meta.env.DEV || import.meta.env.VITE_ENABLE_WEDDING_REHEARSAL === "true";
+const WEDDING_REHEARSAL_ENABLED = import.meta.env.DEV;
 
 function remaining(targetIso: string, now: Date) {
   const ms = Math.max(0, Date.parse(targetIso) - now.getTime());
