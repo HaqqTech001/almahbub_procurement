@@ -40,7 +40,8 @@ export function WeddingLandingPage() {
   const rehearsalReachedLive = WEDDING_REHEARSAL_ENABLED && left.total === 0;
   const productionLive = campaign.streamStatus === "live" && campaign.liveMode !== "test";
   const liveWindowOpen = now.getTime() >= Date.parse(campaign.streamAt);
-  const showLiveState = rehearsalReachedLive || productionLive;
+  const countdownFinished = !WEDDING_REHEARSAL_ENABLED && now.getTime() >= Date.parse(campaign.streamAt);
+  const showLiveState = rehearsalReachedLive || productionLive || countdownFinished;
   const concluded = !WEDDING_REHEARSAL_ENABLED && campaign.streamStatus === "ended";
   const finalSeconds = !showLiveState && left.total <= 30;
   const critical = !showLiveState && left.total <= 10;
