@@ -88,13 +88,13 @@ const CANONICAL_WEDDING_EVENT_DATE = DEFAULT_WEDDING_CAMPAIGN.eventAt;
 // const WEDDING_MEDIA_STORAGE_ID = "9c7f5d2e-8a61-4c95-b1d7-2f8a6e3c4b90";
 
 function canonicalizeWeddingEventDate(campaign: WeddingCampaignRecord): WeddingCampaignRecord {
-  const oldDate = /^2026-09-(29|30)/;
-  const eventChanged = oldDate.test(campaign.eventAt);
-  if (!eventChanged && !oldDate.test(campaign.streamAt)) return campaign;
-  const eventAt = campaign.eventAt.replace(oldDate, CANONICAL_WEDDING_EVENT_DATE);
-  const streamAt = campaign.streamAt.replace(oldDate, CANONICAL_WEDDING_EVENT_DATE);
+  // Rowdotul HAMD'26 has one authoritative production start:
+  // 26 Sep 2026, 09:00 WAT (UTC+01:00). Do not allow an older persisted
+  // Ops value or browser timezone formatting to move the countdown target.
+  const eventAt = CANONICAL_WEDDING_EVENT_DATE;
+  const streamAt = CANONICAL_WEDDING_EVENT_DATE;
   const parsed = Date.parse(eventAt);
-  const modalEndsAt = !eventChanged || Number.isNaN(parsed)
+  const modalEndsAt = Number.isNaN(parsed)
     ? campaign.modalEndsAt
     : new Date(parsed + 3 * 24 * 60 * 60 * 1000).toISOString();
   return { ...campaign, eventAt, streamAt, modalEndsAt };
