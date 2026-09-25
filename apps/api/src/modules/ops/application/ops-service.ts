@@ -32,6 +32,7 @@ import type {
   CreateOpsManufacturerInput,
   UserAccountStatusInput,
   UserOpsAccessInput,
+  UserProfileInput,
 } from "../api/ops-schemas.js";
 import {
   OPS_ADMIN_ROLE_KEYS,
@@ -376,6 +377,57 @@ export class OpsService {
       userId,
       input,
     );
+  }
+
+  async updateUserProfile(
+    context: AuthContext,
+    userId: string,
+    input: UserProfileInput,
+  ) {
+    const organizationId = requireOrg(context);
+    const membership = await this.database.organizationMembership.findFirst({
+      where: { userId, organizationId },
+      select: { id: true },
+    });
+    if (!membership) {
+      throw new AppError({
+        statusCode: 404,
+        code: "NOT_FOUND",
+        message: "User is not a member of this organization.",
+      });
+    }
+    const before = await this.database.user.findUnique({
+      where: { id: userId },
+      select: { firstName: true, lastName: true, displayName: true },
+    });
+    if (!before) {
+      throw new AppError({ statusCode: 404, code: "NOT_FOUND", message: "User not found." });
+    }
+    await this.database.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: userId },
+        data: {
+          firstName: input.firstName,
+          lastName: input.lastName,
+          displayName: input.displayName?.trim() || null,
+        },
+      });
+      await tx.auditEvent.create({
+        data: {
+          organizationId,
+          actorId: context.userId,
+          action: "ops.identity.user.profile.update",
+          resourceType: "user",
+          resourceId: userId,
+          metadata: { before, after: input },
+        },
+      });
+    });
+    return this.identityDirectory(context, {
+      page: 1,
+      pageSize: 1,
+      userId,
+    }).then((directory) => directory.members[0]);
   }
 
   async dashboard(context: AuthContext) {
