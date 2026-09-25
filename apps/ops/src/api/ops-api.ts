@@ -579,6 +579,18 @@ export async function fetchOpsDirectory(
   };
 }
 
+export async function patchUserProfile(
+  accessToken: string,
+  userId: string,
+  input: { firstName: string; lastName: string; displayName?: string | null },
+): Promise<OpsDirectoryMember> {
+  return opsFetch<OpsDirectoryMember>(`/ops/identity/users/${userId}`, {
+    method: "PATCH",
+    accessToken,
+    body: input,
+  });
+}
+
 export async function patchUserAccountStatus(
   accessToken: string,
   userId: string,
