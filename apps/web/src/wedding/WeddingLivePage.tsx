@@ -9,6 +9,7 @@ import {
   WEDDING_WAITING_DEFAULT_VOLUME,
   enabledWeddingWaitingTracks,
   formatWeddingWhen,
+  isWeddingProductionConcluded,
   nextWeddingWaitingTrackIndex,
   recoverWeddingWaitingTrackIndex,
   shouldPlayWeddingWaitingMusic,
@@ -454,10 +455,7 @@ export function WeddingLivePage() {
         </div>
       );
     }
-    const streamStartsAt = Date.parse(displayCampaign.streamAt);
-    const genuinePostLive =
-      displayCampaign.streamStatus === "ended" &&
-      (!Number.isFinite(streamStartsAt) || Date.now() >= streamStartsAt);
+    const genuinePostLive = isWeddingProductionConcluded(displayCampaign);
     if (genuinePostLive) {
       return (
         <div className="hamd-wedding-postlive">
