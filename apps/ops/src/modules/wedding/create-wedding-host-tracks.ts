@@ -45,7 +45,15 @@ export async function createWeddingHostTracks(input: {
   for (const attempt of attempts) {
     try {
       const tracks = await input.livekit.createLocalTracks({
-        audio: input.micId ? { deviceId: { exact: input.micId } } : true,
+        audio: {
+          ...(input.micId ? { deviceId: { exact: input.micId } } : {}),
+          // Speech-first processing for the browser publisher. These are standard
+          // MediaTrackConstraints; unsupported browsers simply ignore ideals.
+          echoCancellation: { ideal: true },
+          noiseSuppression: { ideal: true },
+          autoGainControl: { ideal: true },
+          channelCount: { ideal: 1 },
+        },
         video: {
           ...(input.cameraId
             ? { deviceId: { exact: input.cameraId } }
@@ -71,13 +79,13 @@ export async function createWeddingHostTracks(input: {
               simulcast: true,
               videoEncoding: input.livekit.VideoPresets.h1080.encoding,
               videoSimulcastLayers: [input.livekit.VideoPresets.h720, input.livekit.VideoPresets.h360],
-              degradationPreference: "maintain-resolution",
+              degradationPreference: "balanced",
             }
           : {
               simulcast: true,
               videoEncoding: input.livekit.VideoPresets.h720.encoding,
               videoSimulcastLayers: [input.livekit.VideoPresets.h360],
-              degradationPreference: "maintain-resolution",
+              degradationPreference: "balanced",
             };
       return {
         tracks,
