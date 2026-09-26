@@ -98,6 +98,16 @@ export function WeddingLandingPage() {
               <Link className="hamd-wedding-x__secondary" to="/rowdotul-hamd-26/gallery">View Gallery</Link>
             </div>
           </div>
+        ) : liveWindowOpen ? (
+          <div className="hamd-wedding-x__state">
+            <p className="hamd-wedding-x__kicker">Alhamdulillah · The celebration is due to begin</p>
+            <h1>Waiting for the live broadcast</h1>
+            <p>The scheduled time has arrived. The live stream will open as soon as the host starts the broadcast.</p>
+            <div className="hamd-wedding-x__actions">
+              <Link className="hamd-wedding-x__primary" to={liveHref}>Enter Waiting Room</Link>
+              <Link className="hamd-wedding-x__secondary" to="/rowdotul-hamd-26/gallery">View Gallery</Link>
+            </div>
+          </div>
         ) : finalSeconds ? (
           <div className="hamd-wedding-x__final">
             <p>The wedding begins in</p>
@@ -114,7 +124,7 @@ export function WeddingLandingPage() {
             </div>
             <div className="hamd-wedding-x__actions">
               <a className="hamd-wedding-x__primary" href="#participation">Get Notified</a>
-              {(liveWindowOpen || campaign.testBroadcastEligible) ? <Link className="hamd-wedding-x__secondary" to={liveHref}>Open Live Room</Link> : null}
+              {campaign.testBroadcastEligible ? <Link className="hamd-wedding-x__secondary" to={liveHref}>Open Live Room</Link> : null}
             </div>
           </div>
         )}
