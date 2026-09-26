@@ -147,17 +147,13 @@ export function weddingModalActions(
   if (isWeddingProductionLive(campaign)) {
     return { primary: { href: campaign.livePath, label: "Join Live Now" } };
   }
-  if (campaign.streamStatus === "ended" && campaign.endedKind !== "test") {
-    const primary = campaign.galleryEnabled
-      ? { href: `${campaign.sitePath}#gallery`, label: "View Gallery" }
-      : { href: campaign.sitePath, label: "View Wedding" };
-    if (campaign.recordingAvailable) {
-      return {
-        primary,
-        secondary: { href: campaign.sitePath, label: "Watch Celebration" },
-      };
-    }
-    return { primary };
+  if (campaign.streamStatus === "ended" && campaign.endedKind === "production") {
+    return {
+      primary: { href: campaign.sitePath, label: "View Wedding" },
+      secondary: campaign.recordingAvailable
+        ? { href: campaign.sitePath, label: "Watch Celebration" }
+        : undefined,
+    };
   }
   return {
     primary: { href: campaign.sitePath, label: "View Wedding" },
