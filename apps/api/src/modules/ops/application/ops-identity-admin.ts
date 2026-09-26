@@ -4,6 +4,7 @@ import { AppError } from "../../../lib/app-error.js";
 import {
   DEFAULT_BUYER_PERMISSIONS,
   DEFAULT_OPS_PERMISSIONS,
+  resolvePermissionRows,
 } from "../../identity/auth/domain/permission-catalog.js";
 
 export const OPS_ADMIN_ROLE_KEYS = ["ops_admin", "ops", "operations"] as const;
@@ -275,6 +276,15 @@ export class OpsIdentityAdmin {
   }
 
   private async ensureOpsAdminRole(organizationId: string): Promise<string> {
+    const catalogRows = resolvePermissionRows(DEFAULT_OPS_PERMISSIONS);
+    await this.database.permission.createMany({
+      data: catalogRows.map((permission) => ({
+        key: permission.key,
+        resource: permission.resource,
+        action: permission.action,
+      })),
+      skipDuplicates: true,
+    });
     const opsPermissions = await this.database.permission.findMany({
       where: { key: { in: [...DEFAULT_OPS_PERMISSIONS] } },
       select: { id: true },
@@ -283,7 +293,7 @@ export class OpsIdentityAdmin {
       throw new AppError({
         statusCode: 503,
         code: "PERMISSION_CATALOG_INCOMPLETE",
-        message: "Operations permission catalog is incomplete.",
+        message: "Operations permission catalog could not be initialized.",
       });
     }
 
