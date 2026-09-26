@@ -24,6 +24,7 @@ export {
   isUsableTermiiSenderId,
   isWeddingModalEligible,
   isWeddingProductionLive,
+  isWeddingProductionConcluded,
   isWeddingTestLive,
   normalizeWeddingSmsPhone,
   shouldRequestWeddingLiveToken,
