@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { WeddingInvitationCard } from "@hamd/ui/marketing";
-import { DEFAULT_WEDDING_CAMPAIGN, formatWeddingWhen, type WeddingCampaignRecord } from "@hamd/constants";
+import {
+  DEFAULT_WEDDING_CAMPAIGN,
+  formatWeddingWhen,
+  isWeddingProductionConcluded,
+  type WeddingCampaignRecord,
+} from "@hamd/constants";
 import { useAuth } from "../auth/session/AuthProvider.js";
 import { WeddingParticipation } from "./WeddingParticipation.js";
 import { fetchWeddingCampaign } from "./wedding-api.js";
