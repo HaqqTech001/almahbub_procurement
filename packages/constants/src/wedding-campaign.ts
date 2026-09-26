@@ -111,7 +111,7 @@ export type WeddingModalCta = {
   secondary?: { href: string; label: string };
 };
 
-export const WEDDING_MODAL_PUBLIC_DELAY_MS = 3500;
+export const WEDDING_MODAL_PUBLIC_DELAY_MS = 2500;
 
 export function weddingModalDismissKey(campaignId: string): string {
   return `hamd.session.wedding-modal-dismissed:${campaignId}`;
