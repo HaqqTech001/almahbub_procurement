@@ -101,6 +101,27 @@ type WeddingWaitingTrackDelegate = {
   deleteMany: (args: Record<string, unknown>) => Promise<{ count: number }>;
 };
 
+type WeddingGalleryItemRecord = {
+  id: string;
+  campaignId: string;
+  kind: string;
+  src: string;
+  storageKey: string;
+  title: string;
+  caption: string;
+  featured: boolean;
+  downloadable: boolean;
+  sortOrder: number;
+  createdAt: Date;
+};
+
+type WeddingGalleryItemDelegate = {
+  findMany: (args: Record<string, unknown>) => Promise<WeddingGalleryItemRecord[]>;
+  create: (args: Record<string, unknown>) => Promise<WeddingGalleryItemRecord>;
+  update: (args: Record<string, unknown>) => Promise<WeddingGalleryItemRecord>;
+  delete: (args: Record<string, unknown>) => Promise<WeddingGalleryItemRecord>;
+};
+
 type WeddingCampaignDelegate = {
   upsert: (args: Record<string, unknown>) => Promise<{ id: string }>;
   findUnique: (args: Record<string, unknown>) => Promise<{
@@ -118,4 +139,8 @@ export function weddingWaitingTrackDelegate(database: DatabaseClient): WeddingWa
 
 export function weddingCampaignDelegate(database: DatabaseClient): WeddingCampaignDelegate {
   return (database as unknown as { weddingCampaign: WeddingCampaignDelegate }).weddingCampaign;
+}
+
+export function weddingGalleryItemDelegate(database: DatabaseClient): WeddingGalleryItemDelegate {
+  return (database as unknown as { weddingGalleryItem: WeddingGalleryItemDelegate }).weddingGalleryItem;
 }
