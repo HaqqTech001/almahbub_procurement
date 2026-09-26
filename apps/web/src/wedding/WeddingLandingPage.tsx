@@ -11,9 +11,7 @@ const WEDDING_REHEARSAL_ENABLED = import.meta.env.DEV;
 
 function remaining(targetIso: string, now: Date) {
   const ms = Math.max(0, Date.parse(targetIso) - now.getTime());
-  // Use completed seconds so the displayed minute does not roll over early.
-  // Math.ceil makes e.g. 59m 59.5s display as 60:00, which looks one minute fast.
-  const total = Math.floor(ms / 1000);
+  const total = Math.ceil(ms / 1000);
   return {
     total,
     days: Math.floor(total / 86400),
@@ -27,13 +25,24 @@ export function WeddingLandingPage() {
   const auth = useAuth();
   const [campaign, setCampaign] = useState<WeddingCampaignRecord>(DEFAULT_WEDDING_CAMPAIGN);
   const [now, setNow] = useState(() => new Date());
+  const [clockOffsetMs, setClockOffsetMs] = useState(0);
   const [rehearsalStartedAt] = useState(() => Date.now());
 
-  useEffect(() => { void fetchWeddingCampaign().then(setCampaign); }, []);
   useEffect(() => {
-    const timer = window.setInterval(() => setNow(new Date()), 500);
-    return () => window.clearInterval(timer);
+    void fetchWeddingCampaign().then((row) => {
+      setCampaign(row);
+      const serverNow = Date.parse((row as WeddingCampaignRecord & { serverNow?: string }).serverNow ?? "");
+      if (Number.isFinite(serverNow)) {
+        setClockOffsetMs(serverNow - Date.now());
+      }
+    });
   }, []);
+  useEffect(() => {
+    const tick = () => setNow(new Date(Date.now() + clockOffsetMs));
+    tick();
+    const timer = window.setInterval(tick, 500);
+    return () => window.clearInterval(timer);
+  }, [clockOffsetMs]);
 
   const target = WEDDING_REHEARSAL_ENABLED
     ? new Date(rehearsalStartedAt + 60_000).toISOString()
