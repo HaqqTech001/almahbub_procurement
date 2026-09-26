@@ -44,6 +44,8 @@ export type WeddingCampaignRecord = {
   livePath: string;
   liveMode: WeddingLiveMode;
   endedKind: WeddingLiveMode;
+  productionStartedAt?: string | null;
+  productionEndedAt?: string | null;
   testBroadcastEligible?: boolean;
   waitingMusicEnabled?: boolean;
   waitingMusicLoop?: boolean;
@@ -111,6 +113,18 @@ export type WeddingModalCta = {
   secondary?: { href: string; label: string };
 };
 
+export function isWeddingProductionConcluded(campaign: WeddingCampaignRecord): boolean {
+  const started = campaign.productionStartedAt ? Date.parse(campaign.productionStartedAt) : Number.NaN;
+  const ended = campaign.productionEndedAt ? Date.parse(campaign.productionEndedAt) : Number.NaN;
+  return (
+    campaign.streamStatus === "ended" &&
+    campaign.endedKind === "production" &&
+    Number.isFinite(started) &&
+    Number.isFinite(ended) &&
+    ended >= started
+  );
+}
+
 export const WEDDING_MODAL_PUBLIC_DELAY_MS = 2500;
 
 export function weddingModalDismissKey(campaignId: string): string {
@@ -147,7 +161,7 @@ export function weddingModalActions(
   if (isWeddingProductionLive(campaign)) {
     return { primary: { href: campaign.livePath, label: "Join Live Now" } };
   }
-  if (campaign.streamStatus === "ended" && campaign.endedKind === "production") {
+  if (isWeddingProductionConcluded(campaign)) {
     const primary: WeddingModalCta["primary"] = { href: campaign.sitePath, label: "View Wedding" };
     if (campaign.recordingAvailable) {
       return {
