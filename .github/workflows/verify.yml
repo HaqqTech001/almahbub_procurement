@@ -1,0 +1,43 @@
+name: Verify monorepo
+
+on:
+  push:
+    branches: [hamd]
+  pull_request:
+    branches: [hamd]
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.11.1
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate database client
+        run: pnpm db:generate
+
+      - name: Build constants first
+        run: pnpm --filter @hamd/constants build
+
+      - name: Typecheck monorepo
+        run: pnpm typecheck
+
+      - name: Build monorepo
+        run: pnpm build
