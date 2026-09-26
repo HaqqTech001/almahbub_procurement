@@ -202,15 +202,13 @@ export class WeddingCampaignService {
   public getCampaign(auth?: AuthContext): WeddingCampaignRecord {
     const eligible = this.isTestBroadcastEligible(auth);
     let campaign = canonicalizeWeddingEventDate(overlay);
-    // An "ended" value persisted before the scheduled wedding cannot represent
-    // the real celebration ending. Treat that legacy/rehearsal state as waiting.
-    // After the scheduled stream time, only the explicit Ops End Live action
-    // persists the genuine production-ended state.
-    const streamStartsAt = Date.parse(campaign.streamAt);
+    // Never trust an old persisted "ended" flag as proof that the real wedding
+    // has concluded. Production completion is only valid when the current
+    // runtime explicitly ended a production broadcast. This prevents stale
+    // rehearsal/test data from sending guests straight to the post-live screen.
     if (
       campaign.streamStatus === "ended" &&
-      Number.isFinite(streamStartsAt) &&
-      Date.now() < streamStartsAt
+      campaign.endedKind !== "production"
     ) {
       campaign = {
         ...campaign,
