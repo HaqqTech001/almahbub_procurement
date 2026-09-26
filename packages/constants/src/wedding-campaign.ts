@@ -148,7 +148,7 @@ export function weddingModalActions(
     return { primary: { href: campaign.livePath, label: "Join Live Now" } };
   }
   if (campaign.streamStatus === "ended" && campaign.endedKind === "production") {
-    const primary = { href: campaign.sitePath, label: "View Wedding" };
+    const primary: WeddingModalCta["primary"] = { href: campaign.sitePath, label: "View Wedding" };
     if (campaign.recordingAvailable) {
       return {
         primary,
