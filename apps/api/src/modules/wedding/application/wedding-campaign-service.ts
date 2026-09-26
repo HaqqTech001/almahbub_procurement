@@ -295,12 +295,21 @@ export class WeddingCampaignService {
 
   public setStreamStatus(auth: AuthContext, status: WeddingStreamStatus): WeddingCampaignRecord {
     this.assertOps(auth);
+    if (this.environment.NODE_ENV === "production" && (status === "live" || status === "ended")) {
+      throw new AppError({
+        statusCode: 409,
+        code: "WEDDING_LIFECYCLE",
+        message: status === "ended"
+          ? "End the production wedding through the live broadcast controls."
+          : "Start the production wedding through the live broadcast controls.",
+      });
+    }
     overlay = {
       ...overlay,
       streamStatus: status,
       campaignStatus: status === "live" || status === "ended" ? status : overlay.campaignStatus,
       liveMode: status === "live" ? "production" : "none",
-      endedKind: status === "ended" ? "production" : status === "live" ? "none" : overlay.endedKind,
+      endedKind: status === "ended" ? "test" : status === "live" ? "none" : overlay.endedKind,
       recordingAvailable:
         status === "ended"
           ? Boolean(recording && recording.status === "ready")
