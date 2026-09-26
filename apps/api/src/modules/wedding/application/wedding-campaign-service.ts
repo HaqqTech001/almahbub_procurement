@@ -26,6 +26,7 @@ import type { AuthContext } from "../../../shared/auth/auth-context.js";
 import {
   type DatabaseClient,
   weddingCampaignDelegate,
+  weddingGalleryItemDelegate,
   weddingWaitingTrackDelegate,
 } from "../../../shared/database/database-client.js";
 import type { UploadedFileInput } from "../../media/document/application/document-service.js";
@@ -106,7 +107,6 @@ let campaignHydratePromise: Promise<void> | null = null;
 let campaignPersistChain: Promise<void> = Promise.resolve();
 const comments: WeddingCommentDto[] = [];
 const testComments: WeddingCommentDto[] = [];
-const gallery: WeddingGalleryItemDto[] = [];
 let recording: WeddingRecordingDto | null = null;
 
 function isOps(auth?: AuthContext): boolean {
@@ -757,8 +757,22 @@ export class WeddingCampaignService {
     return row;
   }
 
-  public listGallery(): WeddingGalleryItemDto[] {
-    return [...gallery].sort((a, b) => a.sortOrder - b.sortOrder);
+  public async listGallery(): Promise<WeddingGalleryItemDto[]> {
+    if (!this.database) return [];
+    const rows = await weddingGalleryItemDelegate(this.database).findMany({
+      where: { campaignId: WEDDING_CAMPAIGN_ID },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    });
+    return rows.map((row) => ({
+      id: row.id,
+      kind: row.kind === "video" ? "video" : "image",
+      src: row.src,
+      title: row.title,
+      caption: row.caption,
+      featured: row.featured,
+      downloadable: row.downloadable,
+      sortOrder: row.sortOrder,
+    }));
   }
 
   public async addGalleryItem(
@@ -818,15 +832,43 @@ export class WeddingCampaignService {
       src: stored.publicUrl,
       title: meta.title?.trim() || file.originalFilename.replace(/\.[^.]+$/, ""),
       caption: meta.caption?.trim() || "",
-      featured: gallery.length === 0,
+      featured: false,
       downloadable: Boolean(meta.downloadable),
-      sortOrder: gallery.length,
+      sortOrder: 0,
     };
-    gallery.push(item);
-    return item;
+    if (!this.database) return item;
+    const delegate = weddingGalleryItemDelegate(this.database);
+    const existing = await delegate.findMany({
+      where: { campaignId: WEDDING_CAMPAIGN_ID },
+      orderBy: [{ sortOrder: "desc" }, { createdAt: "desc" }],
+    });
+    const created = await delegate.create({
+      data: {
+        id: item.id,
+        campaignId: WEDDING_CAMPAIGN_ID,
+        kind: item.kind,
+        src: item.src,
+        storageKey: stored.storageKey,
+        title: item.title,
+        caption: item.caption,
+        featured: existing.length === 0,
+        downloadable: item.downloadable,
+        sortOrder: existing.length === 0 ? 0 : existing[0]!.sortOrder + 1,
+      },
+    });
+    return {
+      id: created.id,
+      kind: created.kind === "video" ? "video" : "image",
+      src: created.src,
+      title: created.title,
+      caption: created.caption,
+      featured: created.featured,
+      downloadable: created.downloadable,
+      sortOrder: created.sortOrder,
+    };
   }
 
-  public updateGalleryItem(
+  public async updateGalleryItem(
     auth: AuthContext,
     id: string,
     patch: Partial<{
@@ -836,26 +878,42 @@ export class WeddingCampaignService {
       downloadable: boolean | undefined;
       sortOrder: number | undefined;
     }>,
-  ): WeddingGalleryItemDto {
+  ): Promise<WeddingGalleryItemDto> {
     this.assertOps(auth);
-    const item = gallery.find((row) => row.id === id);
-    if (!item) {
+    if (!this.database) {
+      throw new AppError({ statusCode: 503, code: "DATABASE_UNAVAILABLE", message: "Gallery persistence is unavailable." });
+    }
+    const defined = Object.fromEntries(Object.entries(patch).filter((entry) => entry[1] !== undefined));
+    try {
+      const row = await weddingGalleryItemDelegate(this.database).update({
+        where: { id },
+        data: defined,
+      });
+      return {
+        id: row.id,
+        kind: row.kind === "video" ? "video" : "image",
+        src: row.src,
+        title: row.title,
+        caption: row.caption,
+        featured: row.featured,
+        downloadable: row.downloadable,
+        sortOrder: row.sortOrder,
+      };
+    } catch {
       throw new AppError({ statusCode: 404, code: "NOT_FOUND", message: "Gallery item not found." });
     }
-    const defined = Object.fromEntries(
-      Object.entries(patch).filter((entry) => entry[1] !== undefined),
-    );
-    Object.assign(item, defined);
-    return item;
   }
 
-  public removeGalleryItem(auth: AuthContext, id: string): void {
+  public async removeGalleryItem(auth: AuthContext, id: string): Promise<void> {
     this.assertOps(auth);
-    const index = gallery.findIndex((row) => row.id === id);
-    if (index === -1) {
+    if (!this.database) {
+      throw new AppError({ statusCode: 503, code: "DATABASE_UNAVAILABLE", message: "Gallery persistence is unavailable." });
+    }
+    try {
+      await weddingGalleryItemDelegate(this.database).delete({ where: { id } });
+    } catch {
       throw new AppError({ statusCode: 404, code: "NOT_FOUND", message: "Gallery item not found." });
     }
-    gallery.splice(index, 1);
   }
 
   public getRecording(): WeddingRecordingDto | null {
@@ -1214,7 +1272,6 @@ export function resetWeddingCampaignForTests(): void {
   campaignPersistChain = Promise.resolve();
   comments.length = 0;
   testComments.length = 0;
-  gallery.length = 0;
   recording = null;
   viewers.clear();
   feeds.clear();
