@@ -166,11 +166,11 @@ export class WeddingCampaignController {
 
   public readonly liveToken: RequestHandler = async (request, response, next) => {
     try {
-      if (!request.auth) throw unauthenticated();
-      const role = request.body?.role === "host" ? "host" : "viewer";
+      const requestedRole = request.body?.role === "host" ? "host" : "viewer";
+      if (requestedRole === "host" && !request.auth) throw unauthenticated();
       const mode = request.body?.mode === "test" ? "test" : request.body?.mode === "production" ? "production" : undefined;
       const feedLabel = typeof request.body?.feedLabel === "string" ? request.body.feedLabel : undefined;
-      response.json({ data: await this.service.liveToken(request.auth, role, mode, { feedLabel }) });
+      response.json({ data: await this.service.liveToken(request.auth, requestedRole, mode, { feedLabel }) });
     } catch (error) {
       next(error);
     }
