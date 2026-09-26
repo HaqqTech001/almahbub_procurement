@@ -57,7 +57,14 @@ export async function fetchWeddingCampaign(): Promise<WeddingCampaignRecord> {
       if (!response.ok) throw new Error("Unable to load the public wedding campaign.");
       const row = unwrapEnvelopeData<WeddingCampaignRecord>(await readResponseBody(response));
       if (!row || typeof row.modalEnabled !== "boolean") throw new Error("Invalid wedding campaign response.");
-      return { ...DEFAULT_WEDDING_CAMPAIGN, ...row };
+      const serverDate = response.headers.get("Date");
+      const serverNow = serverDate ? Date.parse(serverDate) : Number.NaN;
+      return {
+        ...DEFAULT_WEDDING_CAMPAIGN,
+        ...row,
+        serverNow: Number.isFinite(serverNow) ? new Date(serverNow).toISOString() : undefined,
+      } as WeddingCampaignRecord & { serverNow?: string };
+
     } catch (error) {
       lastError = error;
     }
