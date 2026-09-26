@@ -38,6 +38,7 @@ export async function createWeddingHostTracks(input: {
   quality: WeddingCaptureChoice;
   cameraId?: string;
   micId?: string;
+  preferRearCamera?: boolean;
 }): Promise<{ tracks: WeddingHostTrack[]; capture: WeddingCaptureReport; publish: object }> {
   const attempts = weddingCaptureAttempts(input.quality);
   let lastError: unknown;
@@ -46,7 +47,11 @@ export async function createWeddingHostTracks(input: {
       const tracks = await input.livekit.createLocalTracks({
         audio: input.micId ? { deviceId: { exact: input.micId } } : true,
         video: {
-          ...(input.cameraId ? { deviceId: { exact: input.cameraId } } : {}),
+          ...(input.cameraId
+            ? { deviceId: { exact: input.cameraId } }
+            : input.preferRearCamera
+              ? { facingMode: { ideal: "environment" } }
+              : {}),
           resolution: {
             width: attempt.width,
             height: attempt.height,
