@@ -857,7 +857,7 @@ export class WeddingCampaignService {
         campaignId: WEDDING_CAMPAIGN_ID,
         kind: item.kind,
         src: item.src,
-        storageKey: stored.storageKey,
+        storageKey: stored.filename,
         title: item.title,
         caption: item.caption,
         featured: existing.length === 0,
