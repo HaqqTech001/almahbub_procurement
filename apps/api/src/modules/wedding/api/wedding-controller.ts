@@ -219,8 +219,12 @@ export class WeddingCampaignController {
     }
   };
 
-  public readonly listGallery: RequestHandler = (_request, response) => {
-    response.json({ data: { items: this.service.listGallery() } });
+  public readonly listGallery: RequestHandler = async (_request, response, next) => {
+    try {
+      response.json({ data: { items: await this.service.listGallery() } });
+    } catch (error) {
+      next(error);
+    }
   };
 
   public readonly uploadGallery: RequestHandler = async (request, response, next) => {
@@ -284,21 +288,21 @@ export class WeddingCampaignController {
     }
   };
 
-  public readonly patchGallery: RequestHandler = (request, response, next) => {
+  public readonly patchGallery: RequestHandler = async (request, response, next) => {
     try {
       if (!request.auth) throw unauthenticated();
       const id = String(request.params.id ?? "");
       const patch = galleryPatchSchema.parse(request.body ?? {});
-      response.json({ data: this.service.updateGalleryItem(request.auth, id, patch) });
+      response.json({ data: await this.service.updateGalleryItem(request.auth, id, patch) });
     } catch (error) {
       next(error);
     }
   };
 
-  public readonly deleteGallery: RequestHandler = (request, response, next) => {
+  public readonly deleteGallery: RequestHandler = async (request, response, next) => {
     try {
       if (!request.auth) throw unauthenticated();
-      this.service.removeGalleryItem(request.auth, String(request.params.id ?? ""));
+      await this.service.removeGalleryItem(request.auth, String(request.params.id ?? ""));
       response.status(204).end();
     } catch (error) {
       next(error);
