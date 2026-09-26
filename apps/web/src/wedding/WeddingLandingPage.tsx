@@ -11,7 +11,9 @@ const WEDDING_REHEARSAL_ENABLED = import.meta.env.DEV;
 
 function remaining(targetIso: string, now: Date) {
   const ms = Math.max(0, Date.parse(targetIso) - now.getTime());
-  const total = Math.ceil(ms / 1000);
+  // Use completed seconds so the displayed minute does not roll over early.
+  // Math.ceil makes e.g. 59m 59.5s display as 60:00, which looks one minute fast.
+  const total = Math.floor(ms / 1000);
   return {
     total,
     days: Math.floor(total / 86400),
