@@ -168,7 +168,7 @@ export function WeddingLivePage() {
   const commentChannel = weddingCommentChannel(displayCampaign);
   const liveActive = displayCampaign.streamStatus === "live";
   const connecting = Boolean(
-    auth.status === "authenticated" && liveActive && statusReady && !connected && !error && configuredRef.current,
+    liveActive && statusReady && !connected && !error && configuredRef.current,
   );
 
   useEffect(() => {
@@ -383,7 +383,6 @@ export function WeddingLivePage() {
   }, [displayCampaign.liveMode, displayCampaign.primaryFeedId, rehearsal]);
 
   useEffect(() => {
-    if (auth.status !== "authenticated") return;
     void fetchWeddingLiveStatus()
       .then((row) => {
         configuredRef.current = row.configured;
@@ -394,10 +393,10 @@ export function WeddingLivePage() {
       })
       .catch(() => undefined)
       .finally(() => setStatusReady(true));
-  }, [auth.status]);
+  }, []);
 
   useEffect(() => {
-    if (auth.status !== "authenticated" || !statusReady) return;
+    if (!statusReady) return;
     if (displayCampaign.streamStatus !== "live") {
       roomRef.current?.disconnect();
       roomRef.current = null;
@@ -428,19 +427,6 @@ export function WeddingLivePage() {
   }, [displayCampaign.liveMode, displayCampaign.streamStatus, connecting, rehearsal]);
 
   const overlay = (() => {
-    if (auth.status !== "authenticated") {
-      return (
-        <>
-          <h1>{displayCampaign.title}</h1>
-          <p>Sign in to join the live celebration.</p>
-          <div className="hamd-wedding-portal__overlay-actions">
-            <Link className="hamd-btn hamd-btn--primary" to={loginHref}>
-              Sign in to Join Live
-            </Link>
-          </div>
-        </>
-      );
-    }
     if (rehearsal === "ended") {
       return (
         <div className="hamd-wedding-postlive">
