@@ -31,7 +31,8 @@ async function weddingFetch<T>(
     headers.set("Content-Type", "application/json");
   }
   const publicRead = (!init.method || init.method === "GET") && ["/wedding/comments", "/wedding/gallery", "/wedding/waiting-audio", "/wedding/live/status"].includes(path);
-  const response = await (publicRead ? fetchWithTransientRetry : sessionFetch)(apiUrl(path), {
+  const publicLiveViewer = path === "/wedding/live/token" && init.method === "POST" && !token;
+  const response = await (publicRead || publicLiveViewer ? fetchWithTransientRetry : sessionFetch)(apiUrl(path), {
     ...init,
     headers,
     credentials: "include",
