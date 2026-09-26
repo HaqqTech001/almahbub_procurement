@@ -416,7 +416,7 @@ export class WeddingCampaignService {
   }
 
   public async liveToken(
-    auth: AuthContext,
+    auth: AuthContext | undefined,
     requestedRole: "host" | "viewer",
     requestedMode?: "test" | "production",
     extras: { feedLabel?: string } = {},
@@ -438,7 +438,7 @@ export class WeddingCampaignService {
         message: "We couldn't connect to the live-streaming service.",
       });
     }
-    const host = requestedRole === "host" && isOps(auth);
+    const host = requestedRole === "host" && Boolean(auth && isOps(auth));
     const role = host ? "host" : "viewer";
     const mode: WeddingLiveMode =
       requestedMode ?? (overlay.liveMode === "test" ? "test" : "production");
@@ -457,16 +457,22 @@ export class WeddingCampaignService {
           message: "The live celebration has not started.",
         });
       }
-      const named = await this.resolveGuest(auth);
-      viewers.set(auth.userId, named);
+      if (auth) {
+        const named = await this.resolveGuest(auth);
+        viewers.set(auth.userId, named);
+      }
     }
     const room = mode === "test" ? `${WEDDING_LIVEKIT_ROOM}-test` : WEDDING_LIVEKIT_ROOM;
     const identity =
-      role === "host" ? weddingHostIdentity(auth.userId, auth.sessionId) : `viewer:${auth.userId}`;
+      role === "host" && auth
+        ? weddingHostIdentity(auth.userId, auth.sessionId)
+        : auth
+          ? `viewer:${auth.userId}`
+          : `guest:${randomUUID()}`;
     const label = role === "host" ? sanitizeWeddingFeedLabel(extras.feedLabel ?? "Main Stage") : undefined;
     const access = new AccessToken(apiKey, apiSecret, {
       identity,
-      name: label ?? (await this.resolveDisplayName(auth)),
+      name: label ?? (auth ? await this.resolveDisplayName(auth) : "Wedding Guest"),
       metadata: JSON.stringify(
         role === "host"
           ? { kind: "host", feedId: identity, label, primary: overlay.primaryFeedId === identity }
