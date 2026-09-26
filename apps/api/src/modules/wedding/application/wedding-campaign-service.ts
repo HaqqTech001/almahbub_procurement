@@ -343,6 +343,8 @@ export class WeddingCampaignService {
       campaignStatus: mode === "production" ? "live" : overlay.campaignStatus,
       liveMode: mode,
       endedKind: "none",
+      productionStartedAt: mode === "production" ? new Date().toISOString() : overlay.productionStartedAt ?? null,
+      productionEndedAt: mode === "production" ? null : overlay.productionEndedAt ?? null,
     };
     if (!alreadyLive) {
       viewers.clear();
@@ -517,7 +519,14 @@ export class WeddingCampaignService {
 
   public async endLive(auth: AuthContext): Promise<WeddingCampaignRecord> {
     this.assertOps(auth);
-    const mode = overlay.liveMode === "test" ? "test" : "production";
+    if (overlay.streamStatus !== "live" || overlay.liveMode === "none") {
+      throw new AppError({
+        statusCode: 409,
+        code: "LIVE_NOT_ACTIVE",
+        message: "The wedding live broadcast is not active.",
+      });
+    }
+    const mode = overlay.liveMode;
     const room = mode === "test" ? `${WEDDING_LIVEKIT_ROOM}-test` : WEDDING_LIVEKIT_ROOM;
     if (mode === "test") {
       overlay = {
@@ -534,6 +543,7 @@ export class WeddingCampaignService {
         campaignStatus: "ended",
         liveMode: "none",
         endedKind: "production",
+        productionEndedAt: new Date().toISOString(),
         recordingAvailable: Boolean(recording && recording.status === "ready"),
       };
     }
