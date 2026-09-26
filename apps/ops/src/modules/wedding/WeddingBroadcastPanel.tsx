@@ -144,6 +144,7 @@ export function WeddingBroadcastPanel({
       quality,
       cameraId: nextCameraId,
       micId: nextMicId,
+      preferRearCamera: !nextCameraId,
     });
     tracksRef.current = created.tracks;
     setPublishOptions(created.publish);
