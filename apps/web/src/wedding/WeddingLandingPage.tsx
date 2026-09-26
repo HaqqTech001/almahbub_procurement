@@ -53,7 +53,13 @@ export function WeddingLandingPage() {
   const liveWindowOpen = now.getTime() >= Date.parse(campaign.streamAt);
   const countdownFinished = !WEDDING_REHEARSAL_ENABLED && now.getTime() >= Date.parse(campaign.streamAt);
   const showLiveState = rehearsalReachedLive || productionLive || countdownFinished;
-  const concluded = !WEDDING_REHEARSAL_ENABLED && campaign.streamStatus === "ended";
+  // An ended flag alone is not enough: stale rehearsal/legacy state has existed in
+  // persisted campaign data. Only an explicitly ended production broadcast may
+  // put the public landing page into the permanent post-live experience.
+  const concluded =
+    !WEDDING_REHEARSAL_ENABLED &&
+    campaign.streamStatus === "ended" &&
+    campaign.endedKind === "production";
   const finalSeconds = !showLiveState && left.total <= 30;
   const critical = !showLiveState && left.total <= 10;
   const liveHref = auth.status === "authenticated"
