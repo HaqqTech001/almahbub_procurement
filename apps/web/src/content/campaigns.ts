@@ -75,36 +75,38 @@ export const announcementSystem: AnnouncementSystemConfig = {
  * short celebration lines under the shared public shell.
  */
 export const siteCampaigns: readonly SiteCampaign[] = [
-  {
-    id: "founder-wedding-september-2026",
-    kind: "celebration",
-    enabled: true,
-    startAt: "2026-08-01T00:00:00+01:00",
-    endAt: "2026-09-30T23:59:59+01:00",
-    eyebrow: "Rowdotul HAMD'26",
-    message:
-      "Warm congratulations to our company owner on their wedding this September with gratitude from everyone at Almahbub.",
-    dismissible: false,
-    animation: "confetti",
-    theme: "celebration",
-    category: "celebration",
-    priority: 100,
-    slides: [
-      { line: "Rowdotul HAMD'26", accent: "hamd" },
-      { line: "Alhamdulillah", accent: "sparkle" },
-      { line: "A beautiful union begins", accent: "glow" },
-      { line: "Two hearts • One journey", accent: "glow" },
-      { line: "With joy and blessings", accent: "sprinkle" },
-      { line: "A new chapter begins" },
-      { line: "The celebration continues", accent: "sparkle" },
-      {
-        line: "May Allah bless the union",
-        whisper: "with barakah and lasting happiness",
-        accent: "sparkle",
-      },
-      { line: "Rowdotul HAMD'26", accent: "hamd" },
-    ],
-  },
+  /* Rowdotul HAMD'26 campaign retired after the wedding. Source retained for archive/reuse.
+    {
+      id: "founder-wedding-september-2026",
+      kind: "celebration",
+      enabled: true,
+      startAt: "2026-08-01T00:00:00+01:00",
+      endAt: "2026-09-30T23:59:59+01:00",
+      eyebrow: "Rowdotul HAMD'26",
+      message:
+        "Warm congratulations to our company owner on their wedding this September with gratitude from everyone at Almahbub.",
+      dismissible: false,
+      animation: "confetti",
+      theme: "celebration",
+      category: "celebration",
+      priority: 100,
+      slides: [
+        { line: "Rowdotul HAMD'26", accent: "hamd" },
+        { line: "Alhamdulillah", accent: "sparkle" },
+        { line: "A beautiful union begins", accent: "glow" },
+        { line: "Two hearts • One journey", accent: "glow" },
+        { line: "With joy and blessings", accent: "sprinkle" },
+        { line: "A new chapter begins" },
+        { line: "The celebration continues", accent: "sparkle" },
+        {
+          line: "May Allah bless the union",
+          whisper: "with barakah and lasting happiness",
+          accent: "sparkle",
+        },
+        { line: "Rowdotul HAMD'26", accent: "hamd" },
+      ],
+    },
+  */
   {
     id: "sourcing-season-guidance-2026",
     kind: "announcement",
