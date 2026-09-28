@@ -1,7 +1,8 @@
 import { lazy, Suspense, useEffect, type ComponentType, type ReactNode } from "react";
 import { Navigate, Outlet, Route, Routes, useLocation, useParams } from "react-router-dom";
 
-import { CelebrationHost } from "./app/CelebrationHost.js";
+// Wedding campaign retired after Rowdotul HAMD'26. Keep source code intact for archive/reuse.
+// import { CelebrationHost } from "./app/CelebrationHost.js";
 import { RootLayout } from "./app/RootLayout.js";
 import { RequireAuth } from "./auth/guards/RequireAuth.js";
 import {
@@ -265,6 +266,7 @@ const BuyerCommodityDetailPage = lazy(() =>
     default: m.BuyerCommodityDetailPage,
   })),
 );
+/* Wedding public pages retired after Rowdotul HAMD'26.
 const WeddingLandingPage = lazy(() =>
   import("./wedding/WeddingLandingPage.js").then((m) => ({
     default: m.WeddingLandingPage,
@@ -280,6 +282,7 @@ const WeddingGalleryPage = lazy(() =>
     default: m.WeddingGalleryPage,
   })),
 );
+*/
 const ShipmentDetailPage = lazy(() =>
   import("./shipments/ShipmentDetailPage.js").then((m) => ({
     default: m.ShipmentDetailPage,
@@ -385,7 +388,9 @@ export function App() {
   return (
     <>
       <LaunchCountdownGate />
+      {/* Wedding campaign retired; keep component source archived but do not mount it.
       <CelebrationHost />
+      */}
       <Routes>
       {/*
         Top-level explicit portal route. Must not live only as a sibling of
@@ -447,7 +452,9 @@ export function App() {
       <Route path="/invite/:token" element={page(InvitationPage)} />
       <Route path="/unauthorized" element={page(UnauthorizedPage)} />
       <Route path="/session-expired" element={page(SessionExpiredPage)} />
+      {/* Wedding route retired after the event.
       <Route path="/rowdotul-hamd-26/live" element={page(WeddingLivePage)} />
+      */}
       <Route path="/account-locked" element={page(AccountLockedPage)} />
 
       <Route
@@ -501,8 +508,10 @@ export function App() {
         <Route path="/industries" element={page(IndustriesPage)} />
         <Route path="/industries/:slug" element={page(IndustryDetailPage)} />
         <Route path="/faq" element={page(FaqPage)} />
+        {/* Wedding routes retired after the event.
         <Route path="/rowdotul-hamd-26" element={page(WeddingLandingPage)} />
         <Route path="/rowdotul-hamd-26/gallery" element={page(WeddingGalleryPage)} />
+        */}
         <Route path="/contact" element={page(ContactPage)} />
         <Route
           path="/privacy"
