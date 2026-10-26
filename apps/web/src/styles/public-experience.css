@@ -133,3 +133,20 @@
   .commerce-hero__grid { inset: 22% -30% -12% 20%; opacity: .18; }
 }
 @media (prefers-reduced-motion: reduce) { .commerce-hero--global::after, .commerce-hero__orb, .commerce-hero__signal { animation: none; } }
+
+
+/* Premium public navigation: colour-only refinement, retaining all fixed UI geometry. */
+html[data-theme="dark"] .hamd-public-navigation,
+html[data-theme="dark"] .hamd-header--public {
+  --public-panel: #171c24;
+  --public-panel-text: #f8f5ef;
+  --public-panel-muted: #c4bfb2;
+}
+html[data-theme="dark"] .hamd-header--public .hamd-header__mega--compact .hamd-header__mega-panel {
+  border-color: rgba(229,185,87,.26);
+  box-shadow: 0 20px 50px rgba(0,0,0,.32), 0 0 0 1px rgba(229,185,87,.05);
+}
+html[data-theme="dark"] .hamd-header--public .hamd-header__mega-link:hover,
+html[data-theme="dark"] .hamd-header--public .hamd-header__mega-link:focus-visible {
+  background: rgba(229,185,87,.1);
+}
