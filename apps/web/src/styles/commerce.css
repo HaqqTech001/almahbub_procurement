@@ -219,3 +219,23 @@
 .commerce-process p {
   max-width: 780px;
 }
+
+
+/* Premium commerce accents: visual-only; original grids, image sizes and copy stay intact. */
+html[data-theme="dark"] .commerce-hero {
+  background: radial-gradient(ellipse at 80% 0%, rgba(229,185,87,.11), transparent 55%), #111821;
+  color: #f8f5ef;
+}
+html[data-theme="dark"] .commerce-hero .hamd-btn {
+  background: #e5b957;
+  color: #151515;
+  border-color: #e5b957;
+}
+html[data-theme="dark"] .commerce-hero .hamd-btn:hover {
+  background: #f4d386;
+  color: #151515;
+  border-color: #f4d386;
+}
+html[data-theme="dark"] .commerce-operation {
+  border-bottom-color: rgba(229,185,87,.16);
+}
