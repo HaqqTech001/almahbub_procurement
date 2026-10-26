@@ -3389,3 +3389,13 @@ html[data-theme="dark"] .hamd-aie-request__section--cta {
 .hamd-aie-commodity-detail__section { margin-block: 20px; padding-block: 12px; }
 .hamd-aie-commodity-detail__hero-media { max-width: 440px; }
 .hamd-aie-catalogue__hero, .hamd-aie-catalogue__body, .hamd-aie-catalogue__cta { padding-block: 28px; }
+
+
+/* Export portal inherits premium dark surfaces without changing its separate green brand. */
+html[data-theme="dark"] .hamd-aie-portal {
+  background: #0c1018;
+  color: #f8f5ef;
+}
+html[data-theme="dark"] .hamd-aie-portal__header {
+  background: color-mix(in srgb, #141b25 96%, transparent);
+}
