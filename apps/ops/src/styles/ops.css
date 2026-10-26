@@ -4636,3 +4636,33 @@ html.dark .hamd-ops-product-more__menu a:focus-visible {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+
+/*
+ * AlMahbub V2 Ops premium visual pass.
+ * Visual tokens only: no changes to dashboards, queues, tables or their geometry.
+ */
+html[data-theme="dark"],
+html.dark {
+  --hamd-color-canvas: #0c1018;
+  --hamd-color-surface: #141b25;
+  --hamd-color-surface-subtle: #1c2530;
+  --hamd-color-surface-elevated: #202a35;
+  --hamd-color-border: #39404a;
+  --hamd-color-border-subtle: #303741;
+  --hamd-color-action: #e5b957;
+  --hamd-color-action-hover: #f4d386;
+  --hamd-color-actionPrimary: #e5b957;
+  --hamd-color-actionPrimaryHover: #f4d386;
+  --hamd-color-text: #f8f5ef;
+  --hamd-color-text-secondary: #d4d0c7;
+  --hamd-color-text-tertiary: #aaa89f;
+  --hamd-ops-border: #39404a;
+  --hamd-ops-surface: #141b25;
+  --hamd-ops-text: #f8f5ef;
+  --hamd-btn-primary-bg: #e5b957;
+  --hamd-btn-primary-text: #151515;
+  --hamd-btn-primary-hover-bg: #f4d386;
+  --hamd-btn-primary-hover-text: #151515;
+  --hamd-focus-ring: 0 0 0 2px #0c1018, 0 0 0 4px #e5b957;
+}
